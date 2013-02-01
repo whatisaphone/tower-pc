@@ -1,0 +1,152 @@
+US 104-key keyboard, set 2 scancodes,
+8042 AT-to-XT scancode translation OFF
+
+"Make" code is generated when key is pressed.
+"Break" code is generated when key is released.
+Hex value of make code for each key is shown.
+
+Most keys:
+	one-byte make code	= nn
+	one-byte repeat code	= nn
+	two-byte break code	= F0nn
+
+"Gray" keys (not on original 84-key keyboard):
+	two-byte make code	= E0nn
+	two-byte repeat code	= E0nn
+	three-byte break code	= E0F0nn
+
+"Gray" keys noted by [1] are NumLock-sensitive.
+When the keyboard's internal NumLock is active:
+	four-byte make code	= E012E0nn
+	two-byte repeat code	= E0nn
+	six-byte break code	= E0F0nnE0F012
+
+ ____    ___________________    ___________________    ___________________
+|    |  |    |    |    |    |  |    |    |    |    |  |    |    |    |    |
+|Esc |  |F1  |F2  |F3  |F4  |  |F5  |F6  |F7  |F8  |  |F9  |F10 |F11 |F12 |
+|    |  |    |    |    |    |  |    |    |    |    |  |    |    |    |    |
+|  76|  |  05|  06|  04|  0C|  |  03|  0B|  83|  0A|  |  01|  09|  78|  07|
+|____|  |____|____|____|____|  |____|____|____|____|  |____|____|____|____|
+
+ __________________________________________________________________________
+|    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+|~   |!   |@   |#   |$   |%   |^   |&   |*   |(   |)   |_   |+   ||   |bksp|
+|`   |1   |2   |3   |4   |5   |6   |7   |8   |9   |0   |-   |=   |\   |    |
+|  0E|  16|  1E|  26|  25|  2E|  36|  3D|  3E|  46|  45|  4E|  55|  5D|  66|
+|____|____|____|____|____|____|____|____|____|____|____|____|____|____|____|
+|    |    |    |    |    |    |    |    |    |    |    |    |    |         |
+|Tab |Q   |W   |E   |R   |T   |Y   |U   |I   |O   |P   |{   |}   |         |
+|    |    |    |    |    |    |    |    |    |    |    |[   |]   |         |
+|  0D|  15|  1D|  24|  2D|  2C|  35|  3C|  43|  44|  4D|  54|  5B|         |
+|____|____|____|____|____|____|____|____|____|____|____|____|____|         |
+|    |    |    |    |    |    |    |    |    |    |    |    |              |
+|Caps|A   |S   |D   |F   |G   |H   |J   |K   |L   |:   |"   |     Enter    |
+|    |    |    |    |    |    |    |    |    |    |;   |'   |              |
+|  58|  1C|  1B|  23|  2B|  34|  33|  3B|  42|  4B|  4C|  52|            5A|
+|____|____|____|____|____|____|____|____|____|____|____|____|______________|
+|         |    |    |    |    |    |    |    |    |    |    |              |
+| L Shift |Z   |X   |C   |V   |B   |N   |M   |<   |>   |?   |   R Shift    |
+|         |    |    |    |    |    |    |    |,   |.   |/   |              |
+|       12|  1A|  22|  21|  2A|  32|  31|  3A|  41|  49|  4A|            59|
+|_________|____|____|____|____|____|____|____|____|____|____|______________|
+|       |       |       |                  |       |       |       |       |
+|L Ctrl | L win | L Alt |       space      | R Alt | R win | menu  |R Ctrl |
+|       |[1]    |       |                  |       |[1]    |[1]    |       |
+|     14|   E01F|     11|                29|   E011|   E027|   E02F|   E014|
+|_______|_______|_______|__________________|_______|_______|_______|_______|
+
+
+[2] For PrintScreen/SysRq key: make code = E012E07C,
+repeat code = E07C, break code = E0F07CE0F012
+
+[3] The Pause/Break key does not repeat, and it does not
+generate a break code. Its make code is E11477E1F014F077
+
+ ____ ____ ____
+|    |    |    |
+|Prt |Scrl|Paus|
+|Scrn|Lock|Brk |
+| [2]|  7E| [3]|
+|____|____|____|
+
+ ____ ____ ____   ____ ____ ____ ____
+|    |    |    | |    |    |    |    |
+|Ins |Home|PgUp| |Num |/   |*   |-   |
+|[1] |[1] |[1] | |Lock|    |    |    |
+|E070|E06C|E07D| |  77|E04A|  7C|  7B|
+|____|____|____| |____|____|____|____|
+|    |    |    | |    |    |    |    |
+|Del |End |PgDn| |7   |8   |9   |    |
+|[1] |[1] |[1] | |Home|(U) |PgUp|    |
+|E071|E069|E07A| |  6C|  75|  7D|    |
+|____|____|____| |____|____|____|    |
+                 |    |    |    |+   |
+                 |4   |5   |6   |    |
+		 |(L) |    |(R) |    |
+                 |  6B|  73|  74|  79|
+      ____       |____|____|____|____|
+     |    |      |    |    |    |    |
+     |(U) |      |1   |2   |3   |    |
+     |[1] |      |End |(D) |PgDn|    |
+     |E075|      |  69|  72|  7A|Ent |
+ ____|____|____  |____|____|____|    |
+|    |    |    | |         |    |    |
+|(L) |(D) |(R) | |0        |.   |    |
+|[1] |[1] |[1] | |Ins      |Del |    |
+|E06B|E072|E074| |       70|  71|E05A|
+|____|____|____| |_________|____|____|
+
+
+code key        code key        code key        code key
+---- ---        ---- ---        ---- ---        ---- ---
+01   F9                                         66   BackSpace
+                21   C          41   ,<
+03   F5         22   X          42   K          69   End 1
+04   F3         23   D          43   I
+05   F1         24   E          44   O          6B   (left) 4
+06   F2         25   4$         45   0)         6C   Home 7
+07   F12        26   3#         46   9(
+                                                70   Ins 0
+09   F10        29   Space      49   .>         71   Del .
+0A   F8         2A   V          4A   /?         72   (down) 2
+0B   F6         2B   F          4B   L          73   5
+0C   F4         2C   T          4C   ;:         74   (right) 6
+0D   Tab        2D   R          4D   P          75   (up) 8
+0E   `~         2E   5%         4E   -_         76   Esc
+                                                77   NumLock
+11   L Alt      31   N          52   '"         78   F11
+12   L Shift    32   B                          79   +
+                33   H          54   [{         7A   PageDown 3
+14   L Ctrl     34   G          55   =+         7B   -
+15   Q          35   Y                          7C   *
+16   1!         36   6^         58   CapsLock   7D   PageUp 9
+                                59   R Shift    7E   ScrollLock
+1A   Z          3A   M          5A   Enter
+1B   S          3B   J          5B   ]}         83   F7
+1C   A          3C   U
+1D   W          3D   7&         5D   \|
+1E   2@         3E   8*
+
+code            key
+----            ---
+E011            R Alt
+E012E07C        PrintScreen make code
+E014            R Ctrl
+E01F            L Win
+E027            R Win
+E02F            Menu
+E04A            /
+E05A            Enter (on numeric keypad)
+E069            End
+E06B            (left)
+E06C            Home
+E070            Ins
+E071            Del
+E072            (down)
+E074            (right)
+E075            (up)
+E07A            PageDown
+E07C            PrintScreen repeat code
+E07D            PageUp
+E0F07CE0F012    PrintScreen break code
+E11477E1F014F077 Pause

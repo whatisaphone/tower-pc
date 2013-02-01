@@ -1,0 +1,48 @@
+<html>
+<head>
+<title>
+9.10  Error Code Summary
+</title>
+<body>
+<a name="09-10"></a>
+Prev: <a href="chp09-09.htm">9.9  Exception Summary</a><br>
+Next: <a href="chp10-00.htm">Chapter 10  Initialization</a>
+<hr>
+<h2>
+9.10  Error Code Summary
+</h2>
+<p>
+Table 9-7 summarizes the error information that is available with each
+exception.
+<p>
+<p>
+<a name="T-09-07"></a>
+<h3>Table 9-7. Error-Code Summary</h3>
+<p>
+<pre>
+Description                       Interrupt     Error Code
+                                  Number
+
+Divide error                       0            No
+Debug exceptions                   1            No
+Breakpoint                         3            No
+Overflow                           4            No
+Bounds check                       5            No
+Invalid opcode                     6            No
+Coprocessor not available          7            No
+System error                       8            Yes (always 0)
+Coprocessor Segment Overrun        9            No
+Invalid TSS                       10            Yes
+Segment not present               11            Yes
+Stack exception                   12            Yes
+General protection fault          13            Yes
+Page fault                        14            Yes
+Coprocessor error                 16            No
+Two-byte SW interrupt             0-255         No
+</pre>
+<p>
+<hr>
+Prev: <a href="chp09-09.htm">9.9  Exception Summary</a><br>
+Next: <a href="chp10-00.htm">Chapter 10  Initialization</a>
+</body>
+</html>

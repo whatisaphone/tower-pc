@@ -1,0 +1,4234 @@
+Content-Type: multipart/related; start=<op.mhtml.1214610585167.8f4996056703b7f1@192.168.0.5>; boundary=----------PGWFAZmCoX3WuRiYszRaus
+Content-Location: http://wiki.kldp.org/wiki.php/PIC8259
+Subject: =?utf-8?Q?KLDPWiki:=208259=20Programmable=20Interrupt=20Controller=20(PIC)?=
+MIME-Version: 1.0
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=PIC8259.htm
+Content-Type: text/html; charset=euc-kr; name=PIC8259.htm
+Content-Id: <op.mhtml.1214610585167.8f4996056703b7f1@192.168.0.5>
+Content-Location: http://wiki.kldp.org/wiki.php/PIC8259
+Content-Transfer-Encoding: Quoted-Printable
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://w=
+ww.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns=3D"http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html;charset=3Deuc-kr"=
+ /><script type=3D"text/javascript">
+/*<![CDATA[*/
+_url_prefix=3D"";
+/*]]>*/
+</script>
+<link rel=3D"Start" href=3D"FrontPage" />
+<link rel=3D"Index" href=3D"TitleIndex" />
+<link rel=3D"Help" href=3D"HelpOnFormatting" />
+<link rel=3D"Copyright" href=3D"FrontPage" />
+<link rel=3D"Search" href=3D"FindPage" />
+<link rel=3D"Glossary" href=3D"WordIndex" />
+<link rel=3D"Alternate History" title=3D"Page History" href=3D"?action=3D=
+info" />
+<link rel=3D"Alternate" type=3D"application/rss+xml" title=3D"KLDP Wiki"=
+ href=3D"http://wiki.kldp.org/wiki.php/RecentChanges?action=3Drss_rc" />=
+
+<script type=3D"text/javascript" src=3D"/local/trachi.js"></script>
+<meta name=3D"keywords" content=3D"PIC8259" />  <title>KLDPWiki: 8259 Pr=
+ogrammable Interrupt Controller (PIC)</title>
+  <link rel=3D"Alternate" title=3D"Wiki Markup" href=3D"/wiki.php/PIC825=
+9?action=3Draw" />
+  <link rel=3D"Alternate" media=3D"print" title=3D"Print View" href=3D"/=
+wiki.php/PIC8259?action=3Dprint" />
+  <link rel=3D"stylesheet" type=3D"text/css" media=3D"screen" href=3D"/t=
+heme/blue2/css/default.css" />
+</head>
+<body >
+<script type=3D"text/javascript">
+/*<![CDATA[*/
+url_prefix=3D"/wiki.php";
+_qp=3D"/";
+FrontPage=3D "FrontPage";
+/*]]>*/
+</script>
+<script type=3D"text/javascript" src=3D"/css/kbd.js">
+</script><div id=3D'topHeader'>
+&middot; <a href=3D'http://kldp.org'>KLDP.org</a> &middot;
+<a href=3D'http://kldp.net'>KLDP.net</a> &middot;
+<a href=3D'http://wiki.kldp.org'>KLDP Wiki</a> &middot;
+<a href=3D'http://bbs.kldp.org'>KLDP BBS</a> &middot;
+</div>
+<div id=3D'mainContainer'>
+<div id=3D'mainBody'>
+<div id=3D'goContainer'>
+<div id=3D'goFormLeft'><div id=3D'goFormRight'>
+<div id=3D'goForm'>
+<form name=3D'go' id=3D'go' action=3D'' method=3D'get' onsubmit=3D"retur=
+n moin_submit();">
+<input type=3D'text' name=3D'value' size=3D'20' accesskey=3D's' class=3D=
+'goto' style=3D'width:120px' />
+<input type=3D'hidden' name=3D'action' value=3D'goto' />
+<input type=3D'submit' name=3D'status' value=3D'Go' class=3D'goto' style=
+=3D'width:23px;' />
+</form></div></div></div></div>
+<div id=3D'topBanner'>
+<a href=3D"/"><img src=3D"/theme/blue2/imgs/kldpwikilogo.png" border=3D"=
+0"/></a>
+<!--
+<img src=3D"/theme/blue2/imgs/kldpwikilogo.png"/>
+-->
+</div>
+<div id=3D'pBodyRight'><div id=3D'pBodyLeft'>
+<div id=3D'pBottomRight'><div id=3D'pBottomLeft'>
+<div id=3D'pTopRight'><div id=3D'pTopLeft'>
+
+<div id=3D'wikiPage'>
+<span class=3D'wikiTitle'><a href=3D"/wiki.php/PIC8259?action=3Dfullsear=
+ch&amp;value=3DPIC8259" >8259 Programmable Interrupt Controller (PIC)</a=
+></span><div id=3D'wikiHeader'>
+<div id=3D'pMenuRight'><div id=3D'pMenuLeft'>
+<div id=3D'wikiMenuBar'>
+<div id=3D'wikiIcon'> <a href=3D"/wiki.php/PIC8259?action=3Dedit" access=
+key=3D'e'><img src=3D'/imgs/moni2/edit.png' alt=3D'E' style=3D'vertical-=
+align:middle;border:0px' /></a> <a href=3D"/wiki.php/PIC8259?action=3Ddi=
+ff" accesskey=3D'c'><img src=3D'/imgs/moni2/diff.png' alt=3D'D' style=3D=
+'vertical-align:middle;border:0px' /></a> <a href=3D"/wiki.php/PIC8259" =
+><img src=3D'/imgs/moni2/show.png' alt=3D'R' style=3D'vertical-align:mid=
+dle;border:0px' /></a> <a href=3D"/wiki.php/FindPage" ><img src=3D'/imgs=
+/moni2/search.png' alt=3D'S' style=3D'vertical-align:middle;border:0px' =
+/></a> <a href=3D"/wiki.php/PIC8259?action=3Dinfo" ><img src=3D'/imgs/mo=
+ni2/info.png' alt=3D'I' style=3D'vertical-align:middle;border:0px' /></a=
+> <a href=3D"/wiki.php/HelpContents" ><img src=3D'/imgs/moni2/help.png' =
+alt=3D'H' style=3D'vertical-align:middle;border:0px' /></a> <a href=3D"/=
+wiki.php/UserPreferences" ><img src=3D'/imgs/moni2/pref.png' alt=3D'C' s=
+tyle=3D'vertical-align:middle;border:0px' /></a> <a href=3D"/wiki.php/Re=
+centChanges?action=3Drss_rc" ><img src=3D'/imgs/moni2/rss.png' alt=3D'RS=
+S' style=3D'vertical-align:middle;border:0px' /></a> </div>
+<div id=3D"wikiMenu"><ul><li class=3D"first"><a href=3D'/wiki.php/FrontP=
+age' accesskey=3D'1'>FrontPage</a></li><li><a href=3D'/wiki.php/FindPage=
+' accesskey=3D'4'>FindPage</a></li><li><a href=3D'/wiki.php/TitleIndex' =
+accesskey=3D'3'>TitleIndex</a></li><li><a href=3D'/wiki.php/RecentChange=
+s' accesskey=3D'2'>RecentChanges</a></li></ul></div>
+</div>
+</div>
+</div></div>
+<div class=3D'clear'></div>
+<table border=3D'0' width=3D'100%' cellpadding=3D'0' cellspacing=3D'0'><=
+tr valign=3D'top'>
+<td width=3D'100%'>
+<hr class=3D'wikiHr' /><div id=3D'wikiBody'>
+<div id=3D'wikiContent'>
+<div><a id=3D'sect-1'></a><div class=3D'sectionEdit' style=3D'float:righ=
+t;'>[<a href=3D'/wiki.php/PIC8259?action=3Dedit&amp;section=3D1'>edit</a=
+>]</div>
+<h2><a id=3D's-1'></a>8259 Programmable Interrupt Controller (PIC) <a cl=
+ass=3D'perma' href=3D'#s-1'>&#xB6;</a></h2><div id=3D"sc-1">
+<br />
+<div>8259 PIC=B8=A6 =C1=A6=BE=EE=C7=CF=B1=E2 =C0=A7=C7=D8=BC=AD=B4=C2 =C0=
+=CF=B7=C3=C0=C7 PIC=BF=EB PORT =B8=ED=B7=C9=BE=EE=BC=C2=C0=CE
+<a class=3D'nonexistent' href=3D'/wiki.php/ICW1'>I</a>CW1, <a class=3D'n=
+onexistent' href=3D'/wiki.php/ICW2'>I</a>CW2, <a class=3D'nonexistent' h=
+ref=3D'/wiki.php/ICW3'>I</a>CW3, <a class=3D'nonexistent' href=3D'/wiki.=
+php/ICW4'>I</a>CW4=B8=A6 =BE=CB=BE=C6=BE=DF =C7=D5=B4=CF=B4=D9.
+</div>
+<br />
+<div>PIC=C3=CA=B1=E2=C8=AD =B0=FA=C1=A4=BF=A1=BC=AD <a class=3D'nonexist=
+ent' href=3D'/wiki.php/ICW1'>I</a>CW1 -> <a class=3D'nonexistent' href=3D=
+'/wiki.php/ICW2'>I</a>CW2 -> <a class=3D'nonexistent' href=3D'/wiki.php/=
+ICW3'>I</a>CW3 -> <a class=3D'nonexistent' href=3D'/wiki.php/ICW4'>I</a>=
+CW4 =BC=F8=BC=AD=B4=EB=B7=CE =C3=CA=B1=E2=C8=AD =B0=FA=C1=A4=C0=BB =B0=C5=
+=C4=A8=B4=CF=B4=D9.
+=C1=DF=BF=E4=C7=D1=B0=CD=C0=BA =B1=D7=B0=CD=C0=CC=B0=ED =B1=D7=B0=CD=C0=CC=
+ =BE=EE=B6=BB=B0=D4 =C0=CC=B7=E7=BE=EE=C1=F6=B4=C2=B0=A1=B8=A6 =BE=CB=B8=
+=E9 =B5=C7=B0=DA=C1=F6=BF=E4.
+</div>
+<br />
+<div><a class=3D'nonexistent' href=3D'/wiki.php/ICW1'>I</a>CW1 =C0=BA PI=
+C=B8=A6 =C3=CA=B1=E2=C8=AD =C7=CF=B4=C2 =B8=ED=B7=C9=C0=D4=B4=CF=B4=D9. =
+=BF=A7=C1=F6=C6=AE=B8=AE=B0=C5, =B7=B9=BA=A7=C6=AE=B8=AE=B0=C5=B8=A6 =C0=
+=CC=B8=ED=B7=C9=C0=B8=B7=CE =B0=E1=C1=A4=C7=D5=B4=CF=B4=D9.
+</div>
+<br />
+<div><a class=3D'nonexistent' href=3D'/wiki.php/ICW2'>I</a>CW2 =B4=C2 PI=
+C=B7=CE=BA=CE=C5=CD =B9=DE=C0=BA IRQ=B9=F8=C8=A3=B8=A6 =C1=F6=C1=A4=C7=D1=
+ offset=B8=B8=C5=AD =B4=F5=C7=D8=BC=AD =B8=C5=C7=CE=C7=CF=B5=B5=B7=CF =C7=
+=D5=B4=CF=B4=D9. =C0=CC=B0=CD=C0=BA =BF=B9=BF=DC=C3=B3=B8=AE=BD=C5=C8=A3=
+=BF=CD =C3=E6=B5=B9=C0=BB =C8=B8=C7=C7=C7=CF=B4=C2 =B9=E6=B9=FD=C0=BB =C0=
+=A7=C7=D8=BC=AD =B2=C0 =C7=CA=BF=E4=C7=D5=B4=CF=B4=D9. =BA=B8=C5=EB=C0=BA=
+ 20H=B7=CE =C1=F6=C1=A4=C7=D5=B4=CF=B4=D9.
+</div>
+<br />
+<div><a class=3D'nonexistent' href=3D'/wiki.php/ICW3'>I</a>CW3 =C0=BA Ma=
+ster/Slave PIC=C0=C7 =BF=AC=B0=E1 =B9=E6=B9=FD=C0=BB =B8=ED=BD=C3=C7=D5=B4=
+=CF=B4=D9. =C0=CC=B6=A7 Master=B4=C2 =B0=A2 =BA=F1=C6=AE=B0=A1 IRQ =C7=C9=
+=B9=F8=C8=A3=BF=CD =C0=CF=C4=A1=C7=CF=C1=F6=B8=B8 Slave=C0=C7 =B0=E6=BF=EC=
+=B4=C2 =B1=D7=B3=C9 =BC=FD=C0=DA=B7=CE =B0=A1=B8=A3=C5=B0=B4=C2=B0=CD=C0=
+=BB =BE=CB=BE=C6=B5=D1 =C7=CA=BF=E4=B0=A1 =C0=D6=BD=C0=B4=CF=B4=D9.
+</div>
+<br />
+<div><a class=3D'nonexistent' href=3D'/wiki.php/ICW4'>I</a>CW4=C0=C7 =B0=
+=E6=BF=EC=B4=C2 <a class=3D'nonexistent' href=3D'/wiki.php/ICW1'>I</a>CW=
+1=C0=C7 0=B9=F8 bit=B8=A6 1=B7=CE =BC=B3=C1=A4=C7=D2=B6=A7=B8=B8 =BB=E7=BF=
+=EB=C7=D5=B4=CF=B4=D9. =C0=CC=B0=CD=C0=BA 8086=B8=F0=B5=E5=B8=A6 =BB=E7=BF=
+=EB=C7=CF=B5=B5=B7=CF =C1=F6=C1=A4=C7=D2=B6=A7 =BB=E7=BF=EB=C7=D5=B4=CF=B4=
+=D9. PC=B4=C2 8086=B8=F0=B5=E5=C0=CC=B0=DA=C1=F6=BF=E4.
+</div>
+<br />
+<div>=BE=C6=B7=A1=C0=C7 =B9=AE=BC=AD=B4=C2 <a class=3D'nonexistent' href=
+=3D'/wiki.php/HelpPC'>H</a>elpPC v2.10 =BF=A1 =C0=D6=B4=C2 PIC=C1=A6=BE=EE=
+=BF=A1 =B4=EB=C7=D1 =C0=DA=BC=BC=C7=D1 =B3=BB=BF=EB=C0=CC =C0=D6=BE=EE =B9=
+=DF=C3=E9=C7=D8=BA=C3=BD=C0=B4=CF=B4=D9.
+</div>
+<br />
+<div>
+<pre class=3D'wiki'>
+                 8259  Programmable Interrupt Controller  (PIC)
+
+        Initialization Command Word 1 at Port 20h and A0h
+
+        =A6=A27=A6=A26=A6=A25=A6=A24=A6=A23=A6=A22=A6=A21=A6=A20=A6=A2  =
+ICW1
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=
+=A1=A6=A1=A6=A1 1=3DICW4 is needed, 0=3Dno ICW4 needed
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=
+=A1=A6=A1=A6=A1 1=3Dsingle 8259, 0=3Dcascading 8259's
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1=A6=A1 1=3D4 byte interrupt vectors, 0=3D8 byte int vectors
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1=A6=A1 1=3Dlevel triggered mode, 0=3Dedge triggered mode
+         =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1=A6=A1 must be 1 for ICW1 (port must also be 20h or A0h)
+         =A6=A6=A6=A1=A6=AA=A6=A1=A6=AA=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=
+=A1=A6=A1=A6=A1=A6=A1 must be zero for PC systems
+
+        Initialization Command Word 2 at Port 21h and A1h
+
+        =A6=A27=A6=A26=A6=A25=A6=A24=A6=A23=A6=A22=A6=A21=A6=A20=A6=A2  =
+ICW2
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=AA=A6=A1=A6=AA=
+=A6=A1=A6=A1=A6=A1=A6=A1 000=3D on 80x86 systems
+         =A6=A6=A6=A1=A6=AA=A6=A1=A6=AA=A6=A1=A6=AA=A6=A1=A6=AA=A6=A1=A6=
+=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1 A7-A3 of 80x86 interrupt v=
+ector
+
+        Initialization Command Word 3 at Port 21h and A1h
+
+        =A6=A27=A6=A26=A6=A25=A6=A24=A6=A23=A6=A22=A6=A21=A6=A20=A6=A2  =
+ICW3 for Master Device
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=
+=A1=A6=A1=A6=A1 1=3Dinterrupt request 0 has slave, 0=3Dno slave
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=
+=A1=A6=A1=A6=A1 1=3Dinterrupt request 1 has slave, 0=3Dno slave
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1=A6=A1 1=3Dinterrupt request 2 has slave, 0=3Dno slave
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1=A6=A1 1=3Dinterrupt request 3 has slave, 0=3Dno slave
+         =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1=A6=A1 1=3Dinterrupt request 4 has slave, 0=3Dno slave
+         =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=
+=A1=A6=A1 1=3Dinterrupt request 5 has slave, 0=3Dno slave
+         =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=
+=A1=A6=A1 1=3Dinterrupt request 6 has slave, 0=3Dno slave
+         =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=
+=A1=A6=A1 1=3Dinterrupt request 7 has slave, 0=3Dno slave
+
+        =A6=A27=A6=A26=A6=A25=A6=A24=A6=A23=A6=A22=A6=A21=A6=A20=A6=A2  =
+ICW3 for Slave Device
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=AA=A6=A1=A6=AA=
+=A6=A1=A6=A1=A6=A1=A6=A1 master interrupt request slave is attached to
+         =A6=A6=A6=A1=A6=AA=A6=A1=A6=AA=A6=A1=A6=AA=A6=A1=A6=AA=A6=A1=A6=
+=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1 must be zero
+
+        Initialization Command Word 4 at Port 21h and A1h
+
+        =A6=A27=A6=A26=A6=A25=A6=A24=A6=A23=A6=A22=A6=A21=A6=A20=A6=A2  =
+ICW4
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=
+=A1=A6=A1=A6=A1 1 for 80x86 mode, 0 =3D MCS 80/85 mode
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=
+=A1=A6=A1=A6=A1 1 =3D auto EOI, 0=3Dnormal EOI
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=AA=A6=A1=A6=A1=A6=A1=
+=A6=A1=A6=A1=A6=A1 slave/master buffered mode (see below)
+         =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1=A6=A1=A6=A1 1 =3D special fully nested mode (SFNM), 0=3Dsequentia=
+l
+         =A6=A6=A6=A1=A6=AA=A6=A1=A6=AA=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=
+=A1=A6=A1=A6=A1=A6=A1=A6=A1 unused (set to zero)
+
+        Bits
+
+         32     Buffering Mode
+         00     not buffered
+         01     not buffered
+         10     buffered mode slave (PC mode)
+         11     buffered mode master (PC mode)
+
+        Operation Control Word 1 / Interrupt Mask Reg.  (Ports 21h &amp;=
+ A1h)
+
+        =A6=A27=A6=A26=A6=A25=A6=A24=A6=A23=A6=A22=A6=A21=A6=A20=A6=A2  =
+OCW1 - IMR Interrupt Mask Register
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=
+=A1=A6=A1=A6=A1 0 =3D service IRQ0, 1 =3D mask off
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=
+=A1=A6=A1=A6=A1 0 =3D service IRQ1, 1 =3D mask off
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1=A6=A1 0 =3D service IRQ2, 1 =3D mask off
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1=A6=A1 0 =3D service IRQ3, 1 =3D mask off
+         =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1=A6=A1 0 =3D service IRQ4, 1 =3D mask off
+         =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=
+=A1=A6=A1 0 =3D service IRQ5, 1 =3D mask off
+         =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=
+=A1=A6=A1 0 =3D service IRQ6, 1 =3D mask off
+         =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=
+=A1=A6=A1 0 =3D service IRQ7, 1 =3D mask off
+
+        Operation Control Word 2 / Interrupt Command Reg. (Ports 20h &am=
+p; A0h)
+
+        =A6=A27=A6=A26=A6=A25=A6=A24=A6=A23=A6=A22=A6=A21=A6=A20=A6=A2  =
+OCW2 - ICR Interrupt Command Register
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=AA=A6=A1=A6=AA=
+=A6=A1=A6=A1=A6=A1=A6=A1 interrupt request level to act upon
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1=A6=A1=A6=A1=A6=A1 must be 0 for OCW2
+         =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1=A6=A1=A6=A1=A6=A1 must be 0 for OCW2
+         =A6=A6=A6=A1=A6=AA=A6=A1=A6=AA=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=
+=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1 EOI type (see table)
+
+        Bits
+        765  EOI - End Of Interrupt code (PC specific)
+        001  non-specific EOI command
+        010  NOP
+        011  specific EOI command
+        100  rotate in automatic EOI mode
+        101  rotate on non-specific EOI command
+        110  set priority command  (uses bits 2-0)
+        111  rotate on specific EOI command
+
+        Operation Control Word 3   (Ports 20h &amp; A0h)
+
+        =A6=A27=A6=A26=A6=A25=A6=A24=A6=A23=A6=A22=A6=A21=A6=A20=A6=A2  =
+OCW3
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=
+=A1=A6=A1 1=3Dread IRR on next read, 0=3Dread ISR on next read
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=
+=A1=A6=A1 1=3Dact on value of bit 0, 0=3Dno action if bit 0 set
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1 1=3Dpoll command issued, 0=3Dno poll command issued
+         =A6=A2 =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1 must be 1 for OCW3
+         =A6=A2 =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=
+=A6=A1 must be 0 for OCW3
+         =A6=A2 =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=
+=A1 1=3Dset special mask, 0=3Dreset special mask
+         =A6=A2 =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=
+=A1 1=3Dact on value of bit 5, 0=3Dno action if bit 5 set
+         =A6=A6=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=A1=A6=
+=A1 not used (zero)
+
+        Other Registers
+
+        IRR - Interrupt Request Register, maintains a bit vector indicat=
+ing
+              which IRQ hardware events are awaiting service.   Highest
+              level interrupt is reset when the CPU acknowledges interru=
+pt.
+        ISR - In Service Register, tracks IRQ line currently being servi=
+ced.
+              Updated by EOI command.
+
+
+                     Hardware Interrupt Sequence of Events:
+
+        1. 8259 IRQ signal is raised high by hardware setting the
+           corresponding IRR bits true.
+
+        2. PIC evaluates the interrupt requests and signals the CPU
+           where appropriate.
+
+        3. CPU acknowledges the INT by pulsing INTA (inverted)
+
+
+        4. INTA signal from CPU is received by the PIC, which then sets =
+the
+           highest priority ISR bit, and clears the corresponding IRR bi=
+t
+
+        5. CPU sends a second INTA pulse which causes the PIC to send th=
+e
+           interrupt ID byte onto the bus.  CPU begins interrupt process=
+ing.
+
+        6. Interrupts of lower and equal priority are blocked until a
+           Non-Specific EOI (20h) is sent to the command port.
+
+
+                            Initialization Procedure
+
+        Initialization
+         1. write ICW1 to port 20h
+         2. write ICW2 to port 21h
+         3. if ICW1 bit D1=3D1  do nothing
+            if ICW1 bit D1=3D0  write ICW3 to port 20h
+         4. write ICW4 to port 21h
+         5. OCW's can follow in any order
+
+
+                  8259 Programmable Interrupt Controller Notes
+
+        - Operation Command Word (OCW), commands that set the 8259 in
+          various interrupt modes.  These can be written to the 8259
+          anytime after initialization.
+        - The 8259 differentiates between the OCW1, OCW2 and OCW3 by the=
+
+          port address and the value of the data bits D4 and D3.  ICW2
+          through ICW4 are order related and must follow ICW1.  ICW1 is
+          identified by an even port number and data bit D4 set to 1.
+        - PCs operate in fully nested mode, where a Non-Specific EOI res=
+ets
+          the interrupt identified by the highest bit value in the ISR
+        - 8259s can be chained together where the INT pin (output) of a
+          slave 8259 can be used as the input to an IRQ line allowing up=
+
+          to 64 priority vectored interrupts.  AT level machines use two=
+
+          8259's for a total of 16 hardware interrupt levels
+        - the first 8259 ports are located at 20h and 21h
+        - the second 8259 ports are located at A0h and A1h
+        - PC and AT interrupts are Edge Triggered while PS/2's are Level=
+
+          Triggered
+        - some ASIC chips designed for Tandy 1000 Systems malfunction if=
+
+          specific and non-specific EOIs are mixed
+        - for a more in-depth discussion of the 8259, see Intel's "Micro=
+-
+          processor and Peripherals Handbook, Volume I"
+</pre>
+</div>
+<br />
+</div>
+</div>
+<div><a id=3D'sect-2'></a><div class=3D'sectionEdit' style=3D'float:righ=
+t;'>[<a href=3D'/wiki.php/PIC8259?action=3Dedit&amp;section=3D2'>edit</a=
+>]</div>
+<h2><a id=3D's-2'></a>=B1=E2=C5=B8 <a class=3D'perma' href=3D'#s-2'>&#xB=
+6;</a></h2><div id=3D"sc-2">
+<div><ul><li>=C3=CA=BE=C8=C0=DB=BC=BA=C0=DA: =C1=B6=C0=E7=C7=F5(<a href=3D=
+'/wiki.php/minzkn' >minzkn</a>)
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- wikiContent --></div>
+<!-- wikiBody --></div>
+<hr class=3D'wikiHr' /></td>
+<td bgcolor=3D'#fafafa'>
+<div id=3D'wikiSideMenu'>
+<div id=3D'wikiLogin'>
+<form method=3D'post' action=3D'/wiki.php/PIC8259' >
+<input type=3D"hidden" name=3D"action" value=3D"userform" />
+<table border=3D'0' cellpadding=3D'2' cellspacing=3D'0'>
+<tr><td align=3D'right'>Login:</td><td><input name=3D'login_id' size=3D'=
+10' /></td></tr>
+<tr><td align=3D'right'>Password:</td><td><input name=3D'password' type=3D=
+'password' size=3D'10' /></td></tr>
+<tr><td align=3D'right'><a href=3D'/wiki.php/UserPreferences'>Join</a></=
+td><td><input type=3D'submit' value=3D'OK' /></td></tr>
+</table>
+</form>
+</div><div class=3D"randomQuote">Far duller than a serpent's tooth it is=
+ to spend a quiet youth.</div><div class=3D"randomPage"><a href=3D"/wiki=
+.php/%BB%E7%B6%FB%B3%DD" >=BB=E7=B6=FB=B3=DD</a><br />
+<a href=3D"/wiki.php/Spike-ekipS" >Spike-ekipS</a><br />
+<a href=3D"/wiki.php/%BB%E7%BF%EB%B9%FD" >=BB=E7=BF=EB=B9=FD</a><br />
+<a href=3D"/wiki.php/openvpn-gui-kr.rc" >openvpn-gui-kr.rc</a><br />
+</div><div><div class=3D'cloudView'><ul> <li class=3D"tag-item"  style=3D=
+'font-size:17px' title=3D"5 hits"><a href=3D'/wiki.php/PIC8259?action=3D=
+tour&amp;arena=3Dkeylinks&amp;value=3DFOSS'>FOSS</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:17px' title=3D"6 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3DK=
+LDP'>KLDP</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:10px' title=3D"3 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3DO=
+penSource'>OpenSource</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:10px' title=3D"2 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3De=
+ditor'>editor</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:10px' title=3D"3 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3Dk=
+ldp'>kldp</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:10px' title=3D"2 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3Dk=
+noppix'>knoppix</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:10px' title=3D"2 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3Dl=
+inux'>linux</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:10px' title=3D"2 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3Dn=
+ssProject'>nssProject</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:10px' title=3D"2 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3Dv=
+im'>vim</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:10px' title=3D"2 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3Dw=
+ikiwiki'>wikiwiki</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:10px' title=3D"3 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3D=B8=
+=AE=B4=AA=BD=BA'>=B8=AE=B4=AA=BD=BA</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:10px' title=3D"4 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3D=BE=
+=C8=B3=BB'>=BE=C8=B3=BB</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:10px' title=3D"2 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3D=C0=
+=DA=C6=C7'>=C0=DA=C6=C7</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:10px' title=3D"2 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3D=C3=
+=CA=BA=B8=C0=DA'>=C3=CA=BA=B8=C0=DA</a></li>
+ <li class=3D"tag-item"  style=3D'font-size:24px' title=3D"9 hits"><a hr=
+ef=3D'/wiki.php/PIC8259?action=3Dtour&amp;arena=3Dkeylinks&amp;value=3D=C7=
+=D1=B1=DB'>=C7=D1=B1=DB</a></li>
+</ul></div></div></div>
+<div id=3D'kldpBanners' align=3D"center">
+<br /><br />
+<a href=3D"http://www.andamiro.com"><img src=3D"http://img.kldp.org/stat=
+ic/andamiro.png" width=3D"88" border=3D"0" height=3D"31" alt=3D"sponsore=
+d by andamiro" /></a><br /><a href=3D"http://www.cdnetworks.co.kr"><img =
+src=3D"http://img.kldp.org/static/cdnetworks.png" width=3D"88" border=3D=
+"0" height=3D"31" alt=3D"sponsored by cdnetworks" /></a><br /><a href=3D=
+"http://www.hp.com/linux"><img src=3D"http://img.kldp.org/static/hp.png"=
+ width=3D"88" border=3D"0" height=3D"31" alt=3D"sponsored by HP"></a><br=
+ />
+<!-- =BF=AC=B6=F4 : <a href=3D"&#x6d;&#97;&#105;l&#116;&#111;&#x3a;&#x77=
+;e&#98;&#109;&#x61;s&#x74;&#x65;&#x72;&#64;&#x6b;&#108;&#x64;&#112;&#x2e=
+;&#111;&#x72;g">&#x77;e&#98;&#109;&#x61;s&#x74;&#x65;&#x72;&#64;&#x6b;&#=
+108;&#x64;&#112;&#x2e;&#111;&#x72;g</a> --><img src=3D"http://img.kldp.o=
+rg/static/kss.png" border=3D"0" />
+</div>
+
+</td>
+
+</tr></table>
+<div id=3D'wikiFooter'>
+<div id=3D'wikiAction'><ul><li><a href=3D"/wiki.php/PIC8259?action=3Dedi=
+t" accesskey=3D'x'>EditText</a></li>
+<li>
+<a href=3D"/wiki.php/PIC8259?refresh=3D1" accesskey=3D'n'>Refresh</a></l=
+i>
+<li>
+<a href=3D"/wiki.php/FindPage" >FindPage</a></li>
+<li>
+<a href=3D"/wiki.php/PIC8259?action=3DDeletePage" >DeletePage</a></li>
+<li>
+<a href=3D"/wiki.php/PIC8259?action=3DLikePages" >LikePages</a></li>
+<li>
+<a href=3D"/wiki.php/PIC8259?action=3DTour" >Tour</a></li>
+<li>
+<a href=3D"/wiki.php/PIC8259?action=3DKeywords" >Keywords</a></li></ul><=
+/div><br/><div id=3D"wikiBanner"> <a href=3D"http://validator.w3.org/che=
+ck/referer"><img
+  src=3D"/theme/blue2/imgs/xhtml.png"
+  border=3D"0" width=3D"80" height=3D"15"
+  align=3D"middle"
+  alt=3D"Valid XHTML 1.0!" /></a>
+
+ <a href=3D"http://jigsaw.w3.org/css-validator/check/referer"><img
+  src=3D"/theme/blue2/imgs/css.png"
+  border=3D"0" width=3D"80" height=3D"15"
+  align=3D"middle"
+  alt=3D"Valid CSS!" /></a>
+
+ <a href=3D"http://moniwiki.sourceforge.net/"><img
+  src=3D"/theme/blue2/imgs/moniwiki-powered-thin.png"
+  border=3D"0" width=3D"80" height=3D"15"
+  align=3D"middle"
+  alt=3D"powered by MoniWiki" /></a><br />last modified 2008-04-30 00:49=
+:41<br />Processing time 0.0357 sec
+</div></div>
+
+</div></div></div></div></div></div>
+</div></div></div>
+<br />
+</body>
+</html>
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=trachi.js
+Content-Type: application/x-javascript; charset=euc-kr; name=trachi.js
+Content-Location: http://wiki.kldp.org/local/trachi.js
+Content-Transfer-Encoding: Base64
+
+Ly8gZnJvbSBodHRwOi8vd3d3LmVkZ2V3YWxsLm9yZy9jaHJvbWUvY29tbW9uL2pz
+L3RyYWMuanMKLy8gQWRhcHRlZCBmcm9tIGh0dHA6Ly93d3cua3J5b2dlbml4Lm9y
+Zy9jb2RlL2Jyb3dzZXIvc2VhcmNoaGkvCmZ1bmN0aW9uIHNlYXJjaEhpZ2hsaWdo
+dCgpIHsKICBpZiAoIWRvY3VtZW50LmNyZWF0ZUVsZW1lbnQpIHJldHVybjsKCiAg
+dmFyIGRpdiA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJ3aWtpQm9keSIpOwog
+IGlmICghZGl2KSByZXR1cm47CgogIGZ1bmN0aW9uIGdldFNlYXJjaFdvcmRzKHVy
+bCkgewogICAgaWYgKHVybC5pbmRleE9mKCc/JykgPT0gLTEpIHJldHVybiBbXTsK
+ICAgIHZhciBxdWVyeVN0cmluZyA9IHVybC5zdWJzdHIodXJsLmluZGV4T2YoJz8n
+KSArIDEpOwogICAgdmFyIHBhcmFtcyA9IHF1ZXJ5U3RyaW5nLnNwbGl0KCcmJyk7
+CiAgICBmb3IgKHZhciBwIGluIHBhcmFtcykgewogICAgICB2YXIgcGFyYW0gPSBw
+YXJhbXNbcF0uc3BsaXQoJz0nKTsKICAgICAgaWYgKHBhcmFtLmxlbmd0aCA8IDIp
+IGNvbnRpbnVlOwogICAgICBpZiAocGFyYW1bMF0gPT0gJ3EnIHx8IHBhcmFtWzBd
+ID09ICdwJykgeyAvLyBxPSBmb3IgR29vZ2xlLCBwPSBmb3IgWWFob28KICAgICAg
+ICB2YXIgcXVlcnkgPSBkZWNvZGVVUklDb21wb25lbnQocGFyYW1bMV0ucmVwbGFj
+ZSgvXCsvZywgJyAnKSk7CiAgICAgICAgaWYgKHF1ZXJ5WzBdID09ICchJykgcXVl
+cnkgPSBxdWVyeS5zbGljZSgxKTsKICAgICAgICB3b3JkcyA9IHF1ZXJ5LnNwbGl0
+KC8oIi4qPyIpfCgnLio/Jyl8KFxzKykvKTsKICAgICAgICB2YXIgd29yZHMyID0g
+bmV3IEFycmF5KCk7CiAgICAgICAgZm9yICh2YXIgdyBpbiB3b3JkcykgewogICAg
+ICAgICAgd29yZHNbd10gPSB3b3Jkc1t3XS5yZXBsYWNlKC9eXHMrJC8sICcnKTsK
+ICAgICAgICAgIGlmICh3b3Jkc1t3XSAhPSAnJykgewogICAgICAgICAgICB3b3Jk
+czIucHVzaCh3b3Jkc1t3XS5yZXBsYWNlKC9eWyciXS8sICcnKS5yZXBsYWNlKC9b
+JyJdJC8sICcnKSk7CiAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIHJldHVy
+biB3b3JkczI7CiAgICAgIH0KICAgIH0KICAgIHJldHVybiBbXTsKICB9CgogIGZ1
+bmN0aW9uIGhpZ2hsaWdodFdvcmQobm9kZSwgd29yZCwgc2VhcmNod29yZGluZGV4
+KSB7CiAgICAvLyBJZiB0aGlzIG5vZGUgaXMgYSB0ZXh0IG5vZGUgYW5kIGNvbnRh
+aW5zIHRoZSBzZWFyY2ggd29yZCwgaGlnaGxpZ2h0IGl0IGJ5CiAgICAvLyBzdXJy
+b3VuZGluZyBpdCB3aXRoIGEgc3BhbiBlbGVtZW50CiAgICBpZiAobm9kZS5ub2Rl
+VHlwZSA9PSAzKSB7IC8vIE5vZGUuVEVYVF9OT0RFCiAgICAgIHZhciBwb3MgPSBu
+b2RlLm5vZGVWYWx1ZS50b0xvd2VyQ2FzZSgpLmluZGV4T2Yod29yZC50b0xvd2Vy
+Q2FzZSgpKTsKICAgICAgaWYgKHBvcyA+PSAwICYmICEvXnNlYXJjaHdvcmRcZCQv
+LnRlc3Qobm9kZS5wYXJlbnROb2RlLmNsYXNzTmFtZSkpIHsKICAgICAgICB2YXIg
+c3BhbiA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoInNwYW4iKTsKICAgICAgICBz
+cGFuLmNsYXNzTmFtZSA9ICJzZWFyY2h3b3JkIiArIChzZWFyY2h3b3JkaW5kZXgg
+JSA1KTsKICAgICAgICBzcGFuLmFwcGVuZENoaWxkKGRvY3VtZW50LmNyZWF0ZVRl
+eHROb2RlKAogICAgICAgICAgbm9kZS5ub2RlVmFsdWUuc3Vic3RyKHBvcywgd29y
+ZC5sZW5ndGgpKSk7CiAgICAgICAgbm9kZS5wYXJlbnROb2RlLmluc2VydEJlZm9y
+ZShzcGFuLCBub2RlLnBhcmVudE5vZGUuaW5zZXJ0QmVmb3JlKAogICAgICAgICAg
+ZG9jdW1lbnQuY3JlYXRlVGV4dE5vZGUobm9kZS5ub2RlVmFsdWUuc3Vic3RyKHBv
+cyArIHdvcmQubGVuZ3RoKSksCiAgICAgICAgICAgIG5vZGUubmV4dFNpYmxpbmcp
+KTsKICAgICAgICBub2RlLm5vZGVWYWx1ZSA9IG5vZGUubm9kZVZhbHVlLnN1YnN0
+cigwLCBwb3MpOwogICAgICAgIHJldHVybiB0cnVlOwogICAgICB9CiAgICB9IGVs
+c2UgaWYgKCFub2RlLm5vZGVOYW1lLm1hdGNoKC9idXR0b258c2VsZWN0fHRleHRh
+cmVhL2kpKSB7CiAgICAgIC8vIFJlY3Vyc2UgaW50byBjaGlsZCBub2RlcwogICAg
+ICBmb3IgKHZhciBpID0gMDsgaSA8IG5vZGUuY2hpbGROb2Rlcy5sZW5ndGg7IGkr
+KykgewogICAgICAgIGlmIChoaWdobGlnaHRXb3JkKG5vZGUuY2hpbGROb2Rlc1tp
+XSwgd29yZCwgc2VhcmNod29yZGluZGV4KSkgaSsrOwogICAgICB9CiAgICB9CiAg
+ICByZXR1cm4gZmFsc2U7CiAgfQoKICB2YXIgd29yZHMgPSBnZXRTZWFyY2hXb3Jk
+cyhkb2N1bWVudC5VUkwpOwogIGlmICghd29yZHMubGVuZ3RoKSB3b3JkcyA9IGdl
+dFNlYXJjaFdvcmRzKGRvY3VtZW50LnJlZmVycmVyKTsKICBpZiAod29yZHMubGVu
+Z3RoKSB7CiAgICBmb3IgKHZhciB3IGluIHdvcmRzKSB7CiAgICAgIGlmICh3b3Jk
+c1t3XS5sZW5ndGgpIGhpZ2hsaWdodFdvcmQoZGl2LCB3b3Jkc1t3XSwgdyk7CiAg
+ICB9CiAgfQp9CgoKaWYgKHdpbmRvdy5hZGRFdmVudExpc3RlbmVyKSB3aW5kb3cu
+YWRkRXZlbnRMaXN0ZW5lcigibG9hZCIsc2VhcmNoSGlnaGxpZ2h0LGZhbHNlKTsK
+ZWxzZSBpZiAod2luZG93LmF0dGFjaEV2ZW50KSB3aW5kb3cuYXR0YWNoRXZlbnQo
+Im9ubG9hZCIsc2VhcmNoSGlnaGxpZ2h0KTsK
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=_base.css
+Content-Type: text/css; charset=euc-kr; name=_base.css
+Content-Location: http://wiki.kldp.org/css/_base.css
+Content-Transfer-Encoding: 8bit
+
+/* MoniWiki base CSS 2005/09/22 by wkpark */
+
+body {
+/* IE hover hack */
+/* behavior:url("../local/csshover.htc"); */
+}
+
+#wikiBanner {
+  clear:both;
+}
+
+tt.wiki {font-family:monospace;}
+tt.foot {
+  font-family:sans-serif;
+  vertical-align: super;
+}
+
+div.foot ul{
+  list-style:none;
+  padding-left:10px;
+}
+
+tt.sister {
+  font-family:sans-serif;
+  vertical-align: super;
+  text-decoration: none;
+}
+
+pre.wiki {
+  font-family:Courier New,monospace;
+}
+
+pre {
+  font-family:Courier New,monospace;
+}
+
+pre.console {
+  padding: .25em ;
+  border: 2px inset #808080;
+}
+
+pre.quote {
+  white-space:pre-wrap;
+  white-space: -moz-pre-wrap; 
+  font-family:monospace;
+}
+
+.preWhiteSpace {
+  padding-left:6px;
+  padding-top:6px;
+  font-family: "Courier New", GulimChe, monospace !important;
+  background-color:#000000;
+  color:#c0c0c0;
+  border:1px solid #D8E1E9;
+  border-left:10px solid #D8E1E9;
+  padding:10px;
+}
+
+table.wiki {
+/* background-color: #E9ECEF; */
+}
+
+table.center {
+  text-align:center;
+  margin-left:auto; /* Moz */
+  margin-right:auto; /* Moz */
+}
+
+table.right {
+  text-align:right;
+  float:right;
+}
+
+td.center {
+  text-align:center;
+}
+
+td.right {
+  text-align:right;
+}
+
+table.wiki tr {
+   background-color: #E9ECEF;
+}
+
+textarea.wiki { width:100%; }
+
+.resizable-textarea .grippie {
+  height: 14px;
+  background: #ECE9D6 url(../imgs/misc/grippie.png) no-repeat 100% 100%;
+  border: 1px solid #DFDBCA;
+  border-top-width: 0;
+  cursor: s-resize;
+}
+
+.resizable-textarea {
+  width:100% !important;
+  width:98%; /* for IE */
+}
+
+th.info {
+  background-color:#E2ECE2;
+/*  border-collapse: collapse; */
+/*  border: 1px solid silver; */
+}
+
+.disabled {
+  background-color:#E2E2E2 !important;
+  color:gray;
+}
+
+td.info {
+  background-color:#E2ECE2;
+}
+
+h1,h2,h3,h4,h5 {
+  font-family:sans-serif;
+}
+
+div.diff-added, tr.diff-added {
+  background-color:#ccffcc;
+}
+
+div.diff-removed, tr.diff-removed {
+  background-color:#EEBfbb;
+}
+
+div.diff-sep {
+  font-family:"Bitstream Vera Sans mono",monospace;
+  background-color:#e0e0e0;
+  color:#000000; /* */
+  padding:2px;
+}
+
+span.diff-added, ins.diff-added {
+  background-color: #60FF60;
+  text-decoration: none;
+}
+
+span.diff-removed, del.diff-removed {
+  background-color: #FF0000;
+  text-decoration: none;
+}
+
+div.message {
+  background-color: #E8E8E8;
+  border:2px solid #ff0000;
+  padding:4px;
+  vertical-align: middle;
+}
+
+pre.errlog {
+  background-color: #E8E8E8;
+  border:2px solid #ff0000;
+  color:#440000;
+  padding:4px;
+}
+
+.highlight {
+  background-color:#FFFF40;
+}
+
+table.goto {
+  background-color: #002B2C;
+}
+
+span.goto, input.goto {
+  font-family:sans-serif;
+  font-size:11px;
+}
+
+table.closure, td.closure, div.closure {
+  background-color: #E9ECEF;
+}
+
+div.closure {
+  background-color: #E9ECEF;
+  padding:3px;
+}
+
+/*  */
+.wikiHr {
+  border:0px solid;
+  padding: 0px 0px; /* */
+  margin-top:0px;
+  height:1px;  
+/* background: #000 url(hr1.gif) no-repeat scroll center; */
+}
+
+#wikiHeader {
+  margin-bottom:3px;
+}
+#wikiHeader a:link {color:black;}
+#wikiHeader a:visited {color:#505050;}
+
+.wikiTitle {
+  font-family:Trebuchet MS,Georgia,Verdana,sans-serif;
+  font-size:28px;
+  font-weight:bold;
+  display:block;
+}
+
+.wikiTitle a,.wikiTitle a:active,.wikiTitle a:visited {
+  text-decoration: none;
+}
+
+.clear {
+  clear:both;
+  height:1px; /* */
+}
+
+/* HierarchicalWiki */
+.wikiGroup {
+  font-family:Tahoma,Lucida,sans-serif;
+  font-size:10px;
+  display:block;
+}
+
+#wikiTrailer, #wikiOrigin {
+  padding-left: 20px;
+  padding-bottom: 5px;
+}
+
+#wikiBody {
+  margin: 10px 10px 10px 15px; 
+}
+
+#wikiFooter {
+  padding: 0.5em 2em;
+/*  background-color:yellow; */
+}
+
+#wikiHint {
+  font-family:Georgia,Verdana,Lucida,sans-serif;
+  font-size:10px;
+}
+
+#wikiSister {
+/*  background-color:lightgreen; /* */
+}
+
+#wikiPreview {
+  border: 2px solid #a0a0a0;
+  margin: 5px 5px 5px 5px;
+  padding: 5px 1em 5px 1em;
+}
+
+#wikiIcon {
+  float:right;
+  padding: 3px 10px;
+  text-align: right;
+  vertical-align: middle;
+  margin-left: 10px;
+}
+
+#wikiIcon img, #wikiMenu img {
+  vertical-align: middle;
+}
+
+* html #wikiIcon {
+  visibility:visible; /* for IE */
+}
+
+#wikiHeader:hover #wikiIcon {
+  visibility:visible;
+}
+
+#wikiExtra {
+  padding:1em 2em 1em 2em;
+}
+
+div.indent {
+  margin:5px 0px 5px 0px;
+  padding:0px 1em 0px 0px;
+  border-left:2px solid #e0e0e0;
+}
+
+div.hint { font-size: 10px; background-color: #369; color:white;}
+a.purple { font-size: 10px; text-decoration:none;}
+
+/* Blog CSS */
+a.purple { font-size: 10px; text-decoration:none;}
+div.blog { width:90%; padding: 0em 1em 0em 1em; }
+div.blog-user { font-size:10px; }
+div.blog-title { font-size:16px; font-weight:bold; }
+div.blog-comments { padding: 1em 1em 1em 2em;}
+
+div.blog-date { font-size:18px; font-weight:bold; padding-bottom:5px;}
+span.blog-user { font-size:10px; }
+
+div.trackback-hint { font-size: 10px; padding: 1em 1em 1em 1em;background-color: #eee;}
+/* Calendar */
+td.day { background:#e5d9c7; text-align: center;}
+td.today { background:#ffffff; text-align: center;}
+
+
+/* enscript syntax */
+div.wikiPre i,div.wikiPre b{
+  font-weight: normal;
+  font-style: normal;
+}
+
+img.interwiki {
+  vertical-align:middle; /* */
+}
+
+img.smiley {
+  vertical-align:middle; /* */
+}
+
+img.url {
+  vertical-align:middle; /* */
+  border:0px;
+}
+
+img.icon {
+  vertical-align:middle; /* */
+}
+
+img.imgLeft {
+  margin-right : 15px;
+  margin-bottom : 5px;
+}
+
+img.imgRight {
+  margin-left : 10px;
+  margin-bottom : 5px;
+}
+
+span.externalLink {
+  display: none;
+}
+
+.purple a {
+    font-family: Verdana, Trebuchet, Arial, Helvetica;
+    font-style: normal;
+    font-weight: bold;
+    font-size: x-small;
+    text-decoration: none;
+    color: #C8A8FF;  /* light purple */
+}
+
+span.lineNumber {
+  color:#ffff00;
+}
+
+.wikiSyntax, .wikiSyntax code{  
+  font-family:"Bitstream Vera Sans Mono", Courier New, GulimChe, monospace !important;
+  padding:0.5em;
+}
+
+.pageNav { margin-bottom:5px;font-size : 75%; }
+.pageNext { float: right; }
+.pagePrev { float: left; }
+
+#wikiHelper {
+  padding: 15px;
+  border: 2px solid red;
+  text-align: left;
+  margin: 5px auto;
+  width:430px;
+}
+
+#wikiResize {
+  float: right;
+  padding-right:10px;
+}
+
+#smileyChooser {
+  padding: 5px;
+  margin-top:3px;
+  margin-bottom:3px;
+  background-color: #d0d0d0;
+}
+
+#smileyChooser img {
+  padding: 2px;
+  border: none;
+}
+
+#blogCategory ul {
+  list-style:none;
+  padding-left: 20px;
+}
+
+#blogCategory span.dir {
+  display:none;
+}
+
+a.perma:link, a.perma:visited {
+  visibility: hidden;
+}
+
+* html a.perma:visited { /* IE hack */
+  visibility: visible;
+}
+
+h1:hover a.perma, h2:hover a.perma, h3:hover a.perma {
+  visibility: visible;
+}
+
+h4:hover a.perma, h5:hover a.perma, h6:hover a.perma {
+  visibility: visible;
+}
+
+.rc-date {
+  font-size:1.2em;
+}
+.rc-bookmark {
+  font-size:11px;
+  font-weight:normal;
+}
+
+.rc-button ul {
+  list-style: none;
+  display: inline;
+  padding: 0px;
+}
+
+.rc-button li {
+  display: inline;
+}
+
+.wikiMarkup {
+  background-color:#ffff00;
+  border-left:2px solid #F5E238;
+  border-right:2px solid #F5E238;
+  border-top:2px dotted #F5E238;
+  border-bottom:2px dotted #F5E238;
+}
+
+.wikiMarkupEdit pre, .wikiMarkupEdit span {
+  background-color:#ffff00;
+  border:2px dotted #F5E238;
+  font-family: "Courier New",sans-serif;
+}
+
+.wikiMarkup img {
+  background-color:#ffff00;
+}
+
+/* since v1.1.3 */
+blockquote.indent {
+  margin:5px 0px 5px 0px;
+  padding:1em;
+  border-left:2px solid #e0e0e0;
+}
+
+blockquote.quote {
+  background-color: #f8f8f8; /* */
+  margin:5px 0px 5px 0px;
+  padding:5px 5px 5px 1ex;
+  border-left:2px solid #d7d7d7;
+}
+
+/* <u></u> replacement */
+em.underline{
+  font-style:normal;
+  text-decoration:underline;
+}
+
+#wikiSubIndex {
+  /* float:right; /* */
+}
+
+#wikiSubIndex {
+  display:block;
+  padding-bottom:0px;
+  padding-left:0px;
+  padding-top:0px;
+  border:0px solid transparent; /* */
+  margin-right:5px;
+  z-index:20;
+}
+
+
+#wikiSubIndex legend {
+  color:#555;
+  background: url(../imgs/misc/open.png) no-repeat;
+  height:9px;
+  width:9px;
+  padding:5px;
+  margin:0px;
+}
+
+#wikiSubIndex legend.close {
+  background: url(../imgs/misc/close.png) no-repeat;
+}
+
+#toc {
+  /* float:right;
+  border:1px solid black; */
+  background: #ffffff;
+  padding:3px;
+}
+
+.wikiRating {
+  left:500px;
+  border-left:5px solid #72BEE2;
+  padding-left:5px;
+}
+
+.attach img {
+  vertical-align:middle;
+}
+
+.addPage {
+  margin-left:auto; /* Moz */
+  margin-right:auto; /* Moz */
+}
+
+.addPage table {
+}
+
+.addPage, .addPage input{
+  font-size:20px;
+}
+
+.addLabel {
+  text-align:right;
+}
+
+.subscribePages ol {
+  list-style:circle;
+}
+
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=_extra.css
+Content-Type: text/css; charset=euc-kr; name=_extra.css
+Content-Location: http://wiki.kldp.org/css/_extra.css
+Content-Transfer-Encoding: 8bit
+
+.wikiSyntax, .wikiSyntax code{
+  font-family:Bitstream Vera Sans Mono, Courier New, GulimChe, monospace;
+  padding:0.5em;
+}
+
+div.sectionEdit {
+  margin-right:5px; margin-top:3px;
+  visibility:hidden;
+}
+
+#wikiContent div:hover .sectionEdit {
+  visibility:visible;
+}
+
+* html div.sectionEdit {
+  visibility:visible; /* for IE */
+}
+
+div.sectionEdit:hover {
+  visibility:visible;
+}
+
+.fileList {
+  overflow-x:auto;
+}
+
+.gallery-img {
+  /* float:left; */
+}
+.gallery-sel {
+  padding-bottom:10px;
+}
+
+.gallery-comments {
+  padding: 5px;
+}
+
+.gallery-prev-link {
+  float:left;
+}
+.gallery-next-link {
+  float:right;
+}
+
+.gallery-top-link {
+  visibility:hidden;
+}
+
+.cloudView {
+  display:inline;
+}
+
+.cloudView ul{
+  padding:0px;
+  margin:0px;
+  display:inline;
+}
+
+.cloudView li{
+  font-family:Trebuchet MS,Georgia,Verdana,sans-serif;
+  list-style:none;
+  white-space: nowrap;
+  display:inline;
+  padding-left:0px;
+}
+
+span.tag-name {
+}
+
+.cloudView li.tag-item {
+  padding-left:5px;
+  font-size:14px;
+}
+
+#wikiBody .cloudView a:link, #wikiBody .cloudView a:visited {
+  text-decoration:none;
+  color:#000000;
+}
+
+#wikiBody .cloudView a:hover {
+  text-decoration:underline;
+  color:#0000ff;
+}
+
+.cloudView ul {
+  margin:0;
+}
+
+.wikiChat ul {
+  list-style:none;
+  padding:2px;
+  margin:0px;
+}
+
+.wikiChat span.user {
+  font-family:Trebuchet MS,sans-serif;
+  padding-left:2px;
+  padding-right:2px;
+}
+
+.wikiChat span.date {
+  font-family:Trebuchet MS,sans-serif;
+  padding-right:2px;
+}
+
+.blocked {
+  background-color:#ff0000;
+  color:#fff;
+}
+
+div.tourLeft {
+  width:60%;
+  float:left;
+}
+
+div.tourRight {
+  width:40%;
+  float:right;
+}
+
+div.tourFoot {
+  clear:both;
+}
+
+div.tourLeft > ul li {
+  display:inline;
+  margin:0;
+  padding:0;
+}
+
+.depth-1 {
+  background-color:#fafafa;
+  padding:1em;
+}
+ul.depth-2 {
+  background-color:#f0f0f0;
+  padding:1em;
+}
+ul.depth-3 {
+  background-color:#eaeaea;
+  padding:1em;
+}
+ul.depth-4 {
+  background-color:#e0e0e0;
+  padding:1em;
+}
+ul.depth-5 {
+  background-color:#b0b0b0;
+  padding:1em;
+}
+
+.wikiFortune {
+  font-family: Bitstream Vera Sans Mono,Courier New,monospace;
+  white-space:pre;
+}
+
+.soundOff {
+  background:url(../imgs/plugin/Chat/sound_off.png) no-repeat;
+  width:16px;
+  border:0;
+}
+
+.soundOn {
+  background:url(../imgs/plugin/Chat/sound_on.png) no-repeat;
+  width:16px;
+  border:0;
+}
+
+/* for po processor */
+.msgid { color:blue; }
+.msgstr { color:blue; }
+.pofuzzy { color:red; }
+.potype { color:blue; }
+.posrc { color:red; }
+.poold { color:#909090; }
+.posym { color:red; }
+.potok { color:violet; }
+
+/* bts */
+.bts-comment {
+  padding-top: 3px;
+  padding-left:8px !important;
+  border-left: 3px solid #d7b7fb;
+}
+
+span.VisualTour img {
+  border:0px;
+}
+
+span.VisualTour {
+  overflow:auto;
+}
+
+/* admin plugin */
+#admin-submenu li {
+  font-family: Trebuchet MS,sans-serif;
+  font-size:14px;
+  display: inline;
+  line-height: 200%;
+  list-style: none;
+  text-align: center;
+}
+
+#admin-submenu {
+  background: #DFE8FF;
+  border-bottom: none;
+  margin: 0;
+  padding: 3px 2em 0px 3em;
+}
+
+#admin-submenu li a,#admin-submenu li a:visited {
+  text-decoration:none;
+  color: #000;
+  font-size:14px;
+}
+
+#admin-submenu .current {
+  font-weight:bold;
+  background: #f9fcfe;
+  border-top: 1px solid #bcbcbc;
+  border-right: 2px solid #808080;
+  color: #000;
+}
+
+#admin-submenu a {
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  padding: .3em .4em .33em;
+}
+
+#admin-submenu li a:hover {
+  background: #F0F4FF;
+  color: #393939;
+}
+
+#admin-submenu li {
+  line-height: 170%;
+}
+
+/* Scriptaculous autocompleter */
+.autocomplete, #autocomplete_choices {
+  font-size:11px;
+  font-family : tahoma, arial, helvetica, sans-serif;
+  width: 350px;
+  background: #fff;
+  border:1px solid #888;
+  z-index:100;
+}
+
+.autocomplete ul,#autocomplete_choices ul {
+  margin:0px;
+  padding:0px;
+  width:100%;
+  list-style-type:none;
+}
+
+.autocomplete ul li.selected,#autocomplete_choices ul li.selected {
+  background-color: #316ac5;color:white;
+}
+
+.autocomplete ul li,#autocomplete_choices ul li {
+  margin:0;
+  padding:3px;
+  list-style-image: none;
+  cursor:pointer;
+}
+
+/* Styles for search word highlighting */
+@media screen {
+ .searchword0 { background: #ff9 }
+ .searchword1 { background: #cfc }
+ .searchword2 { background: #cff }
+ .searchword3 { background: #ccf }
+ .searchword4 { background: #fcf }
+}
+/* mootools r1.11 autocompleter */
+ul.autocompleter-choices
+{
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid #eee;
+  background-color: white;
+  border-right-color: #ddd;
+  border-bottom-color: #ddd;
+  text-align: left;
+  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+  z-index: 50;
+}
+
+ul.autocompleter-choices li
+{
+  position: relative;
+  padding: 0.1em 1.5em 0.1em 1em;
+  cursor: pointer;
+  font-weight: normal;
+  font-size: 1em;
+
+  padding-left:0px;
+}
+
+ul.autocompleter-choices li.autocompleter-selected
+{
+  background-color: #444;
+  color: #fff;
+}
+
+ul.autocompleter-choices span.autocompleter-queried
+{
+  font-weight: bold;
+}
+
+ul.autocompleter-choices li.autocompleter-selected span.autocompleter-queried
+{
+  color: #9FCFFF;
+}
+
+/* TeX */
+.previewTex {
+  vertical-align:middle;
+}
+
+/* Styles for folding processor */
+.folding {
+	background:#eee;
+	border-color:#ccc;
+	margin:10px;
+	padding:0;
+}
+
+.folding dt {
+	background-color:#bdc2bd;
+	height:20px;
+	font-weight:bold;
+	line-height:20px;
+	vertical-align:middle;
+	cursor:pointer;
+}
+
+.folding dd {
+	display:none;
+	padding:10px;
+	margin:0;
+}
+
+/* Styles for search word highlighting */
+@media screen {
+ .searchword0 { background: #ff9 }
+ .searchword1 { background: #cfc }
+ .searchword2 { background: #cff }
+ .searchword3 { background: #ccf }
+ .searchword4 { background: #fcf }
+}
+
+.imgLeft { margin-right:5px;float:left; clear:right;}
+.imgRight { margin-left:5px;float:right; clear:left;}
+.imgCenter { margin-left: auto; margin-right: auto; }
+
+.imgCaption {
+  font-size:.8em;
+  text-indent:0;
+  margin:0;
+  clear:both;
+}
+
+.imgContainer {
+  padding:5px;
+  border:1px solid silver;
+}
+
+.imgAttach {}
+
+/* Moniwiki BBS plugin */
+table.bbs { width:100%;}
+.bbsSimple .date { font-family: Trebuchet MS,Sans-serif;}
+.bbsSimple .more { text-align:right;}
+
+table.bbs thead {
+  background:url(../imgs/plugin/BBS/titlebg.png) repeat-x;
+  color:#000000;
+  font-family:Trebuchet MS,Sans-serif;
+}
+
+table.bbs tbody tr:hover {
+  /* background:url(../imgs/plugin/BBS/titlebg.png) repeat-x; */
+  background:#f8f8f8;
+}
+
+table.bbs tbody td {
+  font-family:Trebuchet MS,Sans-serif;
+}
+
+div.bbsArticle {
+  margin-bottom:0.5em;
+}
+
+div.bbsArticle .msg {
+  padding:0.5em;
+}
+
+.bbsArticle .head, .bbsArticle .head h2 { /* heading */
+  background-color:#6DC0F1;
+  border-bottom:0px;
+  margin-top:0.0em;
+  margin-bottom:0.0em;
+  font-size:1.2em;
+  color:black;
+  background:url(../imgs/plugin/BBS/articleheadbg.png) no-repeat;
+}
+
+.bbsArticle .user {
+}
+
+.bbsArticle, .bbsArticle .body {
+  background:url(../imgs/plugin/BBS/articlebodybg.png) repeat-y;
+  margin-left:5px;
+}
+
+.bbsArticle .body {
+  background-position:100% 0pt;
+  padding-right:15px;
+  padding-left:5px;
+}
+
+.bbsArticle .foot, .bbsArticle .foot div {
+  height:15px;
+  background:url(../imgs/plugin/BBS/articlefootbg.png) no-repeat;
+}
+.bbsArticle .foot {
+  background-position:0px 0px;
+}
+.bbsArticle .foot div {
+  margin-left:15px;
+  background-position:100% 0px;
+}
+
+.bbsArticle .extra {
+  float: right;
+  font-family: Trebuchet MS,Sans-serif;
+}
+
+.bbsArticle .head h2 {
+  padding:5px;
+  margin-left:15px;
+  background-position:100% 0pt;
+}
+
+.bbsArticle h3 { /* heading */
+  border-bottom:0px;
+  margin-top:0.0em;
+  font-size:1.1em;
+  font-weight:normal;
+}
+
+.bbsComment {
+  padding:5px;
+}
+
+.bbsBtn {
+  text-align:right;
+}
+
+.bbsArticleBtn {
+  text-align:center;
+}
+
+.bbsAdminBtn {
+}
+
+.bbsRSS {
+  float:right;
+}
+
+td.hit { text-align:center; }
+td.date { text-align:center; }
+td.no { text-align:center; }
+td.title { padding-left:0.5em; }
+td.name { padding-left:0.5em; }
+
+/* from the zeroboard */
+
+a.button, span.button, del.button {
+  background-position:0px 0px; /* XXX */
+  background-repeat:no-repeat;
+  border:medium none;
+  color:#2E523B;
+  cursor:pointer;
+  display:-moz-inline-box;
+  font-style:normal;
+  height:30px;
+  line-height:0pt;
+  margin:0pt 6px 0px 0pt;
+  padding:0pt 10px 0pt 0pt;
+  vertical-align:middle;
+}
+*:first-child + html a.button, *:first-child + html span.button, *:first-child + html del.button {
+  position:relative;
+  top:-4px;
+}
+a.button, span.button, del.button, a.button span, span.button button, span.button input, del.button span {
+  background-image:url(../imgs/plugin/BBS/form_btns.png);
+}
+a.button span, span.button button, span.button input, del.button span {
+  background-color:transparent;
+  background-position:100% 0pt;
+  background-repeat:no-repeat;
+  border:medium none;
+  color:#222222;
+  cursor:pointer;
+  display:-moz-inline-box;
+  font-size:0pt; 
+  font-size:12px !important;
+  font-style:normal;
+  height:30px;
+  letter-spacing:0pt !important;
+  line-height:1;
+  margin:0pt -16px 0pt 10px;
+  padding:8px 20px 0pt 10px;
+  text-decoration:none;
+  white-space:nowrap;
+}
+span.button button {
+  line-height:2.5;
+}
+html.safari a.button span, html.safari del.button span {
+  line-height:1.3;
+}
+html.safari span.button button {
+  line-height:2.6;
+}
+html.safari a.button:focus, html.safari span.button button:focus {
+  outline-color:invert;
+  outline-style:none;
+  outline-width:medium;
+}
+del.button {
+  background-position:0pt -120px;
+}
+del.button span {
+  background-position:100% -120px;
+  color:#AAAAAA !important;
+  cursor:default;
+}
+span.button button, span.button input {
+  line-height:2.5;
+  padding-top:0px;
+}
+a.button:hover, span.button:hover, a.button:focus, a.dom-button-focus, span.button-behavior-hover {
+  background-position:0pt -60px;
+  color:#222222;
+  text-decoration:none;
+}
+a.button:hover span, span.button:hover button, span.button:hover input, a.button:focus span, span.button-behavior-hover button, span.button-behavior-hover input {
+  background-position:100% -60px;
+}
+a.button:active, a.button:focus span {
+  color:#444444;
+}
+del.button-behavior-hover, del.button:hover {
+  background-position:0pt -180px;
+}
+del.button-behavior-hover span, del.button:hover span {
+  background-position:100% -180px;
+}
+span.button button, del.button span, span.button input {
+}
+
+/* */
+.pnut {
+  text-align:center;
+}
+
+.deleteDialog {
+  text-align:center;
+}
+
+.deleteDialog table {
+  text-align:center;
+  margin-left:auto; /* Moz */
+  margin-right:auto; /* Moz */
+}
+
+.captcha { vertical-align:middle; }
+.captcha input { height:20px; vertical-align:middle; }
+
+.captcha img {
+  vertical-align: middle;
+}
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=_calendar.css
+Content-Type: text/css; charset=euc-kr; name=_calendar.css
+Content-Location: http://wiki.kldp.org/css/_calendar.css
+Content-Transfer-Encoding: 8bit
+
+/* for MoniCalendar */
+
+.MC table {
+  width:99%;
+  border-spacing: 0;
+  empty-cells: show;
+  margin:0;
+  padding:0;
+  border-left: 1px solid #d3d3d3;
+  border-top: 1px solid #d3d3d3;
+}
+
+.MC td {
+  border-right: 1px solid #d3d3d3;
+  border-bottom: 1px solid #d3d3d3;
+  margin: 0px;
+}
+
+.MC td.day, .MC td.today {
+  width:14%;
+  min-height:40px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.MC td.day:hover {
+  background-color: #EAEFE5;
+}
+
+.MC td.day {
+  background-color: #FFFFFF;
+}
+
+.MC td.fullday {
+  margin:0px;
+  border-right: 1px solid #A4ACBC;
+  border-bottom: 1px solid #A4ACBC;
+  width:90%;
+}
+
+.MC td.dayhead {
+  width:50px;
+  background-color: #FFFFFF;
+  text-align:center;
+}
+
+.MC td.dayhead h6{
+  font-size:20px;
+  display:inline;
+  font-family: Georgia, Arial, Helvetica, sans-serif;
+}
+
+.MC td.dayhead h6.week{
+  font-size:16px;
+  color:#727b84;
+  font-family: Georgia, Arial, Helvetica, sans-serif;
+}
+
+.MC .month {
+  font-size:18px;
+  font-weight: bold;
+}
+
+.MC td.fullday li {
+  display:inline;
+  margin:0px;
+}
+
+.MC td.today {
+  background-color: #E7FEDA;
+}
+
+.MC td.today:hover {
+  background-color: #F7FFEA;
+}
+
+.MC .day h6, .MC .today h6 {
+  font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  /* background-color: #d9e2e1; /* */
+  text-align: left;
+  vertical-align: middle;
+  padding-top:0px;
+  margin-bottom: 1px;
+  margin-top: 0px;
+  /* border: #A4Acbc solid; /* */
+  /* border-width: 0px 1px 1px 0px; */
+  padding-top: 2px;
+  color:#888;
+}
+
+.MC tr.weekhead {
+  background-color: #A2ADBC;
+  color: white;
+  padding:0;
+  margin:0;
+}
+
+.MC tr.week {
+  padding:0;
+  margin:0;
+}
+
+.MC ul {
+  list-style:none;
+  margin:0px;
+  padding:0px;
+  margin-right:0px;
+  margin-left:-1px;
+}
+
+.MC td {
+  margin:0px;
+  padding:0px;
+  padding:0;
+  margin:0;
+}
+
+.MC li {
+  margin:0px;
+  padding:0px;
+  margin-bottom:2px !important;
+  padding-left:3px;
+}
+
+.MC .colorbar li {
+  border-top:1px solid black;
+  border-bottom:1px solid black;
+}
+
+.MC td.red {
+  background-color: #ffc1c1;
+}
+
+.MC td.red:hover {
+  background-color: #ffd1d1;
+}
+
+.MC td.blue {
+  background-color: #d1d2fe;
+}
+
+.MC td.blue:hover {
+  background-color: #e1e2fe;
+}
+
+.MC td.yellow {
+  background-color: #FAEE83;
+}
+
+.MC td.yellow:hover {
+  background-color: #FAFE93;
+}
+
+.MC td.green {
+  background-color: #AFffAF;
+}
+
+.MC td.green:hover {
+  background-color: #BAFFBA;
+}
+
+.MC .fullday ul li {
+  display:inline;
+  margin-bottom:1px !important;
+  margin-top:0px !important;
+  padding-bottom:1px !important;
+  margin-right:2px;
+  height:100%;
+}
+
+.MC td.fullday ul {
+  float:left;
+  margin:0px;
+  padding:0px;
+  height:100%;
+}
+
+.MC .fullday ul.colorbar{
+  height:100%;
+  min-width:16px;
+  margin:0px;
+  padding:0px;
+  margin-bottom:0px !important;
+}
+
+.MC .day li.colorbar {
+  min-height:14px;
+  border-top:1px solid black;
+  border-bottom:1px solid black;
+  white-space:nowrap;
+}
+
+.MC .fullday ul.colorbar li{
+  float:right;
+  height:100%;
+  /* min-width:16px; /* */
+  width:14px; /* */
+  border-left:1px solid black;
+  border-right:1px solid black;
+  border-top:0;
+  border-bottom:0;
+  margin-right:2px;
+  white-space:normal !important;
+}
+
+.MC .fullday ul.colorbar li.blank {
+  width:16px; /* */
+}
+
+.MC .fullday ul.colorbar li.blank:hover {
+  width:16px; /* */
+  margin-right:2px;
+}
+
+.MC .fullday ul.colorbar li .text:hover {
+  height:100% !important;
+  min-width:100px;
+  overflow:visible;
+}
+
+.MC .fullday ul.colorbar li .text {
+  min-width:14px;
+  width:10%;
+}
+
+.MC .fullday li .start {
+  height:100% !important;
+}
+
+.MC .colorbar .text:hover {
+  height:auto !important; /* */
+  overflow:visible;
+}
+
+.MC .colorbar li.start .text{
+  height:14px;
+}
+
+.MC .colorbar li.start .text:hover {
+  height:10%;
+  margin-left:-2px;
+  padding-left:2px;
+  margin-right:2px;
+  -moz-border-radius-topleft: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -moz-border-radius-bottomright: 10px;
+}
+
+.MC .colorbar li.start {
+  color:white;
+  font-size:9px;
+  font-family:Trebuchet MS,Sans-serif;
+  margin-left: 6px;
+  margin-right:-1px;
+  -moz-border-radius-topleft: 11px;
+  -moz-border-radius-bottomleft: 11px;
+  border-top:1px solid black;
+  border-left:1px solid black;
+  border-bottom:1px solid black;
+}
+
+.MC .colorbar li.end {
+  margin-right: 6px;
+  -moz-border-radius-topright: 11px;
+  -moz-border-radius-bottomright: 11px;
+  border-top:1px solid black;
+  border-right:1px solid black;
+  border-bottom:1px solid black;
+}
+
+.MC .fullday .colorbar .start {
+  margin-top: 10px;
+  margin-left:0px;
+  margin-right:2px;
+  margin-bottom:-1px;
+  -moz-border-radius-topleft: 10px;
+  -moz-border-radius-topright: 10px;
+  -moz-border-radius-bottomleft: 0px;
+  -moz-border-radius-bottomright: 0px;
+}
+
+.MC .fullday .colorbar .end {
+  margin-bottom: 6px;
+  margin-right:2px;
+  -moz-border-radius-bottomleft: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -moz-border-radius-topright: 0px;
+  -moz-border-radius-topleft: 0px;
+}
+
+.MC .colorbar .blue { /* color-2 */
+  display:block;
+  margin:0px;
+  background-color: #58F !important;
+  border-color: #36D !important;
+  height:14px;
+}
+
+.MC .fullday .colorbar .text {
+  -moz-border-radius-topright: 14px;
+  -moz-border-radius-bottomright: 14px;
+  -moz-border-radius-topleft: 14px;
+}
+
+.MC .fullday .colorbar .blue .text {
+  background-color: #58F !important;
+}
+
+.MC .colorbar .yellow { /* color-3 */
+  display:block;
+  margin:0px;
+  height:14px;
+  background-color: #FFA533 !important;
+  border-color: #DD8311 !important;
+}
+
+.MC .fullday .colorbar .yellow .text {
+  background-color: #FFA533;
+  overflow:hidden; /* XXX Bug ? */
+}
+
+.MC .colorbar .yellow .text {
+  background-color: #FFA533;
+  overflow:hidden; /* XXX Bug ? */
+}
+
+.MC .colorbar .purple { /* color-4 */
+  display:block;
+  margin:0px;
+  background-color: #8866AA !important;
+  border-color: #664488 !important;
+  height:14px;
+}
+
+.MC .fullday .colorbar .purple .text {
+  background-color: #8866AA !important;
+}
+
+.MC .colorbar .purple .text {
+  background-color: #8866AA !important;
+}
+
+.MC .colorbar .red { /* color-1 */
+  display:block;
+  margin:0px;
+  background-color: #F55 !important;
+  height:14px;
+  border-color: #D33 !important;
+}
+
+.MC .fullday .colorbar .red .text {
+  background-color: #F55 !important;
+}
+
+.MC .colorbar .blank { /* color-0 */
+  display:block;
+  margin:0px;
+  height:16px;
+  border:0px !important;
+}
+
+.MC .colorbar .blank:hover { /* color-0 */
+  display:block;
+  margin:0px;
+  height:16px;
+  border:0px !important;
+}
+
+.MC .colorbar .green { /* color-5 */
+  display:block;
+  margin:0px;
+  border-color:  #383 !important;
+  background-color: #5A5 !important;
+  height:14px;
+}
+.MC .fullday .colorbar .green .text {
+  background-color: #5A5 !important;
+}
+
+.MC .colorbar .gray { /* color-6 */
+  display:block;
+  margin:0px;
+  border-color: #777 !important;
+  background-color: #999 !important;
+  height:14px;
+}
+
+.MC .colorbar .gray .text {
+  background-color: #999 !important;
+}
+
+.MC .fullday .colorbar .gray .text {
+  background-color: #999 !important;
+}
+
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=_user.css
+Content-Type: text/css; charset=euc-kr; name=_user.css
+Content-Location: http://wiki.kldp.org/css/_user.css
+Content-Transfer-Encoding: 8bit
+
+#kldpBanners {
+  line-height: 200%;
+
+}
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=bg.png
+Content-Type: image/png; name=bg.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/bg.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAgAAAGQCAMAAACkk9EjAAAAB3RJTUUH1AsDDg0Y
+jEKhdwAAAAlwSFlzAAAK8AAACvABQqw0mAAAAwBQTFRFAHe0AXi0Anm1A3q2BHu2
+BX22Bn23Bn64CH+4CIC4CYK5CoK5CoK6C4S6DIS6DYa7Doe8D4i8EIm8EYq9EYq+
+Eou+Eoy+FI6+FY/AFpDAGJHAGJLAGZPCGZTCGpTCHJbCHZfEHpjEIJrFIZzGIpzG
+I57GJJ/HJaDHJqHIJ6LJKKLJKaTJKqXKLKbLLajLLqjLLqnMMKrNMqzONK7ONq/P
+NrDQOLLQOrPRO7TSPLXSPbbSPrbTQLnUQbnUQrnUQ7rVRLzVRbzVRr3WR77XSL7X
+Sb/XSsDXS8DXS8HYTMHYTcLZTsPZT8PZT8TaUMTaUcXaUsXaU8bbVMfbVcjcVsjc
+V8ncWMncWcrdWsvdW8veXMzeXczeXc3eXs3eX83fYM7fYc/fYs/gYtDgY9DgZNDg
+ZdHhZtHhZ9LhaNPhadPiatTia9TjbNTjbdXjbtXjb9bjcNfkcdfkctfkc9jldNjl
+ddnldtnld9rleNrmedrmetvme9vnfNznfdznft3nf93ngN3ogd3ogt7og97ohN7o
+hd7pht/ph9/piN/pieDpiuDpi+DqjODqjeHqjuHqj+HqkOHrkeLrkuLrk+LrlOLr
+lePrluPsl+PsmOTsmeTsmuTsm+TtnOXtneXtnuXtn+XtoObtoebuoubuo+bupOfu
+pefupufvp+jvqOjvqejvqujvq+nwrOnwrenwrunwr+rwsOrwserxsurxs+vxtOvx
+tevxtuzyt+zyuOzyuezyuu3yu+3yvO3zve3zvu7zv+7zwO7zwe70wu/0w+/0xO/0
+xfD0xvD0x/D1yPD1yfH1yvH1y/H1zPH2zfL2zvL2z/L20PL20fP30vP30/P31PT3
+1fT31vT31/T42PX42fX42vX42/X43Pb53fb53vb53/b54Pf54ff54vf64/j65Pj6
+5fj65vj65/n76Pn76fn76vn76/r77Pr77fr87vr87/v88Pv88fv88vz98/z99Pz9
+9fz99v399/3++P3++f3++v7++/7+/P7+/f7//v//////74u6LQAAAldJREFUeNrt
+xmcXkAMAhuE7IioqlAqVWVRo2ZGZrWE0kDRFSEaI7DJaqOxSobJHS6gI0R4qGmYq
+W7aivtznPM7p/QmuTxdsoYQKspWSrVWQkkq2UUG2FaXEdirI9kpKKykjyoodlOyo
+pJyS8ipIBbGTkp3FLqKiqKRkVxWksqiipKqS3cTuYg9RTQWprqSG2FMF2UvJ3kr2
+Efsq2U9JTVFL7K/kAFFbSR0ldZUcKA4SByupp4LUV0EaiIZKGik5RAU5VBwmDldy
+hDhSBTlKNBZHi2OUNBHHiuOUHC9OECeKk0RTcbI4RZwqThOnizPEmeIs0Uw0V9JC
+tBRni3PEuUrOE61Ea9FGtBXniwvEhaKduEi0FxeLDqKj6CQ6iy5KuopLRDdxqbhM
+dFdyubhCXCl6iKtETyVXi2vEteI60UtcL25QcqPoLW4SN4s+Sm4Rt4rbxO3iDnGn
+krtEX9FP3C3uEfeK+5T0FwPEQDFIDBb3K3lAPCiGiKFimHhIycPiEfGoeEw8ruQJ
+MVyMEE+KkUpGidHiKfG0eEbJGDFWjBPPiueUPC9eEC+Kl5S8LF4Rr4rXlIwXE8RE
+MUlMVvK6mCLeUPKmeEtMFdOUTBdvi3eUzBDviveUvC9mig+UfChmidlK5oi5SuaJ
++WKBkoVikZLF4iOxRMlSsUzJx+ITJcvFCiUrxSolnyr5THyu5AvxpZKvlKwWXytZ
+o2StWKfkGyXfKvlOfK/kByU/KvlJyc9K1iv5RcmvSn5T8ruSP1SQP5X8peRvFWSD
+ko0qyD9K/lVBNun//DebASgarXtN9e0/AAAAAElFTkSuQmCC
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=sr.png
+Content-Type: image/png; name=sr.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/sr.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAASwAAAAkCAMAAAAEh/eeAAAAB3RJTUUH1AsDDwwH
+GZP39AAAAAlwSFlzAAAK8AAACvABQqw0mAAAAwBQTFRFLqfLHpfDGJHANa7ONK3O
+FY6/J6DHL6jMFo+/LabLF5DAJZ7HLabKJZ7GNa7PDIW6Nq/PAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACaPSIAAAABB0Uk5T////
+////////////////AOAjXRkAAACLSURBVHja7do5DoAwFMTQsO/L/U+LREHLuEJI
+fieIXOZPOfWiLX193MrXT/mHMhoLqIwFVMbK7Z2xcquxgNlYuc1YucFYudZYgLEA
+YwHGAowFGAswFmAswFiAsQBjAcYCjAUYCzAWYCzAWLnGWDm/lYHFWLnaWLHJI2vO
+833OYUjOyVHMMVuoeWaSF3YQob5cpiebAAAAAElFTkSuQmCC
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=sl.png
+Content-Type: image/png; name=sl.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/sl.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAwAAAAkCAMAAACKVCuOAAAAB3RJTUUH1AsBDRsa
+1psDXgAAAAlwSFlzAAALEgAACxIB0t1+/AAAAwBQTFRFLqfLHpfDF5DAJZ7HNK3O
+Fo+/FY6/L6jMNa7OGJHAJZ7GLabLLabKNa7PDIW6Nq/PAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhbB7uAAAAA90Uk5T////
+//////////////8A1NyYoQAAAFFJREFUeNrd0UkSgCAMRNEIiDN9/9sKWIU/Cy9g
+Vv1WqaSt9AnRkmQtzqY+DZM0MHJFvoBTL4KAnViIROhnWD/PjsRGlIPIhHu8r8SX
+9dRYt9/q/hgC448ZBgAAAABJRU5ErkJggg==
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=ntl.png
+Content-Type: image/png; name=ntl.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/ntl.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAABEAAAE5CAIAAAD5h1xCAAAACXBIWXMAAAsTAAAL
+EwEAmpwYAAAMxklEQVR42s3W93PUZhrAcf8hV8IlcElI770nJBBIL4QkJKT3QnpI
+D+mVJDTbGAM2BtyNK+5ld729d61Wq5W00koraXuzOcGzxx03d6f3bkYz0Xx/2Bm/
+n32f91394Lo/bNP9r9X9cbvuf63uTzv0qG3XQQimtnTuT9uUZpXq/rxT/x/boVNa
+snNuXad5x6xryO7HIngkEqk7Zaf+37dDd8qOuav3zA/Y/ARBxGKx+N+fulPqDf+m
+Y0y3cdDmD0dIkqQoij7+JI4/dUsaDP9avX5JvW7zmD0ajSoAVjMMwx5/OI6rW9Jo
+OKkG/ZIG3fpuszI37KCsVr4bVvM8n0ql6v7SaDipBv2yBp3efewMyugAYLUoirIs
+ZzKZulN3zf+jRsOpjfoN3SYMw2AqxShAEARJkpTV+Xy+WCz+q/lLg27rlA0GU4wy
+EoBsNqusLpVKlUql7rQm4z/aZTi1QXfE6sZxXBlMmUoZCQCsXlhYWFxcrFu621ir
+aX7pLsNpDbNml1e5MWUTZSrlDMpIyg4nwNGjR08ypzXqT6uf9fl8YJRNlEMrZyiX
+yyfAMbOs2Vhrt7KPfmn9tGKUS1MGU06STqdhkxPgmPnrHmOt5vllTbql9VN+vx+M
+8lPA0avV6slmr7HWHsOyprml9ZPKPsrbpdyYcphcLqecXhns6D89dafvNddStmrS
+L6ufhn0Uo9zYicOcZM7YZ66113h6k+6vDf+H+ft5/ps5s9Vcq8V4RrPu9MYpuDfF
+/PNFn2SWt5prtRjPbNadgWLOarXUajEtb9af2TiNYPZbarWalu/Rn7kLwZzdZq21
+33zWXsPyphl1c84Ba60289n7DMt3a2TOPWitdcB8TovhrGYEc94hW62DlnNb58/e
+M6tuzm+31TpkOW///Dl7NTIXdNhrtVvPbzOeu29O3VzYYa/Vbr2gzXgekum01+qw
+XnAAzVzU5ajVabvwoOn8Fp26ubjbUavLdtEh0wWtCOaSbketLtvFh0wXamUu7XHW
+6rZf3G6+aD+CuazXWavHfkmH+eI2BHN5n6tWr+PSTsslB/TamCsOu2r1OS7rslx6
+EMFcedhVq89xeZflMhRz1YCrVr/jih7L5e1Ixl2r33lFj/XydoO6uXrQXWvAeWWv
+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
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=ntr.png
+Content-Type: image/png; name=ntr.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/ntr.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAABdwAAAE5CAIAAAAFkXURAAAACXBIWXMAAAsTAAAL
+EwEAmpwYAAAhgUlEQVR42u3cZ3de5YHvYT7HDLhRQif0TiCQ0BNI6ARCTaH3ajDN
+DXfZkqzeLMnqzbJ67922bKu7F9lgbAdISGYm58RPhjlZZ83ZzMxmnefNda3/m733
+N/it+94nnRzfaWZmZmZmZmZm/5930ilrO83MzMzMzMzM7P/zTpqxtsPMzMzMzMzM
+zL6ndf6fJXQF7KRTYlvNzMzMzMzMzOz7WVzbjPj2yP6h0fynUWYHAAAAAP99UxGT
+k5Nj4xMVvcOrG/rvz22ftaZxRmzzjNiWGXGtM+LbZq5tn5nQMTOh88QSu/5xJ+0D
+AAAA4H9qT8SuXbt27NgxNjZW1DF4ZWLDjJj6GasbZ8Y2z4xrnRnfNmttx6yEv61z
+VmLXf+ykQwAAAAD8N03/g4MHDx44cODvgWZqampoeNvzBS0zVtTMWFU3Y03TzLiW
+mfFtMxM6ZiVGokxS99930mcAAAAAhHb48OHp6en9+/fv2rVrdHT0vZKWGcsqZ66s
+mbm6YVZc86y1bbMSO2Yndc5O6pqd3P23nfQHAAAAAP5Hjn/rWMTRo0ePHDly6NCh
+PXv2jIyMPJBWfcrS8hkrqmauqZ8V1zQroW1WUsfs5M7ZyV2zU7pP+iMAAAAA34ev
+v/76yy+/PH78+OHDh3fv3l3bPTB7UcGMJaUzV1TNWl03O755dkLbnKTOOcldc1K6
+T/oLAAAAAN+HP//5z998883XX399/PjxgwcPTk5OPpxcPmN+3swlZbNWVs+ObZyz
+tnVOUsepKV2npnSf9G8AAAAAfE/+8pe//OlPf/ryyy8///zzPXv2xFQ0nfxB5owF
++TOXls+KqZ0d3zwnsW1OcueJKPO/AAAAAPg+/Nu//du//Mu//P2wzNGjR/fv39/U
+O3jyu8mnfJQ9c3HxrBUb58Q2nJrQempy52mpogwAAADA9+Gvf/3r30/KfPPNN199
+9dXx48enp6e3jYz+8xuxp7yfNnNB3uxl5XNW1566tvm05PbTRRkAAACA78Vf//rX
+f/3Xf/379aWvvvrq2LFj09PTk5OT//TKipPfSZzxcfasJSVzYqpPjW86Lan9tJQu
+UQYAAAAgrL9G/GOUOX78+KFDh6ampv7pxSUnvxk744P0WYsL56yqPDWu4fSk1tNT
+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
+ReAcAAAAAElFTkSuQmCC
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=nbl.png
+Content-Type: image/png; name=nbl.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/nbl.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAABEAAAATCAIAAAD5x3GmAAAACXBIWXMAAAsTAAAL
+EwEAmpwYAAABlElEQVR42oWSyY6CQBRF/f//YOVGNi5MTIzEhWOMszgF56lRBFoQ
+7O4TKipU7PgWJGKdd4ci9fuY+/3ueZ5lWZ1OZzwer9dr0zRd1/V9PwzDn9ikJOZy
+ufR6veFwuFgsjscjP6/X6+12C2OTYFjJoel02mq1eO52u9Pp5DgOmB8bmbFte7/f
+N5tNXdeXy+XhcADjpRvNdzQvBqN4YCuW8AY2mUw2mw0Ywc7ns/WYBBMEAcs4sVqt
+YCgDjDIwyaKvx8gM1tm03W45Xa/X2+32aDSiD0g0gfkrwdAJ1eEeP4ZhdLvdcrlc
+q9X6/T7tz2YzI5oXI2ogEvbIzWLO4bBUKhUKBZ6VSoVrgE8wwp6QIsB8Ph8MBjjU
+NC2Xy6mqmk6nFUWRGSFFoaTCPU5Y3Gg00Mnn89lsNpPJJJhnKi5KOBSYqJ5sxWIR
+8g2DlHDIXQmM3shGGMhqtSozEoYaJslG0cTjAtB8w8QxTJKNShCE5HK47vfMEyMb
+lSAoSDT5Sv5lBPYUhESTryTxjX4k0Qyi+cxIMPMHlauPoRde2uAAAAAASUVORK5C
+YII=
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=nbr.png
+Content-Type: image/png; name=nbr.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/nbr.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAABdwAAAATCAIAAAAF0Vj1AAAACXBIWXMAAAsTAAAL
+EwEAmpwYAAADs0lEQVR42u3d3U7qWBiAYe7/EiSokCCIHIAoUSLRIEjQ4JQQqhCo
+BXb5kfJToaUtBQfojNnjJJMIc/g+Bz3o6rqBN99a9awAAAAAAACwq+Vy6TjOYrGw
+LMswjOl0Oh6PB4NBt9ttNpvFYvHk5OT8/Pzu7k4QhEaj0e/3NU0zTdPjAAAAAAAA
+YFeLxcK27a8iM5lMVFXt9/u/fv2SJOn29jYUCiUSCTfKrN+slz4+PjZRxgYAAAAA
+AMDPWVumac7nc13Xfy8ynU5HluVqtRqLxcLhcCKRyGQypVLpK8qsN3oMAAAAAAAA
+7ETX9dlsNp1ONU0bj8dfRabVatXr9WKx6Pf7T09Pk8lkNpstl8uyLA8Gg/X3myjz
+AQAAAAAAgJ/TtiaTyWg0Gg6H7+/vvV5PUZRWqyVJkiiK0Wg0EAisn1dXVw8PD5VK
+Zb2kqupsNrNt2zMEAAAAAADAz6lbg8HAzTGdTqfdbsuyXK/XRVFMJpM+ny8YDMZi
+sXQ6/fj4WK1WFUUZjUa6ri8WC08PAAAAAAAAO+l2u51OR1GUdrvdbDYlSarVauVy
+OR6Pe71ev98fiUQuLy8zmYz766X1Fk3T5vP5JsrIAAAAAAAA2NXb25skSY1Go1ar
+iaKYy+WOjo4ODg6Oj4/D4XA8Hr+5uSkUCpVKpdlsuhfKmKbpOI7nBQAAAAAAAD8h
+/lOlUsnn8+l0OhKJeL1en8/n9/vD4XAsFkulUtlsVhCEer3e6XTG47Gu67ZtL5dL
+jw8AAAAAAAB7Ozw8PD4+DgQCwWDw7OwsHo+nUqn7+/tisfj6+upe8euOySwWi9Vq
+5TkBAAAAAADAfkKhUDgcjkQi0Wg0Foslk8l0Op3L5Z6fn19eXprNZr/f1zTNMAx3
+TGYTZeIAAAAAAADY1flWIpG4uLhIJpPX19fpdDqTyRQKBUEQqtWqW2Tcg0uWZTmO
+s1qtPj8/PbcAAAAAAADYw91WJpPJZrP5fP7p6UkQBFEU6/V6u912i8xsNnMPLrlj
+Mpso8wcAAAAAAAD2IGyVSqVyuSyKYrVabTQarVar2+2qqqppmq7r34rMJso0AAAA
+AAAAsB9pS5blVqulKEqv11NVdTweT6dTwzAsy/pWZDZRpgcAAAAAAIA99P82GAyG
+w+FoNNI0zc0xpmnatu04zrcis4kyGgAAAAAAAPbzsTWdTmezmWEY8/ncsizbtr8G
+ZL4VmU2UMQEAAAAAALA3a8sNMWtf0zH/zjF/RZklAAAAAAAA/ier33z+pz8BYvaN
+Fn7b/3sAAAAASUVORK5CYII=
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=nl.png
+Content-Type: image/png; name=nl.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/nl.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAA8AAAAFCAIAAAAVLyF7AAAACXBIWXMAAAsTAAAL
+EwEAmpwYAAAAMElEQVR42mP4DwN///798ePHx48fr1+//vDhw5cvXwLZ3759+/Xr
+F1AKooZhiKoGAOUo16G+cFHlAAAAAElFTkSuQmCC
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=nr.png
+Content-Type: image/png; name=nr.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/nr.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAABIAAAAICAIAAAB74Tj9AAAACXBIWXMAAAsTAAAL
+EwEAmpwYAAAAYElEQVR42uXLuQ3AIBBEUfovhJwKKIEGIF6iRSCBFnF5YgeWHTv8
+M3rqnLP3XmvNOXvvrbVSSkopxhhC0FobY6y1zjkkxpyziKhfsDHGjXnv37JaKxgz
+f2BoMBxgRPTALrFWgrnV1/V6AAAAAElFTkSuQmCC
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=mi.png
+Content-Type: image/png; name=mi.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/mi.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAWcAAAAiCAIAAAAMOI+xAAAACXBIWXMAAAsSAAAL
+EgHS3X78AAAB10lEQVR42u3UzUvTARzH8e8h6NChiCIoCunQJaKDFyno8VIQIXTx
+ECghhjAEkUoaajVIp7Gw9TR6YMO1NTcroUxjhAZD7IEhIzJSRG1t5sIkhCLh1+/g
+H/Dp/obX3/Cy58VZAFBcfRydcRx7+r0EAIorvclJd43k/E8AULQl+iZYA4CONQD8
+n9U1EoVFAFC0xvs+uWs8yv8AAIU3lsq5a0RmSwCgaI4ms+4aD6YXAEBxvqf3nbtG
+aHIeABRN4cSou0bwcwEAFA0P4yPuGoGP3wBA4bkXT7trdIzPAYDibCg6sOKY78MM
+AChqb0f7/zjWMjYNAIqaYE9q2bELmSkAUJzujsSWHGsc/gIAiqpAOFxyrPLZOAAo
+jvhCl6dW7HgyCwCKA213L078tcOx9wCgqPDeasr9tn2RtwCgKG++6ckuW/n9UQBQ
+7D13o27sl+25kwEAxe7G7urMku0KvgEAScP1qpFFKwsMA4BipydwKl2yrZ2vAUCx
+o/7aycEF29yeBgDFtrquYy+KtsH3CgAUW2r9R/sLtu7SEAAoNp3xH3ySt7UtLwFA
+sbGmY3/qq63xDgCAYn11e0VijjUAqFbX2N45BACKsnp/5WDeTsTSAKA45O1qzRX/
+AVhYKTtOk1GxAAAAAElFTkSuQmCC
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=ml.png
+Content-Type: image/png; name=ml.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/ml.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAoAAAApCAIAAACDaC9yAAAACXBIWXMAAAsTAAAL
+EwEAmpwYAAAC+klEQVR42lWUSUwTURiAe3CJwYMXL5qoiUQTl8TEeCGawMXERIIB
+iUsCxgMaTThwUBMUJHIAXNBCkKBIQ4jFoRSqUGrbodSRltJ2WIR2ZpjSdmg77bRT
+2hJWWfQNTMvr5LvM+96/vJn8T/IPera2tjY3Nzc2NtbX1/9uP5KUAKvgfWVlZXFx
+MZFIxOPxWCwmSbnV1VU+EXNHWSrqJ+Z9TgG/oHdcYD4Mlqw8MxhhNBzTHxKQgFCQ
+M5KITvEMFvH2cQFVmFOF+d5tJKAXUG+a81h4Bjiw1M3FFFx8BwnIDHqxhWhd2KsK
+h2EnaHAG0KclRKlDDAiFnaBBYXAGS2imL8goOR4JxmAEDc43EqS+swzChr8GojCi
+NgepnoBX7ufa53gYUZuClGLO08GEvngiMEnNUgjjbvOwLS4OJqVJuWf2kyvQSAVh
+RD3Mkh0u+iPpq3ewMKLGWEJG01IHUzvpgxH1rwDRSlLv/nircQYmqf1Ei4OsHXNX
+jHpgRD3kJ5qmnK+srmemWZik9jmlE46KkZkyIw0jWVtb43n+x+x4ucl+7+fkDVUa
+Se0ae4rZ7vSPX1OkIWqVa6xsaDRfZc+RpyHqXhovRS3XFbasditMUs/gj7Tmq52W
+i60jMKLuofCSAVN2h/l8swlG1N0kfr/vd5Zs+FQjBiNqBWkvUmGXPmMn6o0wSU3Y
+7/YaLzQbj7w2wIi6i7DdUg6dazIcrkFhRI04bTcVhtPSwUPVOpjd6IIuQ+YHNKNK
+C5OKthYi+sz3+gOVmv0Vuwg6Go0iDkuxUndGqsuo0ux9PrAnifhDuyZMTzSa7Db0
+aJ32YJVm34uBnU3CjC0sLNjI6Tq054FSnSNDzzboTtbrjr/VHnujFQZ4aWmJ47hO
+nfpxQ83DdlkRoi5A9Hnf0Fw5Kow/KA+G1OfzqQf1pS/Lc0uKs2/nXynMu1yYJ14e
+4AYAHYAdBEHgOG42mzEMMxqNu1cP2AFygCpgk9vtpmmaoqi0iwtUWV5eBp2CTOC0
+4Hv8B5h4pbCdMcgvAAAAAElFTkSuQmCC
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=mr.png
+Content-Type: image/png; name=mr.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/mr.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAABRQAAAApCAIAAADLWDJrAAAACXBIWXMAAAsTAAAL
+EwEAmpwYAAAEfUlEQVR42u3a/0/UBRzH8fuhL2v1Q7/0S60vW622vmxtrV9abfVD
+bW2Vreyb08y0tbb6wdr6olEo2VezyFXDEDMnaWjSNBAiOUkoUCxzJ9JxnHckcHR0
+HDBOFKFT6sP1N/B47vFPvPZ+h05KkiRJkqT/OnXq1MTExOnTpycnJ6f+K5SRJEmS
+JElnGxoaymazo6OjuVwuP6TzK3p6QoeO/P0nAAAAzHo9R/5ORtKJSF93d28ynU6P
+jIycOHFiej+HdvUnAQAAYHZL5H3ff2x3Kr43FW3uPbI/Funr68tms9P7ObRjIA0A
+AABUn5HamTpe39+1K9raHjmU388jIyMnT54MVaWGAAAAgLxtqUx+Ref38+7eji9r
+t8VisXQ6ncvljGcAAACYkd/P1QMDNf2x1ZvLIpEzz9ujo6PGMwAAAPzPjoH0rv7E
+qoq1Bw8eTCaT2Ww2tLUvAwAAAAS2p9I7+xIlFZ+0tbUlEomhoaHQ5uODAAAAQGBr
+78B3vYmV60vz4zkej2cymdDGZBoAAAAIVP6Z+vb4sfx4bm1t/Xc8r4//BQAAAAQ2
+JfqrkvGV5QXjuawrBQAAAAQq4r1bE90rCsfz2s4+AAAAILCu63hlPFZc/vHMeF4T
+6QUAAAACnx3t2dQVLf6iYDy/e6gHAAAACJRGEhui0TcLx3NJewIAAAAIfPj7sfKj
+nW+sKxjPRa1xAAAAIPDuwe6yyNGidR/NjOdXmmMAAABAYGVb16eHjxSVFYznpeEo
+AAAAECj6+Y/S3yKvl62ZGc8PVh8CAAAAAgt3H1rWfGDx28saGxs7OzvT6XTo3qpf
+AQAAgMATu359uWn/4lUF4/muygMAAABA4KHqA0sbW58uHM+3bWwDAAAAAvdV7X+h
+4ZdFb702M55vKf8ZAAAACNzz9S/P1bUsKikYzzd93gwAAAAE7tzU8kxN81OF4/na
+tU0AAABA4LYN+xbt/GnhyoLxfNWaMAAAABC49YumBdVNT654dWY8X/r+HgAAACBw
+8+fheTvCCwrH8yXvNAAAAACBGz/d89j2xgUrXpkZzxeX1AMAAACB60p/nFu1Z35x
+wXi+sLgOAAAACFzzccPD3+z53+X5/KJaAAAAYNoFb9Re89EPc7+um//my+Fw+N/x
+fM7yGgAAACDv3OU1FxbXXl9a//hX385f/uLevXuj0ejg4KDxDAAAAGdm83mv11xU
+XHvZe3V3Vvww78PVi197qbm5ORaLZTKZ0OXv1wEAAMBsdsUHdVeurrt6Tf0Nn9Tf
+taFhXtmGOc8vKf9qY3t7ezKZHB4eDt1X2QAAAACz2f2VDXO2NDy0ufbRii2Pvr3q
+7oWPL3trxb59+zo6OlKp1NjYWOj2R+YAAADALHdH3twH7n7i4XnPLimrWJ9fzocP
+H+7p6clms+Pj46FGSZIkSZLU2BgOh5uamlpaWtrb2zs6OvLLOZPJ5HK5iYmJUKck
+SZIkSTpbNBrt7u7Oz+ZUKpXNZqeX8+TkZCgtSZIkSZLONjg4mMlkhoeHx8bGxsfH
+p5fz1NTUP6DI0qQCl0zvAAAAAElFTkSuQmCC
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=default.css
+Content-Type: text/css; charset=euc-kr; name=default.css
+Content-Location: http://wiki.kldp.org/theme/blue2/css/default.css
+Content-Transfer-Encoding: 8bit
+
+@import url("../../../css/_base.css");
+@import url("../../../css/_extra.css");
+@import url("../../../css/_calendar.css");
+@import url("../../../css/_user.css");
+
+body {
+  font-family:Georgia,Verdana,Lucida,sans-serif;font-size:12px;
+  color:#000;
+  margin-left:0px;
+  margin-right:0px;
+  margin-top:0px;
+  margin-bottom:0px;
+}
+
+#mainContainer {
+  background: url("../imgs/bg.png") repeat-x;
+}
+
+#mainBody {
+  /* top:15px; /* */
+  min-width:750px;
+  margin: 0px auto 0px auto;
+  width: 80%;
+  min-height:400px;
+  height: auto !important; /* IE min-height hack */
+  height:400px;
+  /*\*/ min-width: 750px; /* IE fix */
+}
+
+#topHeader {
+  padding-left:15px;
+  padding-top:2px;
+  color:white;
+  font-family:Tahoma,Verdana,Vera Sans,sans-serif;
+  font-size:11px;
+  font-weight:bold;
+  background: #0077B4;
+}
+
+#topHeader a{
+  color:white;
+  text-decoration:none;
+}
+
+form {
+  margin-bottom:0px; /* IE hack */
+  vertical-align:middle;
+}
+
+#goContainer {
+  width:180px;
+  float:right;
+  /*\*/ padding-right: 10px; /* IE fix */
+}
+
+#goFormRight {
+  /* position:absolute; /* */
+  background: url("../imgs/sr.png") no-repeat right top;
+  margin:0px;
+  margin-left:10px;
+}
+
+#goForm input.goto {
+  font-family: "Trebuchet MS",Georgia,sans-serif;
+}
+
+#goForm {
+  padding:6px !important;
+  padding:5px;
+  height:36px;
+  /*\*/ padding-right: 30px; /* IE fix */
+  padding-right: 30px;
+}
+
+* html #goForm {
+  padding-right:4px;
+}
+
+#goFormLeft {
+  /* position:absolute; /* */
+  background: url("../imgs/sl.png") no-repeat left top;
+  height:36px;
+}
+
+#topBanner {
+  height:48px;
+  font-size:40px;
+  font-family:Tahoma,sans-serif;
+  color:white;
+  padding-left:8px;
+  padding-top:10px;
+  padding-bottom:0px;
+  margin:0px;
+  overflow-y:hidden;
+  /* overflow:hidden; does not work correctly in the mozilla */
+}
+#pTopLeft {
+  background: url("../imgs/ntl.png") no-repeat;
+  z-index:4;
+}
+#pTopRight {
+  background: url("../imgs/ntr.png") no-repeat right top;
+  z-index:4;
+}
+
+#pBottomMargin {
+  height:20px;
+}
+
+#pBottomLeft {
+  background: url("../imgs/nbl.png") no-repeat left bottom;
+  z-index:1;
+}
+#pBottomRight {
+  background: url("../imgs/nbr.png") no-repeat right bottom;
+  z-index:1;
+}
+
+#pBodyLeft {
+  background: url("../imgs/nl.png") repeat-y left;
+  z-index:-5;
+}
+#pBodyRight {
+  background: url("../imgs/nr.png") repeat-y right;
+  z-index:-5;
+}
+
+#wikiPage {
+  margin-left:13px;
+  margin-right:15px;
+  padding-top:10px;
+  padding-bottom:10px;
+  min-height:400px;
+  height:auto !important;
+  height:500px; /* IE min-height hack */
+}
+
+#wikiBanner {
+  margin-top:10px;
+  text-align:center;
+}
+
+
+a:link { color: #0279b5;}
+a:visited { color: #000000;}
+/* a:hover {background-color:#999966;color:white} /* */
+.wikiTitle {
+  color:#0471aa;
+  font-family:Trebuchet MS,Tahoma,Lucida,sans-serif;
+  font-size:22px;
+  font-weight:bold;
+  padding-left:10px;
+  text-decoration: none;
+}
+
+.wikiTitle a,.wikiTitle a:active,.wikiTitle a:visited {
+  color: #0279b5;
+}
+
+tt.wiki {font-family:Monotype,Lucida Console,lucida,monospace;font-size:12px;}
+tt.foot {
+  font-family:Tahoma,lucida,monospace;
+  font-size:11px;
+  vertical-align: super;
+}
+
+tt.sister {
+  font-family:Tahoma,lucida,monospace;
+  font-size:11px;
+  vertical-align: super;
+  text-decoration: none;
+}
+
+pre {
+  white-space:pre-wrap;
+  white-space: -moz-pre-wrap;
+  overflow: auto;
+}
+
+pre.wiki {
+  padding-left:6px;
+  padding-top:6px; 
+  font-family:"Bitstream Vera Sans Mono", Courier, GulimChe, monospace !important;
+  background-color:#000000;
+  color:#c0c0c0;
+  border:1px solid #cccc99;
+  border-left:10px solid #cccc99;
+  padding:10px;
+  white-space:pre;
+  white-space: -moz-pre-wrap;
+}
+
+pre.console {
+  background-color: #000000;
+  color: #E0E0E0;
+  padding: .25em ;
+  border: 2px inset #808080;
+}
+
+pre.quote {
+  padding-left:6px;
+  padding-top:6px;
+  white-space:pre-wrap;
+  white-space: -moz-pre-wrap; 
+  font-family:Georgia,monotype,lucida,monospace;font-size:14px;
+  background-color: #E9ECEF;
+}
+
+pre.wikiSyntax {
+  font-family:"Bitstream Vera Sans Mono", Courier, GulimChe, monospace !important;
+  background-color: #f1f1de;
+  border:1px solid #cccc99;
+  border-left:10px solid #cccc99;
+  padding:10px;
+  white-space:pre;
+  white-space: -moz-pre-wrap;
+}
+
+table.wiki {
+/* background-color:#E2ECE5;*/
+/* border-collapse: collapse; */
+  border: 0px outset #ddddb0;
+}
+
+td.wiki {
+  background-color: #F8F7F0;
+/* border-collapse: collapse; */
+  border: 0px inset #EAF2F4;
+}
+
+textarea.wiki { width:98%; }
+
+th.info {
+  background-color:#E2ECE2;
+/*  border-collapse: collapse; */
+/*  border: 1px solid silver; */
+}
+
+td.info {
+  background-color:#E2ECE2;
+
+}
+
+h1,h2,h3,h4,h5 {
+  font-family:Tahoma,sans-serif;
+  padding-left:6px;
+  border-bottom:1px solid #C0c0c0;
+}
+
+h2,h1 {
+  padding-top:10px;
+}
+
+div.diff-added {
+  font-family:Verdana,Lucida Sans TypeWriter,Lucida Console,monospace;
+  font-size:12px;
+  background-color:#E0FFE0;
+  color:black;
+}
+
+div.diff-removed {
+  font-family:Verdana,Lucida Sans TypeWriter,Lucida Console,monospace;
+  font-size:12px;
+  background-color:#E9EAB8;
+  color:black;
+}
+
+span.diff-added, ins.diff-added {
+  color:black;
+  background-color: #60FF60;
+  text-decoration: none;
+}
+
+span.diff-removed, del.diff-removed {
+  color:black;
+  background-color: #FF0000;
+}
+
+div.message {
+  border:0px;
+  border-top:2px solid #FFCC00;
+  color:black;
+  padding:5px 15px 5px 55px;
+  margin:5px 6px 5px 7px;
+  background: #FFF6BF url(../imgs/warn.png) 10px 10px no-repeat;
+  min-height: 40px;
+  height: auto !important;
+  height:40px;
+}
+
+div.message h3 {
+  border:0px;
+  font-family:Trebuchet MS,sans-serif;
+}
+
+pre.errlog {
+  border:0px;
+  border-top:2px solid #FF0000;
+  padding-left:55px;
+  background: #FFF6BF url(../imgs/error.png) 10px 10px no-repeat;
+  min-height: 40px;
+  height: auto !important;
+  height:40px;
+}
+
+.highlight {
+  background-color:#FFFF40;
+}
+
+#wikiGoto {
+  font-family:Tahoma,Lucida,sans-serif;
+  font-size:11px;
+}
+
+#wikiGoto input[type="text"] {
+  font-family:Tahoma,Lucida,sans-serif;
+  font-size:11px;
+  width:100px;
+}
+
+input[value="Go"] {
+  font-family:Tahoma,Lucida,sans-serif;
+  font-size:10px;
+  width:23px;
+}
+
+input[value="OK"] {
+  font-family:Tahoma,Lucida,sans-serif;
+  font-size:10px;
+  width:25px;
+}
+
+
+table.closure, td.closure{
+  background-color: #E9ECEF;
+}
+
+/*  */
+.wikiHr {
+  border:0px solid;
+  padding: 0px 0px; /* */
+  margin-top:0px;
+  height:1px;  
+/* background: #000 url(hr1.gif) no-repeat scroll center; */
+}
+
+#wikiTrailer {
+  font-family:Trebuchet MS,Tahoma,Lucida,sans-serif;
+  background-color:#fafafa; 
+  padding-left: 20px;
+}
+.wikiNavigation {
+  background-color:#E0E0E0; 
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#wikiOrigin {
+  background-color:#fafafa; 
+  padding-left: 20px;
+  padding-top:3px;
+  padding-bottom:3px;
+}
+
+#wikiHeader {
+/*  border-left: 0.8em solid #7B9AC5; /* */
+  color: #000000;
+  padding: 0.2em 0em 0.2em 0.2em;
+}
+#wikiHeader a:link {color:#000000;}
+#wikiHeader a:visited {color:#000000;}
+
+#wikiIcon {
+  float:right;
+  padding: 8px 10px;
+  text-align: right;
+  vertical-align: middle;
+}
+
+#wikiMenu {
+  padding:0;
+  margin:0;
+  margin-left:10px;
+  /* background-color: #1690c0; /* */
+  color: #1690c0;
+  /* border-bottom:1px solid #0778A7; /* */
+}
+
+#wikiMenu ul {
+  margin:0;
+  padding:0;
+  padding-bottom:3px !important; /* for FF */
+  padding-bottom:2px;
+  list-style:none;
+  height:44px;
+}
+
+#wikiMenu li {
+  display:inline;
+  margin:0;
+  padding: 10px 10px;
+  padding-bottom: 8px !important;
+  padding-bottom: 9px; /* IE */
+
+  list-style: none;
+/* background-color:whitesmoke; */
+/* the next 4 lines are magic for IE */
+  float: left;
+  position: relative;
+  vertical-align:top;
+  background: url("../imgs/mi.png") repeat-x right bottom;
+}
+
+#wikiMenuBar {
+  padding:3px !important;
+  height:40px;
+}
+
+#pMenuLeft {
+  background: url("../imgs/ml.png") no-repeat left top;
+  z-index:2;
+}
+#pMenuRight {
+  background: url("../imgs/mr.png") no-repeat right top;
+  z-index:2;
+}
+
+#wikiMenu li:hover {
+  background-color: #8ED5E6; /* default */
+  text-decoration: none;
+  background: url("../imgs/mih.png") repeat-x right bottom;
+}
+
+#wikiMenu li.current {
+  background-color: #49ABCF; /* default */
+  text-decoration: none;
+  background: url("../imgs/mic.png") repeat right bottom;
+}
+
+#wikiMenu a {
+  color: #ffffff !important;
+  text-decoration: none;
+}
+
+#wikiMenu li a:active {
+  color: #b0b0b0;
+  text-decoration: none;
+}
+
+#wikiMenu a, #wikiMenu a:visited {
+  color: #e4f8fa;
+  text-decoration: none;
+}
+
+#wikiMenu a{
+  color:white;
+  font-size:11px;
+  font-weight:bold;
+  font-family: Tahoma,Verdana,sans-serif;
+  text-decoration:none;
+}
+
+#wikiAction ul {
+  list-style:none;
+  padding:0;
+  margin:0;
+  white-space:nowrap;
+}
+
+#wikiAction li {
+  display:inline;
+  padding-left:5px;
+  padding-right:5px;
+  border-right:1px solid #e0e0e0;
+  float:left;
+}
+
+#wikiAction a {
+  font-size:12px;
+}
+
+
+#wikiSideMenu {
+  padding:5px 5px 5px 5px;
+  width:140px;
+  height:100%;
+  border-left:1px dotted #e0e0e0;
+  overflow:hidden;
+}
+
+#wikiBody {
+  color: black;
+/*  background-color: #fff; /* */
+  overflow: hidden; /* */
+/*  border: 1px dotted #c0c0c0; /* */
+/*  border-left: 0.8em solid #E2ECE2;
+  border-right: 0.8em solid #E2ECE2; */
+/*  border-left: 0.8em dotted; /*solid #6A2525; */
+/*  border-right: 0.8em solid #6A2525; */
+/*  text-transform: lowercase; /* */
+/*  margin: 10px 10px 0px 10px; */
+/*  padding: 5px 1em 5px 1em; */
+/*  margin-left: 20px; */
+/*  padding-left: 1em; /* */
+/*  text-indent: 10px; */
+/*  border: 0px outset #E2ECE5; */
+/*  font-size:16px; 
+  border-collapse:collapse; */
+  margin-top: 3px;
+}
+
+#wikiBody a:link {
+  color: #1690c0;
+}
+
+#wikiBody a:visited {
+  color: #0279b5;
+  text-decoration:none;
+}
+
+#wikiBody a:hover {
+  text-decoration:none;
+}
+
+#wikiContent {
+  padding: 3px 10px 10px 10px;
+  margin: 0;
+}
+
+#wikiExtra {
+  padding-top: 1em;
+}
+
+#wikiFooter {
+  padding: 0.5em 2em;
+/*  background-color:yellow; */
+}
+
+.wikiHints {
+  font-family:Trebuchet MS,Verdana,Lucida,sans-serif;
+  font-size:10px;
+  padding:10px;
+  background-color:#E6EAFF;
+}
+
+#wikiSister {
+/*  background-color:lightgreen; /* */
+}
+
+#wikiPreview {
+  border: 2px solid #a0a0a0;
+  margin: 5px 5px 5px 5px;
+  padding: 5px 1em 5px 1em;
+}
+
+
+div.indent { padding-left:2em; }
+
+div.hint { font-size: 10px; background-color: #369; color:white;}
+a.purple { font-size: 10px; text-decoration:none;}
+
+/* Blog CSS */
+a.purple { font-size: 10px; text-decoration:none;}
+div.blog { width:90%; padding: 0em 1em 0em 1em; }
+span.blog-user { font-size:10px; }
+div.blog-title { font-size:16px; font-weight:bold; }
+div.blog-comments { }
+div.blog-comment { padding:1em 1em 1em 2em; margin-bottom:5px;border-left: 4px solid #E4F1F4; background-color:#F0F6F8;}
+div.blog-comments .separator { display:none;}
+div.blog-action { text-align:right; font-size:7px; }
+
+div.blog-date { font-size:18px; font-weight:bold; padding-bottom:5px;}
+span.blog-user { font-size:10px; }
+
+div.blog-summary { margin-bottom:10px;}
+
+div.trackback-hint { font-size: 10px; padding: 1em 1em 1em 1em;background-color: #eee;}
+/* Calendar */
+td.day { background: #e0e0e0; text-align: center;}
+td.today { background:#ffffff; text-align: center;}
+span.blogged {
+  text-decoration:none;
+  font-weight:bold; color:#000000; text-align: center;
+}
+
+.Calendar a{text-decoration:none;color:black;}
+
+caption.month {
+  font-weight:bold;
+  white-space:nowrap;
+}
+
+/* HierarchicalWiki */
+div.wikiGroup {
+  font-family:Tahoma,Lucida,sans-serif;
+  font-size:x-small;
+}
+
+/* login */
+#wikiLogin {
+  font-family:Tahoma,sans-serif;
+  font-size:11px;
+  font-weight:bold;
+}
+
+#wikiLogin input {
+  font-family:Verdana,sans-serif;
+  /* border:1px solid #848284; /* */
+  font-size:11px;
+  font-weight:normal;
+}
+
+#commentForm {
+  padding:5px;
+  background-color:#eeeeee;
+}
+
+#commentForm input {
+  /* border:1px solid #848284; /* */
+  font-size:x-small;
+  font-family:Verdana,sans-serif;
+}
+
+.commentForm textarea.wiki {
+  align:right;
+  width:443px; height:140px;
+  background:url(../imgs/commentarea.png) no-repeat left top;
+  border:none;
+  padding:4px 8px;
+}
+
+* html .commentForm textarea.wiki { /* IE fix */
+  background:url(../imgs/commentarea.png) no-repeat left top fixed;
+  padding-right:20px;
+}
+
+.commentForm textarea.wiki:hover { background-position:left bottom;}
+
+/* enscript syntax */
+div.wikiPre i,div.wikiPre b{
+  font-weight: normal;
+  font-style: normal;
+}
+
+img.imgLeft {
+  margin-right : 15px;
+  margin-bottom : 5px;
+}
+
+img.imgRight {
+  margin-left : 10px;
+  margin-bottom : 5px;
+}
+
+span.externalLink {
+  display: none;
+}
+
+span.lineNumber {
+  color:#ffff00;
+}
+
+math, math[mode="inline"] {
+  font-family: CMSY10, CMEX10, Symbol, Times;
+}
+
+.randomQuote {
+  font-family: Verdana,Tahoma,sans-serif;
+  font-weight:bold;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  border-top: 1px solid #e0e0e0;
+  padding: 10px 0px 10px 0px;
+}
+
+.randomPage {
+  font-family: Trebuchet MS,sans-serif;
+/*  border-bottom: 1px solid #e0e0e0; /* */
+  padding: 0px 0px 10px 0px;
+}
+
+.calendar {
+  font-size:11px;
+  font-family: Trebuchet MS,sans-serif;
+}
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=kbd.js
+Content-Type: application/x-javascript; charset=euc-kr; name=kbd.js
+Content-Location: http://wiki.kldp.org/css/kbd.js
+Content-Transfer-Encoding: Base64
+
+LyoKICAgTW9pbk1vaW4gSG90a2V5cwoKICAgQ29weXJpZ2h0KGMpIDIwMDIgQnl1
+bmctQ2hhbiBLaW0KICAgQ29weXJpZ2h0KGMpIDIwMDMtMjAwNyBXb24ta3l1IFBh
+cmsgPHdrcGFyayBhdCBrbGRwLm9yZz4KCiAgIGRpc3RyaWJ1dGFibGUgdW5kZXIg
+R1BMCgogICAkSWQ6IGtiZC5qcyx2IDEuMTIgMjAwNy8xMS8xNCAxNzoxODo1MiB3
+a3BhcmsgRXhwICQKCiAgIENIQU5HRVMKCiAgICogMjAwMi8wOS8wNiA6IEZyb20g
+aHR0cDovL2xpbnV4LnNhcmFuZy5uZXQvIGFuZCBoZWF2aWx5IG1vZGlmaWVkIGJ5
+IHdrcGFyawogICAqIDIwMDMvMDQvMTYgOiBzaW1saWZpZWQgYnkgd2twYXJrCiAg
+ICogMjAwMy8wNi8wMSA6IGFkZGVkIHBhdGNoIGJ5IEtrYWJpCiAgICogMjAwMy8w
+Ny8xNCA6IGZpeGVkIGVsZW1lbnQgaW5kaWNlcwogICAqIDIwMDQvMDgvMjQgOiBu
+byBQQVRIX0lORk8gc3VwcG9ydCBtZXJnZWQKICAgKiAyMDA0LzEwLzAzIDogbW9y
+ZSBpbnRlbGxpZ2VudCBiZWhhdmlvciB3aXRoIHNlYXJjaCBrZXlzICc/JyAnLycK
+ICAgKiAyMDA3LzExLzA5IDogc2ltcGxpZmllZCBhbmQgY2xlYW51cC4KKi8KCi8q
+CiA8Zm9ybSBuYW1lPSJnbyIgaWQ9ImdvIiBtZXRob2Q9ImdldCIgYWN0aW9uPSck
+dXJsJyBvbnN1Ym1pdD0icmV0dXJuIG1vaW5fc3VibWl0KHRoaXMpOyI+CiA8aW5w
+dXQgdHlwZT0idGV4dCIgbmFtZT0idmFsdWUiIHNpemU9IjIwIiAvPgogPGlucHV0
+IHR5cGU9ImhpZGRlbiIgbmFtZT0iYWN0aW9uIiB2YWx1ZT0iZ290byIgLz4KIDxp
+bnB1dCB0eXBlPSJzdWJtaXQiIG5hbWU9InN0YXR1cyIgdmFsdWU9IkdvIiBjbGFz
+cz0iZ290byIgLz4KIDwvZm9ybT4KKi8KCi8qCiAgIEE6ID9hY3Rpb249cmFuZG9t
+cGFnZQogICBCOiA/YWN0aW9uPWJvb2ttYXJrCiAgIEQ6ID9hY3Rpb249ZGlmZgog
+ICBFL1c6ID9hY3Rpb249ZWRpdAogICBIOiA/YWN0aW9uPWhvbWUgKG5vdCBzdXBw
+b3J0ZWQgYWN0aW9uIGluIHRoZSBNb2luTW9pbikKICAgSTogP2FjdGlvbj1pbmZv
+CiAgIEs6ID9hY3Rpb249a2V5d29yZHMKICAgTDogP2FjdGlvbj1MaWtlUGFnZXMK
+ICAgUDogP2FjdGlvbj1wcmludAogICBSOiA/YWN0aW9uPXNob3cKICAgVTogP2Fj
+dGlvbj1Vc2VyUHJlZmVyZW5jZXMKCiAgIEM6IFJlY2VudENoYW5nZXMKICAgRjog
+RnJvbnRQYWdlCiAgIFMvUTogRmluZFBhZ2UKICAgVDogVGl0bGVJbmRleAoKICAg
+PEVTQz46IGdvdG8gdGhlICdnbycgZm9ybQogICAvOiBGdWxsU2VhcmNoIG1vZGUg
+dG9nZ2xlCiAgID86IFRpdGxlU2VhcmNoIG1vZGUgdG9nZ2xlCgogICAqKiBtb3pp
+bGxhIG9ubHkgKioKICAgRjE6IEhlbHBDb250ZW50cwogICBGMzogRmluZFBhZ2UK
+Ki8KCi8vIHVuY29tbWVudCBiZWxsb3cgdGhyZWUgbGluZXMgYW5kIGN1c3RvbWl6
+ZSBmb3IgeW91ciB3aWtpLgoKLy9fc2NyaXB0X25hbWU9Ii9teXdpa2kiOwovL19x
+cD0iLyI7IC8vIHF1ZXJ5X3ByZWZpeAovL0Zyb250UGFnZT0gIkZyb250UGFnZSI7
+Cl9zY3JpcHRfbmFtZT11cmxfcHJlZml4IHx8IF9zY3JpcHRfbmFtZTsgLy8gdXJs
+X3ByZWZpeCBpcyBkZXByaWNhdGVkCgpSZWNlbnRDaGFuZ2VzPSAiUmVjZW50Q2hh
+bmdlcyI7IApGaW5kUGFnZT0gIkZpbmRQYWdlIjsgClRpdGxlSW5kZXg9ICJUaXRs
+ZUluZGV4IjsgCkhlbHBDb250ZW50cz0gIkhlbHBDb250ZW50cyI7ClVzZXJQcmVm
+ZXJlbmNlcz0gIlVzZXJQcmVmZXJlbmNlcyI7CgovLyBnbyBmb3JtIElECl9nbz0g
+ImdvIjsKX2FwID0gX3FwID09ICcvJyA/ICc/JzonJic7CgpmdW5jdGlvbiBub0J1
+YmJsZShlKSB7CglpZiAoZS5wcmV2ZW50RGVmYXVsdCkgZS5wcmV2ZW50RGVmYXVs
+dCgpOwoJZWxzZSBlLmNhbmNlbEJ1YmJsZSA9IHRydWU7Cn0KCmZ1bmN0aW9uIGtl
+eWRvd25oYW5kbGVyKGUpIHsKCWlmIChlICYmIGUudGFyZ2V0KSB2YXIgZiA9IGUu
+dGFyZ2V0LCBubj1mLm5vZGVOYW1lOyAvLyBNb3ppbGxhCgllbHNlIHZhciBlPXdp
+bmRvdy5ldmVudCwgZiA9IGUuc3JjRWxlbWVudCwgbm4gPSBmLnRhZ05hbWU7IC8v
+IElFCgoJaWYgKHdpbmRvdy5ldmVudCAmJiBlLmtleUNvZGU9PTI3ICYmIChubiA9
+PSAnVEVYVEFSRUEnIHx8IG5uID09ICdJTlBVVCcpKSByZXR1cm4gZmFsc2U7Cgkv
+LyBJRSBFU0MgYmxvY2tpbmcgZm9yIGFsbCB2aW0gbG92ZXJzCglyZXR1cm4gdHJ1
+ZTsKfQoKZnVuY3Rpb24ga2V5cHJlc3NoYW5kbGVyKGUpIHsKCWlmICh3aW5kb3cu
+ZXZlbnQpIHZhciBlID0gd2luZG93LmV2ZW50LCBmID0gZS5zcmNFbGVtZW50LCBu
+biA9IGYudGFnTmFtZTsKCWVsc2UgIHZhciBmID0gZS50YXJnZXQsIG5uID0gZi5u
+b2RlTmFtZTsKCXZhciBjYyA9IGUuY2hhckNvZGUgPyBlLmNoYXJDb2RlIDogZS5r
+ZXlDb2RlOwoJY2ggPSAoY2MgPj0gMzIgJiYgY2MgPD0xMjYpID8gU3RyaW5nLmZy
+b21DaGFyQ29kZShjYykudG9Mb3dlckNhc2UoKTowOwoKCS8vYWxlcnQoZS5rZXlD
+b2RlKycsJytlLmNoYXJDb2RlKycsJytlLndoaWNoKTsKCXZhciBnbz1kb2N1bWVu
+dC5nZXRFbGVtZW50QnlJZChfZ28pOwoJdmFyIGdvVmFsdWU9Z28uZWxlbWVudHNb
+J3ZhbHVlJ107Cgl2YXIgZ29BY3Rpb249Z28uZWxlbWVudHNbJ2FjdGlvbiddOwoJ
+dmFyIGdvU3RhdHVzPWdvLmVsZW1lbnRzWydzdGF0dXMnXTsKCglpZiAoY2MgPT0g
+MjI5ICYmIG5uICE9ICdJTlBVVCcgJiYgbm4gIT0gJ1RFWFRBUkVBJykgeyAvLyBm
+b3IgTW96aWxsYQoJCWdvVmFsdWUuZm9jdXMoKTsKCQlub0J1YmJsZShlKTsKCQly
+ZXR1cm47Cgl9CgoJdmFyIHZhbCA9IGdvVmFsdWUudmFsdWUgfHwgIiIsIGFjdD0i
+Z290byI7Cgl2YXIgc3RhdCA9IGdvU3RhdHVzLnZhbHVlIHx8ICJHbyI7Cgl2YXIg
+aT0wOwoKCWlmIChlLmFsdEtleSAmJiBjaCA9PSAneicpIHsKCQlpZiAobm4gIT0g
+J0lOUFVUJykgewoJCQlnb1ZhbHVlLmZvY3VzKCk7CgkJCW5vQnViYmxlKGUpOwoJ
+CX0gZWxzZSB7CgkJCXZhciBib3Q9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2Jv
+dHRvbScpOwoJCQlpZiAoYm90KSBib3QuZm9jdXMoKSwgbm9CdWJibGUoZSk7CgkJ
+fQoJCXJldHVybjsKCX0KCglzd2l0Y2goY2ggfHwgY2MpIHsKCWNhc2UgMjc6IGNo
+ID0gMjc7CgljYXNlICcvJzoKCWNhc2UgJz8nOgoJCWlmIChubiA9PSAnSU5QVVQn
+KSB7CgkJCWlmICh2YWwgPT0gIiIgfHwgdmFsID09ICIvIiB8fCB2YWwgPT0iPyIp
+IHsKCQkJCWlmIChjaCA9PSAnPycpIHsKCQkJCQlpZiAoc3RhdCA9PSAiPyIpIHsg
+Ly8gdG9nZ2xlCgkJCQkJCXN0YXQgPSAiR28iOwoJCQkJCQl3aW5kb3cuc3RhdHVz
+PSJHb1RvIjsKCQkJCQl9IGVsc2UgewoJCQkJCQlhY3Q9InRpdGxlc2VhcmNoIjsK
+CQkJCQkJc3RhdD0iPyI7CgkJCQkJCXdpbmRvdy5zdGF0dXM9IlRpdGxlU2VhcmNo
+IjsKCQkJCQl9CgkJCQl9IGVsc2UgaWYgKGNoID09ICcvJykgewoJCQkJCWlmIChz
+dGF0ID09ICIvIikgeyAvLyB0b2dnbGUKCQkJCQkJc3RhdCA9ICJHbyI7CgkJCQkg
+CQl3aW5kb3cuc3RhdHVzPSJHb1RvIjsKCQkJCQl9IGVsc2UgewoJCQkJCQlhY3Q9
+ImZ1bGxzZWFyY2giOwoJCQkJCQlzdGF0PSIvIjsKCQkJCQkJd2luZG93LnN0YXR1
+cz0iRnVsbFNlYXJjaCI7CgkJCQkJfQoJCQkJfSBlbHNlIGlmIChjaCA9PSAyNykg
+ewoJCQkJCXN0YXQ9IkdvIjsKCQkJCQlnb1ZhbHVlLmJsdXIoKTsKCQkJCX0KCQkJ
+CWlmICh2YWwgPT0gIi8iIHx8IHZhbCA9PSAiPyIpIHZhbD12YWwuc3Vic3RyKDAs
+dmFsLmxlbmd0aC0xKTsKCQkJCWdvVmFsdWUudmFsdWU9dmFsOwoJCQkJZ29BY3Rp
+b24udmFsdWU9YWN0OwoJCQkJZ29TdGF0dXMudmFsdWU9c3RhdDsKCQkJCXJldHVy
+bjsKCQkJfQoJCX0KCQlicmVhazsKCX0KCglpZiAobm4gPT0gJ0lOUFVUJyB8fCBu
+biA9PSAnVEVYVEFSRUEnIHx8IGUuY3RybEtleSkgcmV0dXJuOwoJdmFyIGxvYz1z
+ZWxmLmxvY2F0aW9uKycnOwoJdmFyIHBhZ2VzPXsnYyc6UmVjZW50Q2hhbmdlcywn
+Zic6RnJvbnRQYWdlLCdzJzpGaW5kUGFnZSwndCc6VGl0bGVJbmRleCwndSc6VXNl
+clByZWZlcmVuY2VzfTsKCXZhciBhY3Rpb25zPXsnZCc6J2RpZmYnLCAnaSc6J2lu
+Zm8nLCAnYic6J2Jvb2ttYXJrJywgJ2gnOidob21lJywgJ2wnOidsaWtlcGFnZXMn
+LAoJCSdwJzoncHJpbnQnLCAnYSc6J3JhbmRvbXBhZ2UnLCAnayc6J2tleXdvcmRz
+J307CgoJc3dpdGNoKGNoIHx8IGNjKSB7CgljYXNlICc/JzoKCQkvLyBUaXRsZSBz
+ZWFyY2ggYXMgdmkgd2F5CgkJZ29BY3Rpb24udmFsdWU9InRpdGxlc2VhcmNoIjsK
+CQlnb1N0YXR1cy52YWx1ZT0nPyc7CgkJZ29WYWx1ZS5mb2N1cygpOwoJCWJyZWFr
+OwoJY2FzZSAnLyc6CgkJLy8gQ29udGVudHMgc2VhcmNoCgkJZ29BY3Rpb24udmFs
+dWU9ImZ1bGxzZWFyY2giOwoJCWdvU3RhdHVzLnZhbHVlPScvJzsKCQlnb1ZhbHVl
+LmZvY3VzKCk7CgkJYnJlYWs7CgljYXNlIDI3OiAvLyAnRVNDJyBrZXkKCQlnb1Zh
+bHVlLmZvY3VzKCk7CgkJYnJlYWs7CgljYXNlIDExMjogLy8gJ0YxJyBIZWxwIChN
+b3ppbGxhIG9ubHkpCgkJbm9CdWJibGUoZSk7CgkJc2VsZi5sb2NhdGlvbiA9IF9z
+Y3JpcHRfbmFtZSArIF9xcCArIEhlbHBDb250ZW50czsKCQlicmVhazsKCWNhc2Ug
+MTE0OiAvLyAnRjMnIEZpbmQgKE1vemlsbGEgb25seSkKCQlub0J1YmJsZShlKTsK
+CQlzZWxmLmxvY2F0aW9uID0gX3NjcmlwdF9uYW1lICsgX3FwICsgRmluZFBhZ2U7
+CgkJYnJlYWs7CgljYXNlIDIyOTogLy8gSU1FCgkJd2luZG93LnN0YXR1cz0iPy8g
+b3IgY2hhbmdlIElNRSBzdGF0dXMiOwoJCWJyZWFrOwoJY2FzZSAnYCc6CgkJdmFy
+IGJvdD1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYm90dG9tJyk7CgkJaWYgKGJv
+dCkgYm90LmZvY3VzKCk7CgkJYnJlYWs7CgljYXNlICd6JzoKCQlnb1ZhbHVlLmZv
+Y3VzKCk7CgkJYnJlYWs7CgljYXNlICdhJzogY2FzZSAnYic6IGNhc2UgJ2QnOiBj
+YXNlICdoJzogY2FzZSAnaSc6IGNhc2UgJ2snOiBjYXNlICdsJzogY2FzZSAncCc6
+CgkJaWYgKChpID0gbG9jLmluZGV4T2YoX2FwKSkgIT0gLTEpIGxvYyA9IGxvYy5z
+dWJzdHIoMCxpKTsKCQlzZWxmLmxvY2F0aW9uPWxvYyArIF9hcCArICdhY3Rpb249
+JyArIGFjdGlvbnNbY2hdOwoJCWJyZWFrOwoJY2FzZSAncSc6IGNoID0gJ3MnOwoJ
+Y2FzZSAnYyc6IGNhc2UgJ2YnOiBjYXNlICdzJzogY2FzZSAndCc6IGNhc2UgJ3Un
+OgoJCXNlbGYubG9jYXRpb24gPSBfc2NyaXB0X25hbWUgKyBfcXAgKyBwYWdlc1tj
+aF07CgkJYnJlYWs7CgljYXNlICdlJzogY2FzZSAncic6IGNhc2UgJ3cnOgoJCS8v
+IEVkaXQvd3JpdGUgb3IgcmVmcmVzaAoJCWlmICgoaT1sb2MuaW5kZXhPZihfYXAp
+KSAhPSAtMSAmJiBsb2Muc3Vic3RyKGkrMSw1KSA9PSAiZ290bz0iKSB7IC8vIGRl
+cHJlY2F0ZWQKCQkJbG9jPWxvYy5zdWJzdHIoaSs2LGxvYy5sZW5ndGgtNik7CgkJ
+CWlmICgoaT1sb2MuaW5kZXhPZignJicpKSAhPSAtMSkgbG9jPWxvYy5zdWJzdHJp
+bmcoMCxpKTsKCQkJaWYgKGNoID09ICJlIiB8fCBjaCA9PSAidyIpCgkJCQlzZWxm
+LmxvY2F0aW9uPV9zY3JpcHRfbmFtZSArIF9xcCArIGxvYyArIF9hcCArCgkJCQkJ
+J2FjdGlvbj1lZGl0JzsKCQkJaWYgKGNoID09ICJyIikgewoJCQkJaWYgKChpPWxv
+Yy5pbmRleE9mKCcjJykpICE9IC0xKQoJCQkJCWxvYz1sb2Muc3Vic3RyaW5nKDAs
+aSk7CgkJCQlzZWxmLmxvY2F0aW9uPV9zY3JpcHRfbmFtZSArIF9xcCArIGxvYyAr
+IF9hcCArCgkJCQkJJ2FjdGlvbj1zaG93JzsKCQkJfQoJCX0gZWxzZSB7CgkJCWlm
+IChpICE9IC0xKSBsb2M9bG9jLnN1YnN0cigwLGkpOwoJCQllbHNlIGlmICgoaT1s
+b2MuaW5kZXhPZignIycpKSAhPSAtMSkgbG9jPWxvYy5zdWJzdHJpbmcoMCxpKTsK
+CQkJaWYgKGNoID09ICJlIiB8fCBjaCA9PSAidyIpIHNlbGYubG9jYXRpb24gPSBs
+b2MgKyBfYXAgKyAnYWN0aW9uPWVkaXQnOwoJCQlpZiAoY2ggPT0gInIiKSBzZWxm
+LmxvY2F0aW9uID0gbG9jICsgX2FwICsgJ2FjdGlvbj1zaG93JzsKCQl9CgkJYnJl
+YWs7Cgl9CglyZXR1cm47Cn0KCmZ1bmN0aW9uIG1vaW5faW5pdCgpIHsKCWlmIChk
+b2N1bWVudC5hZGRFdmVudExpc3RlbmVyKSB7CgkJZG9jdW1lbnQuYWRkRXZlbnRM
+aXN0ZW5lcigna2V5cHJlc3MnLGtleXByZXNzaGFuZGxlcixmYWxzZSk7CgkJZG9j
+dW1lbnQuYWRkRXZlbnRMaXN0ZW5lcigna2V5cHJlc3MnLGtleWRvd25oYW5kbGVy
+LGZhbHNlKTsKCX0gZWxzZSB7CgkJZG9jdW1lbnQuYXR0YWNoRXZlbnQoJ29ua2V5
+cHJlc3MnLGtleXByZXNzaGFuZGxlcik7CgkJZG9jdW1lbnQuYXR0YWNoRXZlbnQo
+J29ua2V5ZG93bicsa2V5ZG93bmhhbmRsZXIpOwoJfQp9CgpmdW5jdGlvbiBtb2lu
+X3N1Ym1pdChmb3JtKSB7CglpZiAoZm9ybSA9PSBudWxsKSBmb3JtPWRvY3VtZW50
+LmdldEVsZW1lbnRCeUlkKF9nbyk7CglpZiAoZm9ybSA9PSBudWxsKSByZXR1cm4g
+dHJ1ZTsKCWlmIChmb3JtLmVsZW1lbnRzWyd2YWx1ZSddLnZhbHVlLnJlcGxhY2Uo
+L1xzKy8sJycpID09ICIiKSByZXR1cm4gZmFsc2U7CglpZiAoZm9ybS5lbGVtZW50
+c1snYWN0aW9uJ10udmFsdWUgPT0iZ290byIpIHsKCQlnby5lbGVtZW50c1sndmFs
+dWUnXS5uYW1lPSdnb3RvJzsKCQlnby5lbGVtZW50c1snYWN0aW9uJ10ubmFtZT0n
+JzsKCQlyZXR1cm4gdHJ1ZTsKCX0KfQoKbW9pbl9pbml0KCk7Cg==
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=kldpwikilogo.png
+Content-Type: image/png; name=kldpwikilogo.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/kldpwikilogo.png
+Content-Transfer-Encoding: Base64
+
+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
+yuZ3WQAAAABJRU5ErkJggg==
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=edit.png
+Content-Type: image/png; name=edit.png
+Content-Location: http://wiki.kldp.org/imgs/moni2/edit.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAMAAAAMCGV4AAAAB3RJTUUH1AIIDhoT
+xAIZGQAAAAlwSFlzAAALEgAACxIB0t1+/AAAAwBQTFRFAAAARD8gXFYsXVctZl8w
+bGU0dm44AsoQvLJwvrR0wLZ2wLd4wbh5wbh7w7p9x76F4Nu85+PL7uva8O7e9/Xr
++vny+vn0+/r1/Pv4////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgjSr4gAAAAh0Uk5T////
+/////wDeg71ZAAAAX0lEQVR42lXOWQ6AIAxF0eeIiigCot3/Ri0yBO5XT9ImhWhD
+NaIxtgO/EdvVwBvB5JyHVBN0tLcWq5yhTTYW1UNXPkemzUaHQCpmMYuj6C73NpCe
+bIq9yfriDJf+qRIfh/wIhTqdinUAAAAASUVORK5CYII=
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=diff.png
+Content-Type: image/png; name=diff.png
+Content-Location: http://wiki.kldp.org/imgs/moni2/diff.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAMAAAAMCGV4AAAAB3RJTUUH1AIIDh8a
+wKlV+AAAAAlwSFlzAAALEgAACxIB0t1+/AAAAwBQTFRFAAAATn7sR/oAVoTsf6Lx
+3lJS6IiI7qam////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdjARhgAAAAN0Uk5T//8A
+18oNQQAAADpJREFUeNqdjkkOACAIxKoi8v8Xi7tenUMzDZBAfMOPc4zNUXimzTkZ
+K2LiVNPpSYKzaGbd9ALf/12pxBwBpdSPZIUAAAAASUVORK5CYII=
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=show.png
+Content-Type: image/png; name=show.png
+Content-Location: http://wiki.kldp.org/imgs/moni2/show.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPAQMAAAABGAcJAAAAB3RJTUUH1AIIDR80
+HjnmbgAAAAlwSFlzAAALEgAACxIB0t1+/AAAAAZQTFRFAAAA////pdmf3QAAAAJ0
+Uk5T/wDltzBKAAAAKElEQVR42mP4/48BiuoY/tgx/JZj+F7H8B3Ifcfw7x3Dj3sg
+wX9QNQBD1hoRZNyaJAAAAABJRU5ErkJggg==
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=search.png
+Content-Type: image/png; name=search.png
+Content-Location: http://wiki.kldp.org/imgs/moni2/search.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAwAAAAPCAMAAADnP957AAAAB3RJTUUH1AIIDSwh
+h49ntQAAAAlwSFlzAAALEgAACxIB0t1+/AAAAwBQTFRFAAAALS0tNDQ0OTk5Ozs7
+PT09QEBAWlpaX+4Ak5OTmZmZnZ2dpKSk+vr6+/v7/Pz8/f39/v7+AAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgDp+hwAAAAl0Uk5T////
+//////8AU094EgAAAEJJREFUeNqVzjkSgDAMQ9EPJE5Ysuj+l02DZ1yCutdIoobw
+AwdkR741n/QCSR3H1GgOu3o7Ny8w2EmhumBhp/D1zgIhDAWFkjV7rQAAAABJRU5E
+rkJggg==
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=info.png
+Content-Type: image/png; name=info.png
+Content-Location: http://wiki.kldp.org/imgs/moni2/info.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAB3RJTUUH1AIIDhwH
+iIJq4gAAAAlwSFlzAAAK8AAACvABQqw0mAAAAwBQTFRFAAAAL12VMF+aMWGdMWKf
+MmSiNGioNWqrNmusNmyuN22vN26xOG+yOHC2OXG3OXK5OnS8O3a/PHfAPHjCPnrE
+P3vFRH7GTYXJUojKVovMZ5bRcp7UdqHWeKLWe6TXfqbYjO4AgajZg6rZhKvajbHd
+kLPek7XfpsLk////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOPu3CAAAACF0Uk5T////
+//////////////////////////////////////8An8HQIQAAAHpJREFUeNqFz8sK
+wkAMBdDgs9p0GoNxhtZnVbz//4WOTHBRCr2QLM7iktB9FJoC+qcAffqS7kAFzruq
+ArjhhcOFmYG6DiuHa2jCL7J2uIkAENGNw0NVAdXj1uFpZoDZae/wijECebUO75Ry
+B1IShyF3aJtnSdOnz3z7BUrjF051zYLZAAAAAElFTkSuQmCC
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=help.png
+Content-Type: image/png; name=help.png
+Content-Location: http://wiki.kldp.org/imgs/moni2/help.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFXRFWHRDcmVhdGlv
+biBUaW1lAAfUAggNBi/aXWXqAAAAB3RJTUUH1AIIDhwFZowLzgAAAAlwSFlzAAAK
+8AAACvABQqw0mAAAAwBQTFRFAAAApx0drB4esB4esR8ftR8fvCAgvyEhwSEhwiIi
+xCIixiIiyCIiyyMjzSMjziQk0iQk1SUl1yUl2SUl2ycn2ykp3C4u3jg43z094EJC
+41VV5WFh5mZm5mho52tr529v6HJy6HR06HZ2jO4A6oCA64OD64eH75ub////AAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAkSP+zQAAACR0Uk5T////////////////////////
+//////////////////////8AWCwNDQAAAHNJREFUeNqFz9sKwkAMRdGgtdr7mHbs
+qK136fn/LzQwhz6UghsykPWUkfciWQOZiyDTNXY5SoQhO8Cqyg1hLIGiAOqEcKsN
+bNyOcHeW7ZoSHq0qoOduT3h57wHfn3LCp2cN4RtCAOxxhKdajc1W1k//89sfeMAZ
+MbWLSx0AAAAASUVORK5CYII=
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=pref.png
+Content-Type: image/png; name=pref.png
+Content-Location: http://wiki.kldp.org/imgs/moni2/pref.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAADAFBMVEUA//8BHHUM
+JnsGIXjO3+ve7/WmutRDWpiUp8Z/lLozTJKTpseHnL+Gmr2NoMF4i7NTaqJab6SA
+lbxug68/VpcmPogzSo9me6oYMoIQK36qvdMfOIUKJHkXMYHW6PBedKYVL4CDl7/Q
+4ewSLH+kt9DH2OaJncALJXsMJXugss1XbaMxSpEJJHlEXZkwSZA+VZUAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAABUBgBlYmFiTARMBE4CdGZvVAMFGAJ0ZGkGIgJnaWUNAnRwYUNub2lpTgZ1
+YWVUBgBlYmFhTAYxbGVmZUwDEAICcG9pVwUCaHRlSAZ0aGdDBw1pdHAIBm5jdW86
+IGVUBwB0dHVCCG51bm4EcmV0ZmUDANgDcG9XBQBodGRIBktoZ2kGGQJjbmEHCWx0
+cGEGbm9ubkFyZWxiYVRlZHIHAAJsQ24Ha2NuQUJlbHVpbEMAAGt1QlRub3RrT0Jm
+ZUwAiANwb1QFAJB0ZGkGSwJnaWUZAnRwYUNub2lrTwJmZUR0bHVhVAhkck8BAnJD
+bk9rY2lPQghpbEMAAGt1QlRub3RwQUJ1Y3JmZUwDEAIDcG9XBQBodGRIBktoZ2kH
+GQJ0cGEUbm8AAAByZXAIdadPYmFyZWRPBwNpbEMMB2tlcEFDdWNrY2lUCQBjYXJy
+YUJOQlRmZUwDCgICcG9pVwUDaHRIBgFoZ2kDIQICeGFpTQMLAQJlaXJ0YXQHbm9I
+cnR6aXJhdG5hUAhpU2UBAmVlckZuZXUBAnlzb1BvaXQGCgJFbGUAAmRsZVNyYXQI
+AAJPYmFyZWRUCwJibXVnbmUPAmhjaVRyYU0NB3NvQm1tb3RoZ2lpVAlHMJPcAAAA
+AXRSTlMAQObYZgAAAAlwSFlzAAALEgAACxIB0t1+/AAAAItJREFUeNqNj1sPATEU
+hHuxznE97ZbVFlsUdff//50sXbxIzMtkvkwmGcb+FOf8KwnBZEc2lnPRFYAgev1M
+xGCIiKMxwbuCqHRJRrR7gHoyrXAG1j1B4VHNF8uagn4BCVhWq/UmQIx5Y0u+3u1D
+ypsHf0QiY06QSTqrCxhI11tbSYnZu23so+jcr5sPUrcImHdTcF4AAAAASUVORK5C
+YII=
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=rss.png
+Content-Type: image/png; name=rss.png
+Content-Location: http://wiki.kldp.org/imgs/moni2/rss.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAABsAAAAMCAIAAAAcZVEhAAAACXBIWXMAAAsTAAAL
+EwEAmpwYAAACt0lEQVR42q1Sa0iTURh+P+1C/SsixFBEQyTo8qP/akWgVrTWZbjc
+5q5qSVkMTLBVYAg6a2oIJdYvfxjUj0JNzC4iyQjXdDKdomtC01q7f7t8377zdr4p
+Yfi3w3sOz/Oe9zw87zkHcHYE37XhSAd+eIJj3SKm8b5TpCNmHH0sAkrX8+t0rAuH
+/9a0b2ylw1FfBNhZTvSA/ynelmWKiqgGbMzB5wrskVJMtEBajmN/LRr3oekQ6atC
+cynqaJ7B5kLsU2BXBWoA20uwtxLrd4tY968i0TBoLOAD3hQi21qMt/dj1BdacS1p
+s1KDrYiY8Hsjd4pQBsQxTCm76v4hAVz4yCGuNeSlFFs8EgODV4G/f5SLhWPeRX52
+NPHLM6k/OHcWhDf3hGQslRK8/U1hYyGGvcglfLMTX8sAbQNs8LfDkJtUbu1aD8SQ
+QVfuhZYgCohzFrWNytE2hx7Ggz9DLivrtked43H7ECHEvzg1XQFofxVjo/N1eZyK
+2VDUbVIURVUgPJNherj77wbkGahlyFBrPOhz995IrDhofqapmGdDgWWHvRxw+jUb
+jTh12Um5eFzQANncNakCoSkfE2zE+TnsnIgFfP7mYzy9uMGWRCToMp0I9xnWxl9+
+urArFfX7XVOi4tQAGw7O3zqSqNsjNOwltds3edQygrEA/R4+zlqVOe4HJxFJbG0p
+eTMbR830uRbbLgYksCIBzyWgTqM+r6i4MEZxyufBwDKuOjjzKV6ZViSWMqEahMac
+wFO1tbHUdg642p3R9tPOnmtWZRZvOvy9s2pSnRus3obXd1AXfK/8i+m8XcKQjpIF
+i8pu0c901317pLEZ8kNKJu2x+wzWAP1TRAZsJWBNpkgVwEohQr9FNXAyiNPXpElD
+epVD+Aqk6NWrIHYZQrRMCmFpusaQ9kinND/jf0XpAeYPqkstOi2EAMAAAAAASUVO
+RK5CYII=
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=andamiro.png
+Content-Type: image/png; name=andamiro.png
+Content-Location: http://img.kldp.org/static/andamiro.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAFgAAAAfCAMAAABUFvrSAAACwVBMVEUAAACxsbGw
+r7Cvr6/Lqpni4uG9qp+rq6vFv7T7cRbGu7Wpqamnp6fMuaempaako6TZ2Nijo6P6
+Ygufn5+enZ6dnZ2bm5uam5qZmZlHGgDOzs2Yl5j5fjiXl5fwkFrHuK/9w6LMsqDI
+wb3z8fG9vLzsVgCsrKvGurTj3NempqW8t7TMuKbr6+z6YQrov6eenp3LrZv2XQb/
+vGHh4eKYmJf9axDHt67OxsLDw8HNzc7mo3306+fItKj6+vr5+vnDw8Szrqeem5nz
+9PP8k1e8vb3Avre7u7y/vLa5ubo9PT24ubnOysjr7OvMt6XNw72vr7CzsKri4uL/
+6Y7Gu7adOQDOzMu4ppvHtq22pJnZ2NnY2NidnZ7KwrPOzs6Xl5jHuLDIyMj1ikz1
+wqXDxMPAwMD08/P/che9vL28vLzypHfqfkGXNwDOycfItaq0tLTNwrz8qXrLq5ms
+rKympqbAuq+kpKTNxL9bIQD6072goKDLwr2enp76qXucnJzvlmP6XAGbmpuamprO
+zc2XmJf+bRL1yK7ARgC0o5nOxsPlVADJtKf5Yw3xr4n2roT/kjfEw8PLsZ+Ojo7D
+wcL6gTz4lFu9vby5ubjItKn5+vrzdCunnpmwr6/Oysm4pJn5ZxOuoZmioaGenZ33
+mGD6qHrh4uL6WwDMvLPOzMyYl5e7uLa5trTY2NnNxcH6XQPNzs7z8fDHuLG6uLhO
+Tk7///++RQAMBADGxse4t6z6+fr6YQaxsK/Fv7z08/SzradCQkLz8/O8vL1AQEBC
+GADEuLHItavr6+vNwr3u08PDv73NvbObmpm4pZulpqa7t7XY2dj5YQsrEADLr52d
+np7+4M/s4dseHh7Ozc6XmJjuVwDHx8dtRzD6+vnEw8TDw8PBwcF8LQC/v7+fm5n0
+9PO9vb28vby5ubm4ubizs7P8fCEvEQDNw7yF/DfXAAADyklEQVR4nO2U6X9MVxjH
+L3ciShAa4whXqZQmscauhtJQUbnMqJThRmyT2J1cW11BqrQlRtMWVftySavSMpbY
+MraxhWCYWNqxTWLJX+F5zr1XZoJ8eJF3ns99nvPMeX73O+c558xwXLWZq1rsPfg9
++K3AKppRwsAu5YGH2hTTM4nNZdOkwZrMA7q2anBaxUtcUmVwgiuhEhg0SYb2tWCH
+Ac41XtJ1HOerADtdzhBwqPZVMPTnxD6xVBgqTuO409iGBnbYHO8Ehv7w0fpOCxHn
+Qg/YBoIdTOZ4BzAuF/tk4NwQcSH7pkIGdhpPMDipKjBuMCxFAxeGgH0s8TFwgrHo
+4FsRqAqMUHZ6HNvR0PZ8DI5g7arZKt+KN4Nt+nHbXPpOVIDx7Fzs9BCH2+twvd0e
+32w5+4sPVHXJvqOq+mz2/Ofs7CrE7OBYQJyT3biqwL/3LbAUWPouWPSrWskO7rwH
+dYvhuFgLnp4Fav/h9iZgZgnWgBfgiIl7svuEe/lv7dVGzXesnvC9qv7T+jNV7bZ6
+2oo7auevm3Ju1KD7mBY2ejLg3Li9Njdmen0A+GN9HIATHs/QW1O2rBqfcwEyDyg9
+HhY57nrO1E9+enBLPxgP02Jsx0QvA84brv+kh+KHLtZPF19r0cFqtYaBg9IaFgZx
+F5TCrGem3Vl8iF2lTCtEEGBEkabEgDOGa39CmUxmt/feYAeLtBsWqXsxfije0Ptl
+Ya99tJFo8r1MFYljsT3EACxF/7j773k9pm/aI5V810ucJeb3kkRRlALpgZFfXfx4
+4aWziYFBgft3pfTEREmKjgmkR58XxfyS8vJyKVo8L0qlp9bmB2LSS0pL15Ycvp+Y
+EQNaCcD+fhN7Hh/x74w+6899031cJ0rrtG1LaaePfhi1eWWtrX/0/4UQUkays/5v
+SMgk/yRCGq6hlE4cC2GsH4If6uhrcMzKJoNR6wdwmW7r9v95NS6utom2imtFTbX/
+etT/8jHCoJqvyyAkYkgEIRllgBt4g5rojS8hM+ptCPnQyMueAJgPtmF8PKVzKI3n
+eYQ+BcdkGHhNPpyQmYSE8zzg4k2mZJOpHmS8rokgWbKR8xsBHCvLMros15evyPLn
+lP5M6UlZRi4G9G8JUWS5LkvqyjLgTDR5eDJESrEeq2kaxyqGFsBKR0XxKtvHREV5
+Fa9X6ZhSVJSS4lUUs9m8LQoCJmbz3BpRipaBJgXtiHIEhyJF1zQBjcLPNS81N6ih
+KAAWhGWpQp4AgxBkeUIqG29jeRmrayFVk8FUnmCkqOrKiqABVTNB4KrNXgBPiW+5
++3f96AAAAABJRU5ErkJggg==
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=cdnetworks.png
+Content-Type: image/png; name=cdnetworks.png
+Content-Location: http://img.kldp.org/static/cdnetworks.png
+Content-Transfer-Encoding: Base64
+
+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
+tP8A772fV7sMQi0AAAAASUVORK5CYII=
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=hp.png
+Content-Type: image/png; name=hp.png
+Content-Location: http://img.kldp.org/static/hp.png
+Content-Transfer-Encoding: Base64
+
+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
+jY/+L4QnnkkxVdt4AAAAAElFTkSuQmCC
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=kss.png
+Content-Type: image/png; name=kss.png
+Content-Location: http://img.kldp.org/static/kss.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAFUAAAATBAMAAAAT2lwYAAAAG1BMVEX///8AAAB/
+f3+fn5/f39+/v79fX18/Pz8fHx89RpcRAAABCklEQVR4nN2RMU/DMBCFn5PYZLyC
+RDJWKENGI3VgNAVVGS0xlDEFITHioXuStvC3uXMZqJRGzJx1J+X5y9PTGfjHpcYE
++ukJdtV/+T+yenAPu2k2seuy1eETjd+ExotAqAtSdeEYMLMWV70IzC5wyOa5X+LF
+2Pu0FYESq0lVScvsDZ9Ll1Sa2QzYAbkF9jl/dSJQzq2Qdczu0XCe3PFQFbAuvQ4H
+uVU8qsgdO+ZWsWU8eSBlgzv2deLLwojv8ac3LHSXume8mvlt+iECGbsk5TkvxbwE
+Y1fCXtj3wpt+i+axr2deBMJmIBUGMZM9ELKwPVliOriJF42Bfr9beZa1cYHn6pQN
+124cG69vnE8qMQWPt/cAAAAASUVORK5CYII=
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=xhtml.png
+Content-Type: image/png; name=xhtml.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/xhtml.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAIAAAD8q9/YAAAAB3RJTUUH1AsBDxEp
+kCBerAAAAAlwSFlzAAALEgAACxIB0t1+/AAAAthJREFUeNpjYBhhgBGI////P9DO
+oJdvGRlZqGui+YYLA+0pnOBkgAGQRHj437//W0/eff/5R5ybztM3X7cfv26tr6gp
+JwwUX3fs9r6zD3k5WIHKmNmZK8Mtfnz5sHjxYnV1dV1dXU5OTlFR0YH2DrGACZnz
+8s2HSStP/vn7D8jef+n5piO3gIx7Lz7OWH3m0o1nQK/OW3/61PnHDEws8xb3HTly
+ZPXqVa2trW/fvRtoX5DlYSYmRmCUfvnyY9/FJyL8HECRzYdBHr7+8M2TF+/L46yN
+VMTVFcXK4m3u3rh0/dKzvLy8lIxsYCRLS0lhNRqShNDYWBkQRIwurLZglcUljhLD
+SpICxnpyq/Zc/fDt1817r968+3L90dtr918DBeXE+Wsm7+ZgY3UylH10766Li4uD
+g4ONhVlqaiovLy9WpwDzM8RKIIknb0OkkBXAdRETY1hNhtgIdwBODzMzMbqbKh45
+e2/ZgZscbCz6GpK9K05duv/GSktKQpjH30kbGNUdS07JKSnb2dlDUj4u3yL7Gc1N
+uMIevy5qARQPszAzWenIABkzlx21M1fysNFYv/X8wyfvTLWlxfk5a+KsE/2Nlmw5
+w8grJSsrC1RM0HSIu9G8Bwl7/BppV9qjO1pckBsYsa9ffAywUjVSFmXiZOXnBuVn
+YLnNy8mqpSj69uO301cfAis0iPp7YIDHtwxIaZsSgCevMmDkAoiNWJMJesMDmFCX
+7b22aOulHRMi3376UT3zgLaiiDA/56z1Zz2sNDYcuCIuyFMZovjgzk1BQaH379+t
+W7e+ublZW1ub1jFDOQD6H0vDA5Kq3378zsLIKMbH4W+rChR0M1F8/ubz5sM3lGUE
+q+JtteWF//z4tnz58tevXyfExqipqQ20X0gAWJqWwLLo399/kCz6HwRANdbn77/v
+Pf8ALLqAoQAMJ6Do/fv3gQoUFBSBsnC9gz+GR1xbeqCdQHcAAL2AU9zC59d2AAAA
+AElFTkSuQmCC
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=css.png
+Content-Type: image/png; name=css.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/css.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAIAAAD8q9/YAAAAB3RJTUUH1AsBDxE0
+8yYydQAAAAlwSFlzAAALEgAACxIB0t1+/AAAAsNJREFUeNpjYBhhgBGI////P9DO
+oJdvGRlZqGui+YYLA+0pnOBkgAGQRHj437//W0/eff/5R5ybztM3X7cfv26tr6gp
+JwwUX3fs9r6zD3k5WIHKmNmZK8Mtfnz5sHjxYnV1dV1dXU5OTlFR0YH2DrGACZnz
+8s2HSStP/vn7D8jef+n5piO3gIx7Lz7OWH3m0o1nQK/OW3/61PnHDEws8xb3HTly
+ZPXqVa2trW/fvRtoX5AAEDHMxMQIjNKeJSf3XXxirysNFNl8+FZ5lOX1h2+evHjf
+XeD+8+8/dUWxsnibuzcuXb/0LC8vj4WD69SxI9JSUrhMh6Qi5HQOEUEWxBShk4eB
+QElSwFhPbtWeq/rKojfvvfry5cf1R2+v3X8NFJQT5w+vXCUjIehkKLttwxkXFxcH
+BwegFn1tTV5eXly+hfgBk4Gphm4AJUkzMzG6myoeOXtv2YGbHGws+hqSvStOXbr/
+xkpLSkKYx99JGxjVHUtOySkp29nZQ1I+Lt8iA7iXgAygD+FRilWErh5mYWay0pEB
+MmYuO2pnruRho7F+6/mHT96ZakuL83PWxFkn+hst2XKGkVdKVlYWqJhIO9B8CPEk
+HhGaAvRqSVyQGxixew7cCLBSZQf6iZOVn5sDKA4st6VFuLUURd9+/Hb66kN9JWix
+fO/ePSCppKSEaTTcG3iyK50zMBYPc7Ixe1urvf3ww0hV/O2nH/5OOtqKIjcevCnq
+3+lhpbHhwBUzHTkN0X9LliwWFBR6//7dunXrm5ubcZmO5g1MX9G/3kb3MCRVv/34
+nYWRUYyPw99WFSjoZqL4/M3nzYdvKMsIVsXbassL//nxbfny5a9fv06IjVFTU6Oz
+oykBWJqWwLLo399/kCz6HwRANdbn77/vPf8ALLqAoQBsoAFF79+/D1SgoKAIlIXr
+HeQtLaDLR1xbeqCdQHcAABk1Mt4QwKQAAAAAAElFTkSuQmCC
+
+------------PGWFAZmCoX3WuRiYszRaus
+Content-Disposition: inline; filename=moniwiki-powered-thin.png
+Content-Type: image/png; name=moniwiki-powered-thin.png
+Content-Location: http://wiki.kldp.org/theme/blue2/imgs/moniwiki-powered-thin.png
+Content-Transfer-Encoding: Base64
+
+iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAIAAAD8q9/YAAAACXBIWXMAAAsTAAAL
+EwEAmpwYAAAA+ElEQVR42uWXUQ7CMAiGd6clnqJ39bEH8ABewR2iz0rSDBEGheyB
+mv1ZFopN7edP2VyWC+p9GX2BSymrLvh0e22eFW/357TXDzBQtdZw3zCkGKtP8KOk
+UwWAGSEbtl0yxnutNZ0qBgwWdaNo3AOJNwQ+rHOWMWI6Uy41nBADRk4KLF1lGQns
+DOhdwtsr2HkV2G5aTg0dDgFHHY4Bg42wXWqp5nOvBXSY2sualvzukw6HSmAAjPXM
+mhZLIjBt3QisbcI4w4cwHgPPnmGtOctejQ6zpASe7VKBaTGzoX2A/w942Lqqrv4w
+S6eKAcOmH6acL5jTKvtfS4Y+EmcXVSnKbS4AAAAASUVORK5CYII=
+
+------------PGWFAZmCoX3WuRiYszRaus--

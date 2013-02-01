@@ -1,0 +1,84 @@
+Undocumented OpCodes: SALC 
+
+----------------------------------------------------------------------------
+
+SALC - D6 - Set AL on Carry 
+An undocumented op code that performs an operation common to every 
+Assembly language subroutine to C and many other higher level languages. 
+This instruction is a C programmers 'dream' instruction for interfacing 
+to assembly language. 
+
+
+Undocumented:  Available to all Intel x86 processors 
+               Useful in production source code.
+                                                             SALC
+Flags:                                       SET Carry flag to AL  
++-+-+-+-+-+-+-+-+-+                                  +----------+
+|O|D|I|T|S|Z|A|P|C|                                  | 11010110 |
++-+-+-+-+-+-+-+-+-+                                  +----------+
+| | | | | | | | | |                                  |    D6    |
++-+-+-+-+-+-+-+-+-+                                  +----------+ 
+
+
+The name SALC simply stands for SET the Carry flag in AL. This 
+instruction is categorized as an undocumented single-byte proprietary 
+instruction. Intel claims it can be emulated as a NOP. Hardly a NOP, 
+this instruction sets AL=FF if the Carry Flag is set (CF=1), or resets 
+AL=00 if the Carry Flag is clear (CF=0). It can best be emulated as SBB 
+AL,AL. SALC doesn't change any flags, where SBB AL,AL does. This 
+instruction is most useful to high-level language programmers whose 
+programs call assembly language, and expect AL to indicate success or 
+failure. Since it is convenient for assembly language programs to return 
+status in the CF, this instruction will convert that status to a form 
+compatible with high level languages.
+
+Over the years, this instruction has been given many names by various 
+discoverers. I originally gave it the name SETCAL, but the most common 
+name I've seen in print is SETALC. The name given above, SALC is an 
+official Intel name. While perusing the P6 opcode map, I always check 
+for known, undocumented opcodes. After weeding through the map for many 
+minutes, my patience and perseverance paid off. I found the opcode, and 
+its name. Intel's name for this opcode is SALC. This would indicate that 
+Intel plans to officially document this instruction, beginning with the 
+P6. 
+
+----------------------------------------------------------------------------
+
+Get description of other opcodes:
+AAM:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAM.txt
+AAD:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAD.txt
+CMOV:     ftp://ftp.x86.org/pub/x86/p6/opcodes/CMOV.txt
+FCMOV:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCMOV.txt
+FCOMI:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCOMI.txt
+ICEBP:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+INT01:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+LOADALL:  ftp://ftp.x86.org/pub/x86/secrets/opcodes/LOADALL.txt
+RDPMC:    ftp://ftp.x86.org/pub/x86/p6/opcodes/RDPMC.txt
+SALC:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/SALC.txt
+UMOV:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/UMOV.txt
+
+----------------------------------------------------------------------------
+
+Download this file -- OpCodes.ZIP 
+ftp://ftp.x86.org/pub/x86/dloads/OPCODES.ZIP 
+
+----------------------------------------------------------------------------
+
+(c) 1991, 1995, 1996 Intel Secrets(TM) home page. PGP key available. 
+
+Make no mistake! 
+The Intel Secrets web site is proud to provide superior information and 
+service without any affilation to Intel. 
+
+"Intel Secrets" and "What Intel doesn't want you to know" are trademarks 
+of Robert Collins. 
+
+Pentium and Intel are trademarks of Intel Corporation. 386, 486, 586, 
+P6, and all other numbers.are not!
+
+All other trademarks are those of their respective companies. See 
+Trademarks and Disclaimers for more info. 
+
+Robert Collins is a Senior Design Engineer and Manager of some sort of 
+Research in Dallas, TX. Robert may be reached via email at 
+rcollins@x86.org or via phone at (214) 491-7718. 

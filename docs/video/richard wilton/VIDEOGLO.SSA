@@ -1,0 +1,218 @@
+
+
+Glossary
+
+
+     This glossary includes some of the acronyms, abbreviations, buzzwords,
+     engineering terms, and programming jargon that appear frequently
+     throughout this book.
+
+     80x86: Refers to all the processors in the Intel 8086 family. The IBM
+     PCs and PS/2s all use one of these processors: 8086, 8088, 80286, or
+     80386.
+
+     active display: In a computer that contains two video subsystems and
+     displays, the display to which a program sends its output.
+
+     adapter: A modular, plug-in circuit that performs a specialized task
+     such as generating video output. Well-known IBM PC video adapters
+     include the MDA, CGA, HGC, EGA, and VGA Adapter.
+
+     ANSI: American National Standards Institute. One of ANSI's many
+     activities is to certify the standardization of programming tools,
+     including languages (such as C and FORTRAN) and software interfaces
+     (such as GKS).
+
+     APA: All Points Addressable; describes graphics modes on the CGA, EGA,
+     and Hercules graphics cards.
+
+     API: Application Program Interface; a set of system-level routines
+     that can be used in an application program for basic input and output,
+     file management, and so on. In a graphics-oriented operating
+     environment like Microsoft Windows, high-level support for video
+     graphics output is part of the API.
+
+     ASCII: American Standard Code for Information Interchange. The ASCII
+     standard specifies the basic character set used in IBM PCs and PS/2s.
+
+     aspect ratio: The ratio of a video screen's width to its height. A
+     typical IBM PC display has an aspect ratio of about 4:3. This term is
+     also frequently used to describe pixels: If you think of a pixel as
+     being rectangular, its aspect ratio would be the ratio of its width to
+     height.
+
+     attributes: Color, intensity, blinking, and other displayed
+     characteristics of characters or pixels.
+
+     BIOS: Basic Input/Output System; a low-level programming interface to
+     the system's major I/O devices.
+
+     bit plane: Video RAM containing formatted graphics data. In IBM video
+     subsystems up to four bit planes can be addressed in parallel, with
+     pixel values represented by the bits at corresponding locations in the
+     bit planes.
+
+     CGA: IBM's Color Graphics Adapter.
+
+     character code: A numeric code associated with a character. The
+     default ASCII character set used in all PCs and PS/2s comprises 256
+     8-bit character codes.
+
+     character matrix: The rectangular array of pixels in which characters
+     are displayed on the screen. On IBM's Monochrome Display Adapter, each
+     character is displayed in a character matrix that is 9 dots wide and
+     14 dots high. On the Color Graphics Adapter, the character matrix is 8
+     by 8.
+
+     character set: A set of alphabetic and numeric characters and symbols.
+
+     clipping: The process of determining which portions of a graphics
+     image lie within a specified boundary.
+
+     code page: A character set designed for use with computers. Each
+     character in a code page is associated with a numeric code (such as an
+     ASCII or EBCDIC code).
+
+     CPU: Central Processing Unit, or the main processor in a computer. For
+     example, the CPU is an Intel 8088 in PCs and an 80286 in PC/ATs.
+
+     CRT: Cathode Ray Tube, or the picture tube you see when you look at
+     your computer monitor. Some people refer to the entire monitor (the
+     tube and its associated circuitry) as a CRT.
+
+     CRTC: CRT Controller; a chip that controls a video display's timing
+     signals.
+
+     DGIS: Direct Graphics Interface Specification; a firmware graphics
+     interface designed for video subsystems based on hardware graphics
+     coprocessors.
+
+     display: A video monitor.
+
+     driver: Software or firmware that directly programs a specific
+     hardware unit such as a video adapter or a printer.
+
+     EBCDIC: Extended Binary Coded Decimal Interchange Code; the character-
+     set implementation used on IBM mainframe computers.
+
+     EGA: Enhanced Graphics Adapter.
+
+     font: A description of the style and shapes of the characters in a
+     character set.
+
+     gate array: An integrated circuit that is partly prefabricated in its
+     manufacture. An application-specific integrated circuit based on gate
+     array technology can be less expensive and manufactured more rapidly
+     than a custom integrated circuit.
+
+     GKS: Graphical Kernel System; a standard high-level graphics
+     interface.
+
+     HGC: Hercules monochrome Graphics Card.
+
+     HGC+ (HGC Plus): Hercules Graphics Card Plus; a monochrome video
+     adapter like the HGC, but with a hardware character generator that
+     can use RAM-based character sets.
+
+     InColor: Hercules InColor Card; a 16-color version of the HGC+.
+
+     latch: A hardware register external to the CPU and used for transient
+     storage of data. For example, the EGA Graphics Controller uses four
+     internal 8-bit latches to mediate data transfers between the bit
+     planes and the CPU.
+
+     LSI: Large Scale Integration.
+
+     MCGA: Multi-Color Graphics Array; the video subsystem integrated into
+     the PS/2 Model 30. Also, Memory Controller Gate Array, one of the
+     components of the Model 30's video subsystem.
+
+     MDA: IBM's Monochrome Display Adapter.
+
+     MDPA: Monochrome Display and Printer Adapter; same as an MDA.
+
+     monitor: The hardware that displays your computer's video output;
+     comprises a CRT (cathode ray tube) and associated circuitry.
+
+     MPA: Monochrome/Printer Adapter; same as an MDA.
+
+     palette: A range of colors that can be displayed by a video subsystem.
+
+     pel: A pixel.
+
+     PGA: Professional Graphics Adapter; another name for IBM's PGC.
+
+     PGC: IBM's Professional Graphics Controller.
+
+     pixel: One dot or point in an image that is composed of a matrix of
+     dots or points. The image on the video screen or on a page printed by
+     a dot-matrix printer is composed of a large number of pixels. (The
+     word "pixel" is a rough acronym for "picture element.")
+
+     planar BIOS: BIOS routines found in ROM on the IBM PC or PS/2
+     motherboard.
+
+     PS/2: Personal System/2.
+
+     PS/2 Display Adapter: A VGA-compatible IBM video adapter that may be
+     used in a PC/XT, PC/AT, or PS/2 Model 30; commonly called "VGA
+     Adapter."
+
+     raster: The group of closely spaced horizontal scan lines that makes
+     up a displayed video image.
+
+     RGB: Red, Green, Blue; the three primary colors displayed by the
+     monitors used in PC and PS/2 video subsystems. All other colors are
+     blends of these three primaries. Video displays that are driven by
+     separate red, green, and blue signals are often called RGB displays.
+
+     scan line: One horizontal line traced across the screen by a CRT's
+     electron beam.
+
+     VDI: Computer Graphics Virtual Device Interface; a proposed ANSI
+     standard high-level graphics interface. The Graphics Development
+     Toolkit (GDT) sold by IBM and Graphics Software Systems is a
+     commercial implementation of VDI.
+
+     VGA: Video Graphics Array. People refer to the video subsystem
+     integrated into the PS/2 Models 50, 60, and 80, as well as the IBM
+     PS/2 Display Adapter, as the "VGA." Strictly speaking, however, the
+     VGA is the circuitry in the video subsystem that performs the tasks of
+     the CRT Controller, the Sequencer, the Graphics Controller, and the
+     Attribute Controller. Most of this circuitry is contained in a single
+     VLSI chip.
+
+     VGA Adapter: The IBM PS/2 Display Adapter.
+
+     video buffer: A buffer that contains the data that appears on the
+     video display; variously known as a "display buffer," "frame buffer,"
+     "refresh buffer," or "regenerative buffer."
+
+     Video Control Data Area: Part of the Video Display Data Area. The
+     block of RAM from 0040:0049 through 0040:0066 is Video Control Data
+     Area 1; the block between 0040:0084 and 0040:008A is Video Control
+     Data Area 2.
+
+     Video Display Data Area: A global data area maintained by the ROM BIOS
+     for storage of parameters related to its INT 10H video I/O routines.
+
+     VLSI: Very Large Scale Integration.
+
+
+
+     Richard Wilton
+
+
+     Richard Wilton has been programming computers since the late
+     1960s. He has written systems software and graphics applications in
+     FORTRAN, Pascal, C, Forth, and assembly language. His articles and
+     reviews have appeared in several computer publications, including
+     BYTE, Computer Language, and The Seybold Outlook on Professional
+     Computing. Wilton lives in Los Angeles, California.
+
+
+
+Programmer's Guide to PC and PS/2 Video Systems
+Copyright (c) 1987 by Richard Wilton. 
+All Rights Reserved.
+

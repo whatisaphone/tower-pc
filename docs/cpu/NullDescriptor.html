@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>Null Descriptor</TITLE>
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.0Gold (Win95; I) [Netscape]">
+</HEAD>
+<BODY>
+
+<H1><A NAME="NULL_Descriptor"></A>THE NULL DESCRIPTOR</H1>
+
+<P>
+<HR></P>
+
+<P>The first entry in the Global Descriptor Table (GDT) is called the null
+descriptor. The NULL descriptor is unique to the GDT, as it has a TI=0,
+and INDEX=0. Most printed documentation states that this descriptor table
+entry must be 0. Even Intel is somewhat ambiguous on this subject, never
+saying what it CAN'T be used for. Intel does state that the 0'th descriptor
+table entry is never referenced by the processor.</P>
+
+<P>Since the processor never references the NULL descriptor, then this
+implies that the data stored in its place can be used for any purpose.
+My favorite use for the NULL descriptor is to use it as a pointer to the
+GDT itself! The NULL descriptor is ideally suited for this purpose. The
+LGDT instruction needs a six-byte pointer to the GDT, and the NULL descriptor
+has 8 bytes that aren't accessed by the CPU -- making it an ideal candidate
+for this purpose. (For you sceptics, I've been doing this for about 10
+years.)</P>
+
+<P>The normal protocol used in addressing the GDT is as follows:</P>
+
+<PRE>     GDT_PTR   DW   GDT_LENGTH-1
+               DD   PHYSICAL_GDT_ADDRESS
+</PRE>
+
+<P>Then in the code segment:</P>
+
+<PRE>     LGDT      GDT_PTR
+</PRE>
+
+<P>Using the NULL descriptor as a pointer to the GDT, simplifies the data
+segment, and conceptualization of the GDT as follows:</P>
+
+<PRE>                  +-----------------+
+                  |                 |
+                  V                 |  Offset
+     +------------------------+     |
+GDT  |   Pointer to the GDT   |  ---+  00h
+     +------------------------+
+     |                        |        08h
+     +------------------------+
+     |    ...  ...  ...  ...  |
+</PRE>
+
+<P>Then in the code segment:</P>
+
+<PRE>     LGDT      GDT
+</PRE>
+
+<P>The GDT_PTR variable is no longer needed, as the NULL descriptor is
+used in its place. Using the NULL descriptor in this manner offers a 'cleaner'
+approach to addressing the GDT.This technique can be viewed in any of my
+assembler source code files that use protected mode -- <A HREF="../ftp/source/int09/int09.asm">INT09.ASM</A>
+for example.</P>
+
+<P>View source code:<BR>
+<A HREF="../ftp/source/int09/int09.asm">ftp://ftp.x86.org/pub/x86/source/int09/int09.asm<BR>
+</A><A HREF="../ftp/source/386load/macros.386">ftp://ftp.x86.org/pub/x86/source/386load/macros.386<BR>
+<BR>
+</A>Download entire source code archive:<BR>
+<A HREF="../ftp/dloads/INT09.ZIP">ftp://ftp.x86.org/pub/x86/dloads/INT09.ZIP</A><BR>
+
+<HR></P>
+
+<P><A HREF="ProductivityEnhancements.html#NullDescPtr">Back to Productivity
+Enhancements</A></P>
+
+<P><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/bighand_left.gif" ALT="Return to the" VSPACE=14 BORDER=0 HEIGHT=48 WIDTH=64></A><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/gohome.gif" ALT="Intel
+Secrets home page" BORDER=0></A>
+<img src="http://www.x86.org/Count.cgi?ft=0|frgb=69;139;50;tr=0|trgb=0;0;0|wxh=15;20|md=6|dd=C|st=1532481|sh=0|df=Total.html.dat" border=0  align=abscenter width=0 height=0>
+
+<HR><BR>
+<ADDRESS>&copy; 1991-1999 <b><font color="#FF0000">Intel Secrets Web Site</font></b> and Robert Collins. <A HREF="http://pgp5.ai.mit.edu/pks-commands.html#extract">PGP
+key available</A>.<BR>
+<BR>
+<FONT SIZE=-2>Make no mistake!<BR>
+</FONT>This web site is proud to provide superior information and service
+without any affiliation to Intel Corporation.<BR>
+<BR>
+&quot;<B><FONT COLOR="#FF0000">Intel Secrets</FONT></B>&quot;, &quot;<B><FONT COLOR="#FF0000">What
+Intel doesn't want you to know</FONT></B>&quot; <B><FONT COLOR="#FF0000">and
+anything with a dropped e in it</FONT></B>, are phrases that infuriate
+Intel Corporation.</ADDRESS>
+
+<ADDRESS><BR>
+Pentium, Intel, and the letter "I" are registered trademarks of Intel Corporation. 386, 486, 586, P6,
+all other letters, and all other numbers <B><FONT COLOR="#FF0000">are not!<BR>
+</FONT></B>All other trademarks are those of their respective companies.
+See <A HREF="http://www.x86.org/Trademarks.html">Trademarks and Disclaimers</A>
+for more info.<BR>
+<BR>
+Robert Collins works somewhere in the United States of America. Robert
+may be <A HREF="http://www.x86.org/Contact.html">reached via email or telephone</A>.</ADDRESS>
+
+
+</BODY>
+</HTML>

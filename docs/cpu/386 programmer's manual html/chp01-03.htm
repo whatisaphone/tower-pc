@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>
+1.3  Notational Conventions
+</title>
+<body>
+<a name="01-03"></a>
+Prev: <a href="chp01-02.htm">1.2  Related Literature</a><br>
+Next: <a href="chp02-00.htm">Chapter 2  Basic Programming Model</a><br>
+<hr>
+<h2>
+1.3  Notational Conventions
+</h2>
+
+This manual uses special notations for data-structure formats, for symbolic
+representation of instructions, for hexadecimal numbers, and for super- and
+sub-scripts. Subscript characters are surrounded by {curly brackets}, for
+example 10{2} = 10 base 2. Superscript characters are preceeded by a caret
+and enclosed within (parentheses), for example 10^(3) = 10 to the third
+power. A review of these notations will make it easier to read the
+manual.
+
+<a name="01-03-01"></a>
+<h3>1.3.1  Data-Structure Formats</h3>
+
+In illustrations of data structures in memory, smaller addresses appear at
+the lower-right part of the figure; addresses increase toward the left and
+upwards. Bit positions are numbered from right to left. Figure 1-1
+illustrates this convention.
+
+<a name="01-03-02"></a>
+<h3>1.3.2  Undefined Bits and Software Compatibility</h3>
+<p>
+In many register and memory layout descriptions, certain bits are marked as
+undefined. When bits are marked as undefined (as illustrated in Figure
+1-1), it is essential for compatibility with future processors that
+software treat these bits as undefined. Software should follow these
+guidelines in dealing with undefined bits:
+</p><ul>
+<li> Do not depend on the states of any undefined bits when testing the
+     values of registers that contain such bits. Mask out the undefined bits
+     before testing.
+
+<li> Do not depend on the states of any undefined bits when storing them in
+     memory or in another register.
+
+<li> Do not depend on the ability to retain information written into any
+     undefined bits.
+
+<li> When loading a register, always load the undefined bits as zeros or
+     reload them with values previously stored from the same register.
+</ul>
+<hr>
+NOTE<p>
+  Depending upon the values of undefined register bits will make software
+  dependent upon the unspecified manner in which the 80386 handles these
+  bits. Depending upon undefined values risks making software incompatible
+  with future processors that define usages for these bits. AVOID ANY
+  SOFTWARE DEPENDENCE UPON THE STATE OF UNDEFINED 80386 REGISTER BITS.
+</p><hr>
+
+
+<a name="F-01-01"></a>
+<h3>Figure 1-1.  Example Data Structure</h3>
+<pre>
+ GREATEST                 DATA STRUCTURE
+ ADDRESS
+  31              23              15              7             0 <--BIT
+ +---------------+---------------+---------------+---------------+   OFFSET
+ |                                                               |28
+ |---------------+---------------+---------------+---------------|
+ |                                                               |24
+ |---------------+---------------+---------------+---------------|
+ |                                                               |20
+ |---------------+---------------+---------------+---------------|
+ |                                                               |16
+ |---------------+---------------+---------------+---------------|
+ |                                                               |12
+ |---------------+---------------+---------------+---------------|
+ |                                                               |8
+ |---------------+---------------+---------------+---------------|
+ |                           UNDEFINED                           |4
+ |---------------+---------------+---------------+---------------|  SMALLEST
+ |    BYTE 3          BYTE 2          BYTE 1          BYTE 0     |0 ADDRESS
+ +---------------+---------------+---------------+---------------+^
+                                                    BYTE OFFSET---+
+
+</pre>
+<a name="01-03-03"></a>
+<h3>1.3.3  Instruction Operands</h3>
+<p>
+When instructions are represented symbolically, a subset of the 80386
+Assembly Language is used. In this subset, an instruction has the following
+format:</p>
+
+label: prefix mnemonic argument1, argument2, argument3
+<br>
+where:
+<ul>
+<li> A label is an identifier that is followed by a colon.
+
+<li> A prefix is an optional reserved name for one of the instruction
+     prefixes.
+
+<li> A mnemonic is a reserved name for a class of instruction opcodes that
+     have the same function.
+
+<li> The operands argument1, argument2, and argument3 are optional. There
+     may be from zero to three operands, depending on the opcode.  When
+     present, they take the form of either literals or identifiers for data
+     items.  Operand identifiers are either reserved names of registers or
+     are assumed to be assigned to data items declared in another part of
+     the program (which may not be shown in the example). When two operands
+     are present in an instruction that modifies data, the right operand is
+     the source and the left operand is the destination.
+</ul>
+For example:
+<br><br>
+LOADREG: MOV EAX, SUBTOTAL
+<br><br>
+In this example LOADREG is a label, MOV is the mnemonic identifier of an
+opcode, EAX is the destination operand, and SUBTOTAL is the source operand.
+<br>
+<a name="01-03-04"></a>
+<h3>1.3.4  Hexadecimal Numbers</h3>
+
+Base 16 numbers are represented by a string of hexadecimal digits followed
+by the character H.  A hexadecimal digit is a character from the set (0, 1,
+2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F).  In some cases, especially in
+examples of program syntax, a leading zero is added if the number would
+otherwise begin with one of the digits A-F.  For example, 0FH is equivalent
+to the decimal number 15.
+
+<a name="01-03-05"></a>
+<h3>1.3.5  Sub- and Super-Scripts</h3>
+
+This manual uses special notation to represent sub- and super-script
+characters. Sub-script characters are surrounded by {curly brackets}, for
+example 10{2} = 10 base 2. Super-script characters are preceeded by a
+caret and enclosed within (parentheses), for example 10^(3) = 10 to the
+third power.
+
+<hr>
+Prev: <a href="chp01-02.htm">1.2  Related Literature</a><br>
+Next: <a href="chp02-00.htm">Chapter 2  Basic Programming Model</a><br>
+</pre>
+</body>
+</html>

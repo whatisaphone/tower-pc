@@ -1,0 +1,146 @@
+Here is a partial list of programs by Yossi Gil. Please contact the
+author at the addresses given at the bottom of this file if you wish 
+to gain access to any of these programs. None of the programs require 
+shareware fee from private users. 
+
+I also maintain a large (over 200) collection of EGA/VGA text mode fonts.  
+All these fonts can be freely used and distributed.
+
+Some more information on TERSE a 4096 bytes editor, and SLIM,
+its bigger brother is given below.
+
+
+File name     Description
+------------------------------------------------------
+outb.com      Write to I/O byte port from DOS cmd line
+inw.com       Read an I/O word port from DOS cmd line
+obsolete.com  Remove old junk files
+palette.com   Show current palette of chars. atttibute
+loadfont.com  Load a user defined font to EGA/VGA
+breakcpi.com  Extract fonts from DOS 3.3+ *.cpi files
+prnstat.com   Display LPT1: printer status
+dumpfont.com  Dump text mode font from EGA/VGA adapter
+rm.com        Tiny, but powerful file removal utility
+prnstat.com   Displays current printer status
+prn2file.com  Redirect printer output to a file
+inb.com       Read an I/O byte port from DOS cmd line
+outw.com      Write to I/O word port from DOS cmd line
+no.com        Run command supplying N's from keyboard
+int.com       Invoke an interrupt from DOS cmd line
+lf.com        DOS to UNIX text file translation prog.
+scan2str.com  Given scan code, find key name.
+charset.com   Display the currently loaded font
+t.com         The TERSE programmer's editor
+_.com         Run cmd on EGA/VGA using undeline attr.
+withfont.com  Run prog. with a user defined E/VGA font
+yes.com       Run command supplying Y's from keyboard
+every.com     Run programs periodically from autoexec
+crlf.com      UNIX to DOS text file translation prog.
+which.com     Locate commands and display pathname
+s.com         SLIM Editor. Extended Terse
+cat.com       Concatenate files. Like UNIX cat
+rot13.com     A ``rotate 13'' encrypt/decrypt filter
+mxify.com     Makes editors work in EMACS style
+quote.com     Quote text by prepending '> ' to lines
+wc.com        Count lines, words, chars. Like UNIX wc
+expand.com    Expand tabs into spaces
+unexpand.com  Compress spaces into tabs
+fold.com      Fold long lines of text files
+uudecode.com  Convert uudecode files back to binary
+whatkey.com   Obtain information about key pressed
+h.com         SLIM Editor for the HP95lx palmtop
+esc.com       Send ESC+args; to cls C:\DOS> esc [2J
+----------------------------------------------------
+
+TERSE is a tiny (only 4096 bytes) but amazingly powerful full-screen
+editor for files of up to 64K in length.  TERSE runs on all PC compatible
+machines.  Its command keys are very similar to those of the famous
+BRIEF editor (by UnderWare Inc.).  TERSE can edit both UNIX and MS-DOS
+style text files as well as binary files.  No hacker's disk is complete
+without it.  No disk, be it hard or floppy, is too full to include it.
+
+TERSE is free (but copyrighted) to private users.  If you are a private
+user who uses TERSE "for pleasure", you are not required to register.
+However, if you use TERSE for any commercial application, i.e., in
+your company, at work, etc., or make money from selling software or
+distributing shareware, you are *required* to register your copy of TERSE.
+Registration cost is only $15 and buys you a personalized version, and
+grant your institution a site license.  For an additional payment of 
+only $5, you get the source code of TERSE.
+
+Highlights
+==========
+ o  Very small: fits in 4096 bytes = 4 clusters on 5.25"/3.5" floppies.
+ o  Minimal free memory requirements: 137KB.
+ o  Uses current screen size, including the most common 80x25 screen
+    dimensions but also unusual sizes such as 40x16, 40x25, 40x40,
+    40x50, 132x25, 132x43, 96x33, 80x30, 80x33, etc.
+ o  Fully DESQview (version 2.0 and above) aware.
+ o  Edit binary files. TERSE is ideal for a quick and dirty job
+    of editing and patching strings in small programs. 
+ o  Supports editing of UNIX style files (lines terminated with '\n').
+ o  Supports both '/' and '\' as directory separator.
+ o  Edit lines of unlimited length (limited only by file size).
+ o  Automatic unlimited horizontal scrolling.
+ o  BRIEF-like keyboard configuration.
+ o  Support for TABS, and configurable tab positions.
+ o  Prevents snow when run on a CGA screen.
+ o  CUT, COPY and PASTE
+ o  SEARCH, SEARCH again, and TRANSLATE commands.
+ o  Safe: confirm exits when text is not saved.
+ o  Edit files whose name contains spaces and other weird names.
+ o  Extended version (the SLIM editor) of size ~5k with many more
+    features, including support (via external filters) for word count, 
+    sorting, charcter codes translations, quoting, tab expansion and
+    unexapnsion, and other complex editing tasks.
+ o  Status line indicating: current column, current line, horizontal
+    scrolling, total number of lines, file name, modified status,
+    insert/overwrite status, the current offset in file and total file size 
+    in bytes are dispalyed in the status line. The extended version 
+    also displays the HeX value of the current char.
+
+Requirements
+=============
+ o  PC-DOS/MS-DOS version 2.0 or higher
+ o  137KB free memory
+ o  64KB free disk space
+
+SLIM can do every thing TERSE can, and has the following additional 
+features:
+
+   o  "read file into buffer" command <Alt-R>
+   o  "switch to another file" command <Alt-E>, 
+   o  "go to line number" command <Alt-G>, 
+   o  "set right margin" command <Alt-M>,
+   o  "swap cursor and mark" command <Shift-Tab>, 
+   o  "pump block thru external filter" command <Alt-F>, 
+   o  "exchange marked block with paste buffer"  command <Keypad*>, and 
+   o   display of the hexadecimal value of the current char in the 
+       status line. 
+
+   The current char display uses a special notation for the TAB, EOF
+   and CR characters as well as for the CRLF combination.
+
+   My favourite new command is "pump block thru external filter" 
+   (<Alt-F> key), which can be undone (and then redone) by the 
+   "exchange block with paste buffer"  command (<Keypad*> key).
+   Think of the possibilities: formatting, spelling, word counting, 
+   sorting, sed and awk, DOS and 4DOS commands etc. 
+
+Author's Address
+================
+E-mail  internet addresses:   yogi@cs.technion.ac.il 
+
+Permanent mailing address  is:
+    Joseph  Gil,
+    P.O. Box 3148,
+    Jerusalem,
+    Israel.
+
+Hebrew  mailing address  (you  cannot  read  the  following  
+unless your screen adapter can display Hebrew character):
+                                                               åâÇ âëÖâ
+                                                              3148 .É.ö
+                                                                 çâåôÖòâ
+
+

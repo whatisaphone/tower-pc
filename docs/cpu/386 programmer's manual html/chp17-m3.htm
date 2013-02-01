@@ -1,0 +1,459 @@
+<html>
+<head>
+<title>
+17.3.M  'M' Instructions 
+</title>
+<body>
+<a name="17-03-M"></a>
+Prev: <a href="chp17-l3.htm">17.3.L  'L' Instructions </a><br>
+Next: <a href="chp17-n3.htm">17.3.N  'N' Instructions </a>
+<hr>
+<h2>
+17.3.M  'M' Instructions 
+</h2>
+<p>
+<a name="17-03-MOV"></a>
+<h3>MOV -- Move Data</h3>
+<p>
+<p>
+<pre>
+Opcode   Instruction       Clocks        Description
+
+88  /r   MOV r/m8,r8       2/2           Move byte register to r/m byte
+89  /r   MOV r/m16,r16     2/2           Move word register to r/m word
+89  /r   MOV r/m32,r32     2/2           Move dword register to r/m dword
+8A  /r   MOV r8,r/m8       2/4           Move r/m byte to byte register
+8B  /r   MOV r16,r/m16     2/4           Move r/m word to word register
+8B  /r   MOV r32,r/m32     2/4           Move r/m dword to dword register
+8C  /r   MOV r/m16,Sreg    2/2           Move segment register to r/m word
+8D  /r   MOV Sreg,r/m16    2/5,pm=18/19  Move r/m word to segment register
+A0       MOV AL,moffs8     4             Move byte at (seg:offset) to AL
+A1       MOV AX,moffs16    4             Move word at (seg:offset) to AX
+A1       MOV EAX,moffs32   4             Move dword at (seg:offset) to EAX
+A2       MOV moffs8,AL     2             Move AL to (seg:offset)
+A3       MOV moffs16,AX    2             Move AX to (seg:offset)
+A3       MOV moffs32,EAX   2             Move EAX to (seg:offset)
+B0 + rb  MOV reg8,imm8     2             Move immediate byte to register
+B8 + rw  MOV reg16,imm16   2             Move immediate word to register
+B8 + rd  MOV reg32,imm32   2             Move immediate dword to register
+C6       MOV r/m8,imm8     2/2           Move immediate byte to r/m byte
+C7       MOV r/m16,imm16   2/2           Move immediate word to r/m word
+C7       MOV r/m32,imm32   2/2           Move immediate dword to r/m dword
+</pre>
+<p>
+<pre>
+---------------------------------------------------------------------------
+NOTES:
+  moffs8, moffs16, and moffs32 all consist of a simple offset relative
+  to the segment base. The 8, 16, and 32 refer to the size of the data. The
+  address-size attribute of the instruction determines the size of the
+  offset, either 16 or 32 bits.
+---------------------------------------------------------------------------
+</pre>
+Operation
+<p>
+DEST <- SRC;
+<p>
+<b>Description</b>
+<p>
+MOV copies the second operand to the first operand.
+<p>
+If the destination operand is a segment register (DS, ES, SS, etc.), then
+data from a descriptor is also loaded into the register. The data for the
+register is obtained from the descriptor table entry for the selector
+given. A null selector (values 0000-0003) can be loaded into DS and ES
+registers without causing an exception; however, use of DS or ES causes a
+#GP(0), and no memory reference occurs.
+<p>
+A MOV into SS inhibits all interrupts until after the execution of the
+next instruction (which is presumably a MOV into eSP).
+<p>
+Loading a segment register under 80386 Protected Mode results in special
+checks and actions, as described in the following listing:
+<p>
+IF SS is loaded;
+THEN
+<pre>
+   IF selector is null THEN #GP(0);
+FI;
+   Selector index must be within its descriptor table limits else
+      #GP(selector);
+   Selector's RPL must equal CPL else #GP(selector);
+AR byte must indicate a writable data segment else #GP(selector);
+   DPL in the AR byte must equal CPL else #GP(selector);
+   Segment must be marked present else #SS(selector);
+   Load SS with selector;
+   Load SS with descriptor.
+FI;
+IF DS, ES, FS or GS is loaded with non-null selector;
+THEN
+   Selector index must be within its descriptor table limits
+      else #GP(selector);
+   AR byte must indicate data or readable code segment else
+      #GP(selector);
+   IF data or nonconforming code segment
+   THEN both the RPL and the CPL must be less than or equal to DPL in
+      AR byte;
+   ELSE #GP(selector);
+   FI;
+   Segment must be marked present else #NP(selector);
+   Load segment register with selector;
+   Load segment register with descriptor;
+FI;
+IF DS, ES, FS or GS is loaded with a null selector;
+THEN
+   Load segment register with selector;
+   Clear descriptor valid bit;
+FI;
+</pre>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP, #SS, and #NP if a segment register is being loaded; otherwise,
+#GP(0) if the destination is in a nonwritable segment; #GP(0) for an
+illegal memory operand effective address in the CS, DS, ES, FS, or GS
+segments; #SS(0) for an illegal address in the SS segment; #PF(fault-code)
+for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-MOV"></a>
+<h3>MOV -- Move to/from Special Registers</h3>
+<p>
+<pre>
+Opcode      Instruction           Clocks   Description
+
+0F  20 /r   MOV r32,CR0/CR2/CR3   6        Move (control register) to
+                                           (register)
+0F  22 /r   MOV CR0/CR2/CR3,r32   10/4/5   Move (register) to (control
+                                           register)
+0F  21 /r   MOV r32,DR0 -- 3      22       Move (debug register) to
+                                           (register)
+0F  21 /r   MOV r32,DR6/DR7       14       Move (debug register) to
+                                           (register)
+0F  23 /r   MOV DR0 -- 3,r32      22       Move (register) to (debug
+                                           register)
+0F  23 /r   MOV DR6/DR7,r32       16       Move (register) to (debug
+                                           register)
+0F  24 /r   MOV r32,TR6/TR7       12       Move (test register) to
+                                           (register)
+0F  26 /r   MOV TR6/TR7,r32       12       Move (register) to (test
+                                           register)
+</pre>
+<p>
+Operation
+<p>
+DEST <- SRC;
+<p>
+<b>Description</b>
+<p>
+The above forms of MOV store or load the following special registers in
+or from a general purpose register:
+<p>
+<pre>
+  -  Control registers CR0, CR2, and CR3
+  -  Debug Registers DR0, DR1, DR2, DR3, DR6, and DR7
+  -  Test Registers TR6 and TR7
+</pre>
+32-bit operands are always used with these instructions, regardless of the
+operand-size attribute.
+<p>
+<b>Flags Affected</b>
+<p>
+OF, SF, ZF, AF, PF, and CF are undefined
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the current privilege level is not 0
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+#GP(0) if instruction execution is attempted
+<p>
+Notes
+<p>
+The instructions must be executed at privilege level 0 or in real-address
+mode; otherwise, a protection exception will be raised.
+<p>
+The reg field within the ModRM byte specifies which of the special
+registers in each category is involved. The two bits in the  field are
+always 11. The r/m field specifies the general register involved.
+<p>
+<p>
+<a name="17-03-MOVS"></a>
+<h3>MOVS/MOVSB/MOVSW/MOVSD -- Move Data from String to String</h3>
+<p>
+<pre>
+Opcode  Instruction      Clocks   Description
+
+A4      MOVS m8,m8       7        Move byte [(E)SI] to ES:[(E)DI]
+A5      MOVS m16,m16     7        Move word [(E)SI] to ES:[(E)DI]
+A5      MOVS m32,m32     7        Move dword [(E)SI] to ES:[(E)DI]
+A4      MOVSB            7        Move byte DS:[(E)SI] to ES:[(E)DI]
+A5      MOVSW            7        Move word DS:[(E)SI] to ES:[(E)DI]
+A5      MOVSD            7        Move dword DS:[(E)SI] to ES:[(E)DI]
+</pre>
+<p>
+Operation
+<p>
+IF (instruction = MOVSD) OR (instruction has doubleword operands)
+THEN OperandSize <- 32;
+ELSE OperandSize <- 16;
+IF AddressSize = 16
+THEN use SI for source-index and DI for destination-index;
+ELSE (* AddressSize = 32 *)
+<pre>
+   use ESI for source-index and EDI for destination-index;
+FI;
+IF byte type of instruction
+THEN
+   [destination-index] <- [source-index]; (* byte assignment *)
+   IF DF = 0 THEN IncDec <- 1 ELSE IncDec <- -1; FI;
+ELSE
+   IF OperandSize = 16
+   THEN
+      [destination-index] <- [source-index]; (* word assignment *)
+      IF DF = 0 THEN IncDec <- 2 ELSE IncDec <- -2; FI;
+   ELSE (* OperandSize = 32 *)
+      [destination-index] <- [source-index]; (* doubleword assignment *)
+      IF DF = 0 THEN IncDec <- 4 ELSE IncDec <- -4; FI;
+   FI;
+FI;
+source-index <- source-index + IncDec;</pre>
+destination-index <- destination-index + IncDec;
+<p>
+<b>Description</b>
+<p>
+MOVS copies the byte or word at [(E)SI] to the byte or word at
+ES:[(E)DI]. The destination operand must be addressable from the ES
+register; no segment override is possible for the destination. A segment
+override can be used for the source operand; the default is DS.
+<p>
+The addresses of the source and destination are determined solely by the
+contents of (E)SI and (E)DI. Load the correct index values into (E)SI
+and (E)DI before executing the MOVS instruction. MOVSB, MOVSW,
+and MOVSD are synonyms for the byte, word, and doubleword MOVS
+instructions.
+<p>
+After the data is moved, both (E)SI and (E)DI are advanced
+automatically. If the direction flag is 0 (CLD was executed), the registers
+are incremented; if the direction flag is 1 (STD was executed), the
+registers are decremented. The registers are incremented or decremented by 1
+if a byte was moved, 2 if a word was moved, or 4 if a doubleword was moved.
+<p>
+MOVS can be preceded by the REP prefix for block movement of CX
+bytes or words. Refer to the REP instruction for details of this operation.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS
+segments; #SS(0) for an illegal address in the SS segment; #PF(fault-code)
+for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-MOVSX"></a>
+<h3>MOVSX -- Move with Sign-Extend</h3>
+<p>
+<pre>
+Opcode     Instruction        Clocks   Description
+
+0F  BE /r  MOVSX r16,r/m8     3/6      Move byte to word with sign-extend
+0F  BE /r  MOVSX r32,r/m8     3/6      Move byte to dword, sign-extend
+0F  BF /r  MOVSX r32,r/m16    3/6      Move word to dword, sign-extend
+</pre>
+<p>
+Operation
+<p>
+DEST <- SignExtend(SRC);
+<p>
+<b>Description</b>
+<p>
+MOVSX reads the contents of the effective address or register as a byte
+or a word, sign-extends the value to the operand-size attribute of the
+instruction (16 or 32 bits), and stores the result in the destination
+register.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS,
+ES, FS or GS segments; #SS(0) for an illegal address in the SS segment;
+#PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-MOVZX"></a>
+<h3>MOVZX -- Move with Zero-Extend</h3>
+<p>
+<pre>
+Opcode      Instruction        Clocks   Description
+
+0F  B6 /r   MOVZX r16,r/m8     3/6      Move byte to word with zero-extend
+0F  B6 /r   MOVZX r32,r/m8     3/6      Move byte to dword, zero-extend
+0F  B7 /r   MOVZX r32,r/m16    3/6      Move word to dword, zero-extend
+</pre>
+<p>
+Operation
+<p>
+DEST <- ZeroExtend(SRC);
+<p>
+<b>Description</b>
+<p>
+MOVZX reads the contents of the effective address or register as a byte
+or a word, zero extends the value to the operand-size attribute of the
+instruction (16 or 32 bits), and stores the result in the destination
+register.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS,
+ES, FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+#PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-MUL"></a>
+<h3>MUL -- Unsigned Multiplication of AL or AX</h3>
+<p>
+<pre>
+Opcode  Instruction     Clocks       Description
+</pre>
+F6  /4  MUL AL,r/m8     9-14/12-17   Unsigned multiply (AX <- AL * r/m byte)
+F7  /4  MUL AX,r/m16    9-22/12-25   Unsigned multiply (DX:AX <- AX * r/m
+<pre>
+                                     word)
+F7  /4  MUL EAX,r/m32   9-38/12-41   Unsigned multiply (EDX:EAX <- EAX * r/m
+                                     dword)
+</pre>
+<p>
+<pre>
+---------------------------------------------------------------------------
+NOTES:
+  The 80386 uses an early-out multiply algorithm. The actual number of
+  clocks depends on the position of the most significant bit in the 
+  optimizing multiplier, shown underlined above. The optimization occurs
+  for positive and negative multiplier values. Because of the early-out
+  algorithm, clock counts given are minimum to maximum. To calculate the
+  actual clocks, use the following formula:
+
+    Actual clock = if  <> 0 then max(ceiling(log{2} |m|), 3) + 6 clocks;
+
+    Actual clock = if  = 0 then 9 clocks
+
+  where m is the multiplier.
+---------------------------------------------------------------------------
+</pre>
+Operation
+<p>
+IF byte-size operation
+THEN AX <- AL * r/m8
+ELSE (* word or doubleword operation *)
+<pre>
+   IF OperandSize = 16
+   THEN DX:AX <- AX * r/m16
+   ELSE (* OperandSize = 32 *)
+      EDX:EAX <- EAX * r/m32
+   FI;
+FI;
+</pre>
+<b>Description</b>
+<p>
+MUL performs unsigned multiplication. Its actions depend on the size
+of its operand, as follows:
+<p>
+<pre>
+  -  A byte operand is multiplied by AL; the result is left in AX. The
+     carry and overflow flags are set to 0 if AH is 0; otherwise, they are
+     set to 1.
+
+  -  A word operand is multiplied by AX; the result is left in DX:AX.
+     DX contains the high-order 16 bits of the product. The carry and
+     overflow flags are set to 0 if DX is 0; otherwise, they are set to 1.
+
+  -  A doubleword operand is multiplied by EAX and the result is left in
+     EDX:EAX. EDX contains the high-order 32 bits of the product. The
+     carry and overflow flags are set to 0 if EDX is 0; otherwise, they are
+     set to 1.
+</pre>
+<b>Flags Affected</b>
+<p>
+OF and CF as described above; SF, ZF, AF, PF, and CF are undefined
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS,
+ES, FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+#PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-l3.htm">17.3.L  'L' Instructions </a><br>
+Next: <a href="chp17-n3.htm">17.3.N  'N' Instructions </a>
+</body>
+</html>

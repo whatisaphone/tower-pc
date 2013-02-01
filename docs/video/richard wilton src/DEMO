@@ -1,0 +1,18 @@
+demo.obj:	demo.c
+	msc demo;
+
+1-1.obj:	1-1.asm
+	masm /mx /ml 1-1;
+
+4-1.obj:	4-1.asm
+	masm /mx /ml 4-1;
+
+6-5.obj:	6-5.asm	
+	masm /mx /ml 6-5;
+
+c-1.obj:	c-1.asm
+	masm /mx /ml c-1;
+
+demo.exe:	demo.obj 1-1.obj 4-1.obj 6-5.obj c-1.obj
+	link /noi demo 1-1 4-1 6-5 c-1;
+

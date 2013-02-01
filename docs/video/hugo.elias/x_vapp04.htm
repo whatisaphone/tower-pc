@@ -1,0 +1,31 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>Vesa BIOS Example. Page 4: Switch to the Graphics Mode</title>
+
+<h1>VESA BIOS Example</h1>
+<h4>Page 4: Switch to the Graphics Mode</h4>
+<p><tr><td colspan=2><hr></td></tr><p>
+
+Switching to your chosen resolution is the easiest of all the functions in the VESA BIOS. All
+you have to do is tell it the mode you want, and it does the rest. This will only work, of course,
+if you ask for a mode the BIOS has explicitly told you it supports. <p>
+
+<h4>Request Mode Change</h4>
+<pre>
+   AX = 4F02h
+   BX = mode number
+
+   call interrupt 10h
+</pre>
+<h4>Chesk it was sucessful</h4>
+<pre>
+   if AX = 4F00h then
+      continue the program
+   else
+      print "Could not switch to that mode"
+   end if
+</pre>
+</body>
+</html>

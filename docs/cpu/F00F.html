@@ -1,0 +1,500 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage 2.0">
+<title>The Pentium F00F Bug</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<table border="0" width="800">
+    <tr>
+        <td width="100%"><h1 align="center"><font color="#0000FF"
+        size="7" face="Arial">The Pentium F00F Bug</font></h1>
+        <h2 align="center"><font color="#0000FF" size="6"
+        face="Arial">By Robert R. Collins</font></h2>
+        <p><font size="3" face="Arial">Last fall, a message
+        warning users or a bug in the Pentium/Pentium MMX was
+        anonymously posted on the comp.os.linux.advocacy</font><font
+        color="#00FF00" size="3" face="Arial"> </font><font
+        size="3" face="Arial">Internet newsgroup. According to
+        the message, the bug could completely lock up the
+        computer from any operating mode in any operating system.
+        At first glance, the ordinary news reader might say
+        &quot;so what.&quot; After all, many users are accustomed
+        to Windows 3.1/95 regularly locking up. But the placement
+        of the bug on comp.os.linux.advocacy was calculated and
+        intentional. The readers on that newsgroup knew exactly
+        what the bug meant &#150; an ordinary user or saboteur
+        could unleash a program to bring down network servers
+        that form the backbone of our modern networking
+        community. Internet service providers (ISPs), web hosts,
+        government agencies, and computer departments at
+        universities were petrified of the potential damage that
+        this bug could do. </font></p>
+        <h3><font color="#FF0000" size="4" face="Arial">Enter the
+        F00F Bug </font></h3>
+        <p><font size="3" face="Arial">When any x86 processor
+        from the 80186 and beyond encounters an invalid
+        instruction, the processor is<i> supposed</i> to generate
+        an invalid opcode exception. In Intel vernacular, the
+        undefined opcode exception is known as a &quot;#UD.&quot;
+        This handler usually signals an error condition and
+        terminates the errant program. When this mechanism works,
+        the errant program can&#146;t harm the computer system.
+        Should this mechanism fail, however, the errant program
+        can bring down the entire computer. If the computer is a
+        network server or ISP, then the errant program can bring
+        down the entire network. </font></p>
+        <p><font size="3" face="Arial">That&#146;s what can, in
+        fact, happen when the Pentium encounters the
+        &quot;F00F&quot; bug, which maps to a LOCK CMPXCHG8B EAX
+        instruction. CMPXCHGHB compares 64-hit memory contents
+        with the contents in EDX and EAX. One of the operands
+        must he memory, and the other (implied) operand is
+        EDX:EAX. It is possible to construct an instruction
+        encoding that doesn&#146;t map to a memory operand. Since
+        the non-memory form of this instruction is invalid, a
+        compiler or assembler will not generate this code.
+        Instead, assembly-language programmers must construct it
+        by hand. </font></p>
+        <p><font size="3" face="Arial">Such an illegal encoding
+        should generate the requisite #UD. As you&#146;d expect,
+        a CMPXCHG8B EAX instruction generates a #UD. However,
+        when this illegal encoding is prepended with a LOCK
+        prefix, the processor fails to work correctly. </font></p>
+        <p><font size="3" face="Arial">Using the LOCK prefix on
+        this form of CMPXCHG8B is illegal in and of itself. LOCK
+        prefixes are only allowed on memory-based
+        read-modify-write instructions. Hence a LOCK prefix on
+        the register-based CMPXCHG8B EAX instruction should also
+        generate an invalid opcode exception. </font></p>
+        <p><font size="3" face="Arial">Instead, the Pentium locks
+        up and freezes the entire computer when it encounters
+        this instruction. This bug is especially nasty, because
+        any user can construct a program with this instruction,
+        and upload it to a network computer, or incorporate it
+        within an ActiveX applet. Once the program is run on the
+        network, the network server crashes. The only possible
+        recovery comes by hitting the big red switch. Suppose you
+        download an ActiveX applet that contains this code. As
+        soon as the code executes,<i> your</i> computer freezes
+        up. </font></p>
+        <p><font size="3" face="Arial">Within one week of the
+        discovery of the bug, Intel announced a software
+        workaround that can be incorporated into virtually any
+        operating system (except real-mode operating systems,
+        like DOS). </font></p>
+        <h3><font color="#FF0000" size="4" face="Arial">How the
+        Bug Works </font></h3>
+        <p><font size="3" face="Arial">When the processor
+        encounters the instruction F0 0F C7 C8 (or anything from
+        F0 0F C7 C8..CF), the F00F bug occurs. The processor
+        recognizes that an invalid opcode has occurred and tries
+        to dispatch the #UD handler. Because of the LOCK prefix,
+        the processor is confused. When the processor issues the
+        bus reads to get the #UD handler vector address, the
+        processor erroneously asserts the LOCK#</font><font
+        color="#FF0000" size="3" face="Arial"> </font><font
+        size="3" face="Arial">signal. The LOCK# signal can only
+        he asserted for read-modify-write instructions that
+        modify memory. When the bus is locked, a locked memory
+        read must be followed by a locked memory write, lest
+        unpredictable results may occur. But in this case, the
+        LOCK#</font><font color="#FF0000" size="3" face="Arial"> </font><font
+        size="3" face="Arial">signal remains asserted for the two
+        consecutive memory reads required to retrieve the #UD
+        vector address. The processor never issues any
+        intervening locked write, and then hangs itself. This
+        behavior is shown in the logic analyzer trace in </font><a
+        href="#Ex1"><font size="3" face="Arial">Example 1</font></a><font
+        size="3" face="Arial">. As you can see, the Pentium tries
+        to retrieve the #UD vector with two locked reads. After
+        that, all processor activity stops. </font></p>
+        <table border="0" width="100%">
+            <caption align="top"><font size="3"><b>Example</b></font><a
+            name="Ex1"><font size="3"><b> 1 -- F00F Bug Example</b></font></a></caption>
+            <tr>
+                <td width="100%"><pre><font size="3">Sequence Address  Data        Mnemonic                                 Timestamp
+--------------------------------------------------------------------------------
+T 524285 000000B2 ----7E--------(-IO-WRITE-)------------------------------300-ns
+  524286 00000018 ----E14C      ( LOCKED MEM READ )                       440 ns
+  524287 0000001A F000----      ( LOCKED MEM READ )                       100 ns</font></pre>
+                </td>
+            </tr>
+        </table>
+        <h3><font color="#FF0000" size="4" face="Arial">The
+        Various Workarounds </font></h3>
+        <p><font size="3" face="Arial">There are various
+        workarounds to this bug &#150; not all of them are good
+        (a few are outright kludgey, in fact). One workaround
+        Intel has proposed actually takes advantage of the
+        bug&#146;s behavior as a means to do the right thing.
+        Another Intel workaround is ingenious, though a kludge.
+        The first two <b><u>alternate</u></b> workarounds, to be
+        presented shortly, are given for academic purposes only.
+        Even though the workarounds have demonstrated their
+        ability to obscure the bug behavior, they are not
+        entirely reliable. </font></p>
+        <h4><font color="#FF8000" size="3" face="Arial">Intel&#146;s
+        First Workaround </font></h4>
+        <blockquote>
+            <p><font size="3" face="Arial"><i>Part I, IDT
+            Alignment: </i></font></p>
+            <ol type="A">
+                <li><font size="3" face="Arial"><i>Align the
+                    Interrupt Descriptor Table (IDT) such that it
+                    spans a 4-KB page boundary by placing the
+                    first entry starting 56 bytes from the end of
+                    the first 4KB page. This places the first
+                    seven entries (0 &#150; 6) on the first 4-KB
+                    page, and the remaining entries on the second
+                    page. </i></font></li>
+                <li><font size="3" face="Arial"><i>The page
+                    containing the first seven entries of the IDT
+                    must not have a mapping in the OS page
+                    tables. This will cause any of exceptions 0
+                    &#150; 6 to generate a page not present
+                    fault. A page fault prevents the bus lock
+                    condition and gives the OS complete control
+                    to process these exceptions as appropriate.
+                    Note that exception 6 is the invalid opcode
+                    exception, so with this scheme an OS has
+                    complete control of any program executing an
+                    invalid CMPXCHG8B instruction. </i></font></li>
+            </ol>
+            <p><font size="3" face="Arial"><i>Part II, Page Fault
+            Handler Modifications: </i></font></p>
+            <ol type="A">
+                <li><font size="3" face="Arial"><i>Recognize
+                    accesses to the first page of the IDT by
+                    testing the fault address in CR2. Page not
+                    present faults on other addresses can he
+                    processed normally. </i></font></li>
+                <li><font size="3" face="Arial"><i>For page not
+                    present faults on the first page of the IDT,
+                    the OS must recognize and dispatch the
+                    exception which caused the page not present
+                    fault. Before proceeding, test the fault
+                    address in CR2 to determine if it is in the
+                    address range corresponding to exceptions 0
+                    &#150; 6. </i></font></li>
+                <li><font size="3" face="Arial"><i>Calculate
+                    which exception caused the page not present
+                    fault from the fault address in CR2. </i></font></li>
+                <li><font size="3" face="Arial"><i>Depending on
+                    the operating system, certain privilege level
+                    checks may be required, along with
+                    adjustments to the interrupt stack. </i></font></li>
+                <li><font size="3" face="Arial"><i>Jump to the
+                    normal handler for the appropriate exception.
+                    </i></font></li>
+            </ol>
+        </blockquote>
+        <p><font size="3" face="Arial">This is an ingenious
+        solution to a horrible problem. Unfortunately, the
+        solution is as had as the problem. When the processor
+        receives any of the first seven exceptions (Divide by
+        Zero through Invalid Opcode), the processor generates a
+        page fault instead of the appropriate exception. The
+        page-fault handler gets mucked up with all kinds of code
+        to check privilege levels and whether the fault was
+        caused by another exception. If I had my druthers,
+        I&#146;d stay as far away from this solution as possible.
+        </font></p>
+        <h4><font color="#FF8000" size="3" face="Arial">Intel&#146;s
+        Second Workaround </font></h4>
+        <blockquote>
+            <p><font size="3" face="Arial"><i>Part I, IDT Page
+            Access: </i></font></p>
+            <ol type="A">
+                <li><font size="3" face="Arial"><i>Mark the page
+                    containing the first seven entries (0 &#150;
+                    6) of the IDT as read only by setting bit 1
+                    of the page table entry to zero. Also set
+                    CR0.WP (bit 16) to 1. Now when the invalid
+                    opcode exception occurs on the locked
+                    CMPXCHG8B instruction, the processor will
+                    trigger a page fault since it does not have
+                    write access to the page containing entry 6
+                    of the IDT. This page fault prevents the bus
+                    lock condition and gives the OS complete
+                    control to process the invalid operand
+                    exception as appropriate. Note that exception
+                    6 is the invalid opcode exception, so with
+                    this scheme an OS has complete control of any
+                    program executing an invalid CMPXCHG8B
+                    instruction. </i></font></li>
+                <li><font size="3" face="Arial"><i>Optional: If
+                    updates to entries 7-255 of the IDT occur
+                    during the course of normal operation, page
+                    faults should be avoided on writes to these
+                    IDT entries. These page faults can be avoided
+                    by aligning the IDT across a 4-KB page
+                    boundary such that the first seven entries (0
+                    &#150; 6) of the IDT are on the first read
+                    only page and the remaining entries are on a
+                    read/writeable page. </i></font></li>
+            </ol>
+            <p><font size="3" face="Arial"><i>Part II, Page Fault
+            Handler Modifications: </i></font></p>
+            <ol type="A">
+                <li><font size="3" face="Arial"><i>Modify the
+                    page fault handler to calculate which
+                    exception caused the page fault using the
+                    fault address in CR2. If the error code on
+                    the stack indicates the exception occurred
+                    from ring 0 and if the address corresponds to
+                    the invalid opcode exception, then pop the
+                    error code off the stack and jump to the
+                    invalid opcode exception handler. Otherwise
+                    continue with the normal page fault handler. </i></font></li>
+            </ol>
+        </blockquote>
+        <p><font size="3" face="Arial">This workaround is really
+        quite clever, in that it takes advantage of the bug</font><font
+        color="#FF0000" size="3" face="Arial"> </font><font
+        size="3" face="Arial">as a means to provide a fix to the
+        problem. When any of the first six exceptions occur, they
+        are handled as they normally would. Divide by Zero
+        through BOUND exceptions vector to their normal exception
+        handlers without any intervening code in the page-fault
+        handler. However, when the F00F bug occurs, the
+        page-fault handler is invoked instead of the #UD handler.
+        Why? CR0.WP=1 instructs the microprocessor to generate a
+        page fault when an attempt is made by the supervisor to
+        modify a memory page. The processor doesn&#146;t actually
+        attempt to modify the Interrupt Descriptor Page (IDT page
+        holding the #UD vector address) when the F00F opcode is
+        encountered. But the bug actually makes the processor
+        think it&#146;s modifying the IDT page with the #UD
+        vector. The locked memory cycle somehow convinces the
+        internal state of the Pentium to think that a write cycle
+        is going to occur. Since the transition to the #UD
+        handler is considered a supervisor task, the processor
+        thinks it&#146;s going to write to this page. Thus when
+        CR0.WP=1, a page fault occurs. </font></p>
+        <p><font size="3" face="Arial">Even though this is a
+        clever fix, there are two things I don&#146;t like about
+        it: </font></p>
+        <ol>
+            <li><font size="3" face="Arial">The fix requires a
+                kludge to the page-fault handler code. The
+                page-fault handler must contain code to detect
+                this condition, and vector to the #UD handler. </font></li>
+            <li><font size="3" face="Arial">Setting CR0.WP=1
+                isn&#146;t a viable solution for everybody. Some
+                operating systems may not be able to use this
+                workaround. </font></li>
+        </ol>
+        <p><font size="3" face="Arial">If I were forced to choose
+        between two of Intel&#146;s &quot;blessed&quot;
+        solutions, I&#146;d definitely choose this one. However,
+        because Intel set a precedent in documenting a solution
+        that actually takes advantage of the bug behavior, this
+        could give rise to much more elegant solutions that also
+        take advantage of the bug behavior. </font></p>
+        <p><font size="3" face="Arial">In fact, there are several
+        alternative solutions to the problem, some quite simple. </font></p>
+        <h4><font color="#FF8000" size="3" face="Arial">Alternate
+        Solution #1 </font></h4>
+        <blockquote>
+            <p><font size="3" face="Arial"><i>Part I, IDT
+            Alignment: </i></font></p>
+            <ol type="A">
+                <li><font size="3" face="Arial"><i>Align the
+                    Interrupt Descriptor Table (IDT) such that it
+                    spans a 4-KB page boundary by placing the
+                    first 56 bytes (IDT entries 0 &#150; 6) from
+                    the end of the first 4-KB page. This places
+                    the first seven entries (0 &#150; 6) on the
+                    first 4-KB page, and the remaining entries on
+                    the second page. </i></font></li>
+            </ol>
+            <p><font size="3" face="Arial"><i>Part II, Page Table
+            Modification: </i></font></p>
+            <ol type="A">
+                <li><font size="3" face="Arial"><i>Mark the first
+                    4-KB page of the IDT as non-cacheable by
+                    setting the appropriate Page Table Entry to
+                    Page Cache Disable (PTE. PCD=1). </i></font></li>
+            </ol>
+        </blockquote>
+        <p><font size="3" face="Arial">All exceptions vector to
+        their appropriate interrupt handler. The page fault
+        handler doesn&#146;t need to be mucked up with any extra
+        code. All of the exception handling code may remain
+        unmodified. When the F00F bug occurs, the processor
+        issues the two consecutive locked reads. However, the
+        processor doesn&#146;t lock up because the page is
+        non-cacheable. </font><a href="#Ex2"><font size="3"
+        face="Arial">Example 2</font></a><font size="3"
+        face="Arial"> shows the logic analyzer trace of the
+        microprocessor recovering from the F00F bug. </font></p>
+        <table border="0" width="100%">
+            <caption align="top"><font size="3"><b>Example</b></font><a
+            name="Ex2"><font size="3"><b> 2 -- F00F bug on
+            non-cacheable page</b></font></a></caption>
+            <tr>
+                <td width="100%"><pre><font size="3">Sequence Address  Data        Mnemonic                                 Timestamp
+--------------------------------------------------------------------------------
+  428677 00060FF8 0008049A ( LOCKED MEM READ )                            330 ns
+         00060FFC 00008E00 ( LOCKED MEM READ ) 
+  428678 0001E8B8 BFF0FFFF ( LOCKED MEM READ )                            170 ns
+         0001E8BC 00009B01 ( LOCKED MEM READ ) 
+  428679 0001EE9C 00000008 ( LOCKED MEM WRITE )                           130 ns
+  428680 0001EE98 000003F2 ( MEM WRITE )                                   60 ns</font></pre>
+                </td>
+            </tr>
+        </table>
+        <h4><font color="#FF8000" size="3" face="Arial">Alternate
+        Solution #2 </font></h4>
+        <blockquote>
+            <p><font size="3" face="Arial"><i>Part I, IDT
+            Alignment: </i></font></p>
+            <ol type="A">
+                <li><font size="3" face="Arial"><i>Align the
+                    Interrupt Descriptor Table (IDT) such that it
+                    spans a 4-KB page boundary by placing the
+                    first 56 bytes (IDT entries 0 &#150; 6) from
+                    the end of the first 4-KB page. This places
+                    the first seven entries (0 &#150; 6) on the
+                    first 4-KB page, and the remaining entries on
+                    the second page. </i></font></li>
+            </ol>
+            <p><font size="3" face="Arial"><i>Part II, Page Table
+            Modification: </i></font></p>
+            <ol type="A">
+                <li><font size="3" face="Arial"><i>Mark the first
+                    4-KB page of the IDT as non-cacheable hy
+                    setting the appropriate Page Table Entry to
+                    Page Write-Through (PTE.PWT=1). This is by
+                    far the best solution. </i></font></li>
+            </ol>
+        </blockquote>
+        <p><font size="3" face="Arial">This solution maintains
+        all of the benefits of having the page cacheable.
+        However, because the page is considered write-through,
+        the processor is tricked into recovering from the bus
+        LOCK up condition. </font><a href="#Ex3"><font size="3"
+        face="Arial">Example 3</font></a><font size="3"
+        face="Arial"> shows the results of encountering the F00F
+        bug when the page is cacheable, but marked as
+        write-through. </font></p>
+        <table border="0" width="100%">
+            <caption align="top"><font size="3"><strong>Example</strong></font><a
+            name="Ex3"><font size="3"><strong> 3 - F00F bug on
+            page write-through</strong></font></a></caption>
+            <tr>
+                <td width="100%"><pre><font size="3">Sequence Address  Data        Mnemonic                                 Timestamp
+--------------------------------------------------------------------------------
+  429135 00060FF8 0008049A ( LOCKED MEM READ )                            330 ns
+         00060FFC 00008E00 ( LOCKED MEM READ )
+  429136 0001E8B8 BFF0FFFF ( LOCKED MEM READ )                            170 ns
+         0001E8BC 00009B01 ( LOCKED MEM READ )
+  429137 0001EE9C 00000008 ( LOCKED MEM WRITE )                           140 ns
+  429138 0001EE98 000003F2 ( MEM WRITE )                                   50 ns</font></pre>
+                </td>
+            </tr>
+        </table>
+        <h4><font color="#FF8000" size="3" face="Arial">Alternate
+        Solution #3 (For DOS Users) </font></h4>
+        <blockquote>
+            <ol type="A">
+                <li><font size="3" face="Arial"><i>Turn off your
+                    cache. Enter your BIOS setup utility, and
+                    disable the processor cache. This prevents
+                    the F00F bug from 1ocking up your computer. </i></font></li>
+            </ol>
+        </blockquote>
+        <p><font size="3" face="Arial">This isn&#146;t really a
+        viable solution for most people. Turning off the
+        microprocessor cache can have a dramatically negative
+        performance impact on your computer. </font><a
+        href="#Ex4"><font size="3" face="Arial">Example 4</font></a><font
+        size="3" face="Arial"> shows the results of the F00F bug
+        with cache disabled. </font></p>
+        <table border="0" width="100%">
+            <caption align="top"><a name="Ex4"><strong>Example 4
+            - F00F bug with cache disabled</strong></a></caption>
+            <tr>
+                <td width="100%"><pre><font size="3">Sequence Address  Data        Mnemonic                                 Timestamp
+--------------------------------------------------------------------------------
+</font><font size="5">  </font><font size="3">426333 00060FF8 00080496 ( LOCKED MEM READ )                            60 ns
+          00060FFC 00008E00 ( LOCKED MEM READ )
+   426334 0001E8B8 BFF0FFFF ( LOCKED MEM READ )                           170 ns
+          0001E8BC 00009B01 ( LOCKED MEM READ )
+   426335 0001EEA0 00010002 ( LOCKED MEM WRITE )                          120 ns
+   426336 0001EE9C 00000008 ( MEM WRITE )                                  60 ns
+   426337 0001EE98 000003EE ( MEM WRITE ) 50 ns</font></pre>
+                </td>
+            </tr>
+        </table>
+        <h3><font color="#FF0000" size="4" face="Arial">Conclusion
+        </font></h3>
+        <p><font size="3" face="Arial">The ultimate solution to
+        the F00F bug problem is obtained when disabling the cache
+        &#150; indicating that some interaction exists between
+        the cache and the bug. Instead of taking advantage of the
+        cache interaction, Intel&#146;s second solution takes
+        advantage of interaction between the bug and page-fault
+        mechanism. Now that Intel has set the precedent of using
+        the bug behavior as a workaround, nobody should be
+        concerned by the two more elegant solutions provided
+        herein. My second alternate solution is by far the best.
+        The exception handlers don&#146;t need to be mucked up
+        with extra code, and the processor performance isn&#146;t
+        impacted in the slightest. Note, however, that neither of
+        these two alternate workarounds have been thoroughly
+        tested in production code. </font></p>
+        <p><font size="3" face="Arial">I&#146;ve written two
+        programs so that you can examine this bug and the various
+        workarounds: F00FBUG.EXE, which demonstrates all five
+        workarounds for the bug, and F00FBUG2.EXE, which
+        demonstrates the most elegant workaround &#150; Alternate
+        Solution #2. The source code and executables for both
+        programs are available electronically from </font><a
+        href="ftp://ftp.x86.org/dloads/F00FBUG.ZIP"><font
+        size="3" face="Arial">ftp://ftp.x86.org/dloads/F00FBUG.ZIP</font></a><font
+        size="3" face="Arial">. </font></p>
+        </td>
+    </tr>
+</table>
+
+<hr>
+
+<p><a href="../ddj.html"><font size="4" face="Arial">Back to Dr.
+Dobb's Undocumented Corner home page</font></a></p>
+
+<p><P><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/bighand_left.gif" ALT="Return to the" VSPACE=14 BORDER=0 HEIGHT=48 WIDTH=64></A><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/gohome.gif" ALT="Intel
+Secrets home page" BORDER=0></A>
+<img src="http://www.x86.org/Count.cgi?ft=0|frgb=69;139;50;tr=0|trgb=0;0;0|wxh=15;20|md=6|dd=C|st=1532481|sh=0|df=Total.html.dat" border=0  align=abscenter width=0 height=0>
+
+<HR><BR>
+<ADDRESS>&copy; 1991-1999 <b><font color="#FF0000">Intel Secrets Web Site</font></b> and Robert Collins. <A HREF="http://pgp5.ai.mit.edu/pks-commands.html#extract">PGP
+key available</A>.<BR>
+<BR>
+<FONT SIZE=-2>Make no mistake!<BR>
+</FONT>This web site is proud to provide superior information and service
+without any affiliation to Intel Corporation.<BR>
+<BR>
+&quot;<B><FONT COLOR="#FF0000">Intel Secrets</FONT></B>&quot;, &quot;<B><FONT COLOR="#FF0000">What
+Intel doesn't want you to know</FONT></B>&quot; <B><FONT COLOR="#FF0000">and
+anything with a dropped e in it</FONT></B>, are phrases that infuriate
+Intel Corporation.</ADDRESS>
+
+<ADDRESS><BR>
+Pentium, Intel, and the letter "I" are registered trademarks of Intel Corporation. 386, 486, 586, P6,
+all other letters, and all other numbers <B><FONT COLOR="#FF0000">are not!<BR>
+</FONT></B>All other trademarks are those of their respective companies.
+See <A HREF="http://www.x86.org/Trademarks.html">Trademarks and Disclaimers</A>
+for more info.<BR>
+<BR>
+Robert Collins works somewhere in the United States of America. Robert
+may be <A HREF="http://www.x86.org/Contact.html">reached via email or telephone</A>.</ADDRESS>
+</p>
+</body>
+</html>

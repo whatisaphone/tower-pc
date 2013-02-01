@@ -1,0 +1,50 @@
+
+ AGX 98032
+
+The Appian Renegade series uses a Cirrus Logic VGA chip (CL-GD5402/5420) for
+ VGA modes and the AGX98032 for enhanced modes. The VGA can be disabled.
+
+The older Appian Rendition series uses the TM 340 series (TIGA).
+
+The AGX 98032 uses the I/O addresses 2B0h-2BFh and a 16K memory mapped area,
+located at B000h, B400h, C000h, C400h, C800h, CC00h, D000h, D400h, D800h,
+ DC00h, E000h, E400h, E800h or EC00h
+
+2B0h D(R/W):  Host Ctl
+bit  0
+   3-4
+    11  To reset the AGX, set this bit, wait ~200ms then clear it
+    18
+    20
+ 24-31
+
+2B4h (R/W):
+2B5h (R/W):  ISA Host Ctl
+bit  5
+
+
+ - 2B8-2BB: DAC regs 0-3 ?  2B4 has RS2/3
+2BAh
+2BBh
+
+2BEh (R/W):
+Selects the indexed register read or written at 2BFh
+
+2BEh index 1Dh (R/W):
+
+M+000h W(R/W):
+bit 9-10
+      13
+
+M+032h (R/W):
+bit    1  Clock chip Clock line
+       2  Clock chip Data line
+
+M+114h W(R/W):
+M+116h W(R/W):
+M+168h W(R/W):
+M+16Ah W(R/W):
+M+524h W(R/W):
+M+712h (R/W):
+bit 0-1
+    2-3

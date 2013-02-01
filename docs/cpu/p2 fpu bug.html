@@ -1,0 +1,533 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage 2.0">
+<title>Inside the Pentium II Math Bug</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<table border="0" width="100%">
+    <tr>
+        <td width="40%"><img src="../../IntelArt/Aug97/pent.gif"
+        width="291" height="357"></td>
+        <td width="60%"><h1 align="center"><font color="#0000FF"
+        size="6">Inside the Pentium II Math Bug</font></h1>
+        <h1 align="center"><font color="#0000FF" size="5">By
+        Robert R. Collins</font></h1>
+        </td>
+    </tr>
+</table>
+
+<p>&nbsp;</p>
+
+<hr>
+
+<p><font size="3">Just two days before its biggest processor
+announcement in years, Intel was hit by reports of a math bug in
+its Pentium Pro and (the soon to be announced) Pentium II
+processors. The bad timing prompted reports that the bug
+disclosure was deliberately timed to coincide with the Pentium II
+announcement, thereby maximizing the embarrassment to Intel.
+Another early rumor put AMD behind the bug report. Yet another
+industry rumor said that the Pentium II used for the tests was
+illegally obtained. As intriguing as these theories may be, none
+of them are true. How do I know? Because I wrote the bug report.
+The bug was known as the Dan-0411 bug by the news media and
+Internet community. Intel had its own name for it - the Flag
+Erratum. </font></p>
+
+<table border="0" cellpadding="10" width="100%">
+    <tr>
+        <td valign="top" width="40%"><h2><font color="#FF0000">The
+        Facts </font></h2>
+        <p><font size="3">I received e-mail from &quot;Dan&quot;
+        who asked if I could reproduce what he thought was a bug
+        in the Pentium Pro. After contemplating my involvement
+        for ten days, I finally decided to help out (see the
+        accompanying text box). I wrote an assembly-language
+        program that checked into the problem. I ran the test on
+        Pentium Pro, Pentium II, Pentium classic (P54C), Pentium
+        MMX (P55C), and AMD K6 processors. (I had purchased the
+        Pentium II over the counter at Fry's Electronics in
+        Sunnyvale, California, six weeks before its official
+        introduction. There was nothing illegal about the
+        acquisition of the Pentium II processor.) After running
+        the test on these various processors, I came to the
+        conclusion that a bug did exist in the Pentium Pro and
+        Pentium II. </font></p>
+        <p><font size="3">Why Dan-0411? These days, astronomers
+        name new stars and comets by combining the discoverer's
+        name and some number. Why should microprocessor bugs be
+        different? In this case, &quot;Dan&quot; is the
+        discoverer of the bug, and 04-11 (1997) is the date on
+        which I got my first e-mail about it. So I've named the
+        bug &quot;Dan - 0411&quot; after its discoverer and the
+        date he first reported it to me. (Please refer to </font><a
+        href="http://www.x86.org/secrets/Dan0411.html"><font
+        size="3">http://www.x86.org/secrets/Dan0411.html</font></a><font
+        size="3"> for the text of the original bug announcement.)
+        </font></p>
+        <h2><font color="#FF0000">What is the Bug and What Does
+        it Affect?</font> </h2>
+        <p><font size="3">The bug relates to operations that
+        convert floating-point numbers into integer numbers. All
+        floating-point numbers are stored inside of the
+        microprocessor in an 80-bit format. Even though the
+        external representation of a number may not be an 80-bit
+        format, once the number is loaded into the
+        microprocessor, it is converted to an 80-bit format.
+        Integer numbers are stored externally in two different
+        sizes. A short integer is stored in 16 bits, and a long
+        integer is stored in 32 bits. It is often desirable to
+        store the floating-point numbers as integer numbers. On
+        occasion, the converted numbers won't fit into the
+        smaller integer format. This is when the bug occurs. </font></p>
+        <p><font size="3">The host software are is supposed to be
+        warned by the microprocessor when such a floating-point
+        conversion error occurs; a specific error flag is
+        supposed to be set in a floating-point status register.
+        If the microprocessor fails to set this flag, it does not
+        comply with the IEEE Floating Point Standards, which
+        mandate such behavior. For the Dan-0411 bug, the Pentium
+        II and Pentium Pro fail to set this error flag in many
+        cases. It is interesting to note that a launch failure of
+        the Ariane 5 rocket, which happened less than a minute
+        into the launch, was traced to behavior around an
+        overflow condition. In this case, it was a software bug,
+        not a microprocessor bug, that caused the problem. One of
+        the computers on board had a floating-point to integer
+        conversion that had overflowed. The overflow was not
+        expected and, therefore, not detected by the computer
+        software. As a result, the computer did a dump of its
+        memory. Unfortunately, this memory dump was interpreted
+        by the rocket as instructions to its rocket nozzles.
+        Result: Boom! </font></p>
+        <p><font size="3">The case of the Ariane rocket is a
+        sensational example of the drastic consequences of an
+        unhandled float-to-integer overflow. Pentium Pro and
+        Pentium II users, on the other hand, are most likely to
+        see the results of this bug in their graphics displays or
+        in heavy-duty numerical analysis programs. Intel says
+        ordinary users might see a temporary screen glitch on
+        some games when this bug occurs. </font></p>
+        <h2><font color="#FF0000">The Nature of the Bug </font></h2>
+        <p><font size="3">The Dan-0411 bug occurs when a large
+        negative floating-point number is stored to memory in an
+        integer format. Under normal operation, the largest
+        negative integer (MAXNEG) is stored in memory when a
+        floating-point number is too large to fit in the integer
+        format. The FPU Status Word is supposed to indicate that
+        an Invalid Operand Exception (#IE) occurred (FSW.IE = 1).
+        Floating-point numbers that overflow the &quot;real
+        number&quot; format are supposed to behave differently
+        than floating-point numbers that overflow the
+        &quot;integer number&quot; format. Float-to-real
+        overflows are supposed to set the overflow flag
+        (FSW.OE=1); Float-to-integer overflows are supposed to
+        set the Invalid Operand Exception flag (FSW.IE). Section
+        7.8.4 of the <u>Pentium Pro Family Developer's Manual,
+        Volume 2</u> makes this difference quite clear: </font></p>
+        <p><font size="3">Float-to-real overflows: </font></p>
+        <blockquote>
+            <p><font size="2">The FPU reports a floating-point
+            numeric overflow exception (#O) whenever the rounded
+            result of an arithmetic instruction exceeds the
+            largest allowable Finite value that will fit into the
+            real format of the destination operand. For example,
+            if the destination format is extended-real (80 bits),
+            overflow occurs when the rounded result falls outside
+            the unbiased range of -1.0 x 2<sup>16384</sup> to 1.0
+            x 2<sup>16384</sup> (exclusive). Numeric overflow can
+            occur on arithmetic operations where the result is
+            stored in an FPU data register. It can also occur on
+            store real operations (with the FST and FSTP
+            instructions), where a within-range value in a data
+            register is stored in memory in a single-or
+            double-real format. The overflow threshold range for
+            the single-real format is -1.0 x 2<sup>128</sup> to
+            1.0 x 2<sup>128</sup>, the range for the double-real
+            format is -1.0 x 2<sup>1024</sup> to 1.0 x 2<sup>1024</sup>.</font>
+            </p>
+        </blockquote>
+        <p><font size="3">Float-to-integer overflows: </font></p>
+        <blockquote>
+            <p><font size="2">The numeric overflow exception
+            cannot occur when overflow occurs when storing values
+            in an integer or BCD integer format. Instead, the
+            invalid-arithmetic-operand exception is signaled. </font></p>
+        </blockquote>
+        <p><font size="3">Instead of setting the Invalid Operand
+        Exception (FSW.IE) bit, only the precision exception
+        (FSW.PE) bit is set. The precision-exception flag
+        indicates that a computation can't be precisely
+        represented by the floating-point operation - in this
+        case, the float-to-integer store operation. In most
+        cases, this bit is ignored by programmers. Therefore,
+        when the conditions are met for the Dan-0411 bug to
+        occur, programmers may never know that an error occurred.
+        If that isn't bad enough, it gets worse. The Dan - 0411
+        bug occurs for three out of four rounding modes, and when
+        exceptions are either masked or unmasked. In the case of
+        masked exceptions, the correct value is stored to memory;
+        only the Floating-Point Status Word (FSW) is incorrectly
+        set. For unmasked exceptions, the errant behavior is more
+        serious. </font></p>
+        <ul>
+            <li><font size="3">No exception occurs. The
+                floating-point exception handler is not invoked.
+                Therefore, the errant condition is undetectable. </font></li>
+            <li><font size="3">MAXNEG is returned to memory.
+                Storing MAXNEG to memory is an errant condition.
+                When exceptions are unmasked, nothing is supposed
+                to he stored to memory. This means the
+                microprocessor is spuriously storing data to
+                memory when no data is expected. </font></li>
+            <li><font size="3">In the case of the FISTP
+                instruction, the floating-point value is popped
+                from the floating-point stack. When exceptions
+                are unmasked, the floating-point stack is
+                supposed to remain unchanged to allow for error
+                recovery. In this case, the value is popped from
+                the stack and gone forever. Even if the errant
+                condition was detectable, it would be
+                unrecoverable after the FISTP instruction. </font></li>
+        </ul>
+        </td>
+        <td valign="top" width="60%"><table border="1"
+        cellpadding="8" cellspacing="0" width="100%">
+            <tr>
+                <td><p align="center"><a name="Chronology"></a><font
+                size="5"><b>The Chronology of Dan-0411</b></font></p>
+                <p><b>Friday, April 11</b><sup><b>th</b></sup><b>,
+                1997.</b> &quot;Dan&quot; sends me e-mail, saying
+                he thinks he's discovered a math bug in the
+                Pentium Pro. Dan doesn't have the means to write
+                assembly-language source code to verify the bug,
+                so he contacts me. Initially, I decide not to get
+                involved because this could he a real hot potato.
+                I've already had my problems with Intel and I
+                don't want any more - especially if this turns
+                out to be a serious bug. My web site receives a
+                typical 31,258 hits on this day. </p>
+                <p><b>Monday, April 21</b><sup><b>st</b></sup><b>,
+                1997.</b> After more pressure from Dan and
+                discussing the possible consequences with
+                friends, I decide to write the source code that
+                determines whether or not Dan has found a bug.
+                Intel stock closes at approximately $140 per
+                share. My web site receives 29,795 hits. </p>
+                <p><b>Tuesday, April 22</b><sup><b>nd</b></sup><b>,
+                1997.</b> I send Dan confirmation that he has
+                found a bug in the Pentium Pro. I also tell Dan
+                that I have access to a Pentium II, and the bug
+                also appears in Intel's newest microprocessor.
+                Intel stock closes at near $142 per share. My web
+                site receives 30,707 hits. </p>
+                <p><b>Tuesday, April 29</b><sup><b>th</b></sup><b>,
+                1997.</b> I post a message to comp.sys.intel
+                saying that I think a new math bug existed in the
+                Pentium Pro and Pentium II (I expected my message
+                would be largely ignored as a &quot;troll&quot;
+                for a flame fight. As I shortly found out, mixing
+                the words &quot;MAJOR,&quot; &quot;FLOATING POINT
+                BUG,&quot; and &quot;PENTIUM PRO&quot; in a
+                message subject line is a volatile combination of
+                words.) Intel stock closes near $150 per share. I
+                receive 35,720 hits. </p>
+                <p><b>Wednesday, Apri1 30</b><sup><b>th</b></sup><b>,
+                1997.</b> An Intel representative calls me on the
+                phone wanting any information I can to give him.
+                I tell him that I'm pretty sure it's a bug, but
+                that I don't have Dan's permission to give him
+                any further information Intel stock closes near
+                $154 per share. My web site receives 37,959 hits.
+                </p>
+                <p><b>Thursday, May 1</b><sup><b>st</b></sup><b>,
+                1997.</b> I start getting strange phone calls
+                about the bug. The first comes from an
+                &quot;investor&quot; with a British accent who
+                only cares about the authenticity of the Usenet
+                report. After I try to explain the possible
+                insignificance of the bug, he says &quot;I don't
+                care, I'm investor,&quot; then promptly hangs up.
+                Fifteen minutes later, I receive a second phone
+                call - this time from a man claiming to be an
+                attorney. He claims to represent clients who file
+                class-action product-defect lawsuits. I don't
+                bite his bait and become suspicious. I ask who
+                his client is and why he's poking around this bug
+                issue. The &quot;lawyer&quot; becomes defensive
+                and refuses to tell me who he works for or to
+                explain his interest in this bug report. Finally,
+                he threatens me with a libel lawsuit if I can t
+                prove that a math bug really exists in the
+                Pentium Pro and Pentium II. I automatically
+                assume that this lawyer is somehow connected with
+                the investor who called me a few minutes earlier.
+                This just couldn't be a coincidence. </p>
+                <p>Unnerved by the phone call, I call my contact
+                at Intel. He denies that any Intel attorneys are
+                involved. He promises to keep the attorneys off
+                my back. He uses the opportunity to press me for
+                further details about the bug. Again I decline,
+                citing my lack of Dan's permission to give him
+                any more information. Intel stock closes near
+                $155 per share. My web site receives 42,231 hits.
+                </p>
+                <p><b>Friday, May 2</b><sup><b>nd</b></sup><b>,
+                1997.</b> CNet reporter Brooke Crothers sends
+                e-mail to ask me for confirmation of the bug
+                report Crothers doesn't wait for my response, and
+                posts the breaking story on the CNet web site (<a
+                href="http://www.cnet.com/">http://www.cnet.com/</a>).
+                Intel contacts me one last time before the coming
+                weekend. Again, I decline to give any further
+                information. At 11:00 PM, I get a call to notify
+                me about the CNet article. I had no prior
+                knowledge of its existence. Intel stock closes
+                near $158 per share. My web site receives 45,272
+                hits. </p>
+                <p><b>Saturday, May 3</b><sup><b>rd</b></sup><b>,
+                1997.</b> With the CNet article published, the
+                threat of a libel lawsuit begins to weigh heavily
+                on me. I know that I must write the bug report or
+                risk legal consequences. I convince Dan that the
+                report must be made public I decide to post a
+                message on Usenet informing the Internet
+                community that the bug report will he made public
+                on May 5<sup>th</sup>, at 0900 PST. I send a copy
+                of the message to Intel. The stock market is
+                closed for the weekend. Typically, my web site
+                traffic decreases by 20%. Instead, activity
+                increases as the pressure to publish the bug
+                builds. My web site receives 52,581 hits. </p>
+                <p><b>Sunday, May 4</b><sup><b>th</b></sup><b>,
+                1997.</b> I work all day Saturday and Sunday
+                perfecting the article and giving it to various
+                individuals for peer review. I also perfect the
+                assembly-language source code and decide to offer
+                it, as well as binary executable programs, to
+                anybody who wants to detect the hug. </p>
+                <p>By 10 00 PM, I have packaged the article and
+                source code for publication. Sunday is typically
+                the slowest day at my web site. I usually receive
+                fewer than 20,000 hits. On this day, I receive
+                39,654 hits. </p>
+                <p><b>Monday, May 5</b><sup><b>th</b></sup><b>,
+                1997.</b> I make some finishing touches to the
+                article I'm finally finished at 0830 PST, just 30
+                minutes before publication I send a copy to Intel
+                before the official publication time). Even
+                though the 0900 hour hasn't come, reporters are
+                already calling me in my office and on my
+                cellular telephone. I don't give any advance
+                information, yet their articles run before the
+                officia1 0900 publication time. </p>
+                <p>Within minutes of publication, e-mail messages
+                start rolling in from various press organizations
+                <i>CNN, MSNBC, Wall Street Journal, EE Times,
+                CNet, PC Week</i>, and others. Luckily, I forget
+                to take my cellular phone with me and am unable
+                to take their phone calls, thus, they send their
+                interview requests via e-mail. With news of the
+                bug report, web site activity soars Intel stock
+                closes near $163 per share. My web site receives
+                349,418 hits. </p>
+                <p>The bug report goes international. I start
+                getting interview requests from France, Germany,
+                Australia, Japan, and other nations. Various
+                attempts are made to discredit the bug report or
+                to minimize it. </p>
+                <p><b>Tuesday, May 6</b><sup><b>th</b></sup><b>,
+                1997.</b> The bug report shows up in various
+                print publications. The online publications
+                report the bug as a top story, eclipsing Intel's
+                Pentium II announcement. Reports start surfacing
+                that I'm getting revenge on Intel for its legal
+                action against me. (No legal action ever
+                occurred.) Another report surfaces that AMD is
+                behind the bug report. Another report surfaces
+                that this bug report was calculated to be timed
+                with the Pentium II announcement (even though a
+                rudimentary analysis of the chronology that
+                appeared in the original article would have
+                refuted such claims). </p>
+                <p>Two industry analysts downgrade Intel's stock
+                from &quot;buy&quot; to &quot;neutral&quot;
+                because of the bug report. After an initial surge
+                in Intel's stock price, it loses five points to
+                close near $162 per share. My web site receives
+                an all-time record of 503,989 hits. </p>
+                <p><b>Wednesday, May 7</b><sup><b>th</b></sup><b>,
+                1997.</b> I get a private e-mail from a guy (I'll
+                call Mr. X) who claims that I may have made a
+                mistake in my bug analysis. He claims that the
+                bug may be much more severe than I had originally
+                reported. He also claims to have spoken with me
+                in the week prior, and that he's an investor in
+                AMD, but not selling short on Intel stock.
+                (Strange set of information) Within minutes, CNet
+                sends me e-mail asking me to confirm this guy's
+                claims. I wonder how CNet got a copy of this
+                e-mail, and become suspicious. CNet claims Mr. X
+                sent them a copy of his e-mail to me. </p>
+                <p>Intel's stock loses three more points to close
+                under $160 per share. My web site receives
+                345,531 hits. </p>
+                <p>Later that night, I call CNet and ask a few
+                questions of my own. I want to know how they
+                learned of this story - reporting it three days
+                before their competition. They tell me Mr. X
+                tipped them off. </p>
+                <p><b>Thursday, May 8</b><sup><b>th</b></sup><b>,
+                1997.</b> I confirm the claims by Mr. X. My
+                original article contained an ambiguous paragraph
+                that minimized the severity of the bug. I fixed
+                the ambiguity and called CNet to confirm Mr. X's
+                claims. By now, I m a little suspicious of Mr. X,
+                and I wonder if CNet has actually talked to him.
+                They confirm they have, and tell me he's got a
+                British accent. I become convinced that Mr. X is
+                the same investor who called me on May 1<sup>st</sup>.
+                Both have a British accent and both claim to have
+                spoken to me. </p>
+                <p>After I confirm the ambiguity in my original
+                report, a second round of press reporting is
+                sparked. Now, everybody's reporting that the bug
+                is more severe than originally anticipated. Intel
+                stock starts to regain some lost ground, closing
+                near $161 per share. My web site receives 262,937
+                hits. </p>
+                <p><b>Friday, May 9</b><sup><b>th</b></sup><b>,
+                1997.</b> I go on vacation I need to get away. </p>
+                <p>Intel posts its response after the stock
+                market closes. The bug is much more severe than
+                originally discovered during my analysis. </p>
+                <p>I get a phone call from a representative of
+                Senator Torricelli's (D-NJ) office in Washington,
+                DC, telling me about legislation introduced in
+                the Senate that I might be interested in (not
+                related to the bug, though). He mentions that my
+                web site is reasonably well known in the Capitol.
+                Intel stock continues to inch back up, closing
+                near $162 per share. My web site receives 234,809
+                hits. </p>
+                <p><b>Saturday, May 10</b><sup><b>th</b></sup><b>,
+                1997.</b> I appear on a computer radio show.
+                Afterwards, life gets back to normal. The stock
+                market is closed for the weekend. My web site
+                receives 120,072 hits. Slowly, my web site
+                traffic returns to normal, though &quot;normal
+                traffic&quot; appears to he more than double the
+                level it was before the bug was reported. My 15
+                minutes of fame are now over. </p>
+                </td>
+            </tr>
+        </table>
+        </td>
+    </tr>
+</table>
+
+<h2><font color="#FF0000" size="5">Why Wasn't this Bug Detected
+Before? </font></h2>
+
+<p><font size="3">I'm not sure why this bug wasn't detected
+sooner, but there are clues that could help provide an
+explanation. Professor William Kahan of the University of
+California, Berkeley, has written a suite of floating-point test
+programs in FORTRAN (see </font><a
+href="http://http.%20cs.berkeley.edu/~wkahan/"><font size="3">http://http.cs.berkeley.edu/~wkahan/</font></a><font
+size="3">). These programs are commonly used to test the
+Float-to-Integer Store instructions (FIST and FISTP). Dan ported
+Dr. Kahan's FORTRAN programs to C and ran the tests against the
+Pentium Pro - this is when the bug came to light. So in the end,
+either Intel failed to run Dr. Kahan's test on the Pentium Pro,
+misconfigured the program, or a FORTRAN compiler hid the bug in
+the chip. </font></p>
+
+<h2><font color="#FF0000" size="5">Source Code and Programs </font></h2>
+
+<p><a href="ftp://ftp.x86.org/source/fistbug/fistbug.asm"><font
+size="3">Source code</font></a><font size="3"> and two executable
+programs are available for download. The programs are executable
+versions of the stand-alone assembly-language source code. The
+first program, </font><a
+href="ftp://ftp.x86.org/source/fistbug/fistbug.exe"><font
+size="3">FISTBUG.EXE</font></a><font size="3">, demonstrates the
+bug in a straightforward manner. When you run the program, all
+that appears on the screen is either the simple message &quot;***
+Dan-0411 bug found. ***&quot;, or &quot;Dan-0411 not found.&quot;
+The second program, </font><a
+href="ftp://ftp.x86.org/source/fistbug/fistbugv.exe"><font
+size="3">FISTBUGV.EXE</font></a><font size="3">, runs the same
+exact tests as the first, but is much more verbose. This program
+shows the microprocessor stepping information and itemized
+results. Each operand under test is printed to the screen, along
+with pass/fail status for four different testing methods.</font></p>
+
+<hr>
+
+<p><font color="#FF0000" size="4"><strong>View results of FISTBUG</strong></font></p>
+
+<p><a href="../../ftp/source/fistbug/fistbug.res"><font
+color="#000000" size="3">ftp://ftp.x86.org/source/fistbug/fistbug.res</font></a></p>
+
+<p><font color="#FF0000" size="4"><strong>Source Code
+Availability</strong></font></p>
+
+<p>View source code for FISTBUG.EXE and FISTBUGV.EXE<br>
+<a href="../../ftp/source/fistbug/fistbug.asm">ftp://ftp.x86.org/source/fistbug/fistbug.asm</a><br>
+<a href="../../ftp/source/fistbug/makefile">ftp://ftp.x86.org/source/fistbug/makefile</a></p>
+
+<p><font color="#FF0000" size="4"><strong>Executable Programs</strong></font></p>
+
+<p>Download FISTBUG.EXE and FISTBUGV.EXE binary executables.<br>
+<a href="ftp://ftp.x86.org/source/fistbug/fistbug.exe">ftp://ftp.x86.org/source/fistbug/fistbug.exe</a><br>
+<a href="ftp://ftp.x86.org/source/fistbug/fistbugv.exe">ftp://ftp.x86.org/source/fistbug/fistbugv.exe</a><br>
+<a href="../../ftp/source/fistbug/Dan0411x.ZIP">ftp://ftp.x86.org/source/fistbug/Dan0411x.ZIP</a></p>
+
+<p><font color="#FF0000" size="4"><strong>The Entire FISTBUG
+Archive</strong></font></p>
+
+<p>Download FISTBUG.ZIP archive. Archive contains source code,
+binary executables, and my results.<br>
+<a href="../../ftp/dloads/FISTBUG.ZIP">ftp://ftp.x86.org/dloads/FISTBUG.ZIP</a></p>
+
+<hr>
+
+<p><a href="../ddj.html">Back to Dr. Dobb's Undocumented Corner
+home page</a></p>
+
+<p><P><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/bighand_left.gif" ALT="Return to the" VSPACE=14 BORDER=0 HEIGHT=48 WIDTH=64></A><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/gohome.gif" ALT="Intel
+Secrets home page" BORDER=0></A>
+<img src="http://www.x86.org/Count.cgi?ft=0|frgb=69;139;50;tr=0|trgb=0;0;0|wxh=15;20|md=6|dd=C|st=1532481|sh=0|df=Total.html.dat" border=0  align=abscenter width=0 height=0>
+
+<HR><BR>
+<ADDRESS>&copy; 1991-1999 <b><font color="#FF0000">Intel Secrets Web Site</font></b> and Robert Collins. <A HREF="http://pgp5.ai.mit.edu/pks-commands.html#extract">PGP
+key available</A>.<BR>
+<BR>
+<FONT SIZE=-2>Make no mistake!<BR>
+</FONT>This web site is proud to provide superior information and service
+without any affiliation to Intel Corporation.<BR>
+<BR>
+&quot;<B><FONT COLOR="#FF0000">Intel Secrets</FONT></B>&quot;, &quot;<B><FONT COLOR="#FF0000">What
+Intel doesn't want you to know</FONT></B>&quot; <B><FONT COLOR="#FF0000">and
+anything with a dropped e in it</FONT></B>, are phrases that infuriate
+Intel Corporation.</ADDRESS>
+
+<ADDRESS><BR>
+Pentium, Intel, and the letter "I" are registered trademarks of Intel Corporation. 386, 486, 586, P6,
+all other letters, and all other numbers <B><FONT COLOR="#FF0000">are not!<BR>
+</FONT></B>All other trademarks are those of their respective companies.
+See <A HREF="http://www.x86.org/Trademarks.html">Trademarks and Disclaimers</A>
+for more info.<BR>
+<BR>
+Robert Collins works somewhere in the United States of America. Robert
+may be <A HREF="http://www.x86.org/Contact.html">reached via email or telephone</A>.</ADDRESS>
+</p>
+</body>
+</html>

@@ -1,0 +1,27 @@
+iff [%2]==[] then
+	echo Usage: %@name[%0] fontfile1 fontfile2
+	quit
+endiff
+iff not exist %1 then 
+	echo %@name[%0]: %1 - File doesn't exist.
+	quit
+endiff
+iff not exist %2 then
+	echo %@name[%0]: %2 - File doesn't exist.
+	quit
+endiff
+cls
+screen 8 0
+yes charset
+:start
+screen 0 0  
+screen 0 0
+loadfont %1
+inkey /W2 %1 %%key
+if %@upper[%%key]==Q quit
+screen 0 0  
+screen 0 0
+loadfont %2
+inkey /W2 %2 %%key
+if %@upper[%%key]==Q quit
+goto start

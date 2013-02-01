@@ -1,0 +1,1014 @@
+
+                WHATVGA version 2.00  29/Sep/95
+
+
+         Copyright 1991-95   Finn Th›gersen
+         All Rights Reserved
+
+
+
+
+
+Command line switches:
+
+  whatvga [+acumos] [-ncr] [=1024] [/a]
+
+  where +chipset  forces WHATVGA to proceed as if this chipset was found.
+                  The test for this chip set will be executed in order
+                  to check for memory and revision.
+                  No other chipsets will be tested.
+
+        -chipset  ensures that the tests for this chipset will NOT be
+                  executed. Useful if a chipset is misidentified
+                  or some earlier test gives problems.
+
+        =kbytes   Forces the number of Kbytes of video RAM on the
+                  adapter to the specified value.
+        
+        /a        Run automatic test and write results to a file.
+                  The user responds with Y or N to each test and can
+                  enter comments to the individual tests.
+                  On startup you may be asked to select the video system
+                  to test (say if you have a VESA driver loaded).
+                  If the program seems to halt for more than a few seconds
+                  try to press the enter key.
+
+                  The recommanded way to use the program is to start it
+                  with no command line parameters and play with it a bit.
+                  See that the chipset, memory and DAC are ID'd properly
+                  and that you can display at least some super VGA modes.
+                  Then run the program with /a to do the full test.
+                  For the /a test, the system should be as "clean" as
+                  possible, as TSRs (including mouse and keyboard drivers)
+                  and memory managers can sometimes affect the results.
+                  Try booting from a floppy.
+
+                  Comments should only be entered when something is wrong
+                  or needs clarification. Ie. there is no need to enter
+                  "Fine" or "All ok" thats what the yes/no queries are for.
+                  When something is wrong try to be as descriptive as
+                  possible (remember, I can't see the screen).
+                  
+        /c        Disabled clock detection. Clock detection can lock up
+                  some systems. For instance S3 systems will lock up if
+                  a 0Hz clock is selected.
+
+        /d        Debug option. display the name of each chipset before it
+                  is tested.
+
+        /i        Ignore the configuration file (WHATVGA.CFG)
+
+        /p        PCI test. Disables the test for PCI devices. Note that 
+                  WHATVGA has not been tested with with PCI type 2 busses.
+
+
+
+Note that if you use the + - or = commandline options the program should
+ pause, displaying:
+  Forced to .....
+
+  Press a key to continue
+If this does NOT happen the option(s) probably were not recognised.
+
+The options can also be set from a configuration file. On startup WHATVGA
+checks for the file WHATVGA.CFG in the current directory. The file consists of
+the general options at the top and then the chipset specific options in one
+section for each chipset started by a [chipset] header.
+Most options are of the keyword=value type. The keyword is not case-sensitive.
+For Yes/No options a value of YES, Y, ON or 1 (all not case-sensitive) will
+be takes as YES, all other values as NO. Leading and trailing spaces are
+ignored. The command line switches will win out if there is a conflict.
+General Options above the first chipset header:
+ AutoTest =Yes/No      ;Enables the Auto Test feature if set to YES
+ ClockTest=Yes/No      ;Disables Clock testing if set to NO
+ Debug    =Yes/No      ;Enables debug output if set to YES
+ PCItest  =Yes/No      ;Disables the PCI test if set to NO (same as /p).
+ Memory   =number      ;Forces the amount of video memory (in Kbytes)
+ Ignore   =chipset     ;Causes WHATVGA to skip the tests for this chipset.
+                        Any number of IGNORE= lines can be added.
+ Chipset  =chipset     ;Forces WHATVGA to assume the chipset was found
+
+
+Sample file:
+Debug=Off                   ;No DEBUG option
+AutoTest=0                  ;No AutoTest
+ClockTest=N                 ;Disable clock test
+Memory=1024                 ;Force video Memory to 1Mb
+
+[S3]                        ;S3 chipset section
+-103                        ;Disable mode 103h
++4322 732 498 P8 1000       ;Adds mode 4322h, a 732x498 P8 mode with 1000
+                            ; bytes per scanline (use 0 bytes/scanline for
+                            ; default width)
+
+
+
+If you have problems with the identification/startup:
+
+ - The screen goes blank or all white...
+   Try to run: WHATVGA /d
+   This will display the name of each chipset and waits for
+   you to press the Enter key BEFORE the chipset is tested.
+   When you have found the offending chipsets, try to run:
+     WHATVGA -Chips&Tech     (assuming Chips&Tech is the culprit)
+   Report the problem.
+
+ - The chipset is misidentified.
+   Try to run: WHATVGA -chipset
+   where chipset is one of the following:
+     Chips&Tech    Chips & Technologies
+     Paradise      Paradise/Western Digital
+     Video7        Video7
+     Tseng         Tseng Et3000, ET4000, ET4000/W32
+     Trident       Trident 8800/8900/9000...
+     Everex        Everex
+     ATI           ATI VGA Wonder/Graphics Ultra +/Pro
+     Genoa         Genoa 6x00 (not 5x00, 7x00 or 8x00)
+     Oak           Oak 37/67/77/87
+     Cirrus        Cirrus 5x0/6x0
+     Ahead         Ahead A&B
+     NCR           NCR 77c2x
+     Yamaha        Yamaha 6388
+     S3            S3 86c series
+     ALG           Avance Logic ALG series
+     MXIC          MXIC 860x0
+     Realtek       Realtek
+     PRIMUS        Primus P2000
+     Cirrus54      Cirrus CL-GD54xx
+     Cirrus64      Cirrus CL-GD64xx
+     Weitek        Weitek W5x86
+     COMPAQ        Compaq IVGA/AVGA/QVision
+     UMC           UMC 85c408, 85c418
+     HMC           HMC HM86304
+     WeitekP9      Weitek P9x00 series
+     XGA           XGA compatibles
+     AGX           IIT AGX series
+     Mach32        ATI Mach32
+     Mach64        ATI Mach64
+     Matrox        Matrox VGA
+     ARK           ARK Logic
+     Acer          Acer M31x5
+     Sierra        Sierra SC15064 (Falcon/64)
+     MediaVision   Media Vision Pro Graphics
+     MGA           Matrox MGA Accelerator
+     Alliance      Alliance ProMotion
+
+ - Memory Size is identified wrong.
+   Run WHATVGA =2048    (or how many Kbytes you have)
+   Report the problem.
+
+
+Whatvga has several options in the main menu:
+
+  1 Test standard VGA
+
+    Allows you to test the standard VGA video modes.
+    Draws a test pattern, including a color palette
+    and writes basic information as text on the display.
+    This option is not shown for non-VGA devices.
+
+    See 2) for the details.
+
+  2 Test extended modes
+
+    Allows you to test the extended video modes of the adapter.
+    Draws a test pattern, including a color palette
+    and writes basic information as text on the display.
+    On the upper and left edge every hundred pixels is marked.
+
+    when you press a key the testpattern is drawn again, this time
+    in the largest size the available video memory will support
+    ("Virtual Screen"), allowing you to scroll around in the display
+    using the arrow keys. You should be able to move in the entire
+    pattern, but not to move so far right or down that the display wraps.
+    If you can move past the right edge (or can't reach it) then the
+    scroll function probably needs a factor 2 (divide or multiply)
+    in the SetVStart function.
+
+    When you press the Enter key a textscreen is shown with the
+    statistics for the mode, this screen also shown if the rutine
+    to analyse the mode from the register values (AnalyseMode) reaches
+    the same result. If not the values are shown as "Calculated".
+
+    By pressing "d" or "D" you can see a dump of all the VGA (and extended)
+    registers. The registers can be saved (appended) to the file REGISTER.VGA
+    by pressing "f" or "F".
+
+  3 Search for modes
+
+    Sequentially attempts to set modes 14h to 7Fh, each time testing
+    if the mode was succesfully set. If so the testpattern is drawn
+    and the mode is analysed.
+
+
+  5 Hardware Cursor test
+
+    This item attempts to place a 32x32 hardware Cursor in the
+    selected mode. The cursor can be moved around on the screen
+    with the arrow keys.
+
+  6 BitBLT test
+
+    This item first draws the testpattern, then draws the color palette with
+    BitBLT operations at the centre of the display, then makes four blockcopies
+    via BitBLT of the central palette, 90 degrees apart, each slightly
+    overlapping the original. As the edges of the source is modified during
+    the copying these changes will (in part) be copied to the new images.
+
+
+  7 Line Draw test
+
+    This item attempts to draw lines from the center of the screen
+    in a "wheel" using different colors.
+
+  8 Read/Write bank test
+
+    This item copies the left half of the screen to the right half, reversing
+    the line order, thus copying from "low" to "high" banks using seperate
+    read/write banks.
+
+  0 Exit
+
+  Items 5-8 are only present if WHATVGA believes the adapter supports the
+  function, though you can always try the test by pressing the key.
+
+
+  Special functions for test purposes (may hang your PC or worse):
+
+  B Register Bit test.
+
+    You are asked for the base register (such as 3C0h, 3C4h, 3CEh or
+    3d4h), starting index and starting bit number (0-7).
+    Then you select the mode for the test.
+
+    Now the test pattern is drawn in the desired mode, but using the
+    entire video memory (like the "virtual screen").
+    The selected bit will be changed for ~0.5 sec, then restored for
+    another 0.5 sec. This repeats until another bit is selected by
+    -, + or * or the test is stopped by the Esc key.
+    - steps one bit back, + one forward - both changing the index if
+    necessary. * advances to bit 0 of the next index.
+
+    This can be used to figure out the function of individual bits, the
+    Display Start extension bits being the obvious example (and the
+    intended target), but also clock bits etc.
+
+    !!NOTE!! this may hang your PC or expose your video card or monitor
+    to conditions beoynd their intended operational specifications.
+    While damage to your monitor or video card is extremely unlikely
+    (I haven't heard of a confirmed case since the old IBM MDA monitor),
+    it is theoretically possible and my insurence company refuses to
+    recognize any responsibility what so ever :-).
+
+    Hanging your PC is however a very real possibility.
+    Note the bit you were testing, reboot (power off may be required)
+    and restart from the NEXT bit.
+
+  D DAC test submenu
+    Tests various special DAC functions:
+
+      2 - Test 24bit (16Mcolor) mode
+      3 - Test 32bit (16Mcolor RGBa) mode
+      5 - Test 15bit (32Kcolor) mode
+      6 - Test 16bit (64Kcolor) mode
+          Tests the switching between 256color mode and 15/16/24/32bit mode.
+          Besides the normal 256color test pattern a RGB color scale in the
+          selected mode is also shown (this will look weird in 256color mode)
+          Pressing + toggles between the two modes.
+          Esc or Enter terminates the test.
+
+      8 - Test 6/8bit mode
+          A test pattern is drawn in the selected 256color mode. The palette
+          is set up to use the full 256 of 16m palette (256 shades of each
+          basic color). When the DAC is in 6bit mode there are only 64 shades,
+          thus the color bars will "break". The + key switches between 6bit
+          and 8bit DAC mode. Esc or Enter terminates the test.
+
+      A - DAC Cmd register Analysis
+          This test examines the DAC command register which is accessed by
+          reading 3C6h several times. Note that only some DACs have this
+          register! The PEL register (3C6h) is set to 4 different patterns
+          (55h, AAh, 5Ah and A5h) and for each pattern 3C6h is read 8 times.
+          If the DAC has a command register it will show after 4 or 5 reads.
+          Some DACs have more than one "hidden" register at 3C6h and some DACs
+          revert to the PEL register after the first read of the command
+          register, while others allow multiple reads of the command register.
+          Then the command register is tested for read/writability, first bit
+          by bit (0 to 7) this is reported as: "Dac Single Bit Mask: EF" where
+          EF indicates that all but bit 4 is Read/Writable, then all values (0
+          to 255) are tested and reported as: "DAC mask: AA R/W: BB Change: CC
+           Set: DD Clear: EE" where AA shows the bits actually tested - FFh =
+          all (Some DACs have problems with some bits combinations), BB are the
+          Read/Writable bits, CC the ones that changed but aren't R/W, DD the
+          bits that are always set and EE the ones that are always clear.
+          If any patterns causes unexpected results they are shown as: "  AA =
+           BB" where AA is the value written and BB the one read back.
+          All fields above are in hex.
+
+      C - Test Command register
+          Allows you to test the behaviour of the DAC command register. Apart
+          from the usual 256color test pattern a number of color scales are
+          drawn in (from top to bottom) 15, 16, 24 and 32 bit color format.
+          These will of course look hopeless in 256color mode, but allows you
+          to detect if you switch to one of these modes. The F1 - F8 keys will
+          toggle bits 0 - 7 of the command register. The value you are
+          currently trying to program, is shown at the top.
+
+      G - Gamma Test
+          Allows you to test if your DAC can handle gamma correction in Hi-
+          and True color modes. You are asked to select a Hi- or Truecolor
+          mode, the test pattern is drawn and now one of the basic colors
+          (Red, Green and Blue) will be inverted every time + is pressed.
+
+      M - Select base mode
+          Selects the mode to use for the DAC tests from the available 256
+          color modes. By default the 640x480 mode is used.
+
+    A test pattern is drawn in the selected 256color mode.
+    The palette is set up to use the full 256 of 16m palette (256
+    shades of each basic color). When the DAC is in 6bit mode there
+    are only 64 shades, thus the color bars will "break".
+    The keys 6 and 8 switches between 6bit and 8bit DAC mode
+    (if the 8bit DAC mode works :-) ).
+    Esc or Enter terminater the test.
+    Currently this only works for the AT&T (20c490/491), Sierra 24bit 
+    (SC15021/25), Trident TDK8001 and Brooktree (Bt477,Bt484/5) DACs.
+
+  R Register Read/Write test.
+
+    You are asked for the base register (such as 3C0h, 3C4h, 3CEh or 3d4h),
+    the mask used for the index register. The mask is entered as an 8 character
+    string where each character controls one bit of the index (bit 0 first) and
+    can be 'x' (don't care), '0' (always 0), '1' (always 1) or ' ' (don't care
+    if the bit is Read/Writable in the index register, 0 or 1 if it is always 0
+    or 1). Any other characters are interpreted as ' '.
+    Finally you are asked for the mode to use for the test. After the test a
+    table showing the status of each bit tested is output starting from index 0
+    bit 0. Each bit is shown as: '.' (Masked), '0' (Always 0), '1' (Always 1),
+    'A' (Automatically changing), 'C' (Read/Writable, but changed by some other
+    bit) or 'W' (Read/Writable).
+
+
+The tests:
+
+ID:      Is the Chip Set, DAC and video memory identified correctly?
+
+Xres:    Are the modes (standard and extended) displayed correctly?
+         Display type, Switch settings and BIOS versions can cause
+         some modes to be unavailable or out of sync.
+
+Scrl:    Can you display and scroll in the Virtual Screen ?
+         You should be able to move in the entire virtual screen,
+         but not to move so far right or down that the display wraps.
+         If you can move past the right edge (or can't reach it)
+         we probably miss a factor of two in the SetVStart function.
+         Also can you scroll horizontally in 1 pixel steps ?
+         If the display wraps when the start crosses the middle (or 1/4)
+         of memory we have a problem with the high bits (the Y variable)
+         in the SetVStart function or with an enable bit.
+         Also part of video memory can be inaccessible in modes that
+         normally only use <half the memory causing the testpattern to
+         be overwritten.
+
+Anal:    Are the modes (particularly the extended ones) analysed
+         correctly (Ie do the "Calc:" fields match the "List:" ones) ?
+         Some modes, such as 2 and 4 color and mode 13h are hard to ID
+         on many adapters.
+
+Cur:     Is the HardWare cursor shown correctly and can it be moved
+         around the display with the arrow keys ?
+         The cursor should look like a snipers sights with a dot in the
+         upper left corner.
+
+Blit:    Is the central palette drawn correctly ? Are the secondary palettes
+         copied correctly ?
+
+Line:    Are the lines drawn from the middle to fill a rectangle ?
+
+RWbank:  Do the two halfs of the screen match ?
+
+
+Adapters tested:
+
+               Mem: ID: Xres: Scrl:  Anal:  Cur:  Blit:  Line:  RWbank:
+
+Acer:
+  M3135
+  M3145
+Acumos:  See Cirrus 5401 and 5402
+  AVGA2 (5402)  512 Ok  Ok    Ok     Ok     Ok*   NA     NA     NA
+Ahead:          .   .   .     .      .      .     .      .      .
+  V5000 A
+  V5000 B       1M  Ok  Ok    Ok     Ok     NA    NA     NA     Ok
+Alliance (ProMotion):
+  3210          1M  Ok  Ok    Ok     Ok
+Appian:         .   .   .     .      .      .     .      .      .
+  AGC-98032     2M  No
+ARK Logic:      .   .   .     .      .      .     .      .      .
+  ARK1000VL     2M  Ok  Ok    Ok*    Ok     Ok    No     No     Ok
+  ARK1000PV
+  ARK2000PV     2M  Ok  Ok    Ok*    Ok     Ok    No     No     Ok
+ATI:            .   .   .     .      .      .     .      .      .
+  18800                                     NA    NA     NA
+  18800-1       512 Ok  Ok    Ok     Ok     NA    NA     NA     Ok
+  28800-2                                   NA    NA     NA
+  28800-4                                   NA    NA     NA
+  28800-5                                   NA    NA     NA
+  28800-6       1M  Ok  Ok    Ok     Ok     NA    NA     NA     Ok
+  68800-3 (VGA):2M  Ok  Ok*   Ok     Ok     NA    NA     NA     Ok
+          (ACC):2M  Ok  Ok    Ok     Ok*    Ok    Ok*    Ok*    Ok
+  68800-6
+  68800-LX
+  68800-AX
+  88000GX (VGA):1M* Ok  Ok    Ok*    Ok     NA    NA     NA     Ok
+          (ACC):4M  Ok  Ok*   Ok*    Ok     Ok    Ok*    Ok*    Ok
+Avance Logic:   .   .   .     .      .      .     .      .      .
+  ALG2101       1M  Ok  Ok    Ok     Ok     Ok*   Ok*    Ok*    Ok
+  ALG2201       1M  Ok  Ok    Ok     Ok     No    No     No     Ok
+  ALG2228           Ok  Ok    Ok     Ok     No    No     No     Ok
+  ALG2301       2M  Ok  Ok    Ok     Ok     No    No     No     Ok
+Chips&Tech:     .   .   .     .      .      .     .      .      .
+  82c450        512 Ok  Ok    Ok     Ok     NA    NA     NA     NA
+  82c451                                    NA
+  82c452        512 Ok  Ok    Ok     OK     Ok    NA     NA     NA
+  82c453
+  82c455
+  82c456
+  82c457
+  F65510
+  F65520
+  F65530
+  F65535
+  F65540
+  F65545
+  F64200
+  F64300        2M  Ok  Ok    Ok     Ok     Ok                  NA
+Cirrus:         .   .   .     .      .      .     .      .      .
+  510/520                                         NA     NA     NA
+  610/620                                         NA     NA     NA
+  5401(AVGA1)   256 No                            NA     NA     NA
+  5402(AVGA2)   512 Ok* Ok    Ok     Ok     Ok*   NA     NA     NA
+  5410                                            NA     NA     NA
+  5420          512 Ok  Ok    Ok     Ok     Ok*   NA     NA     NA
+  5422                                            NA     NA     NA
+  5424                                            NA     NA     NA
+  5426          2M  Ok  Ok    Ok     Ok     Ok*   Ok*    NA     NA
+  5428          1M  Ok  Ok    Ok     Ok     Ok*   Ok*    NA     NA
+  5429                                                   NA     NA
+  5430          2M  Ok  Ok*   Ok     Ok     Ok*   Ok*    NA     NA
+  5434          1M  Ok  Ok    Ok     Ok     Ok*   Ok*    NA     NA
+  5452
+  6205                                      NA    NA     NA     NA
+  6215
+  6225
+  6235
+  6410          512 Ok  Ok    Ok     Ok*    NA    NA     NA     NA
+  6412
+  6420
+  6440
+Compaq:         .   .   .     .      .      .     .      .      .
+  IVGS
+  AVGA          512 Ok  Ok    Ok     Ok     NA    Ok*    NA     NA
+  QVGA
+  QVGA1024
+  QVGA1280      2M  Ok  Ok*   Ok*    Ok*    Ok*   Ok*           NA
+Everex:
+Genoa:          .   .   .     .      .      .     .      .      .
+  51/5200
+  53/5400
+  6100
+  62/6300
+  64/6600
+  7900
+HMC:            .   .   .     .      .      .     .      .      .
+  HM86304       512 Ok  Ok    Ok*    Ok     NA    NA     NA     NA
+  HM86314
+IIT:            .   .   .     .      .      .     .      .      .
+  AGX-xx (VGA): 1M* Ok  Ok    Ok     Ok     NA    NA     NA     NA
+  AGX10/11
+  AGX-14        1M  Ok  Ok    Ok*    Ok     Ok    Ok     Ok     NA
+  AGX-15        2M  Ok  Ok    Ok*    Ok     Ok    Ok     Ok     NA
+  AGX-16        2M  Ok  Ok    Ok*    Ok     Ok    Ok     Ok     NA
+Matrox:         .   .   .     .      .      .     .      .      .
+  Impres (VGA):
+         (ACC):
+  Ultima (VGA):     Ok  Ok*   Ok     Ok
+         (ACC): 2M  Ok*
+  Imp Pl (VGA):     Ok  Ok*   Ok     Ok
+         (ACC): 2M
+Media Vision:   .   .   .     .      .      .     .      .      .
+  PG 1024       2¬M Ok*
+  PG 1280       4M  No
+MXIC:           .   .   .     .      .      .     .      .      .
+  86000         512 Ok  Ok    Ok     Ok     NA    NA     NA     NA
+  86010
+  86100
+NCR:            .   .   .     .      .      .     .      .      .
+  77C20
+  77C21
+  77C22E        4M  Ok  Ok    Ok     OK     Ok    NA     NA     Ok
+  77C22E+
+  77C32BLT      2M  Ok  Ok    Ok     Ok     Ok    Ok     NA     Ok
+Oak:            .   .   .     .      .      .     .      .      .
+  OTI-37C       256 Ok  Ok!   Ok     OK     NA    NA     NA
+  OTI-067       256 Ok  Ok!   Ok     OK     NA    NA     NA
+  OTI-077       1M  Ok  Ok!   Ok     Ok     NA    NA     NA     Ok
+  OTI-087       1M  Ok  Ok!   Ok     Ok     Ok*                 Ok
+Paradise/WD:    .   .   .     .      .      .     .      .      .
+  PVGA1A        512 Ok  Ok    Ok     Ok     NA    NA     NA     NA
+  WD90C00                                   NA    NA     NA
+  WD90C10                                   NA    NA     NA
+  WD90C11       512 Ok  Ok    Ok     Ok     NA    NA     NA     Ok
+  WD90c2x
+  WD90C24       1M  Ok  Ok    Ok     Ok     Ok*   Ok            Ok
+  WD90c26
+  WD90C30       1M  Ok  Ok    Ok     Ok     NA    NA     NA     Ok
+  WD90C31       1M  Ok  Ok    OK     Ok     Ok*   Ok*    NA     Ok
+  WD90c33       2M  Ok  Ok    Ok     Ok     Ok    Ok*    Ok*    Ok
+Primus:         .   .   .     .      .      .     .      .      .
+  P2000         2M  Ok  Ok*   Ok     Ok     NA    Ok*    NA     Ok
+Realtek:        .   .   .     .      .      .     .      .      .
+  RT3105        512 Ok  Ok    Ok     Ok     NA    NA     NA     Ok
+  RT3106                                    NA    NA     NA
+S3:             .   .   .     .      .      .     .      .      .
+  86c911                                                        NA
+  86c911A/24    1M  Ok  Ok    Ok     Ok     Ok*   Ok*    Ok*    NA
+  86c801        2M  Ok  Ok    Ok     Ok     Ok*   Ok*    Ok*    NA
+  86c805                                                        NA
+  86c805p       1M  Ok  Ok    Ok     Ok*    Ok*   Ok*    Ok*    NA
+  86c928        4M  Ok  Ok    Ok     Ok     Ok*   Ok*    Ok*    NA
+  86c864                                                        NA
+  86c864P       2M  Ok  Ok    Ok     Ok     Ok*   Ok*    Ok*    NA
+  86c964                                                        NA
+  86c964P       2M  Ok  Ok    Ok     Ok     Ok*   Ok*    Ok*    NA
+  86c732
+  86c764
+  86c764P       1M  Ok  Ok    Ok     Ok     Ok*   Ok*    Ok*    NA
+  86c866
+  86c868
+  86c968
+Sierra:
+  SC15064
+SiS:
+  SG86c201      1M  Ok  Ok    Ok     Ok     Ok                  Ok
+Trident:        .   .   .     .      .      .     .      .      .
+  8800BR                                    NA    NA     NA     NA
+  8800CS        512 Ok  Ok    Ok     Ok     NA    NA     NA     NA
+  8900B         1M  Ok  Ok    Ok     Ok     NA    NA     NA     NA
+  8900C         1M  Ok  Ok    Ok     Ok     NA    NA     NA     NA
+  9000          512 Ok  Ok    Ok     Ok     NA    NA     NA     NA
+  9000B                                     NA    NA     NA     NA
+  9000i         512 Ok  Ok*   Ok     Ok     NA    NA     NA     NA
+  9000C         512 Ok  Ok    Ok     Ok*    NA    NA     NA     Ok
+  8900CL                                    NA    NA     NA
+  8900D         1M  Ok  Ok    Ok     Ok*    NA    NA     NA     Ok
+  9200CXr       1M  Ok  Ok    Ok     Ok*    NA    NA     NA     Ok
+  9400CXi       2M  Ok  Ok    Ok     Ok*    NA    NA     NA     Ok
+  9420DGi       1M  Ok  Ok    Ok     Ok*    NA                  Ok
+  9440AGi       1M  Ok  Ok    Ok     Ok     Ok                  Ok
+  9660XGi
+Tseng:          .   .   .     .      .      .     .      .      .
+  ET3000        512 Ok  Ok*   Ok     Ok     NA    NA     NA     Ok
+  ET4000        1M  Ok  Ok    Ok     Ok     NA    NA     NA     Ok
+  ET4000W32     1M  Ok  Ok    Ok     OK     Ok*   Ok*    NA     Ok
+  ET4000W32i A                                           NA
+  ET4000W32i B  2M  Ok  Ok    Ok     Ok     Ok*   No     NA     Ok
+  ET4000W32p A  2M  Ok  Ok    Ok     Ok     Ok*   Ok*    Ok*    Ok
+  ET4000W32p B  2M  Ok  Ok    Ok     Ok*    Ok*   Ok*    Ok*    Ok
+  ET4000W32p C
+  ET4000W32p D  1M  Ok  Ok    Ok     Ok     Ok*   Ok*    Ok*    Ok
+UMC:            .   .   .     .      .      .     .      .      .
+  UMC85c408     512 Ok  Ok    Ok     Ok     NA    NA     NA     Ok
+  UMC85c418     1M  Ok  Ok    Ok     Ok     NA    NA     NA     Ok
+Video7/Headland:    .   .     .      .      .     .      .      .
+  G2-GC205      256 Ok                                          NA
+  HT-208        512 Ok  Ok    Ok     Ok     Ok*   NA     NA     NA
+  HT-209
+  HT-216        1M  Ok  Ok    Ok     Ok     Ok!   NA     NA     NA
+Weitek:         .   .     .      .      .     .      .      .
+  W5086
+  W5186         256 Ok  Ok*   No     Ok
+  W5286         1M  Ok  Ok*   No     Ok                         Ok
+  P9000         2M  No
+  P9100 (VGA)   2M  Ok  Ok*   No     Ok                         Ok
+        (ACC)   2M  No
+Yamaha:         .   .     .      .      .     .      .      .
+  6388
+
+
+NA   Not supported
+Ok   Works
+No   Does not work
+ !   Doesn't work in mode 13h
+ *   See notes below
+
+
+Notes:
+
+ARK Logic 1000VL/2000PV. Scroll in 256/High/Truecolor modes is in units of
+ 4bytes. So far I haven't figured out how to use the BitBLT engine.
+
+ATI 18800-1 & 28800-6. Horizontal scroll in PK4 mode (and PL4 for 18800-1)
+ is in units of 2 pixels. The 28800-6 requires extensive reprogramming of
+ mode 0Dh (timing problems when full memory is enabled).
+I suspect that all combinations of the 28800-4/-5/-6 and BIOS id 4 or 5 can
+ be found. Examples ?
+
+ATI Mach64 VGA. Scroll in PL4 modes is in units of 2 pixels. There are some
+ HiColor modes (72h,73h,75h), but they are partialy controlled by the Mach64
+ engine, so have been disabled for now
+
+ATI Mach32 (68800-3). Blit & Line fails 24bit, but works in 4/8/15/16bits.
+Mach32 can not tell bytes/scanline or interlace (write only regs)
+The VGA mode 13h wraps at 64K.
+
+ATI Mach64 (88800GX). Scroll is in units of 8 bytes. The clock probing works,
+ but where is the baseline? BitBLT and Line draw does not work in 24bit modes,
+works with 32bpp modes. The 16color (packed 4bit) modes shows a blank screen
+
+Avance Logic ALG2101. Blit (Fill) & Line fails in 64Kcolor modes. The cursor
+ is double height in interlaced modes
+
+Avance Logic ALG2201/2228/2301. Blit, Line & Cursor fails because the graphics
+ engine registers are memory mapped (but to where ?).
+ The test for the ALG2228/2301 is suspect. It works for the two cards I have..
+
+Acumos AVGA2 and Cirrus Logic 5402/5420 (rev 1). The cursor does not work in
+ the 320x200 modes due to the clock doubling
+
+Cirrus Logic CL-GD5426. The cursor does not work in the 320x200 modes due to
+ the clock doubling, and also not in the 16Mcolor modes.
+BitBlt does not work in the 16Mcolor modes (copy ok, fill fails).
+BitBLT in 16c modes ?
+
+Cirrus Logic CL-GD5430,CL-GD5434. The cursor does not work in the 320x200
+modes due to the clock doubling, and also not in the 16Mcolor modes.
+BitBlt does not work in the 16Mcolor modes (copy ok, fill fails), also not in
+ 16color modes and mode 13h.
+Note: Not tested in 32bit (RGBa) mode (too little RAM)/missing modes.
+Note: On the 5430 the 16color modes blanked (all white)) the 2nd MB.
+
+Cirrus Logic CL-GD6410. Can't id the clocks.
+
+Compaq AVGA:
+BitBLT only works in extended 256color modes.
+
+Compaq QVision 1280. The AVGA modes (0-13h,29h,2Eh) wraps at 1Mb. Some modes
+ (800x600, 640x480 16Mcolors) are broken - BIOS problem. AVGA Blit only works
+ in mode 2Eh, fails in all other AVGA modes.
+Scroll in packed modes (except mode 13h) is in units of 4 bytes
+
+HMC 86c304. Horizontal scroll in 256c modes is in units of 4 bytes.
+ It is still uncertain if we can distinguish between the '304 and the '314
+
+IIT (VGA). Memory limited to 512K due to scroll & lack of modes. Banking can
+ access 1Mb, but scroll wraps at 512K.
+
+IIT-14/15/16. Scroll is in units of 4 bytes.
+ Only tested w/1024x768 8bit modes due to lack of BIOS modes.
+
+Matrox VGA. Mode 13h is redefined to allow full memory access, but the new
+ mode has a 62 kHz line sync (I.e. we need a /2 on the dot-clock).
+
+Matrix Ultima. The card is ID'd, but memory, DAC and clock is not checked.
+ No functionality expect for the ID (I.e. no modes...)
+
+MediaVision PG1024. The ID rutine could generate "false positives" and will
+ not work if the adapter has not been setup for a base I/O address (538h/...)
+ Also does not check for 768K/2.25M (256color/16Mcolor versions).
+
+All Paradise: Scroll in extended 256color modes is in units of 4 bytes
+WD90c31: Cursor is horizontally compressed in 32K/64Kcolor modes. Blit fails
+ (copy ok, fill fails) in 32K/64K color modes.
+WD90c33: Blit & Line fails in 16Mcolor modes
+
+Paradise/WD90c24: Scroll in extended 256color modes is in units of 4 bytes
+The cursor moves too slowly vertically in some Flat Panel modes (the 200/350
+ /400 line ones), probably due to vertical stretching.
+
+Primus P2000. Interlaced modes have a problem scrolling into the 2nd Mb where
+ the image from the 1st Mb is superimposed on the "real" image from the 2nd
+ Mb. Blit fails in 32k/64Kcolor modes (copy is ok, fill fails).
+
+Oak-37C,-67. Extended modes and R/W Banks could not be tested due to the low-
+ spec cards used. There are several different OAK-37 BIOSes with diff. modes!
+Oak-087. The hardware cursor only works in 256color modes.
+
+S3 86c924. Cursor has problems in clock doubled modes (mode $D and $13)
+BitBLT & Line does not work in 16color (planar) and standard VGA modes
+Scroll in 256&Highcolor modes is in units of 4 bytes
+
+S3 86c801. Cursor has problems in clock doubled modes (mode $D and $13)
+BitBLT & Line does not work in 16color (planar), standard VGA and 24bit modes
+Scroll in 256&Highcolor modes is in units of 4 bytes
+
+S3 86c805p. Cursor has problems in clock doubled modes (mode $D and $13)
+and locks up in the packed 16color mode. BitBLT & Line does not work in
+16color (planar), standard VGA and 24bit modes
+Scroll in 256&Highcolor modes is in units of 4 bytes
+
+S3 86c928. Cursor has problems in clock doubled modes (mode $D and $13)
+Scroll in 256/High/Truecolor modes is in units of 4 or 8 bytes
+BitBLT & Line does not work in 16color (planar) and standard VGA modes
+
+S3 Vision864. The cursor is broken in all VGA and 16color (planar) modes
+Scroll in 256/High/Truecolor modes is in units of 4 or 8 bytes
+BitBLT & Line does not work in 16color (planar) and standard VGA modes
+
+S3 Vision964. The cursor is broken in all modes using the S3 cursor (16color
+ (planar) and some 256color modes), as if the cursor map is stored wrong.
+Scroll in 256/High/Truecolor modes is in units of 4 or 8 bytes
+BitBLT & Line does not work in 16color (planar) and standard VGA modes
+
+S3 Trio64 (86c764). Cursor has problems in clock doubled modes (mode $D and
+ $13). Scroll in 256/High/Truecolor modes is in units of 4 or 8 bytes
+BitBLT & Line does not work in 16color (planar) and standard VGA modes
+
+Trident. The newer Tridents must have some extra bits for the horizontal
+timing registers. This can be seen in the 320x200 24bit mode where the
+Horizontal Total rolls over and thus becomes very small.
+The 9000i has an onchip 15/16bit DAC, but apparently no one can get it to work
+ - not even the BIOS/VESA modes. I expect it requires 16bits per pixel clock.
+The 9000C, 8900CL and 8900D can not reliably be distinguished from each other.
+The 8900B/8900C has a problem with images crossing 512K in 16color modes.
+ It is ok if the entire image is either below or above 512K
+
+Trident 9440. The clocks are detected from the internal clock chip, but are
+ off by as much as 10%.
+
+Tseng ET3000AX. Mode 0Dh wraps at 256K. This mode does not appear to be
+ reprogrammable (unlike mode 13h and the other 16color modes).
+
+Tseng ET4000/W32.
+Cursor is too short horizontally in 24bit modes and 15/16bit modes.
+Blit: Fill doesn't work in 24bit modes. Copy only works down left!!
+Blit doesn't work in 16c modes
+
+Tseng ET4000/W32i revB. Cursor has a coloumn of junk below the actual cursor
+in interlaced modes (Happens with the W32i rev B & W32p rev A).
+Also cursor is too short horizontally in 15/16/24bit modes and too large
+in mode 13h (pixel doubling).
+Blit is broken in all modes (Fill appears to work in 8/15/16bit modes, copy
+ fails in all modes - destination block is often "broken up" or "dirty").
+
+Tseng ET4000/W32p revA. Cursor has a coloumn of junk below the actual cursor
+in interlaced modes (Happens with the W32i rev B & W32p rev A).
+The BitBlt does not copy "backwards". Lines appears "dotted".
+Cursor is too short horizontally in 24bit modes
+
+Tseng ET4000/W32p revB. Blit: Fill doesn't work in 24bit. Blit & lines fails
+ totally in 16color modes. Lines appears dotted.
+Cursor hor. short in 15/16/24 bit modes, too wide in mode 13h.
+Some problems w/Analysis due to the Chrontel DAC
+Horizontal Scroll in "16bit DAC video path" mode is in units of 2 (or 4?) bytes
+
+Tseng ET4000/W32p revD. Blit: Fill doesn't work in 24bit. Blit & lines fails
+ totally in 16color modes. Lines appears dotted.
+Cursor hor. short in 24 bit modes, too wide in mode 13h.
+Horizontal Scroll in "16bit DAC video path" mode is in units of 2 bytes
+
+UMC UM85c408,UM85c418. Some of the modes are weird (BIOS problem).
+
+Video7 HT-208 (actually G2 208). Hardware cursor is horizontally compressed in
+ 256color modes and blank in mode 13h (the last is also true for the HT-216).
+Also, I have my doubts as to the clock selection on the '208.
+
+Weitek W5x86,P9100(VGA): Scroll only works in the first 256K (as std VGA).
+Horizontal Scroll in ext 256color modes is in units of 4 bytes
+
+
+
+DACs tested:
+                   ID   8bit  15b  16b  24b  32b Cursor  MPlex  Clock
+Acumos:
+  ADAC1                                      NA    NA     NA     NA
+AT&T:              .     .    .    .    .    .     .      .      .
+  20c490           Ok    Ok   Ok   Ok   Ok1  NA    NA     NA     NA
+  20c491           Ok    Ok   Ok   Ok   Ok1  NA    NA     NA     NA
+  20c492           Ok    NA   Ok   Ok   OK1  NA    NA     NA     NA
+  20c493                 NA                  NA    NA     NA     NA
+  20c498                                           NA
+  21c498                                           NA
+  22c498                                           NA
+  20c504
+  20c505
+ATI:               .     .    .    .    .    .     .      .      .
+  ATI68830                                         NA
+  ATI68860               Ok   Ok   Ok   Ok   Ok    NA            Ok
+  ATI68875               pin                       NA
+  ATI68880
+Avance Logic:      .     .    .    .    .    .     .      .      .
+  ALG1101          Ok*   NA   NA   pin  NA   NA    NA     NA     NA
+  ALG1201          Ok         Ok   Ok   Ok1        NA     NA     NA
+  ALG1301
+Brooktree:         .     .    .    .    .    .     .      .      .
+  Bt477            Ok    Ok   NA   NA   NA   NA    NA     NA     NA
+  Bt481            Ok    Ok   Ok   Ok   Ok1  NA    NA     NA     NA
+  Bt482                                                   NA
+  Bt484
+  Bt485            Ok    Ok   Ok*  Ok*  NA   Ok*   Ok     No     NA
+Chrontel:          .     .    .    .    .    .     .      .      .
+  CH8391           Ok    Ok   Ok   Ok   Ok1  NA    NA     NA     Ok
+  CH8398           Ok    NA   Ok   Ok   Ok1  NA    NA     No     Ok
+Chips&Tech:
+  64300 Internal   OK         Ok   Ok   Ok1        NA     NA     Ok
+Cirrus Logic:      .     .    .    .    .    .     .      .      .
+  CL-GD5200
+  542x internal    Ok    NA   Ok   Ok   Ok   NA    NA     NA     Ok
+  543x internal
+Diamond:           .     .    .    .    .    .     .      .      .
+  SS24             Ok    NA   Ok   Ok   Ok1  NA    NA     NA     NA
+IBM:
+  RGB514
+  RGB524           Ok
+  RGB525
+  RGB526
+  RGB528
+  RGB530
+  RGB561
+  RGB624
+ICS:               .     .    .    .    .    .     .      .      .
+  5300
+  5301             Ok    NA   Ok   Ok   OK1  NA    NA     NA     NA
+  5342
+IC Works:
+  w30c498
+  w30c516          Ok    Ok   Ok   Ok        Ok    NA     Ok     NA
+Paradise/WD:
+  WD90c24 Intern   Ok         Ok*  Ok*             NA     NA     NA
+Oak:               .     .    .    .    .    .     .      .      .
+  OTI-66
+  OTI-66HC         Ok    NA   Ok   Ok              NA     NA     NA
+MUSIC:             .     .    .    .    .    .     .      .      .
+  MU9c1710
+  MU9c1880
+  MU9c4870
+  MU9c4910         Ok    NA   Ok   Ok   Ok1  NA    NA     NA     NA
+  MU9c9910         Ok    NA   Ok   Ok   Ok1  NA    NA     NA     Ok
+S3:                .     .    .    .    .    .     .      .      .
+  86c708 (GenDAC)
+  86c716 (SDAC)    Ok    NA   Ok   Ok        Ok*   NA            Ok
+SGS-Thompson:      .     .    .    .    .    .     .      .      .
+  STG1700                                          NA
+  STG1702          Ok    Ok   Ok   Ok   Ok1        NA     NA     NA
+  STG1703          Ok    Ok                        NA
+Sierra:            .     .    .    .    .    .     .      .      .
+  SC11481                pin       NA   NA   NA    NA     NA
+  SC11486                NA        NA   NA   NA    NA     NA
+  SC11488                pin       NA   NA   NA    NA     NA
+  SC11482                pin       NA   NA   NA    NA     NA
+  SC11483                NA        NA   NA   NA    NA     NA
+  SC11484                pin       NA   NA   NA    NA     NA
+  SC11485                pin            NA   NA    NA     NA
+  SC11487          Ok    NA   Ok   Ok   NA   NA    NA     NA     NA
+  SC11489                pin            NA   NA    NA     NA
+  SC15021          Ok    Ok   Ok   Ok   Ok1  NA           NA
+  SC15025          Ok    Ok   Ok   Ok   Ok1        NA     NA     NA
+TI:                .     .    .    .    .    .     .      .      .
+  TLC34058
+  TLC34075         Ok    pin  NA   NA   No   NA    NA     No     NA
+  TVP3010
+  TVP3020
+  TVP3025          Ok    Ok   Ok   Ok   No   No    Ok     No     Ok
+  TVP3026
+Trident:           .     .    .    .    .    .     .      .      .
+  TKD8001          Ok    Ok   Ok   Ok   Ok1  NA    NA     NA     NA
+  9000i Internal   Ok    NA   No   No   NA   NA    NA     NA     NA
+  9200CXr Intern   Ok    Ok   Ok   Ok   Ok1  NA    NA     NA     NA
+  9400CXi Intern   Ok    NA   Ok   Ok   Ok1  NA    NA     NA     NA
+  9420DGi Intern   Ok    NA   Ok   Ok   Ok1  NA    NA     NA
+  9440AGi Intern   Ok                              NA     NA
+UMC:               .     .    .    .    .    .     .      .      .
+  UM70c178         Ok         Ok   Ok   NA   NA    NA     NA     NA
+  UM70c188         Ok         Ok   Ok   Ok1  NA    NA     NA     NA
+Winbond:           .     .    .    .    .    .     .      .      .
+  W82c490          Ok*   NA   Ok   Ok   Ok1  NA    NA     NA     NA
+
+NA   Not supported
+pin  Supported by a pin
+
+
+Comments:
+ Ok1  - The DAC is switched into a 24bit mode, but the colors are swapped
+        around. This may be a problem with the dac mode (BGR rather than RGB)
+        or with the DAC starting from the wrong byte because the left overscan
+        area is also seen by the DAC
+
+The Trident TKD8001 can be sent into a "no return" state, which I (and the
+ BIOS) can't return it from....
+
+The Avance Logic ALG1101 id "ID'd" by assuming that any ALG chips that reports
+ a standard DAC must have an ALG1101... It is unclear how 16bit mode is set.
+
+The Brooktree Bt484/485 can be switched between 8/15/16/32 bit modes, however
+ due to the different pixel multiplexing used for these modes the display
+ timings are often seriously disturbed. Also the DAC must be in "VRAM" mode.
+
+The S3 SDAC can be switched between 8/15/16/32 bit modes, however due to the
+ different pixel multiplexing used for these modes the display timings are
+ often seriously disturbed.
+
+Paradise/WD90c24 internal DAC can be switched to 15/16bit mode, but double
+ clocking mode (16bits/VCLK) must be set for it to work.
+
+The Winbond W82C490 is ID'd as "AT&T 20c492", which is close enough
+
+The ATI 68860 is ID'd from the Mach64 status regs. Switch to 15/16/24/32
+ bit mode works, but changes the horizontal resolution.
+
+
+Clock chips:
+
+            Id:    Rd:
+DCS2824     Ok     NA
+ICD20c61    Ok     NA
+ICS2595
+SC11412
+
+The DCS2824 and ICD20c61 are both identified as "ICD20c61" which is ok as the
+DCS2824 is an OEM'd ICS chip. The ICD20c61 and ICD20c61A arte however id'd.
+
+
+
+
+
+Generel Problems:
+
+Search for modes doesn't understand 2 and 4 color modes.
+In general 2 and 4 color modes are only supported partially, and
+fixing it is NOT a top priority :-).
+
+Mode 0Fh and 11h (and other 2 color modes) has problems in some cases.
+
+Mode 13h has a pixel double function. Most chips use Master Clock/2
+(3C4h index 1 bit 3) for this, but some chips has their own system.
+This causes problems with mode analysis.
+
+Some of the extended modes may only be implemented on
+some otherwise similar boards, depending on make and BIOS rev.
+
+
+Utilities:
+
+DMPMEM:
+
+  DMPMEM dumps the ROMs to files named DMPxxxx.ROM (where xxxx is
+  the hex address of the ROM Ie. DMPC000.ROM for VGA).
+  Interrupt and Font addresses are saved to the file VECTORS.ROM
+  As Mouse drivers, national keyboard drivers, memory managers
+  etc can obscure the results the program should be run on a clean
+  system (empty CONFIG.SYS and AUTOEXEC.BAT say from a floppy).
+
+
+TABLE:
+
+  Takes the register sets dumped to the file REGISTER.VGA and writes
+  them to REGISTER.TBL. If a register has the same value in all register
+  sets, the value is only shown the first time.
+  As the same file names are used every time you will have to delete
+  and rename the files as needed.
+
+
+VESALIE:
+
+  Can change the version and amount of memory reported by your VESA driver.
+  Can also hide the VESA driver, so other applications don't see it.
+  Parameters:  /0 /1 /2  Makes the VESA driver report a specific VESA
+                         VBE version (1.00, 1.01 or 1.02).
+               /on /off  Turns the VESA VBE on or off. By turning the
+                         VBE off you can prevent applications from using
+                         the VESA interface. Also if you try to load
+                         another VESA driver, it may refuse to install
+                         while the original driver is visible.
+               /Mxx      Forces the VESA driver to report the specified
+                         amount (in Kbytes) of video memory.
+               /U        Unload the VESALIE program.
+
+  Note that this NOT a VESA driver, it just changes the behavior of
+  an already installed driver.
+
+
+SHOWTEST:
+
+  Analyses the results in the .tst files generated when WHATVGA is
+  run with the /a option (WHVGAxxx.TST).
+  Parameters: SHOWTEST [tstfil] [outfil] [/r]
+  When run without parameters it lists the test files in the current
+  directory, showing the filename, chipset, memory, DAC and chipname.
+  When run with the name of a test file, the test results in this file
+  are written to the outfile. If no outfile is specified, the name of
+  the test file is used, with the extension changed to .txt
+  If the /r switch is used the register dumps for each mode is written
+  to the outfile (or to .reg).
+
+
+To do:
+ - S3 968/IBM RGB524 combo needs a lot of work
+ - Damn Weitek (W5x86) scroll function
+ - ET4000/W32 BitBLT/Linedraw
+ - Attemp W5x86/Trident/ARK BitBLT/Line draw
+ - Further work on CT64300, AGX-016, P9000, Matrox, PG1024/1280, Appian,
+   Alliance, SuperMAC and others
+ - Figure out how to deal with the AGX-16 which has TWO DACs!!
+
+

@@ -1,0 +1,82 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>Gamma Correction</title>
+											
+<center><h1>Gamma Correction</h1></center>
+<p><tr><td colspan=2><hr></td></tr><p>
+
+<dd>It is not a widely enough known fact that the intensity response of a standard computer
+monitor is not linear.<p>
+
+<dd>Pardon? What I mean to say is that if you plot a pixel of intensity 128, it does not appear
+twice as bright as a pixel of intensity 64. This fact means that many images are not displayed
+well on a computer. This can especially spoil carefully computer generated images. It is
+possible to adjust the intensity of the pixels on the screen so that they are displayed at the
+correct intensities relative to each other.<p>
+
+<center>
+<img src="x_gamma2.gif" width=122 height=58>
+<img src="x_gamma3.gif" width=122 height=58>
+<img src="x_gamma4.gif" width=122 height=58>
+<img src="x_gamma5.gif" width=122 height=58><br>
+<img src="x_gamma6.gif" width=122 height=58>
+<img src="x_gamma7.gif" width=122 height=58>
+<img src="x_gamma8.gif" width=122 height=58>
+<img src="x_gamma9.gif" width=122 height=58>
+</center>
+
+<dd>Let these eight little pictures demonstrate. Each picture consists of two halves. The left
+half contains an even mix of pixels, half of which are intensity 0, half are intensity 255. This
+will correctly appear as intensity 128 if you squint a bit.
+The other half of the picture contains a solid colour. The first picture (top left) contains intensity 128. The last image
+has intensity 183. You will notice that, in the first image, the solid colour seems to be darker
+than the left half, even though it is intensity 128. 
+<dd>Throughout the 8 images, the intensity of the solid colour increases. By finding the
+intensity which most closely matches, you can determine the level of Gamma Correction required
+by your monitor.
+
+<dd>This might not work well if you are viewing this on an 8-bit screen mode. I suggest using
+a High or True colour mode.<p>  
+
+<p>
+<dd>Different monitors have different responses, so in the case of a single image,
+you will have to make an adjustment which will best suit a wide range of monitors. In software,
+however, you can have an interactive adjustment so that the user can match the displayed images
+to their own hardware.<p>
+<p><tr><td colspan=2><hr></td></tr><p>
+
+<font size=+2>Intensity Response</font>
+<img src="x_gamma1.gif" align=left width=364 height=182>
+
+<dd>This is an approximated curve to show how the intensity response of a monitor is non linear.
+Dark colours tend to be displayed too dark. This can be corrected.<p>
+
+<dd>Also note that the curve does not go through the origin. A black pixel on a monitor is not
+totally black. There is not very much you can do about that.<p>
+<br clear>		
+<p><br>
+<dd>The process of adjusting the intensities to look correct is known as Gamma Correction. The
+process is a simple one, and need not be done in realtime, as creating a lookup table requires
+only a little space.<p>
+
+<dd>The amount of Gamma Correction we shall call <b>g</b> is usually greater than 1. The range
+of displayable intensities, <b>i</b>, is between 0 and 1. The formula is thus:
+
+<pre>
+		pixel = i ^ (1/g)
+</pre>
+
+A <b>g</b> value of 1 gives no Gamma Correction. Higher values give more correction.<p>
+
+<dd>Because values of <b>i</b> must be between 0 and 1, you will have to divide the intensity 
+by the maximum displayable intensity, perform the Gamma Correction, then multiply up again.
+
+<pre>
+		pixel = ((i / MaxIntensity) ^ (1/g)) * MaxIntensity
+</pre>
+
+
+</body>
+</html>

@@ -1,0 +1,1271 @@
+  Paradise/Western Digital Super VGA Chips.
+
+               Max mem   Max 16col  256 col
+    PVGA1A     512k/1M     800x600   640x480
+    WD90C00    512k/1M    1024x768   800x600   also known as PVGA1B
+    WD90C10    256k        640x480   320x200
+    WD90C11    512k       1024x768   800x600
+    WD90C20                800x600   640x480?  LCD/plasma controller derived
+                                               from WD90C00.  32 grey scales
+    WD90C22                                    As C20, but 64 grey scales
+    WD90c24    208pin   Max 1M RAM, 1280x1024 16c, 1024x768 256c.
+               Builtin 15/16bit DAC. LCD controller with BitBLT, line draw and
+               VESA local bus interface. Supports 3.3V or 5V operation
+    WD90c24A
+    WD90c26A                                   LCD controller. Can drive LCD
+                                               and CRT simultaneously. 3.3V
+    WD90C30    1M         1024x768  1024x768   (D-step)
+    WD90C31    1M        1280x1024  1024x768   (1DW - accelerator) Hardware
+                                               Cursor, BitBLT.
+    WD90C33    2M                  1280x1024   Accelerator. as WD90c31, but
+                                               with 8-level instruction FIFO.
+                                               VESA local bus interface.
+    WD90C35              Next version?
+
+Support chips:
+    WD90c55                                 Color LCD interface for WD90c20/22
+    WD90c56                                 Local Bus Interface for WD90c31
+
+
+ 94h (W): Setup Register     (Micro Channel)
+
+102h (R/W): VGA Sleep Register    (setup mode only)
+bit    0  VGA enabled if set.
+     1-7  Reserved.
+Note: this register can only be accessed in setup mode.
+
+3B8h (W):  Hercules/MDA Mode Control Register
+bit    0  High Resolution (80x25) mode enabled if set
+       1  If set allows access to 3BFh, if clear disables access to 3BFh and
+          thus forces alpha mode.
+       3  If set video is active
+       5  If set blinking is enabled
+       7  (Hercules mode) If bit 1 is set and 3BFh bit 0 is set, this bit
+          selects the page to display. 0: B000h:0, 1: B800h:0
+Note: This register is only available in MDA/Hercules compatibility modes
+
+3BAh (R):  CRT Status Register MDA Operation
+bit    0  If set either blanking or border is active
+       3  If set B/W Video is enabled
+       7  If clear Vertical Retrace is active
+
+3BFh (W):  Hercules Mode Register
+bit    0  Set in graphics modes, clear in alpha modes
+       1  If set the upper 32K at B800h:0 is accessible
+Note: This register is only available in Hercules compatibility modes
+
+3C3h (W): Global Enable Register
+bit    0  VGA Motherboard Enable if set
+Note: this register is used for MicroChannel and motherboard systems, 46E8h
+      for all other systems.
+
+3C4h index  3  (R/W): Reconfigured Character Map Select
+bit  0-2  Offset of character map in plane 2/3 in 8k blocks
+     3-4  Character map select from plane:
+            0: plane 2
+            1: plane 2 if attr. bit 3 set, plane 3 else
+            2: plane 3 if attr. bit 3 set, plane 2 else
+            3: plane 3
+
+3C4h index  6  (R/W):  PR20 Unlock Paradise Extended Registers (WD90c10+ only)
+bit  0-7  Write 48h to this register to unlock the Paradise Extended Sequencer
+          Registers (3C4h index >7)
+
+3C4h index  7  (R/W):  PR21 Display Configuration Status       (WD90C10+ Only)
+bit    0  (R) Monitor type. TTL if set, Analog if clear. This is the same as
+              3CEh index 0Fh bit 7
+       1  (R) EGA emulation if set, VGA if clear. This is the same as 3CEh
+              index 0Eh bit 1.
+       2  (R) 6845 compatibility if set. This is the same as 3CEh index 0Ch
+              bit 6.
+       3  (R) Color mode if set, mono if clear. This is the same as 3CCh bit 0
+     4-7  Scratch Pad (Display Configuration)
+
+3C4h index 08h (R/W):  PR22 Scratch Pad Register               (WD90c10+ only)
+bit  0-7  Scratch Pad
+
+3C4h index 09h (R/W):  PR23 Scratch Pad Register               (WD90c10+ only)
+bit  0-7  Scratch Pad
+
+3C4h index 10h (R/W):  PR30A Write Buffer and FIFO Control     (WD90c11+ only)
+bit  0-1  (WD90c24,26,31+?) Display FIFO control. Determines when the FIFO
+            will request a memory cycle: 0: one level empty, 1: two, 2: three,
+             3. four
+     2-3  (WD90c24,26,31+?) FIFO depth. 0: 8 levels, 1: 4 levels,
+             2,3: 2 levels
+       4  If set disables 16bit unchained mode (for test only)
+       5  If set the Display Memory path is 16bit, if clear 32bit
+     6-7  (WD90c24,26,31+?) Write Buffer Control. 0: Write Buffer is one level
+            deep, 1: two, 2: three, 3: four
+
+3C4h index 11h (R/W):  PR31 System Control Interface           (WD90C1x+ Only)
+bit    0  16 bit access to CRTC, Graphics Controller and Sequencer Registers
+          if set
+       1  16 bit access to Attribute Registers if set and bit 0 set.
+          If so 3C0h is index and 3C1h is data port.
+       2  Enable Write buffer if set. Reduces number of wait states for writes
+          to display memory
+     3-4  Read Rdy Cntrl. Enhanced speed depending on host bus speed:
+           0:  RDY is inserted at the end of a CPU memory cycle. Used for
+               Local Bus. Power on default (WD90c24)
+           1:  RDY is inserted 1 MCLK cycle before the end of a CPU memory
+               cycle. Use for 10MHz or slower ISA systems
+           2:  RDY is inserted 2 MCLK cycles before the end of a CPU memory
+               cycle.
+           3:  RDY is inserted 1 MCLK cycle after the end of a CPU memory
+               cycle. Use for 12MHz ISA systems
+       5  Enhanced text mode operations if set
+       6  Enhanced operation on blank lines if set. Prevents screen refresh
+          memory cycles during Vertical Blanking
+       7  (WD90C1x,24+ Only) RW Offset. If set Bank reg PR0A is used for
+           read cycles and PR0B for write cycles, else PR0B is used for
+           A000h-A7FFh and PR0A for A800h-AFFFh.
+
+3C4h index 12h (R/W): PR32 Miscellaneous Control #4            (WD90C1x+ Only)
+bit    0  If set use special CPU mapping for 132column text modes ?
+       1  If set allows reading the registers that are write-only in
+          compatibility modes (EGA,CGA,MDA registers)
+       2  (WD90c1x,3x) Clock Select bit 3. Bit 2 is in 3CEh index 0Ch bit 1,
+            bits 0-1 are in 3C2h/3CCh bits 2-3.
+     2-3  (WD90c24) Controls the FPUSR0 output pin. 0: set low, 1: set high,
+            2,3: pin is controlled by 3C4h index 15h bits 0-2
+     4-5  Controls the FPUSR1 output pin. 0: set low, 1: set high, 2,3: pin is
+          controlled by 3C4h index 15h bits 3-5
+       6  Disable Cursor Blinking if set
+       7  (not WD90c24) Enable External Sync
+
+3C4h index 13h (R/W):  PR33A DRAM Timing and Zero Wait State Control
+                                                               (WD90c1x+ only)
+bit  0-1  Length of RAS precharge. 0: 2.5MCLK cycles +d, 1: 3MCLK, 2: 2MCLK,
+           3: 2.5MCLK
+       2  If set the CAS cycle starts 1.5 MCLK cycles after RAS low, if clear
+           2.5 MCLK cycles after RAS low
+     3-4  CAS timing.
+               CAS cycle width    CAS low      CAS high
+           0:   2 MCLK cycles    1MCLK +  d    1MCLK -  d
+           1:   2 MCLK cycles    1MCLK + 2d    1MCLK - 2d
+           2:   2 MCLK cycles    1.5 MCLK      0.5 MCLK
+     6-7  Zero Wait State Control. Controls the output on the ZWST pin
+           0:  Reserved, do NOT use
+           1:  Low if the internal write buffer is ready AND the memory
+               address is decoded.
+           2:  As 1, but also require that MWR is 0
+           3:  As 2, but also low if an I/O write to the VGA occurs.
+Note: the time d is 3-7ns for 5V operation, 5-10ns for 3.3V
+
+3C4h index 14h (R/W):  PR34A Display Memory Mapping Register   (WD90C1x+ only)
+bit  0-3  Bits 20-23 of the memory address where the 1MB video buffer is
+          located if using linear address buffer. For Local Bus versions also
+          see 2DF2h for the upper 8 address bits.
+     4-5  Set to enable Linear Frame buffer ???
+       6  (WD90c33) Bit 8 of PR0A. Bits 0-7 are in 3CEh index 9.
+
+3C4h index 15h (R/W):  PR35A FPUSR0,FPUSR1 Output Select       (WD90c1x+ only)
+bit  0-2  Controls the output on the FPUSR0 pin if 3C4h index 12h bit 3 is set
+           0:  High if an I/O address is decoded
+           1:  High if fetching character attribute from DRAM
+           2:  Low if the internal write buffer is not empty
+           3:  High if a CPU read cycle is occurring
+           4:  Low if a write buffer cycle is occurring
+     3-5  Controls the output on the FPUSR1 pin if 3C4h index 12h bit 5 is set
+           0:  High if fetching font from DRAM
+           1:  High if fetching graphics data from DRAM
+           2:  High if the internal write buffer is ready
+           3:  High if a CPU write cycle is occurring
+           4:  Low if a CPU write cycle is not caused by the write buffer
+
+3C4h index 16h (R/W):  PR45 Video Signature Analyser Control      (WD90c24,26)
+bit    0  Set to start generation of a signature for a frame. Must be reset
+          and then set again for the next signature.
+       1  Clearing this bit initialises the Signature Analyser by preloading
+          the value 0001h. Must be set before a signature can be generated.
+       2  If set an all-zero pattern is used as input to the Signature
+          Analyser rather than the output of the RAMDAC
+       3  Set to enable access to the Signature Analyser Data registers
+          (3C4h index 17h,18h)
+
+3C4h index 17h W(R/W):  PR45A,B Signature Analyser Data           (WD90c24,26)
+bit 0-15  Result from Signature Analyser
+
+3C4h index 19h (R/W):  PR57 Feature Register I                    (WD90c24,26)
+bit    0  Bank B Enable. If set memory accesses and refresh operations to bank
+          B display memory is enabled, if clear disabled.
+       1  Source for REFRESH timing. If set CKIN divided by 3C4h index 34h, if
+          clear the REFRESH input pin.
+       2  Panel Power Control. If 3d4h index 32h bit 4 is set this bit
+          controls the PNLOFF output. 0: PNLOFF high, 1: PNLOFF low
+     3-4  TFT Dithering Mode Select. Together with 3C4h index 29h bits 2,6 and
+           3C4h index 21h bit 4 this controls the dithering algorithm.
+          Index 21h  29h  19h
+          Bit    4   2 6  3-4
+                                 9bit TFT modes:
+                 0   0 0   0     2-Frame Dithering, 27K colors
+                 0   0 0   2     No Dithering, 512 colors
+                 0   0 0   3     Space Dithering, 27K colors
+                 0   1 0   0     2-Frame Dithering, 180K colors
+                 0   1 0   1     2 and 3 Frame Dithering, 256K colors
+                 0   1 0   2     No Dithering, 512 colors
+                                 12bit TFT modes:
+                 0   x 1   0     2-Frame Dithering, 226K colors
+                 0   x 1   1     2-Frame Dithering, 226K colors
+                 0   x 1   2     No Dithering, 4K colors
+                 0   x 1   3     Space Dithering, 226K colors
+                                 18bit TFT modes:
+                 1   x x   2     No Dithering, 256K colors
+          All other combinations are invalid
+       5  If set enables self-refresh when entering Powerdown mode
+       6  Refresh Clock (REFLCL) Input. Only used in Local Bus mode.
+          If clear the REFLCL pin provides the refresh clock source (typically
+          32KHz). This overrides bit 1.
+
+3C4h index 20h (R/W):  PR58 Feature Register II                   (WD90c24,26)
+bit    0  Scratch Pad
+
+3C4h index 21h (R/W):  PR59 Memory Arbitration Cycle Setup        (WD90c24,26)
+bit  0-2  Arbitration Cycle Select. Sets the length of the Arbitration Cycle
+          in units of 160ns (for 25MHz VCLK = 4 VCLK cycles).
+       3  If set enables Space Dithering in Mode 13h.
+       4  If set selects 18bit TFT, if clear 9 or 12bit TFT
+       5  If set the ENDATA output is low, if clear high
+
+3C4h index 24h (R/W):  PR62 FR Timing Register                    (WD90c24,26)
+bit  0-7  This value controls the period of the Frame Rate (FR) signal.
+          Program with 1/4th the number of lines in the FR period.
+
+3C4h index 25h (R/W):  PR63 Read/Write FIFO Control                  (WD90c24)
+bit    0  If set enables write operations to the Frame Buffer
+       1  If set enables read operations from the Frame Buffer
+     2-7  The time the Frame Buffer can be accessed in MCLKs ?
+
+3C4h index 26h (R/W):  PR58A Memory Map Register for BLT Access
+                             in PI/Local Bus                         (WD90c24)
+bit  0-1  Enables Memory Mapping to I/O ports.
+           0: No I/O Memory Mapping.
+           1: Map I/O ports 23C0h-23C5h. Writes to A0000h-AFFFFh are decoded
+               to one of the registers 23C0h-23C7h from the low 3 address bits
+           3: Map I/O port 23C4h only. Writes to A0000h-AFFFFh are decoded to
+              register 23C4h
+     2-3  Select True Color Mode. 0: Normal Palette, 1: 5-6-5 64K True color,
+           2: 6-5-5 64K True Color, 3: 5-5-5 32K True Color
+       4  If set data is shifted out of the video FIFO in 16bit chunks.
+
+3C4h index 27h (R/W):  PR64 CRT Lock Control II                      (WD90c24)
+bit  0-1  Vertical Expansion Selected (only in 400 line modes):
+            0,2: No enhanced expansion
+              1: 3 lines repeated below character
+              3: One line repeated above character and two lines repeated
+                 below the character
+       4  Clear to unlock the Horizontal Display End Register (3d4h index 1)
+       6  Clear to unlock the Vertical Display End Register (3d4h index 12h)
+          and Overflow Register (3d4h index 7) bits 1 and 6
+
+3C4h index 28h (R/W):  PR65 Reserved for future need                 (WD90c24)
+bit  0-7  Reserved
+
+3C4h index 29h (R/W):  PR66 Feature Register III                     (WD90c24)
+bit  0-1  Reserved, must be set to 0
+     2,6  TFT Dithering Mode Select. See 3C4h index 19h bits 3-4.
+       3  If set VSYNC and HSYNC are forced to in-active low.
+       4  If set PCLK is forced to inative low. In CRT-only mode BLANK and
+          VID[0-7] are also forced to inactive low
+       5  If set LP is the same as HSYNC and FP is the same as VSYNC
+       7  If set enables Auxiliary Video Extender (AVE) Mode where the
+          internal RAMDAC is driven from an external source
+
+3C4h index 31h (R/W):  PR68 Programmable Clock Selection Register    (WD90c24)
+bit  0-2  Display Memory Clock Select. In MHz:
+            0: 55.035    1: 33.111    2: 59.957    3: 37.585
+            4: 39.822    5: 44.297    6: 47.429    7: 49.219
+     3-4  Video Dot Clock Select bits 2-3. Bits 0-1 are in 3C2h/3CCh bits 2-3.
+          The value 2 selects programmed clock via index 32h. In MHz:
+            0: 29,979    1: 77,408    2: Prog      3: 80,092
+            4: 25,175    5: 28,322    6: 65,000    7: 36,000
+            8: 39,822    9: 50,114   10: 42,060   11: 44,297
+           12: 31,500   13: 35,501   14: 75,166   15: 50,114
+
+3C4h index 32h (R/W):  PR69 Programmable VCLK Frequency Register     (WD90c24)
+bit  0-7  If Video Dot Clock 2 is selected, the Video Dot Clock is calculated
+          as:  (This register) * 0.447443 MHz.  Min 25.017MHz, Max 85.014MHz
+
+3C4h index 33h (R/W):  PR70 Mixed Voltage Override Register          (WD90c24)
+bit    0  If set selects 3.3V for AVDD, if clear 5V
+       1  If set selects 3.3V for MVDD, if clear 5V
+       2  If set selects 3.3V for FPVDD, if clear 5V
+       3  If set selects 3.3V for BVDD, if clear 5V
+       4  If set selects 3.3V for PVDD, if clear 5V
+       5  If set bits 0-4 determines the Voltage used
+
+3C4h index 34h (R/W):  PR71 Programmable Refresh Timing Register     (WD90c24)
+bit  0-7  If 3C4h index 19h bit 1 is set the CKIN clock (typically 32kHz) is
+          divided by:  ((this register) +1 ) *8
+
+3C4h index 35h (R/W):  PR72 Programmable Clock                       (WD90c24)
+bit  4-6  Write 5 to unlock 3C4h index 31h, any other value locks it
+
+3C4h index 36h (R/W):  PR73 VGA Status Detect                        (WD90c24)
+bit    0  If set the Core Voltage is 3.3V, if clear 5V
+       4  If set the FPUSR0 signal is active low, if clear active high
+     5-6  I/O and Memory Detect. 1: I/O Detection, 2: Memory Detection,
+           3: I/O & Memory Detection
+       7  If set enables Status Detect
+
+Note: The WD90c33 appears to use 3C4h index C0h-FFh
+
+3CEh index  9  (R/W):  PR0A Address Offset A
+bit  0-6  (<WD90c24) Added to bit 12-18 of video memory address if
+            Bank A selected. (Reads if 3C4h index 11h bit 7 set, A800h-AFFFh
+            if 3CEh index Bh bit set and 64k config B000h-BFFFh if 128k
+            config. A000h-AFFFh else).
+     0-7  (WD90C24,26,3x) same but bit 12-19 rather than 12-18.
+
+3CEh index 0Ah (R/W): PR0B Address Offset B
+bit  0-6  (<WD90c24) Added to bit 12-18 of video memory address if
+            Bank B selected. (Writes if 3C4h index 11h bit 7 set, A000h-A7FFh
+            if 3CEh index 0Bh bit 3 set and 64k config, A000h-AFFFh if 128k
+            config).
+     0-7  (WD90C24,26,3x) Same but bit 12-19 rather than 12-18.
+
+3CEh index 0Bh (R/W):  PR1 Memory Size
+bit    0  Enable on card ROM if set. Latched on Poweron
+       1  Select 16 bit ROM access if set. Latched on Poweron
+       2  Select 16 bit Memory access if set
+       3  PR0B enabled if set, else use PR0A for both banks
+     4-5  Memory Map.  0: A000h-BFFFh standard VGA,
+            1: 1st 256K of a 1MB area, 2: 1st 512K of a 1MB area, 3: 1MB area
+          For linear mapping 3C4h index 14h (and for Local Bus systems 2DF2h)
+          select the location of the 1MB buffer in system memory
+     6-7  Installed memory:
+            0  256k VGA standard
+            1  256k PVGA bank switching
+            2  512k PVGA bank switching
+            3    1M PVGA bank switching
+
+3CEh index 0Ch (R/W):  PR2 Video Configuration
+bit    0  Force VCLK (overrides SEQ1 bit 3).
+       1  Third Clock Select Line VCLK2
+          This bit appears to be inverted on the WD90c1x and WD90c2x, compared
+          to the WD90c00 and PVGA1
+     2,5  Character Map Select/Underline
+            0  Characters are taken from plane 2
+            1  do, but characters are underlined if bit 0 of the characters
+               attribute is set.
+            2  Characters are taken from plane 3.
+            3  If bit 3 of the characters attribute is set the character is
+               taken from plane 3, else from plane 2.
+     3,4  Character Clock Period Control
+            0  IBM VGA character Clock (8 or 9 dots wide).
+            1  7 dots (used for 132 character modes).
+            2  9 dots
+            3  10 dots
+          Selecting 10 dots/character modifies the horizontal PEL panning
+          register (3C0h index 13h).
+       6  6845 Compatibility Mode (6845 if set, EGA/VGA if clear).
+       7  AT&T/M24 Mode Enable, 400 line enable if set
+
+3CEh index 0Dh (R/W):  PR3 CRTC Control
+bit    0  Lock Vertical Timing (3d4h index 6,(7 bit 0,2,3,5,7),9 bit 5,
+            (3Dh bit 0,2,3),10h,11h bits 0-3,15h,16h) if set
+       1  Lock Prevention. Prevent locking through the Vertical Retrace
+          register (3d4h index 11h bit 7).
+       2  Multiply Cursor Start, Cursor Stop, Preset Row Scan and Maximum Scan
+          Line registers by 2
+     3-4  CRTC Display Start Address bits 16-17. Bits 0-15 are in 3d4h index
+          0Ch,0Dh. Also bits 16-17 of the Cursor Address (3d4h index 0Eh/0Fh).
+       5  Lock Horizontal Timing Registers (3d4h index 0-5,17h bit 2) if set
+       6  Lock HSYNC Polarity (3C2h/3CCh bit 7) if set
+       7  Lock VSYNC Polarity (3C2h/3CCh bit 6) if set
+Note: 3d4h index 0-7 are locked if either 3d4h index 11h bit 7 or bits 0 or 5
+      of this register is set.
+
+3CEh index 0Eh (R/W): PR4 Video Control
+bit    0  Extended 256 color Shift register Control. Configures the video
+          shift registers for extended 256 color mode if set
+       1  EGA compatibility. Disables reads of all registers that are
+          writeonly on the EGA, and of PR0-5 if set.
+       2  Lock internal Palette and Overscan registers if set
+       3  Override CGA Enable Video bit. Overrides the CGA "enable video"
+          bit 3 of 3D8h if set
+       4  Tri-state Memory Control Outputs if set
+       5  Tri-state Video (VID0-7) outputs. On the WD90c00 and later also
+          tri-states the HSYNC, VSYNC and BLNKN
+       6  (PVGA1A) Tristate HSYNC, VSYNC, BLNKN
+          (WD90c00 +) Select PCLK=VCLK if set, PCLK = 1/2 VCLK if clear
+       7  BLNK/Display Enable. If set the BLNKN output supplies PRE-Display
+          Enable (1 pixel) rather than the BLNKN signal
+
+3CEh index 0Fh (R/W): PR5 General Purpose Status and PR Register
+bit  0-2  Extended registers PR0-4 Unlocked if set to 5
+       3  (R) CNF bit 8. Set for TTL (EGA compatible) display, clear for
+           Analog (VGA compatible) display.
+       4  (W) Read protect PR0-4 if set
+          (R) CNF bit 4
+       5  (R) CNF bit 5
+       6  (R) CNF bit 6
+       7  (R) Multisync if set, fixed frequency else (CNF bit 7 = Switch 1).
+
+3d4h index 29h (R/W): PR10 Unlock PR11-17 Registers               (not PVGA1A)
+bit  0-2  Write of PR11-18 enabled if set to 5, disabled for all other values
+     3,7  Read of PR11-18 enabled if bit 3 clear and bit 7 set, any other
+          value causes reads of PR11-18 to return FFh
+
+3d4h index 2Ah (R/W): PR11 EGA Switches                           (not PVGA1A)
+bit    0  Lock 8/9 Dot Character Clock. Inhibits writes to 3C4h index 1 bit 0
+          if set.
+       1  Lock Graphics and Sequencer Screen Control if set
+          Inhibits write to 3CEh index 5 bit 5-6, 3C4h index 1 bit 2-5 and
+          3C4h index 3 bit 0-5.
+       2  Lock Clock Select
+       3  EGA Emulation on Analog Display
+     4-7  EGA Switch 1-4. Latched from MD12-15 on reset
+       4  (WD90c24) CNF17. Together with CNF2 determines bus type:
+     5-7  (WD90c24) Memory Mode. 4: 2 256Kx16, 5: 1 256Kx16
+
+3d4h index 2Bh (R/W): PR12 Scratch Pad Register                   (not PVGA1A)
+bit  0-7  Reserved
+
+3d4h index 2Ch (R/W): PR13 Interlace H/2 Start                    (not PVGA1A)
+bit  0-7  Interlace H/2 Start. Adjusts Horizontal Sync for interlace.
+          This register should be programmed with:
+            (3d4h index 4) - (3d4h index 0 +5)/2 + (3d4h index 5 bits 5-6)
+
+3d4h index 2Dh (R/W): PR14 Interlace H/2 End                      (not PVGA1A)
+bit  0-4  Interlace H/2 End. Adjusts horizontal Sync width. Should be
+          programmed with the low 5 bits of: (index 2Ch) + (?)
+       5  Interlace enable if set
+       6  Vertical Double Scan for EGA on PS/2 Display if set
+       7  Enable Vertical retrace interrupts if set
+
+3d4h index 2Eh (R/W): PR15 Miscellaneous Control #1               (not PVGA1A)
+bit    0  Disable borders if set
+       1  Select Display Enable Timing. If set BLNKN supplies Display Enable,
+          if clear BLNKN supplies Pre-Display Enable (one dot-clock prior to
+          active video). This bit is only active if 3CEh index 0Eh bit 7 is
+          set
+       2  Enables page mode addressing in alpha modes if set. Speeds up the
+          display (I.e. reduces the memory bandwidth used) by utilising the
+          Fast Page Mode found on all newer DRAM chips. This should be done
+          for 132 character text modes.
+       3  Interlace compatible with 8514/A timing if set (should only be set
+          in interlaced modes). Causes Vertical Sync to be generated from the
+          trailing edge of non-skewed Horizontal Sync, rather than the leading
+          edge. Also removes 2 VCLK delays from the default VGA video path.
+       4  VCLK=MCLK. If set MCLK is used for all video timings.
+       5  VCLK1,VLKC2 Latched Outputs. If set bits 2 & 3 of 3C2h/3CCh are
+          output on VCLK1,VCLK2
+       6  High VCLK. Set if VCLK is much faster than MCLK (more then 50%
+          faster). Should also be set in all 256color extended modes
+       7  Enable read of 46E8h if set
+
+3d4h index 2Fh (R/W): PR16 Miscellaneous Control #2               (not PVGA1A)
+bit    0  If set prevents writes of the DAC registers (3C6h-3C9h).
+       1  Standard VGA memory if set (Forces 256K configuration)
+       2  Enable Page Bit for Odd/Even.
+     3-4  Bit 16,17 of CRTC Address Counter Offset.
+     5-6  CRTC Address Counter Width
+           0= 256k, 1=128K, 2,3=64K
+       7  If set locks external 46E8h register
+
+3d4h index 30h (R/W): PR17 Miscellaneous Control #3               (not PVGA1A)
+bit    0  Maps out ROM at C600h-C67Fh if set
+       1  (not WD90C00) If set locks the Hercules Compatibility register
+           (3BFh)
+       2  (not WD90C00) Enables 64k ROM at C000h-CFFFh if set
+       3  (not WD90C00) Maps out ROM at C600h-C6FFh if set
+       4  (not WD90C00) If set PCLK = VCLK/2
+       5  (not WD90C00) If 3CEh index 0Ch bit 3-4 = 3, this bit selects 6 dot
+           font if clear, 10dot font if set
+
+3d4h index 31h-37h (R):                                         (WD90C11,24 +)
+Contains the text "WD90Cxx" (57h 44h 39h 30h 43h), where xx is model dependent
+           36h:  37h:  Text:        Chip:
+           31h   31h   'WD90C11'    WD90C11
+           32h   34h   'WD90C24'    WD90C24
+           32h   36h   'WD90C26'    WD90C26
+           33h   30h   'WD90C30'    WD90C30
+           33h   31h   'WD90C31'    WD90C31
+           33h   33h   'WD90C33'    WD90C33
+Note: for the WD90c24 (and probably the 26) these registers are only visible
+      when the Flat Panel extensions and Mapping Registers are disabled.
+      (Write 00h to 3d4h index 34h and 35h).
+Note: 3d4h index 38h-3Dh appears to hold other chip information like revision
+      level, however the format is not known yet.
+Note: These registers have apparently never been documented by Western Digital
+
+3d4h index 31h (R/W):  PR18 Flat Panel Status Register          (WD90c2x only)
+bit  0-1  LCD Panel Select. 0: Dual Panel LCD, 1: Plasma/EL, 3: Single Panel
+          LCD Display
+       2  (W) If set enables TFT Color Interface
+       4  Together with 3d4h index 3Eh bit 3 selects the Reverse Video mode
+          for Flat Panel output:
+             31h bit 4    3Eh bit 3    Effect:
+                 0            0        Normal text and graphics
+                 1            0        Reversed text and graphics
+                 1            1        Reversed text, normal graphics
+       5  If set selects 256K color palette STN dithering, if clear selects 4K
+          palette dithering
+       6  If set enables free running clock for EL, Plasma or TFT panel
+       7  If set an external RAMDAC is selected and the internal RAMDAC is
+          disabled, if clear the internal RAMDAC is used.
+
+3d4h index 32h (R/W):  PR19 Flat Panel Control 1                (WD90C2x Only)
+bit  0-1  Selects the number of VCLK cycles to delay Hsync.
+          If bit 7 clear:  0: 0, 1: 1, 2: 2, 3: 3
+          If bit 7   set:  0: 4, 1: 5, 2: 6, 3: 7
+       2  If set enables Auto-Centering and Vertical Expansion
+       3  If set Vertical Expansion is selected, if clear Auto-Centering
+       4  Set if LCD display enabled
+       5  Set if external display (CRT) enabled
+       6  Frame Pulse (FP) Timing Select. If set selects ON time during second
+          horizontal line, if clear during first horizontal line
+       7  Plasma Panel Interface. If set selects 8bits/2pixel interface, if
+          clear selects 4bits/pixel interface
+
+3d4h index 33h (R/W):  PR1A Flat Panel Control 2                (WD90c2x only)
+bit  0-1  Memory Refresh Cycles: 0,2: determined by CRT controller,
+            1: 1 cycle/line, 3: 2 cycles/line
+       2  If set Shading Method is Pulse Width Modulation, if clear Frame Rate
+          Modulation.
+       3  If set selects 4bit single LCD, if clear selects 8bit single LCD
+     4,7  Panel Resolution. 0: 640x480, 1: 1280x1024, 2. 1024x768, 3. 800x600
+     5-6  STN Panel Type. 0: Not a STN Panel, 1: 8bit STN, 3: 16bit STN
+
+3d4h index 34h (R/W):  PR1B Flat Panel Unlock Register          (WD90C2x Only)
+bit  0-2  Write 6 to unlock Shadow registers
+     5-7  Write 5 to unlock Flat Panel Registers (3d4h index 31h-33h,37h,3Bh,
+           3Ch,3Eh,3Fh)
+Note: Write A6h to unlock all WD90c2x extensions
+
+3d4h index 35h (R/W):  PR30 Mapping RAM Unlock                  (WD90c2x only)
+bit  0-7  Write 30h to unlock the Mapping RAM Registers (3d4h index 38h-3Ah).
+
+3d4h index 37h (R/W):  PR41 Vertical Expansion Initial Value    (WD90c2x only)
+bit  0-7  Selects the line to repeat at the top of the frame when Vertical
+          Expansion is selected.
+
+3d4h index 38h (R/W):  PR33 Mapping RAM Address Counter         (WD90c2x only)
+bit  0-7  The address in Mapping RAM that will be affected by the next access
+          to index 39h. Any read or write to index 39h will increment this
+          register.
+Note: Should only be access with 8bit I/O operations
+
+3d4h index 39h (R/W):  PR34 Mapping RAM Data Register           (WD90c2x only)
+bit  0-7  The byte in Mapping RAM addressed by index 38h can be accessed here
+Note: Should only be access with 8bit I/O operations
+
+3d4h index 3Ah (R/W):  PR35 Mapping RAM and Power-Down Control  (WD90c2x only)
+bit    1  If set enables the NTSC weighting equation: I=0.3R + 0.59G + 0.11B
+       3  If set bypasses the Mapping RAM, if clear uses Mapping RAM for gray
+          scale to gray shade mapping
+       5  If set disables the VGA controller
+       6  If set (and 3d4h index 3Fh bit 7 is set) enables internal clock
+          divided by 8
+       7  If set (and 3d4h index 3Fh bit 7 is set) enters System Power-down
+          mode - MCLK and VCLK are turned off
+
+3d4h index 3Bh (R/W):  PR36 Panel Height Select                 (WD90c2x only)
+bit  0-7  The number of lines (-1) in a single panel.
+
+3d4h index 3Ch (R/W):  PR37 Flat Panel Blinking Control         (WD90c2x only)
+bit  0-2  Cursor Blink Rate. 1: 8 frames on/8 off, 2: 16 on/16 off,
+            3: 32, 4: 64, 5: 128, 7: no cursor blinking
+     3-5  Character Blink Rate. 1: 8 frames on/8 off, 2: 16 on/16 off,
+            3: 32, 4: 64, 5: 128, 7: no cursor blinking
+       6  Shift Clock Polarity. If set data changes with falling edge of XSCLK
+          Data should be latched on rising edge. If clear data changes on the
+          rising edge of XSCLK and should be latched on the falling edge.
+       7  LCD Latch Pulse (LP) Signal Select. If clear LP is disabled during
+          Vertical Blanking, if set LP is free running.
+
+3d4h index 3Dh (R/W):  PR18A CRTC Vertical Timing Overflow         (WD90c30 +)
+bit    0  Vertical Total bit 10 (3d4h index 6)
+       1  Vertical Display Enable bit 10 (3d4h index 12h)
+       2  Start Vertical Retrace bit 10 (3d4h index 10h).
+       3  Start Vertical Blank bit 10 (3d4h index 15h).
+       4  Line Compare bit 10 (3d4h index 18h).
+
+3d4h index 3Eh (R/W):  PR39 Color LCD Control                   (WD90c2x only)
+bit    0  LP Polarity Select. If set LP has reverse polarity
+       1  FP Polarity Select. If set FP has reverse polarity
+       2  Enable CRT VSYNC and HSYNC if set, if clear the VSYNC and HSYNC
+          outputs are inactive high
+       3  Enable Reverse Video. See 3d4h index 31h bit 4
+       5  Set for Color Panels, clear for Mono Panels.
+       6  Color LCD Panel Border Select. 0: White, 1: Black
+       7  Enable LP Border Control. If set generates a special LP pulse to
+          latch border information
+
+3d4h index 3Eh (R/W):  PR18 CRT Vertical Timing                     (c33 only)
+bit    0  Some sort of Vertical timing ?
+       1  Moves the display up ~32 lines ?? if set. Guess: V Blanking End ?
+       2  Some sort of timing (looses sync if set)
+       5  Bit 8 of the Horizontal Total (3d4h index 0)
+       6  CRTC Display Start Address bit 18. Bits 0-15 are in 3d4h index
+          0Ch,0Dh and bits 16-17 are in 3CEh index 0Dh bits 3-4.
+       7  Set if 2MB video memory
+
+3d4h index 3Fh (R/W):  PR44 Power-Down and Memory Refresh
+                       Control Register                         (WD90c2x only)
+bit  0-6  Memory Refresh Period
+       7  Set to enable General Power-down
+
+3d4h index 3Fh (R/W):  PR19 Signature Analyser                    (c33 only ?)
+
+3D8h (W):  Color CGA Operation Register
+bit    0  If set selects 80x25 text mode, if clear 40x25 text mode
+       1  Set in graphics modes, clear in text modes.
+       3  Set in BW modes, clear in color modes
+       4  If set enables 640x200 BW mode
+       5  If set enables blinking
+Note: this register active in CGA emulation mode only
+
+3D9h (W):  CGA Color Select Register
+bit  0-3  Each bit controls the behavior of one color:
+           Bit 0 controls Blue, 1: Green, 2: Red, 3: Intensity
+          If set the bit has the following effect in each mode:
+            Alphanumeric mode:  Selects the color for the border
+            320x200 Graphics:   Selects the color for border and background
+            640x200 Graphics:   Selects the color for foreground
+       4  If set enables alternate color set in graphics mode
+       5  Selects 320x200 color set. 0: backgr, Green, Red, Brown
+            1: Backgr, Cyan, Magenta, White
+Note: this register active in CGA emulation mode only
+
+3DAh (R):  CRT Status Register CGA Operation
+bit    0  If set blanking or border is active
+       1  If set Light Pen Latch is set
+       2  If set Light Pen Switch is closed
+       3  If set Vertical Retrace is active
+Note: this register active in CGA emulation mode only
+
+3DEh (W):  AT&T/M24 Register
+bit    0  If set selects AT&T/M24 400 line mode, if clear selects 200 line
+       2  If set selects alternate font in plane 3, if clear standard font in
+          plane 2
+       3  If set 16KB Display page starts at BC00h:0, if clear at B800h:0
+       6  If set the underline attribute selects white underlined foreground,
+          if clear it selects blue foreground in color text modes
+Note: This register is only used in ATT mode (3CEh index 0Ch bit 7 set)
+
+23C0h W(R/W):                                                  (WD90c24+ only)
+bit  0-7  Selects the register bank at 23C2h.
+            0: System Control, 1: BitBLT, 2: Cursor, 3: (WD90c33) BitBLT 2
+    8-11  Register Index (for read operations)
+      12  If clear the index field is incremented for each read operation of
+          23C2h/3
+      13  (R) Invalid register block. Set if the currently selected register
+           block doesn't exist
+Note: The WD90c33 (and possibly the 26) has a different layout of these
+      registers than the WD90c24 and 31.
+
+23C2h W(R/W):                                                  (WD90c24+ only)
+bit 0-11  Data to write to the index selected by bits 12-15
+   12-15  Selects the index the write will go to
+Note: The index registers are marked as index a/b where a is the register bank
+      selected by 23C0h and b is the index from bit 12-15.
+
+23C2h index 0/0 W(R/W):  Interrupt Status Register             (WD90c24+ only)
+bit    0  Set if any interrupt is active
+       1  Set if Interrupt 1 is active (VGA)
+       2  Set if Interrupt 2 is active (BITBLT)
+     3-6  Set if the corresponding interrupt is active
+       7  Set if any of interrupts 7-10 are active
+       8  Set if interrupt 7 is active
+       9  Set if interrupt 8 is active
+      10  Set if interrupt 9 is active
+      11  Set if interrupt 10 is active
+
+23C2h index 1/0 W(W):  BITBLT Control                        (WD90c24,31 only)
+bit  0-1  BITBLT Source. 0: screen memory, 2: 32bit system I/O address
+     2-3  Source format. 0: color, 1: mono from color comparators,
+           2: fixed color (Fill), 3: mono from host
+     4-5  BitBlt Destination. 0: screen memory, 2: 32bit system I/O address
+       6  If set Blit source is linear, if clear rectangular
+       7  If set Blit destination is linear, if clear rectangular
+     8-9  BitBlt address mode. 0: planar, 1: packed or text mode
+      10  If set Blit is bottom->top, right->left,
+          if clear top->bottom, left->right.
+      11  Activation/status bit. Set this bit to start blit operation
+          The bit will be cleared when the operation is finished, and can be
+          read to check when the next operation can be started.
+
+23C2h index 1/0 W(W):  Drawing Engine Control 1                 (WD90c33 only)
+bit    0  Last Pixel Off. Last Pixel not drawn if set
+       1  Destination Select. If set destination is Host I/O or memory, if
+          clear it is screen memory.
+       2  Pattern Enable. Set if the source is an 8x8 pattern
+     3-4  Source Format. Defines the format of the source data:
+            0: Source is a Color bitmap
+            1: Monochrome from Color Comparators
+            2: Source is fixed color from the Foreground Color Register (index
+                1/2 and 1/3)
+            3: Source is monochrome image from the host
+       5  Source Select. If set source data is from the Host I/O or memory, if
+          clear it is from the screen memory.
+       6  Major Row. If set delta Y is larger than delta X (linedraw).
+       7  Y Direction. If set the blit Y direction is negative (bottom-to-top)
+       8  X Direction. If set the blit X direction is negative (right-to-left)
+    9-11  Drawing Mode.  0: Nop, 1: BitBLT, 2: Linestrip, 3: Trapetzoid Fill
+            Strip, 4: Bresenham Linedraw
+
+23C2h index 1/1 W(W):  BITBLT Control                       (WD90c24,c31 only)
+bit    0  Destination transparency if set
+       1  Reserved, must be 0
+       2  If set matching pixels are opaque, transparent if clear.
+       3  Monochrome transparency if set
+     4-5  BitBLT Pattern Select. 0: no pattern, 1:source is an 8x8 pattern
+       6  Update destination registers on completion of blit if set
+       7  Quick start BitBLT when destination register (or source register if
+          bit 6 is set) is written if set
+       8  Y direction for line draw. 0: top -> bottom, 1: bottom -> top
+       9  X or Y Major for line draw. 0: X major, 1: Y major
+      10  Interrupt when blit completes if set
+      11  If set enables line drawing, if clear enables BitBLT operation
+
+23C2h index 1/1 W(W):  Drawing Engine Control 2                 (WD90c33 only)
+bit  0-2  Color Expansion Data Bits/Host Write. 2: 2bits/CPU write (16bpp),
+            3: 4bits/CPU write (8,16bpp)), 4: 8bits/CPU write (4,8,16bpp),
+            5: 8 or 16 bits/CPU write (4,8,16bpp)
+       3  Host BitBLT through Memory Port. 0: via I/O, 1: via Memory
+       6  Command Buffer Empty
+       7  Monochrome Transparency Source. 0: Off, 1: On
+       8  Destination Transparency Polarity. 0: Negative, 1: Positive
+       9  Destination Transparency Enabled if set
+   10-11  Pixel Depth.  0: 4bits per pixel, 1: 8bpp, 2: 16bpp
+
+23C2h index 1/2 W(R/W):  BITBLT Source Low
+bit 0-11  Lower 12 bits of the pixel source address
+          Addresses are in Dwords, 4 bytes for planar modes = 4 pixels, 1 byte
+          (x4 planes) for planar modes = 8 pixels.
+
+23C2h index 1/2 W(R/W):  BITBLT Source Low                  (WD90c24,c31 only)
+bit 0-11  Lower 12 bits of the pixel source address
+
+23C2h index 1/2 W(R/W):  X Source                               (WD90c33 only)
+bit 0-11  Starting X coordinate of the source area
+
+23C2h index 1/3 W(R/W):  BITBLT Source High                 (WD90c24,c31 only)
+bit  0-8  Upper 9 bits of the pixel source address
+
+23C2h index 1/3 W(R/W):  Y Source                               (WD90c33 only)
+bit 0-11  Starting Y coordinate of the source area
+
+23C2h index 1/4 W(R/W):  BITBLT Destination Low             (WD90c24,c31 only)
+bit 0-11  Lower 12 bits of the pixel destination address
+          Addresses are in Dwords, 4 bytes for planar modes, 1 byte (x4
+          planes) for planar modes.
+
+23C2h index 1/4 W(R/W):  X Destination                          (WD90c33 only)
+bit 0-11  Starting X coordinate of the destination area
+
+23C2h index 1/5 W(R/W):  BITBLT Destination High            (WD90c24,c31 only)
+bit  0-8  Upper 9 bits of the pixel destination address
+
+23C2h index 1/5 W(R/W):  Y Destination                          (WD90c33 only)
+bit 0-11  Starting X coordinate of the destination area
+
+23C2h index 1/6 W(R/W):  BITBLT Dimension X
+bit 0-11  Width of blit area in pixels for BitBLT operations. Length of line
+          (= max (deltaX, deltaY)) for line draw
+
+23C2h index 1/7 W(R/W):  BITBLT Dimension Y
+bit 0-11  Height of blit area in scanlines for BitBLT operations.
+
+23C2h index 1/8 W(R/W):  BITBLT Row Pitch                   (WD90c24,c31 only)
+bit 0-11  Scanline width at the destination in pixels. This must match with
+          the Dword system, so the 2 low bits are 0 in packed modes and the 3
+          low bits are 0 in planar modes.
+
+23C2h index 1/8 W(R/W):  Raster Op                              (WD90c33 only)
+bit 8-11  Raster Operation
+             0  ROP_Zero
+             1  ROP_And
+             2  ROP_SAnd
+             3  ROP_Src
+             4  ROP_NSad
+             5  ROP_Dst
+             6  ROP_Xor
+             7  ROP_Or
+             8  ROP_Nor
+             9  ROP_XNor
+            10  ROP_NDest
+            11  ROP_Sond
+            12  ROP_NSrc
+            13  ROP_NSod
+            14  ROP_NAnd
+            15  ROP_One
+
+23C2h index 1/9 W(W):  BITBLT Raster Op                     (WD90c24,c31 only)
+bit 8-11  Raster operation
+             0  ROP_Zero
+             1  ROP_And
+             2  ROP_SAnd
+             3  ROP_Src
+             4  ROP_NSad
+             5  ROP_Dst
+             6  ROP_Xor
+             7  ROP_Or
+             8  ROP_Nor
+             9  ROP_XNor
+            10  ROP_NDest
+            11  ROP_Sond
+            12  ROP_NSrc
+            13  ROP_NSod
+            14  ROP_NAnd
+            15  ROP_One
+
+23C2h index 1/9 W(R/W):  Left Clip                              (WD90c33 only)
+bit 0-11  Left edge of (smallest X coordinate) the clipping rectangle
+
+23C2h index 1/Ah W(R/W):  BLT Foreground Color              (WD90c24,c31 only)
+bit  0-7  BitBLT foreground Color
+
+23C2h index 1/Ah W(R/W):  Right Clip                            (WD90c33 only)
+bit 0-11  Left edge of (largest X coordinate) the clipping rectangle
+
+23C2h index 1/Bh W(R/W):  BLT Background Color              (WD90c24,c31 only)
+bit  0-7  BitBLT background color
+
+23C2h index 1/Bh W(R/W):  Top Clip                              (WD90c33 only)
+bit 0-11  Top edge of (smallest Y coordinate) the clipping rectangle
+
+23C2h index 1/Ch W(R/W):  BLT Transparency Color            (WD90c24,c31 only)
+bit  0-7  If Color Transparency is enabled (23C2h index 1/1 bit 0 is set) the
+          pixels in the destination area matching this value will not be
+          overwritten. 23C2h index 1/0Dh can cause some bits to be ignored in
+          the comparison
+
+23C2h index 1/Ch W(R/W):  Bottom Clip                           (WD90c33 only)
+bit 0-11  Bottom edge (largest Y coordinate) of the clipping rectangle
+
+23C2h index 1/Dh W(R/W):  BLT Transparency Mask             (WD90c24,c31 only)
+bit  0-7  BitBLT Transparency Mask. Each bit set causes the corresponding bit
+          of the pixel color to be ignored in the transparency comparison
+
+23C2h index 1/Eh W(W):  BLT Mask                            (WD90c24,c31 only)
+bit  0-7  Each bit set enables the corresponding plane (0-3) for planar modes,
+          or bit (0-7) for packed modes
+
+23C2h index 1/Fh (R/W):  Drawing Block Index                    (WD90c33 only)
+bit  0-7  Selects the register bank at 23C2h.
+            0: System Control, 1: BitBLT, 2: Cursor, 3: (WD90c33) BitBLT 2
+    8-11 Register Index (for read operations)
+
+23C2h index 2/0 W(W):  Cursor Control                    (WD90c24,26,31+ only)
+bit    4  (WD90c33) Enhanced Hardware Cursor (24bits per pixel).
+           If set doubles the cursor horizontally ?
+     5-7  Cursor Color Mode.
+            0: Straight monochrome (compatibility)
+            1: Two color cursor with inversion
+            2: Two color cursor with special inversion
+            3: Three color cursor
+       8  Cursor Plane Protection enabled if set. In planar modes
+    9-10  Cursor Pattern Type.
+            0: 2bits per pixel 32x32 cursor
+            1: 2bits per pixel 64x64 cursor
+      11  Set to enable hardware cursor
+
+23C2h index 2/1 W(W):  Cursor Pattern Address Low        (WD90c24,26,31+ only)
+bit 0-11  Lower 12 bits of the address of the Cursor Bitmap.
+          In 256 color modes this is in units of 4 bytes, in planar
+          modes in bytes. The Upper bits are in index 2.
+          The address is relative to the Display Start Address
+Note: The cursor map data is a 32x32 or 64x64 bitmap with 2 bits per pixel.
+      In packed modes (256c) the data is stored as 8bits of "A" data followed
+      by 8bits of "B" data, in planar modes Map 0 and 2 hold the "A" data and
+      Maps 1 & 3 the corresponding "B" data.
+      The effect on each pixel depends on the Cursor Color Mode selected by
+       23C2h index 2/0 bits 5-7:
+        A:  B:    Mode 0:        Mode 1:        Mode 2:        Mode 3:
+        0   0     All 0s       Secondary      Secondary      Secondary
+        0   1     All 1s        Primary        Primary        Primary
+        1   0   Transparent   Transparent    Transparent    Transparent
+        1   1    Inverted      Inverted        Special        Auxilary
+
+      Primary     is the color in 23C2h index 2/3
+      Secondary   is the color in 23C2h index 2/4
+      Auxilary    is the color in 23C2h index 2/8
+      Special     is the screen data XNOR'ed with the Auxilary color
+      Inverted    is inverted screen data (XOR cursor)
+      Transparent is the screen data (Invisible cursor)
+
+23C2h index 2/2 W(W):  Cursor Pattern Address High       (WD90c24,26,31+ only)
+bit  0-7  Upper 8 bits of the address of the Cursor Bitmap in the display
+          memory in units of 4 bytes. The Lower bits are in index 1.
+
+23C2h index 2/3 W(R/W):  Cursor Primary Color               (WD90c24,31+ only)
+bit  0-7  The primary cursor color as an 8bit palette index
+
+23C2h index 2/4 W(R/W):  Cursor Secondary Color              (WD90c24,31 only)
+bit  0-7  The Secondary Color as an 8bit palette index
+
+23C2h index 2/4 W(R/W):  Cursor Primary Color mid. byte         (WD90c33 only)
+bit  0-7  The primary cursor color middle byte
+
+23C2h index 2/5 W(R/W):  Cursor Origin                       (WD90c24,31 only)
+bit  0-5  The X hotspot position within the cursor from the left
+    6-11  The Y hotspot position within the cursor from the top
+
+23C2h index 2/5 W(R/W):  Cursor Primary Color high byte         (WD90c33 only)
+bit  0-7  The primary cursor color high byte
+
+23C2h index 2/6 W(R/W):  Cursor X position                   (WD90c24,31 only)
+bit 0-10  The X position of the cursor hotspot in pixels from the left of the
+          display. In Hi/True color modes this is in bytes, not pixels
+
+23C2h index 2/6 W(R/W):  Cursor Secondary Color low byte        (WD90c33 only)
+bit  0-7  The secondary cursor color low byte
+
+23C2h index 2/7 W(R/W):  Cursor Y position                   (WD90c24,31 only)
+bit 0-10  The Y position of the cursor hotspot in scanlines from the top of
+          the display.
+
+23C2h index 2/7 W(R/W):  Cursor Secondary Color middle byte     (WD90c33 only)
+bit  0-7  The secondary cursor color middle byte
+
+23C2h index 2/8 W(R/W):  Cursor Auxiliary Color              (WD90c24,31 only)
+bit  0-7   The Auxilary cursor color as an 8bit palette index
+
+23C2h index 2/8 W(R/W):  Cursor Secondary Color high byte       (WD90c33 only)
+bit  0-7  The secondary cursor color high byte
+
+23C2h index 2/9 W(R/W):  Cursor Auxilliary Color low byte       (WD90c33 only)
+bit  0-7  The auxilliary cursor color low byte
+
+23C2h index 2/Ah W(R/W):  Cursor Auxilliary Color middle byte   (WD90c33 only)
+bit  0-7  The auxilliary cursor color middle byte
+
+23C2h index 2/Bh W(R/W):  Cursor Auxilliary Color high byte     (WD90c33 only)
+bit  0-7  The auxilliary cursor color high byte
+
+23C2h index 2/Ch W(R/W):  Cursor Hotspot                        (WD90c33 only)
+bit  0-5  The X hotspot position within the cursor from the left
+    6-11  The Y hotspot position within the cursor from the top
+
+23C2h index 2/Dh W(R/W):  Cursor X position                     (WD90c33 only)
+bit 0-11  The X position of the cursor in pixels from the left.
+          In Hi/Truecolor modes this is in units of 3 bytes ?huh?
+
+23C2h index 2/Eh W(R/W):  Cursor Y position                     (WD90c33 only)
+bit 0-11  The Y position of the cursor in scanlines from the top.
+
+23C2h index 2/Fh W(R/W):  Cursor Register Block/Index           (WD90c33 only)
+bit  0-7  Selects the register bank at 23C2h.
+            0: System Control, 1: BitBLT, 2: Cursor, 3: BitBLT 2
+    8-11 Register Index (for read operations)
+
+23C2h index 3/0 W(R/W):  Map Base                               (WD90c33 only)
+bit  0-?  Specifies (in units of 4KB) an offset from the start of display
+          memory that is added to all source and destination addresses.
+
+23C2h index 3/1 W(R/W):  Row Pitch                              (WD90c33 only)
+bit 0-11  Scanline width at the destination in pixels.
+
+23C2h index 3/2 W(R/W):  Foreground Color 0                     (WD90c33 only)
+bit  0-7  Low byte of the foreground color
+
+23C2h index 3/3 W(R/W):  Foreground Color 1                     (WD90c33 only)
+bit  0-7  High byte of the foreground color
+
+23C2h index 3/4 W(R/W):  Background Color 0                     (WD90c33 only)
+bit  0-7  Low byte of the background color
+
+23C2h index 3/5 W(R/W):  Background Color 1                     (WD90c33 only)
+bit  0-7  High byte of the background color
+
+23C2h index 3/6 W(R/W):  Transparency Color 0                   (WD90c33 only)
+bit  0-7  Low byte of the transparency color
+
+23C2h index 3/7 W(R/W):  Transparency Color 1                   (WD90c33 only)
+bit  0-7  High byte of the transparency color
+
+23C2h index 3/8 W(R/W):  Transparency Mask 0                    (WD90c33 only)
+bit  0-7  Low byte of the transparency mask
+
+23C2h index 3/9 W(R/W):  Transparency Mask 1                    (WD90c33 only)
+bit  0-7  High byte of the transparency mask
+
+23C2h index 3/Ah W(R/W):  Mask Byte Low                         (WD90c33 only)
+bit  0-7  Low byte of the mask. Each bit when set enables writes to that plane
+
+23C2h index 3/Bh W(R/W):  Mask Byte High                        (WD90c33 only)
+bit  0-7  High byte of the mask.
+
+23C2h index 3/Fh W(R/W):  Drawing Register Block/Index          (WD90c33 only)
+bit  0-7  Selects the register bank at 23C2h.
+            0: System Control, 1: BitBLT, 2: Cursor, 3: BitBLT 2
+    8-11 Register Index (for read operations)
+
+
+23C4h W(R/W):  BitBLT I/O Port
+bit 0-15  When the source or destination is set to "system I/O address" the
+          data must be read or written through this register. The transfer
+          should always be a multipla of 4 bytes
+
+23C8h W(R/W):  Bresenham Constant 1
+bit 0-15  For Bresenham line drawing programmed with the constant:
+           2* min(abs(Xend-Xstart),abs(Yend-Ystart))
+
+23CAh W(R/W):  Bresenham Constant 2
+bit 0-15  For Bresenham line drawing programmed with the constant:
+           2* (min(abs(Xend-Xstart),abs(Yend-Ystart))
+               - max(abs(Xend-Xstart),abs(Yend-Ystart)))
+
+23CCh W(R/W):  Bresenham Error Term
+bit 0-15  For Bresenham line drawing programmed with the constant:
+           2*(min(abs(Xend-Xstart),abs(Yend-Ystart)))
+               - max(abs(Xend-Xstart),abs(Yend-Ystart)) - d
+          Where d is 0 if Xstart > Xend, -1 if not
+
+23CEh (R/W):  Command Buffer                                         (WD90c33)
+bit 0-3  (R) Command Buffer Locations. Number of occupied elements in the 8
+          element command queue. 0: 8 free, 1: 7 free  ... 8: No free slots
+      5  Command Buffer Enabled if set. If disabled the Command Buffer
+         Locations field follows the Drawing Engine Busy field.
+      6  Command Buffer Overflow. Set if the buffer has overflowed since it
+         was last enabled.
+      7  Drawing Engine Busy if set.
+      8  Drawing Engine not Busy Interrupt. Write 1 to arm the interrupt
+      9  Drawing Engine not Busy Interrupt Status. Set if an interrupt is
+         pending
+     10  Vertical Retrace Interrupt.
+Note: On the '33 this register is used to check if the engine is ready.
+      Some applications check for bit 0-3 = 0 and some for bits 0-3,7 = 0.
+
+2DF0h (R/W):  Local Bus                     (WD90c24,26, 31 (via the '56), 33)
+bit  0-1  Enable Dual Display. 0,1: Disable both, 2: Enable MDA - disable CGA,
+           3: disable CGA - enable MDA
+       2  Enable BOFF if clear, disable if set (should be set)
+       3  VGA Data Path is 16bit if set
+       4  If set the RAMDAC IOR/IOW cycle is 18 clocks long, if clear (the
+          default) it is only 9 clocks long
+       5  If set enables Local Bus Interface, if clear disables it
+       6  If set use Local Bus RAMDAC, if clear use external RAMDAC
+       7  If set use Local Bus BIOS, if clear use external BIOS
+
+2DF1h (R/W):                                (WD90c24,26, 31 (via the '56), 33)
+bit  0-1  Memory Read/Write Low Duration.
+            0: 2 clocks, 1: 3 clocks, 2: 4 clocks, 3: 5 clocks
+     2-3  Memory Read/Write High Duration.
+            0: 2 clocks, 1: 3 clocks, 2: 4 clocks, 3: 5 clocks
+     4-5  IO Read/Write High/Low Duration
+            0: 2 clocks, 1: 3 clocks, 2: 4 clocks, 3: 5 clocks
+       6  Enable Wait State. 1 if set, none if clear
+
+2DF2h (R/W):  High Address                  (WD90c24,26, 31 (via the '56), 33)
+bit  0-7  High Address A24-31 decode compare
+
+46E8h (R/W): Global Enable Register           (AT only)
+bit 0-2  BIOS ROM page select (8 pages of 4K each).
+      3  Adapter VGA enabled if set
+      4  If set the VGA is in Setup mode, where 102h and 46E8h
+         are the only ports responding.
+         Wake Up port at 102h responds only if this bit set.
+Note: This register is also addressed at 56E8h, 66E8h and 76E8h.
+      Register only readable if 3d4h index 2Eh bit 7 set
+      For MicroChannel and motherboard systems 3C3hj is used instead
+
+
+
+  Bank Switching:
+
+    Bank switching happens by adding the bank register to bit 12-19
+    of the address, resulting in the window starting on a 4k boundary.
+
+    Two different bank registers can be used either as Read/Write
+    banks (WD90C1x) or as two different windows each 32k/64k big.
+
+
+  Memory:
+
+   $C000:$09  string   BIOS date
+   $C000:$35  1 byte   BIOS version
+   $C000:$7D  4 bytes  $3ED414756   ('VGA=')
+
+
+  ID Paradise/WD Super VGA Chip set:
+
+  old:=rdinx($3CE,$F);
+  setinx($3CE,$F,$17);   {Lock registers}
+  if not testinx2($3CE,9,$7F) then
+  begin
+    modinx($3CE,$F,$17,5);      {Unlock again}
+    if testinx2($3CE,9,$7F) then
+    begin
+      old2:=rdinx(base,$29);
+      modinx(base,$29,$8F,$85);  {Unlock WD90Cxx registers}
+      if not testinx(base,$2B) then 'Paradise PVGA1A'
+      else begin
+        wrinx($3C4,6,$48);
+        if not testinx2($3C4,7,$F0) then 'Western Digital WD90C00'
+        else if not testinx($3C4,$10) then
+        begin
+          if testinx2(base,$31,$68) then 'Western Digital WD90C22'
+          else if testinx2(base,$31,$90) then 'Western Digital WD90C20A'
+          else 'Western Digital WD90C20';
+          wrinx($3d4,$34,$A6);
+          if (rdinx($3d4,$32) and $20)<>0 then wrinx($3d4,$34,0);
+        end
+        else if testinx2($3C4,$14,$F) then
+        begin
+          SubVers:=(rdinx(base,$36) shl 8)+rdinx(base,$37);
+          case SubVers of
+            $3234:'Western Digital WD90C24'
+            $3236:'Western Digital WD90C26'
+            $3330:'Western Digital WD90C30'
+            $3331:'Western Digital WD90C31'
+            $3333:'Western Digital WD90C33'
+        else UNK(Paradise);'
+        end
+        else if not testinx2($3C4,$10,4) then 'Western Digital WD90C10'
+                                         else 'Western Digital WD90C11';
+    end;
+    wrinx($3d4,$29,old2);
+  end;
+  wrinx($3CE,$F,old);
+
+
+  Video Modes:
+
+
+  14h  T   132   25  16            WD90c33
+  21h  T   132   44  16            WD90c33
+  41h  T    80   34  16
+  47h  T   132   28  16
+  54h  T   132   43  16  (7/8x9)
+  55h  T   132   25  16  (7/8x16)
+  56h  T   132   43   4  (7/8x9)
+  57h  T   132   25   4  (7/8x16)
+  58h  G   800  600  16  PL4
+  59h  G   800  600   2  odd/even     **** See note    Not on newer boards?
+  5Ah  G  1024  768   2  odd/even     **** See note    Not on newer boards?
+  5Bh  G  1024  768   4  packed       **** See note    Not on newer boards?
+  5Ch  G   800  600 256  P8        WD90C11/3x Only
+  5Dh  G  1024  768  16  PL4
+  5Eh  G   640  400 256  P8
+  5Fh  G   640  480 256  P8
+  60h  G  1024  768 256  P8        WD90c3x only
+  61h  G   640  400 32k  P15       WD90c31+ only
+  62h  G   640  480 32k  P15       WD90c3x only
+  63h  G   800  600 32k  P15       WD90c3x only
+  64h  G  1280 1024  16  PL4       WD90c31+ only
+  66h  T    80   50  16  (8x8)
+  67h  T    80   43  16  (8x8)
+  68h  G   320  200 32k  P15       WD90c31 only
+  69h  T   132   50  16  (8x8)
+  6Ah  G   800  600  16  PL4
+  6Ch  G  1280  960  16  PL4
+  6Eh  G   640  480 16m  P24       WD90c33
+  71h  G   640  400 64k  P16       WD90c33
+  72h  G   640  480 16m  P24       WD90c31 only  (2048 bytes per line)
+  72h  G   640  480 64k  P16       WD90c33
+  73h  G   800  600 64k  P16       WD90c33
+
+
+    Mode 5Bh  1024x768 4 color.
+      2 bit per pixel packed mode.
+      Pixels start in bit 6-7.
+
+    Mode 59h   800x600 2 color and
+    Mode 5Ah  1024x768 2 color.
+      One bit per pixel odd/even mode
+      Pixels 0-7 are in plane 0, 8-15 in plane 1.
+
+
+
+  Bios extensions:
+
+
+----------10007E-----------------------------
+INT 10 - VIDEO - Paradise VGA, AT&T VDC800 - Set Special Mode
+        AX = 007Eh
+        BX = horizontal dimension of the desired mode
+        CX = vertical dimension of the desired mode
+             Both BX,CX in dots for graph modes, chars for alpha modes
+        DX = Number of colors desired (0000h for monochrome)
+Return: BH = 7Eh if successful (Paradise VGA)
+        AL = 7Eh if successful (AT&T VDC800)
+----------10007F-----------------------------
+INT 10 - VIDEO - Paradise ....   Extended Mode Set
+        AX = 007Fh
+        BH = 00h   set VGA operation
+        BH = 01h   set non-VGA operation
+                   color modes (0,1,2,3,4,5,6) will set non-VGA CGA operation
+                   monochrome mode 7 will set non-VGA MDA/Hercules operation
+        BH = 02h   Query mode status
+                   Return: BL = 00h if operating in VGA mode, 01h if non-VGA
+                                mode
+                           CH = total video RAM size in 64k byte units
+                           CL = video RAM used by the current mode
+        BH = 03h   Lock current mode. Allows current mode (VGA or non-VGA) to
+                   survive re-boot.
+        BH = 04h   Set non-VGA MDA/Hercules Mode
+        BH = 05h   Set non-VGA CGA Mode
+        BH = 06h   Set VGA Mono Mode
+        BH = 07h   Set VGA Color Mode
+        BH = 09h..0Fh   Write Paradise Register
+                        BL = New value of PR register
+        BH = 19h..1Fh   Read Paradise Register
+                        Return: BL = Value of register
+                        BH: (Read) BH: (Write)   Register
+                        19h        09h          PR0A     Port 3CEh index 09h
+                        1Ah        0Ah          PR0B     Port 3CEh index 0Ah
+                        1Bh        0Bh          PR1      Port 3CEh index 0Bh
+                        1Ch        0Ch          PR2      Port 3CEh index 0Ch
+                        1Dh        0Dh          PR3      Port 3CEh index 0Dh
+                        1Eh        0Eh          PR4      Port 3CEh index 0Eh
+                        1Fh        ---          PR5      Port 3CEh index 0Fh
+        BH = 20h   Emulate EGA with Analog Monitor   (WD90Cxx Chips Only)
+                   BL=EGA Switches in Bit 0-3
+        BH = 29h..30h   Read Paradise Register       (WD90Cxx Chips Only)
+                        Return: BL = Value of register
+                        BH:    Register:
+                        29h   PR10     Port 3d4h index 29h
+                        2Ah   PR11     Port 3d4h index 2Ah
+                        2Bh   PR12     Port 3d4h index 2Bh
+                        2Ch   PR13     Port 3d4h index 2Ch
+                        2Dh   PR14     Port 3d4h index 2Dh
+                        2Eh   PR15     Port 3d4h index 2Eh
+                        2Fh   PR16     Port 3d4h index 2Fh
+                        30h   PR17     Port 3d4h index 30h
+        BH = 60h
+        BH = 61h
+        BH = A5h
+        BH = A6h
+
+Note: The functions 60h, 61h, A5h and A6h are supported by the 5/14/93 ROM for
+      the Dell 486D
+
+Return: AL = 7Fh  If successful  (AT&T VDC600)
+        BH = 7Fh  If valid call (Paradise/Western Digital)
+----------106E00-----------------------------
+INT 10 - Paradise VGA internal - Get ???
+        AX = 6E00h
+Return: BX = 5744h ('WD') if supported
+            DH:AH:AL = last three ASCII digits of ROM serial number
+            CL = ???
+            CH = ???
+----------106E04-----------------------------
+INT 10 - Paradise VGA internal - Get Screen Size and ???
+        AX = 6E04h
+Return: BX = screen width (columns)
+        CX = screen height (lines)
+        AH = ??? (05h or FFh)
+        AL = ??? (04h or video mode)
+----------106E05-----------------------------
+INT 10 - Paradise VGA internal - Set Mode
+        AX = 6E05h
+        BL = mode
+Note: like AH=00h, AL=BL.
+
+
+
+DIP Switch/jumper settings:
+
+  VGA Plus, VGA Plus 16, VGA Professional:
+
+  Switch 1  Monitor Type. ON: Multi frequency, OFF: Standard VGA
+         2  VGA Mode Switching Style. ON: PS/2 Style - All modes available on
+            all monitors, OFF: PC/AT Style - color on color, mono on mono
+         3  Not used - Set to OFF
+         4  (Not VGA Plus) 8bit vs 16bit AutoSense. ON: Auto sense 8/16bit
+            BIOS access, OFF: Force 8bit BIOS access

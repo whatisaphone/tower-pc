@@ -1,0 +1,217 @@
+Microsoft (R) Macro Assembler Version 5.00                  4/29/89 21:55:11
+                                                             Page     1-1
+
+
+						.MODEL small 
+ 0100						.STACK	100h 
+ 0000						.DATA 
+ 0000						.CODE 
+ 0000  B8 ---- R		start:		mov	ax,@DATA 
+ 0003  8E C0					mov	es,ax 
+				 
+ 0005  B4 00					mov	ah,00h		;устано
+				вить видеорежим № 12 
+ 0007  B0 12					mov	al,12h 
+ 0009  CD 10					int	10h 
+				 
+				WrCol		MACRO	r,v1,v2,v3	;MACRO 
+				: запись цвета в DAC регистр r 
+						mov	ah,10h		;v1-нов
+				ое значение зеленого цвета (0-63) 
+						mov	al,10h		;v2-нов
+				ое значение синего   цвета (0-63) 
+						mov	bx,r		;v3-нов
+				ое значение красного цвета (0-63) 
+						mov	ch,v1 
+						mov	cl,v2 
+						mov	dh,v3 
+						int	10h 
+						ENDM 
+				 
+						WrCol	16,0,0,0 
+ 000B  B4 10                 1			mov	ah,10h		;v1-нов
+				ое значение зеленого цвета (0-63) 
+ 000D  B0 10                 1			mov	al,10h		;v2-нов
+				ое значение синего   цвета (0-63) 
+ 000F  BB 0010               1			mov	bx,16		;v3-нов
+				ое значение красного цвета (0-63) 
+ 0012  B5 00                 1			mov	ch,0 
+ 0014  B1 00                 1			mov	cl,0 
+ 0016  B6 00                 1			mov	dh,0 
+ 0018  CD 10                 1			int	10h 
+						WrCol	 0,0,0,0 
+ 001A  B4 10                 1			mov	ah,10h		;v1-нов
+				ое значение зеленого цвета (0-63) 
+ 001C  B0 10                 1			mov	al,10h		;v2-нов
+				ое значение синего   цвета (0-63) 
+ 001E  BB 0000               1			mov	bx,0		;v3-нов
+				ое значение красного цвета (0-63) 
+ 0021  B5 00                 1			mov	ch,0 
+ 0023  B1 00                 1			mov	cl,0 
+ 0025  B6 00                 1			mov	dh,0 
+ 0027  CD 10                 1			int	10h 
+						WrCol	 7,60,60,60 
+ 0029  B4 10                 1			mov	ah,10h		;v1-нов
+				ое значение зеленого цвета (0-63) 
+ 002B  B0 10                 1			mov	al,10h		;v2-нов
+				ое значение синего   цвета (0-63) 
+ 002D  BB 0007               1			mov	bx,7		;v3-нов
+Microsoft (R) Macro Assembler Version 5.00                  4/29/89 21:55:11
+                                                             Page     1-2
+
+
+				ое значение красного цвета (0-63) 
+ 0030  B5 3C                 1			mov	ch,60 
+ 0032  B1 3C                 1			mov	cl,60 
+ 0034  B6 3C                 1			mov	dh,60 
+ 0036  CD 10                 1			int	10h 
+						WrCol	 6,60,60,60 
+ 0038  B4 10                 1			mov	ah,10h		;v1-нов
+				ое значение зеленого цвета (0-63) 
+ 003A  B0 10                 1			mov	al,10h		;v2-нов
+				ое значение синего   цвета (0-63) 
+ 003C  BB 0006               1			mov	bx,6		;v3-нов
+				ое значение красного цвета (0-63) 
+ 003F  B5 3C                 1			mov	ch,60 
+ 0041  B1 3C                 1			mov	cl,60 
+ 0043  B6 3C                 1			mov	dh,60 
+ 0045  CD 10                 1			int	10h 
+						WrCol	 8,60,60,60 
+ 0047  B4 10                 1			mov	ah,10h		;v1-нов
+				ое значение зеленого цвета (0-63) 
+ 0049  B0 10                 1			mov	al,10h		;v2-нов
+				ое значение синего   цвета (0-63) 
+ 004B  BB 0008               1			mov	bx,8		;v3-нов
+				ое значение красного цвета (0-63) 
+ 004E  B5 3C                 1			mov	ch,60 
+ 0050  B1 3C                 1			mov	cl,60 
+ 0052  B6 3C                 1			mov	dh,60 
+ 0054  CD 10                 1			int	10h 
+				 
+ 0056  B8 0007					mov	ax,0007h	;занест
+				и параметры в стек 
+ 0059  50					push	ax 
+ 005A  B8 0000					mov	ax,0 
+ 005D  50					push	ax 
+ 005E  B8 0064					mov	ax,100 
+ 0061  50					push	ax 
+ 0062  B8 0064					mov	ax,100 
+ 0065  50					push	ax 
+				 
+ 0066  E8 006E R				call	_SetPixel 
+				 
+ 0069  B8 4C00					mov	ax,4C00h 
+ 006C  CD 21					int	21h 
+				 
+				;Microsoft C: 
+				; 
+				;				void SetPixel(x
+				,y,v,n); 
+				;				int x,y;
+					/* pixel coordinates */ 
+				 
+				 
+				 
+				 
+				 
+Microsoft (R) Macro Assembler Version 5.00                  4/29/89 21:55:11
+                                                             Page     1-3
+
+
+				 
+				 
+				 
+				;_TEXT		SEGMENT	byte public 'CODE' 
+				;		ASSUME	cs:_TEXT 
+						PUBLIC	_SetPixel 
+ 006E				_SetPixel	PROC	near 
+ 006E  55					push	bp 
+ 006F  8B EC					mov	bp,sp 
+						 
+ 0071  B8 0050					mov	ax,80 
+ 0074  F7 66 06					mul	word ptr [bp+6] 
+ 0077  8B 5E 04					mov	bx,[bp+4] 
+ 007A  8A CB					mov	cl,bl 
+ 007C  D1 EB					shr	bx,1 
+ 007E  D1 EB					shr	bx,1 
+ 0080  D1 EB					shr	bx,1 
+ 0082  03 D8					add	bx,ax 
+ 0084  80 7E 08 00				cmp	byte ptr [bp+8],0 
+ 0088  74 0A					je	L01 
+ 008A  B8 004D					mov	ax,4Dh 
+ 008D  8E C0					mov	es,ax 
+ 008F  26: 03 1E 004C				add	bx,es:[4Ch] 
+ 0094  B8 A000			L01:		mov	ax,0A000h 
+ 0097  8E C0					mov	es,ax 
+ 0099  80 E1 07					and	cl,7 
+ 009C  80 F1 07					xor	cl,7 
+				 
+ 009F  BA 03CE					mov	dx,3CEh 
+ 00A2  B4 01					mov	ah,1 
+ 00A4  D2 E4					shl	ah,cl 
+ 00A6  B0 08					mov	al,8 
+ 00A8  EF					out	dx,ax 
+ 00A9  B8 0205					mov	ax,205h 
+ 00AC  EF					out	dx,ax 
+						 
+ 00AD  B8 0003					mov	ax,0003 
+ 00B0  EF					out	dx,ax 
+				; 
+ 00B1  8A 46 0A					mov	al,[bp+10] 
+ 00B4  26: 86 07				xchg	al,es:[bx] 
+				; 
+ 00B7  B8 FF08					mov	ax,0FF08h 
+ 00BA  EF					out	dx,ax 
+ 00BB  B8 0005					mov	ax,0005 
+ 00BE  EF					out	dx,ax 
+ 00BF  B8 0003					mov	ax,0003 
+ 00C2  EF					out	dx,ax 
+ 00C3  8B E5					mov	sp,bp 
+ 00C5  5D					pop	bp 
+ 00C6  C3					ret 
+ 00C7				_SetPixel	ENDP 
+				;_TEXT		ENDS 
+ 00C7						END	start 
+
+Microsoft (R) Macro Assembler Version 5.00                  4/29/89 21:55:11
+                                                             Symbols-1
+
+
+Macros:
+
+		N a m e			Lines
+
+WRCOL  . . . . . . . . . . . . .  	   7
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	0000	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	00C7	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+L01  . . . . . . . . . . . . . .  	L NEAR	0094	_TEXT
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	_TEXT
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  setpixel		
+_SETPIXEL  . . . . . . . . . . .  	N PROC	006E	_TEXT	Global	Length = 0059
+
+
+    104 Source  Lines
+    139 Total   Lines
+     18 Symbols
+
+  50892 + 213972 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

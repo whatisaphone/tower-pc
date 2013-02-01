@@ -1,0 +1,196 @@
+IIT AGX series
+
+AGX-10  Original AGX chipset. Actually consists of the AGX-10 and -11.
+AGX-14
+AGX-15  Local Bus
+AGX-16  PCI support. More clocks
+
+The AGX chips are basically an XGA engine with a Trident VGA part tagged on
+On the AGX-10 and -11 the XGA registers are at 21x0h-21xFh, while the AGX-14
+, -15 and -16 always have them at 2160h-216Fh.
+The AGX chips do not implement the virtual memory feature of the XGA and the
+hardware cursor is different from the XGA cursor.
+
+2164h-2167h are not implemented.
+216Ah index 4,Ch,Dh,38h-3Dh,62h-65h,6Bh are not implemented
+M+11h bits 0-4 not implemented
+
+Map width must be a power of two.
+Monochrome Map Mask (M+7Ch bit 6-7 = 2) not supported.
+
+
+3C4h index 0Bh (R): Chip Version
+bit 0-7  Chip ID. Always 2 (like 8800CS)
+Note:  Writing to index Bh selects old mode registers.
+       Reading from index Bh selects new mode registers.
+Note:  Writing to this register in order to force old mode registers
+       should be done with two 8bit writes, not one 16bit write.
+
+3C4h index 0Dh (R/W): Old Mode Control 2
+bit 0-2  Emulation mode
+         0=VGA, 3=EGA, 5=CGA,MDA,Hercules
+      4  Enable Paging mode if set. If set the CRTC offset (3d4h index 13h)
+         should be multiplied by 2, and the Display Start Address (3d4h index
+         0Ch & 0Dh + 1Eh bit 5 and 3C4h Old Mode index 0Eh bit 0) is in units
+         of 8 bytes rather than 4 (256 color modes only).
+      5  DRAM clock enabled if set.
+
+3C4h index 0Dh (R/W): New Mode Control 2
+Note: The old/new Mode Control 1/2 registers are selected by
+      reading and writing the Chip version register (index Bh).
+
+3C4h index 0Eh (R/W): Old Mode Control 1
+bit 1-2  128kb Bank number (0-3)
+      3  16 bit video interface if set
+
+3C4h index 0Eh (R/W): New Mode Control 1
+bit 0-3  64k Bank number. When writing to this field XOR with 02h, when
+         reading from this field no XOR is needed.
+    4-6  Reserved
+Note: The old/new Mode Control 1/2 registers are selected by
+      reading and writing the Chip version register (index Bh).
+
+3C4h index 0Fh (R/W): Power-up Mode 2
+bit 0-3  Switch settings
+      4  Bus type
+      5  If set I/O address are at 3xxh, else at 2xxh.
+      6  Enable ON-Card ROM if set
+      7  16 bit ROM access enabled if set
+
+3d4h index 1Eh (R/W): Module Testing Register
+bit 0-1  ??
+      2  Vertical interlace if set. In interlaced modes the CRTC offset (3d4h
+         index 13h) is the number of bytes in TWO scanlines. Note that in
+         interlaced modes the line doubling caused by index 9 bits 0-4,7 is
+         unlikely to work, as the (even,odd) linepair is repeated rather than
+         each individual line causing stripes.
+      3  If set Load fonts from Bottom, from top if clear
+      4  ??
+      5  CRTC starting address bit 16
+    6-7  ??
+
+3d4h index 1Fh (R/W): Software Programming Register
+bit 0-1  Memory size  0=256k, 1=512k, 2=768k, 3=1M.
+    2-3  ??
+Note: This register set by software
+
+3d4h index 22h (R): CPU Latch Read Back
+bit 0-7  Data Latch value for current read plane.
+
+3d4h index 24h (R): Attribute State Read Back
+bit 0-6  Reserved
+      7  Attribute Controller State
+         If set the next write to 3C0h will go to the data
+         register, if clear to the index register.
+
+3d4h index 26h (R): Attribute Index Read Back
+bit 0-7  Attribute Index Register value
+
+
+
+216Ah index 6Ch (R/W):  AGX Mode Register 7
+bit     0  Local Bus. Set for Local Bus, clear for ISA Bus
+        1  (AGX-15,16) Memory Buffer Enabled if set. Enables I/O buffering.
+             May not work on some fast local bus systems.
+        2  (AGX10/11) Type 'A' or 'B'
+        3  (AGX10/11) Latch Delay
+        4  (AGX10/11) RAS Delay Inhibit
+        5  ROM, DAC Lines Disable (Not used)
+
+216Ah index 6Dh (R/W):  AGX Mode Register 3
+bit     0  COPBASE Select. Set to place the memory mapped registers at B1F00h,
+           clear to place them at D1F00h
+        1  MCS16_Pull Inhibit. Set not to pull MCS16- for BIOS accesses
+        2  Source Map Power of 2 Adjust. Set to add 256 to the source width to
+           get 1280. For the AGX-14 this only works for 4bit/pixel modes
+        3  Destination Map Power of 2. Adjust. Set to add 256 to the
+           destination width to get 1280. For the AGX-14 this only works for
+           4bit/pixel modes
+        4  24 Bit Enable. Set to enable 24bit engine.
+        5  Screen Refresh Count. Set for 25 Engine Clocks, clear for 20.
+        6  PCLK Edge Enable. Set to enable pixel data on both rising and
+           falling edges of PCLK
+        7  24 Bit PCLK Mode. Set for 4 PCLKs in 24bit mode, clear for 3 PCLKs
+
+216Ah index 6Eh W(R/W):  AGX Mode Register 4/5
+bit   0-9  Sprite Base Address. The start address of the cursor definition in
+           units of 800h bytes. This value is XORed with 1DFh.
+           Each pixel in the cursor map is interpreted as:
+             0   Cursor background color (palette index 00h)
+             1   Cursor foreground color (palette index FFh)
+             2   Screen data (Transparent cursor)
+             3   Inverted screen data (XOR cursor)
+       10  X Refresh Split enabled if set
+       11  Engine Delay. Set to add a wait state for local bus access
+    12-13  Clock Frequency Select.
+       14  Xtech Clock Select. If set bits 12-13 and bits 4-5 of index 77h
+            selects the clock, if clear the clock is selected by index 54h and
+           70h and possible index 77h bits 4-5.
+       15  Xtech DAC Enable. Set to enable Xtech hicolor DAC
+
+216Ah index 71h (R/W):  AGX Mode Register 8                      (AGX-16 only)
+bit     0  Source Map Adjust 288. Set to add 288 to the source width.
+        1  Source Map Adjust 128. Set to add 128 to the source width.
+        2  Destination Map Adjust 288. Set to add 288 to the destination width
+        3  Destination Map Adjust 128. Set to add 128 to the destination width
+        4  Sprite Refresh
+        5  Screen Refresh
+        6  VRAM Ras Extend
+        7  Big Buffer Enable
+
+216Ah index 74h (R/W):  AGX Mode Register 2                    (AGX10/11 only)
+bit     0  DMA Enable
+      1-3  DMA Channel
+
+216Ah index 75h (R/W):  AGX Mode Register 6                    (AGX10/11 only)
+bit   0-1  Defines the address of the special cursor register.
+             0: 1F0h, 1: 1E0h, 2: 1D0h, 3: 1C0h
+
+216Ah index 76h (R/W):  AGX Mode Register 2
+bit     0  VRAM Shift Register Frequency. Set for transfer every 256 clocks,
+           clear for transfer every 128 clocks (128Kx8 VRAMs)
+        1  (AGX-10/11) Bus Master Overlap. Set for no Bus Master overlap on
+             refresh, clear for independent Bus Master on refresh.
+             Must be clear for AGX-14 and -15
+        2  (AGX-10/11) Engine Clock Divide By 2. Set to divide engine clock by
+             2. Must be cleared for AGX-14 and -15.
+        3  Big Dac. Set for 84pin RAMDAC, clear for 44pin RAMDAC
+        4  Delay Display
+        5  CClk Doubled
+
+216Ah index 77h (R/W):  AGX Mode Register 1
+bit     0  CPU Bus Size. Set for 16bit CPU Transfer, clear for 8bit
+        1  CPU Wait State. Set for 1 CPU Wait State, clear for no wait states.
+           Should be cleared on the -14 and -15.
+        2  Interlace Toggle. Set for interlaced modes, clear for non-interlace
+      4-5  Clock Frequency Select 3.
+             0: 80.000MHz, 1: 50.350MHz, 2: 44.900MHz, 3: 65.000MHz
+           Index 54h bits 2-3 must be 3, index 6Fh bit 6 must be 0 and index
+           70h bit 7 must be 0 for these clocks to be selected.
+        6  PCLK Div 2. Divide pixel clock by 2 if set ?
+        7  Ext Eng Req ?
+Note: On the AGX-10/11 this register is located in index 7Fh
+
+216Ah index 78h (R/W):  AGX Mode Register 10
+bit     0  PCI Enable
+        1  1MB Aperture Enable
+        2  Bus Wait State
+        4  Enable 6MB
+      5-6  Bank Select
+        7  16Bit Pixel
+
+
+Video Modes:
+
+50h T    80   30
+51h T    80   43
+52h T    80   60
+53h T   132   25
+54h G   640  480  PL4
+5Bh G   800  600  PL4
+5Ch G   640  400  P8
+5Dh G   640  480  P8
+5Eh G   800  600  P8
+5Fh G  1024  768  PL4
+64h G  1024  768  P8      XGA mode
+65h G  1024  768  P8      XGA mode

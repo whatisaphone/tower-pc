@@ -1,0 +1,231 @@
+<html>
+<head>
+<title>
+17.3.D  'D' Instructions 
+</title>
+<body>
+<a name="17-03-D"></a>
+Prev: <a href="chp17-c3.htm">17.3.C  'C' Instructions </a><br>
+Next: <a href="chp17-e3.htm">17.3.E  'E' Instructions </a>
+<hr>
+<h2>
+17.3.D  'D' Instructions 
+</h2>
+<p>
+<a name="17-03-DAA"></a>
+<h3>DAA -- Decimal Adjust AL after Addition</h3>
+<p>
+<pre>
+Opcode    Instruction        Clocks   Description
+
+27        DAA                4        Decimal adjust AL after addition
+</pre>
+<p>
+Operation
+<p>
+IF ((AL AND 0FH) > 9) OR (AF = 1)
+THEN
+   AL <- AL + 6;
+   AF <- 1;
+ELSE
+   AF <- 0;
+FI;
+IF (AL > 9FH) OR (CF = 1)
+THEN
+   AL <- AL + 60H;
+   CF <- 1;
+ELSE CF <- 0;
+FI;
+<p>
+<b>Description</b>
+<p>
+Execute DAA only after executing an ADD instruction that leaves a
+two-BCD-digit byte result in the AL register. The ADD operands should
+consist of two packed BCD digits. The DAA instruction adjusts AL to
+contain the correct two-digit packed decimal result.
+<p>
+<b>Flags Affected</b>
+<p>
+AF and CF as described above; SF, ZF, PF, and CF as described in
+Appendix C.
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-DAS"></a>
+<h3>DAS -- Decimal Adjust AL after Subtraction</h3>
+<p>
+<pre>
+Opcode    Instruction        Clocks   Description
+
+2F        DAS                4        Decimal adjust AL after subtraction
+</pre>
+<p>
+Operation
+<p>
+IF (AL AND 0FH) > 9 OR AF = 1
+THEN
+   AL <- AL - 6;
+   AF <- 1;
+ELSE
+   AF <- 0;
+FI;
+IF (AL > 9FH) OR (CF = 1)
+THEN
+   AL <- AL - 60H;
+   CF <- 1;
+ELSE CF <- 0;
+FI;
+<p>
+<b>Description</b>
+<p>
+Execute DAS only after a subtraction instruction that leaves a
+two-BCD-digit byte result in the AL register. The operands should consist
+of two packed BCD digits. DAS adjusts AL to contain the correct packed
+two-digit decimal result.
+<p>
+<b>Flags Affected</b>
+<p>
+AF and CF as described above; SF, ZF, and PF as described in Appendix C.
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-DEC"></a>
+<h3>DEC -- Decrement by 1</h3>
+<p>
+<pre>
+Opcode    Instruction        Clocks   Description
+
+FE /1     DEC r/m8           2/6      Decrement r/m byte by 1
+FF /1     DEC r/m16          2/6      Decrement r/m word by 1
+          DEC r/m32          2/6      Decrement r/m dword by 1
+48+rw     DEC r16            2        Decrement word register by 1
+48+rw     DEC r32            2        Decrement dword register by 1
+</pre>
+<p>
+Operation
+<p>
+DEST <- DEST - 1;
+<p>
+<b>Description</b>
+<p>
+DEC subtracts 1 from the operand. DEC does not change the carry flag.
+To affect the carry flag, use the SUB instruction with an immediate
+operand of 1.
+<p>
+<b>Flags Affected</b>
+<p>
+OF, SF, ZF, AF, and PF as described in Appendix C.
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS
+segments; #SS(0) for an illegal address in the SS segment; #PF(fault-code)
+for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-DIV"></a>
+<h3>DIV -- Unsigned Divide</h3>
+<p>
+<pre>
+Opcode    Instruction        Clocks   Description
+
+F6 /6     DIV AL,r/m8        14/17    Unsigned divide AX by r/m byte
+                                      (AL=Quo, AH=Rem)
+F7 /6     DIV AX,r/m16       22/25    Unsigned divide DX:AX by r/m
+                                      word (AX=Quo, DX=Rem)
+F7 /6     DIV EAX,r/m32      38/41    Unsigned divide EDX:EAX by r/m
+                                      dword (EAX=Quo, EDX=Rem)
+</pre>
+<p>
+Operation
+<p>
+temp <- dividend / divisor;
+IF temp does not fit in quotient
+THEN Interrupt 0;
+ELSE
+   quotient <- temp;
+   remainder <- dividend MOD (r/m);
+FI;
+<p>
+<pre>
+---------------------------------------------------------------------------
+Note:
+  Divisions are unsigned. The divisor is given by the r/m operand.
+  The dividend, quotient, and remainder use implicit registers. Refer to
+  the table under "Description."
+---------------------------------------------------------------------------
+</pre>
+<b>Description</b>
+<p>
+DIV performs an unsigned division. The dividend is implicit; only the
+divisor is given as an operand. The remainder is always less than the
+divisor. The type of the divisor determines which registers to use as
+follows:
+<p>
+<pre>
+    Size    Dividend     Divisor   Quotient   Remainder
+    byte    AX           r/m8       AL          AH
+    word    DX:AX        r/m16      AX          DX
+    dword   EDX:EAX      r/m32      EAX         EDX
+</pre>
+<b>Flags Affected</b>
+<p>
+OF, SF, ZF, AR, PF, CF are undefined.
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+Interrupt 0 if the quotient is too large to fit in the designated register
+(AL, AX, or EAX), or if the divisor is 0; #GP(0) for an illegal memory
+operand effective address in the CS, DS, ES, FS, or GS segments; #SS(0)
+for an illegal address in the SS segment; #PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 0 if the quotient is too big to fit in the designated register
+(AL, AX, or EAX), or if the divisor is 0; Interrupt 13 if any part of the
+operand would lie outside of the effective address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-c3.htm">17.3.C  'C' Instructions </a><br>
+Next: <a href="chp17-e3.htm">17.3.E  'E' Instructions </a>
+</body>
+</html>

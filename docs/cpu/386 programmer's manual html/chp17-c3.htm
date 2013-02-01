@@ -1,0 +1,853 @@
+<html>
+<head>
+<title>
+17.3.C  'C' Instructions 
+</title>
+<body>
+<a name="17-03-C"></a>
+Prev: <a href="chp17-b3.htm">17.3.B  'B' Instructions </a><br>
+Next: <a href="chp17-d3.htm">17.3.D  'D' Instructions </a>
+<hr>
+<h2>
+17.3.C  'C' Instructions 
+</h2>
+<p>
+<a name="17-03-CALL"></a>
+<h3>CALL -- Call Procedure</h3>
+<p>
+<p>
+<pre>
+Opcode    Instruction     Clocks
+  Values of ts are given by the following table:
+
+                             New Task
+              386 TSS         386 TSS         286 TSS
+  Old         VM = 0          VM = 1
+  Task                     Via Task Gate?
+
+              N     Y         N     Y         N     Y
+
+386          300   309       217   226       273   282
+TSS VM=0
+
+286          298   307       217   226       273   282
+TSS         Description
+
+E8  cw    CALL rel16       7+m            Call near, displacement relative
+                                          to next instruction
+FF  /2    CALL r/m16       7+m/10+m       Call near, register
+                                          indirect/memory indirect
+9A  cd    CALL ptr16:16    17+m,pm=34+m   Call intersegment, to full
+                                          pointer given
+9A  cd    CALL ptr16:16    pm=52+m        Call gate, same privilege
+9A  cd    CALL ptr16:16    pm=86+m        Call gate, more privilege, no
+                                          parameters
+9A  cd    CALL ptr16:16    pm=94+4x+m     Call gate, more privilege, x
+                                          parameters
+9A  cd    CALL ptr16:16    ts             Call to task
+FF  /3    CALL m16:16      22+m,pm=38+m   Call intersegment, address at
+                                          r/m dword
+FF  /3    CALL m16:16      pm=56+m        Call gate, same privilege
+FF  /3    CALL m16:16      pm=90+m        Call gate, more privilege, no
+                                          parameters
+FF  /3    CALL m16:16      pm=98+4x+m     Call gate, more privilege, x
+                                          parameters
+FF  /3    CALL m16:16      5 + ts         Call to task
+E8  cd    CALL rel32       7+m            Call near, displacement relative
+                                          to next instruction
+FF  /2    CALL r/m32       7+m/10+m       Call near, indirect
+9A  cp    CALL ptr16:32    17+m,pm=34+m   Call intersegment, to full
+                                          pointer given
+9A  cp    CALL ptr16:32    pm=52+m        Call gate, same privilege
+9A  cp    CALL ptr16:32    pm=86+m        Call gate, more privilege, no
+                                          parameters
+9A  cp    CALL ptr32:32    pm=94+4x+m     Call gate, more privilege, x
+                                          parameters
+9A  cp    CALL ptr16:32    ts             Call to task
+FF  /3    CALL m16:32      22+m,pm=38+m   Call intersegment, address at
+                                          r/m dword
+FF  /3    CALL m16:32      pm=56+m        Call gate, same privilege
+FF  /3    CALL m16:32      pm=90+m        Call gate, more privilege, no
+                                          parameters
+FF  /3    CALL m16:32      pm=98+4x+m     Call gate, more privilege, x
+                                          parameters
+FF  /3    CALL m16:32      5 + ts         Call to task
+</pre>
+<p>
+<pre>
+---------------------------------------------------------------------------
+NOTE:
+  Values of ts are given by the following table:
+
+                             New Task
+              386 TSS         386 TSS         286 TSS
+  Old         VM = 0          VM = 1
+  Task                     Via Task Gate?
+
+              N     Y         N     Y         N     Y
+
+386          300   309       217   226       273   282
+TSS VM=0
+
+286          298   307       217   226       273   282
+TSS
+---------------------------------------------------------------------------
+</pre>
+Operation
+<p>
+IF rel16 or rel32 type of call
+THEN (* near relative call *)
+<pre>
+   IF OperandSize = 16
+   THEN
+      Push(IP);
+      EIP <- (EIP + rel16) AND 0000FFFFH;
+   ELSE (* OperandSize = 32 *)
+      Push(EIP);
+      EIP <- EIP + rel32;
+   FI;
+FI;
+</pre>
+IF r/m16 or r/m32 type of call
+THEN (* near absolute call *)
+<pre>
+   IF OperandSize = 16
+   THEN
+      Push(IP);
+      EIP <- [r/m16] AND 0000FFFFH;
+   ELSE (* OperandSize = 32 *)
+      Push(EIP);
+      EIP <- [r/m32];
+   FI;
+FI;
+</pre>
+IF (PE = 0 OR (PE = 1 AND VM = 1))
+(* real mode or virtual 8086 mode *)
+<pre>
+   AND instruction = far CALL
+   (* i.e., operand type is m16:16, m16:32, ptr16:16, ptr16:32 *)
+THEN
+   IF OperandSize = 16
+   THEN
+      Push(CS);
+      Push(IP); (* address of next instruction; 16 bits *)
+   ELSE
+      Push(CS); (* padded with 16 high-order bits *)
+      Push(EIP); (* address of next instruction; 32 bits *)
+   FI;
+   IF operand type is m16:16 or m16:32
+   THEN (* indirect far call *)
+      IF OperandSize = 16
+      THEN
+         CS:IP <- [m16:16];
+         EIP <- EIP AND 0000FFFFH; (* clear upper 16 bits *)
+      ELSE (* OperandSize = 32 *)
+         CS:EIP <- [m16:32];
+      FI;
+   FI;
+   IF operand type is ptr16:16 or ptr16:32
+   THEN (* direct far call *)
+      IF OperandSize = 16
+      THEN
+         CS:IP <- ptr16:16;
+         EIP <- EIP AND 0000FFFFH; (* clear upper 16 bits *)
+      ELSE (* OperandSize = 32 *)
+         CS:EIP <- ptr16:32;
+      FI;
+   FI;
+FI;
+</pre>
+IF (PE = 1 AND VM = 0) (* Protected mode, not V86 mode *)
+<pre>
+   AND instruction = far CALL
+THEN
+   If indirect, then check access of EA doubleword;
+      #GP(0) if limit violation;
+   New CS selector must not be null else #GP(0);
+   Check that new CS selector index is within its
+      descriptor table limits; else #GP(new CS selector);
+   Examine AR byte of selected descriptor for various legal values;
+      depending on value:
+      go to CONFORMING-CODE-SEGMENT;
+      go to NONCONFORMING-CODE-SEGMENT;
+      go to CALL-GATE;
+      go to TASK-GATE;
+      go to TASK-STATE-SEGMENT;
+   ELSE #GP(code segment selector);
+FI;
+</pre>
+CONFORMING-CODE-SEGMENT:
+<pre>
+   DPL must be . CPL ELSE #GP(code segment selector);
+   Segment must be present ELSE #NP(code segment selector);
+   Stack must be big enough for return address ELSE #SS(0);
+   Instruction pointer must be in code segment limit ELSE #GP(0);
+   Load code segment descriptor into CS register;
+   Load CS with new code segment selector;
+   Load EIP with zero-extend(new offset);
+   IF OperandSize=16 THEN EIP <- EIP AND 0000FFFFH; FI;
+</pre>
+NONCONFORMING-CODE-SEGMENT:
+<pre>
+   RPL must be . CPL ELSE #GP(code segment selector)
+   DPL must be = CPL ELSE #GP(code segment selector)
+   Segment must be present ELSE #NP(code segment selector)
+   Stack must be big enough for return address ELSE #SS(0)
+   Instruction pointer must be in code segment limit ELSE #GP(0)
+   Load code segment descriptor into CS register
+   Load CS with new code segment selector
+   Set RPL of CS to CPL
+   Load EIP with zero-extend(new offset);
+   IF OperandSize=16 THEN EIP <- EIP AND 0000FFFFH; FI;
+</pre>
+CALL-GATE:
+<pre>
+   Call gate DPL must be . CPL ELSE #GP(call gate selector)
+   Call gate DPL must be . RPL ELSE #GP(call gate selector)
+   Call gate must be present ELSE #NP(call gate selector)
+   Examine code segment selector in call gate descriptor:
+      Selector must not be null ELSE #GP(0)
+      Selector must be within its descriptor table
+         limits ELSE #GP(code segment selector)
+   AR byte of selected descriptor must indicate code
+      segment ELSE #GP(code segment selector)
+   DPL of selected descriptor must be . CPL ELSE
+      #GP(code segment selector)
+   IF non-conforming code segment AND DPL < CPL
+   THEN go to MORE-PRIVILEGE
+   ELSE go to SAME-PRIVILEGE
+   FI;
+</pre>
+MORE-PRIVILEGE:
+<pre>
+   Get new SS selector for new privilege level from TSS
+      Check selector and descriptor for new SS:
+         Selector must not be null ELSE #TS(0)
+         Selector index must be within its descriptor
+            table limits ELSE #TS(SS selector)
+         Selector's RPL must equal DPL of code segment
+            ELSE #TS(SS selector)
+         Stack segment DPL must equal DPL of code
+            segment ELSE #TS(SS selector)
+         Descriptor must indicate writable data segment
+            ELSE #TS(SS selector)
+         Segment present ELSE #SS(SS selector)
+      IF OperandSize=32
+      THEN
+         New stack must have room for parameters plus 16 bytes
+            ELSE #SS(0)
+         EIP must be in code segment limit ELSE #GP(0)
+         Load new SS:eSP value from TSS
+         Load new CS:EIP value from gate
+      ELSE
+         New stack must have room for parameters plus 8 bytes ELSE #SS(0)
+         IP must be in code segment limit ELSE #GP(0)
+         Load new SS:eSP value from TSS
+         Load new CS:IP value from gate
+      FI;
+      Load CS descriptor
+      Load SS descriptor
+      Push long pointer of old stack onto new stack
+      Get word count from call gate, mask to 5 bits
+      Copy parameters from old stack onto new stack
+      Push return address onto new stack
+      Set CPL to stack segment DPL
+      Set RPL of CS to CPL
+</pre>
+SAME-PRIVILEGE:
+<pre>
+   IF OperandSize=32
+   THEN
+      Stack must have room for 6-byte return address (padded to 8 bytes)
+         ELSE #SS(0)
+      EIP must be within code segment limit ELSE #GP(0)
+      Load CS:EIP from gate
+   ELSE
+      Stack must have room for 4-byte return address ELSE #SS(0)
+      IP must be within code segment limit ELSE #GP(0)
+      Load CS:IP from gate
+   FI;
+   Push return address onto stack
+   Load code segment descriptor into CS register
+   Set RPL of CS to CPL
+</pre>
+TASK-GATE:
+<pre>
+   Task gate DPL must be . CPL ELSE #TS(gate selector)
+   Task gate DPL must be . RPL ELSE #TS(gate selector)
+   Task Gate must be present ELSE #NP(gate selector)
+   Examine selector to TSS, given in Task Gate descriptor:
+      Must specify global in the local/global bit ELSE #TS(TSS selector)
+      Index must be within GDT limits ELSE #TS(TSS selector)
+      TSS descriptor AR byte must specify nonbusy TSS
+         ELSE #TS(TSS selector)
+      Task State Segment must be present ELSE #NP(TSS selector)
+   SWITCH-TASKS (with nesting) to TSS
+   IP must be in code segment limit ELSE #TS(0)
+</pre>
+TASK-STATE-SEGMENT:
+<pre>
+   TSS DPL must be . CPL else #TS(TSS selector)
+   TSS DPL must be . RPL ELSE #TS(TSS selector)
+   TSS descriptor AR byte must specify available TSS
+      ELSE #TS(TSS selector)
+   Task State Segment must be present ELSE #NP(TSS selector)
+   SWITCH-TASKS (with nesting) to TSS
+   IP must be in code segment limit ELSE #TS(0)
+</pre>
+<b>Description</b>
+<p>
+The CALL instruction causes the procedure named in the operand to be
+executed. When the procedure is complete (a return instruction is executed
+within the procedure), execution continues at the instruction that follows
+the CALL instruction.
+<p>
+The action of the different forms of the instruction are described below.
+<p>
+Near calls are those with destinations of type r/m16, r/m32, rel16, rel32;
+changing or saving the segment register value is not necessary. The CALL
+rel16 and CALL rel32 forms add a signed offset to the address of the
+instruction following CALL to determine the destination. The rel16 form is
+used when the instruction's operand-size attribute is 16 bits; rel32 is used
+when the operand-size attribute is 32 bits. The result is stored in the
+32-bit EIP register. With rel16, the upper 16 bits of EIP are cleared,
+resulting in an offset whose value does not exceed 16 bits. CALL r/m16 and
+CALL r/m32 specify a register or memory location from which the absolute
+segment offset is fetched. The offset fetched from r/m is 32 bits for an
+operand-size attribute of 32 (r/m32), or 16 bits for an operand-size of 16
+(r/m16). The offset of the instruction following CALL is pushed onto the
+stack. It will be popped by a near RET instruction within the procedure. The
+CS register is not changed by this form of CALL.
+<p>
+The far calls, CALL ptr16:16 and CALL ptr16:32, use a four-byte or six-byte
+operand as a long pointer to the procedure called. The CALL m16:16 and
+m16:32 forms fetch the long pointer from the memory location
+specified (indirection). In Real Address Mode or Virtual 8086 Mode, the long
+pointer provides 16 bits for the CS register and 16 or 32 bits for the EIP
+register (depending on the operand-size attribute). These forms of the
+instruction push both CS and IP or EIP as a return address.
+<p>
+In Protected Mode, both long pointer forms consult the AR byte in the
+descriptor indexed by the selector part of the long pointer. Depending on
+the value of the AR byte, the call will perform one of the following types
+of control transfers:
+<p>
+<pre>
+  -  A far call to the same protection level
+  -  An inter-protection level far call
+  -  A task switch
+</pre>
+For more information on Protected Mode control transfers, refer to
+Chapter 6 and Chapter 7.
+<p>
+<b>Flags Affected</b>
+<p>
+All flags are affected if a task switch occurs; no flags are affected if a
+task switch does not occur
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+For far calls: #GP, #NP, #SS, and #TS, as indicated in the list above
+<p>
+For near direct calls: #GP(0) if procedure location is beyond the code
+segment limits; #SS(0) if pushing the return address exceeds the bounds of
+the stack segment; #PF (fault-code) for a page fault
+<p>
+For a near indirect call: #GP(0) for an illegal memory operand effective
+address in the CS, DS, ES, FS, or GS segments; #SS(0) for an illegal address
+in the SS segment; #GP(0) if the indirect offset obtained is beyond the code
+segment limits; #PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+Notes
+<p>
+Any far call from a 32-bit code segment to 16-bit code segments should be
+made from the first 64K bytes of the 32-bit code segment, since the
+operand-size attribute of the instruction is set to 16, thus allowing only a
+16-bit return address offset to be saved.
+<p>
+<p>
+<a name="17-03-CBW"></a>
+<h3>CBW/CWDE -- Convert Byte to Word/Convert Word to Doubleword</h3>
+<p>
+<pre>
+Opcode    Instruction     Clocks          Description
+</pre>
+98        CBW             3               AX <- sign-extend of AL
+98        CWDE            3               EAX <- sign-extend of AX
+<p>
+<p>
+Operation
+<p>
+IF OperandSize = 16 (* instruction = CBW *)
+THEN AX <- SignExtend(AL);
+ELSE (* OperandSize = 32, instruction = CWDE *)
+   EAX <- SignExtend(AX);
+FI;
+<p>
+<b>Description</b>
+<p>
+CBW converts the signed byte in AL to a signed word in AX by extending the
+most significant bit of AL (the sign bit) into all of the bits of AH. CWDE
+converts the signed word in AX to a doubleword in EAX by extending the most
+significant bit of AX into the two most significant bytes of EAX. Note that
+CWDE is different from CWD. CWD uses DX:AX rather than EAX as a destination.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-CLC"></a>
+<h3>CLC -- Clear Carry Flag</h3>
+<p>
+<pre>
+Opcode    Instruction     Clocks          Description
+
+F8        CLC             2               Clear carry flag
+</pre>
+<p>
+Operation
+<p>
+CF <- 0;
+<p>
+<b>Description</b>
+<p>
+CLC sets the carry flag to zero. It does not affect other flags or
+registers.
+<p>
+<b>Flags Affected</b>
+<p>
+CF = 0
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-CLD"></a>
+<h3>CLD -- Clear Direction Flag</h3>
+<p>
+<pre>
+Opcode    Instruction     Clocks   Description
+
+FC        CLD             2        Clear direction flag; SI and DI
+                                   will increment during string
+                                   instructions
+</pre>
+<p>
+Operation
+<p>
+DF <- 0;
+<p>
+<b>Description</b>
+<p>
+CLD clears the direction flag. No other flags or registers are affected.
+After CLD is executed, string operations will increment the index registers
+(SI and/or DI) that they use.
+<p>
+<b>Flags Affected</b>
+<p>
+DF = 0
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-CLI"></a>
+<h3>CLI -- Clear Interrupt Flag</h3>
+<p>
+<pre>
+Opcode    Instruction    Clocks   Description
+
+FA        CLI            3        Clear interrupt flag; interrupts disabled
+</pre>
+<p>
+Operation
+<p>
+IF <- 0;
+<p>
+<b>Description</b>
+<p>
+CLI clears the interrupt flag if the current privilege level is at least as
+privileged as IOPL. No other flags are affected. External interrupts are not
+recognized at the end of the CLI instruction or from that point on until the
+interrupt flag is set.
+<p>
+<b>Flags Affected</b>
+<p>
+IF = 0
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the current privilege level is greater (has less privilege) than
+the IOPL in the flags register. IOPL specifies the least privileged level at
+which I/O can be performed.
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+#GP(0) as for Protected Mode
+<p>
+<p>
+<a name="17-03-CLTS"></a>
+<h3>CLTS -- Clear Task-Switched Flag in CR0</h3>
+<p>
+<pre>
+Opcode    Instruction    Clocks   Description
+
+OF  06    CLTS           5        Clear task-switched flag
+</pre>
+<p>
+Operation
+<p>
+TS Flag in CR0 <- 0;
+<p>
+<b>Description</b>
+<p>
+CLTS clears the task-switched (TS) flag in register CR0. This flag is set by
+the 80386 every time a task switch occurs. The TS flag is used to manage
+processor extensions as follows:
+<p>
+<pre>
+  -  Every execution of an ESC instruction is trapped if the TS flag is set.
+
+  -  Execution of a WAIT instruction is trapped if the MP flag and the TS
+     flag are both set.
+</pre>
+Thus, if a task switch was made after an ESC instruction was begun, the
+processor extension's context may need to be saved before a new ESC
+instruction can be issued. The fault handler saves the context and resets
+the TS flag.
+<p>
+CLTS appears in operating system software, not in application programs. It
+is a privileged instruction that can only be executed at privilege level 0.
+<p>
+<b>Flags Affected</b>
+<p>
+TS = 0 (TS is in CR0, not the flag register)
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if CLTS is executed with a current privilege level other than 0
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None (valid in Real Address Mode to allow initialization for Protected
+Mode)
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode
+<p>
+<p>
+<a name="17-03-CMC"></a>
+<h3>CMC -- Complement Carry Flag</h3>
+<p>
+<pre>
+Opcode    Instruction    Clocks   Description
+
+F5        CMC            2        Complement carry flag
+</pre>
+<p>
+Operation
+<p>
+CF <- NOT CF;
+<p>
+<b>Description</b>
+<p>
+CMC reverses the setting of the carry flag. No other flags are affected.
+<p>
+<b>Flags Affected</b>
+<p>
+CF as described above
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-CMP"></a>
+<h3>CMP -- Compare Two Operands</h3>
+<p>
+<p>
+<pre>
+Opcode          Instruction        Clocks   Description
+
+3C  ib          CMP AL,imm8        2        Compare immediate byte to AL
+3D  iw          CMP AX,imm16       2        Compare immediate word to AX
+3D  id          CMP EAX,imm32      2        Compare immediate dword to EAX
+80  /7 ib       CMP r/m8,imm8      2/5      Compare immediate byte to r/m
+                                            byte
+81  /7 iw       CMP r/m16,imm16    2/5      Compare immediate word to r/m
+                                            word
+81  /7 id       CMP r/m32,imm32    2/5      Compare immediate dword to r/m
+                                            dword
+83  /7 ib       CMP r/m16,imm8     2/5      Compare sign extended immediate
+                                            byte to r/m word
+83  /7 ib       CMP r/m32,imm8     2/5      Compare sign extended immediate
+                                            byte to r/m dword
+38  /r          CMP r/m8,r8        2/5      Compare byte register to r/m
+                                            byte
+39  /r          CMP r/m16,r16      2/5      Compare word register to r/m
+                                            word
+39  /r          CMP r/m32,r32      2/5      Compare dword register to r/m
+                                            dword
+3A  /r          CMP r8,r/m8        2/6      Compare r/m byte to byte
+                                            register
+3B  /r          CMP r16,r/m16      2/6      Compare r/m word to word
+                                            register
+3B  /r          CMP r32,r/m32      2/6      Compare r/m dword to dword
+                                            register
+</pre>
+<p>
+Operation
+<p>
+LeftSRC - SignExtend(RightSRC);
+(* CMP does not store a result; its purpose is to set the flags *)
+<p>
+<b>Description</b>
+<p>
+CMP subtracts the second operand from the first but, unlike the SUB
+instruction, does not store the result; only the flags are changed. CMP is
+typically used in conjunction with conditional jumps and the SETcc
+instruction. (Refer to Appendix D for the list of signed and unsigned flag
+tests provided.) If an operand greater than one byte is compared to an
+immediate byte, the byte value is first sign-extended.
+<p>
+<b>Flags Affected</b>
+<p>
+OF, SF, ZF, AF, PF, and CF as described in Appendix C
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS, ES,
+FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+#PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+<p>
+<a name="17-03-CMPS"></a>
+<h3>CMPS/CMPSB/CMPSW/CMPSD -- Compare String Operands</h3>
+<p>
+<pre>
+Opcode    Instruction        Clocks   Description
+
+A6        CMPS m8,m8         10       Compare bytes ES:[(E)DI] (second
+                                      operand) with   [(E)SI] (first 
+                                      operand)
+A7        CMPS m16,m16       10       Compare words ES:[(E)DI] (second
+                                      operand) with   [(E)SI] (first 
+                                      operand)
+A7        CMPS m32,m32       10       Compare dwords ES:[(E)DI]
+                                      (second operand) with [(E)SI] 
+                                      (first operand)
+A6        CMPSB              10       Compare bytes ES:[(E)DI] with
+                                      DS:[SI]
+A7        CMPSW              10       Compare words ES:[(E)DI] with
+                                      DS:[SI]
+A7        CMPSD              10       Compare dwords ES:[(E)DI] with
+                                      DS:[SI]
+</pre>
+<p>
+Operation
+<p>
+IF (instruction = CMPSD) OR
+<pre>
+   (instruction has operands of type DWORD)
+THEN OperandSize <- 32;</pre>
+ELSE OperandSize <- 16;
+FI;
+IF AddressSize = 16
+THEN
+<pre>
+   use SI for source-index and DI for destination-index
+ELSE (* AddressSize = 32 *)
+   use ESI for source-index and EDI for destination-index;
+FI;
+IF byte type of instruction
+THEN
+   [source-index] - [destination-index]; (* byte comparison *)
+   IF DF = 0 THEN IncDec <- 1 ELSE IncDec <- -1; FI;
+ELSE
+   IF OperandSize = 16
+   THEN
+      [source-index] - [destination-index]; (* word comparison *)
+      IF DF = 0 THEN IncDec <- 2 ELSE IncDec <- -2; FI;
+   ELSE (* OperandSize = 32 *)
+      [source-index] - [destination-index]; (* dword comparison *)
+      IF DF = 0 THEN IncDec <- 4 ELSE IncDec <- -4; FI;
+   FI;
+FI;
+source-index = source-index + IncDec;
+destination-index = destination-index + IncDec;
+</pre>
+<b>Description</b>
+<p>
+CMPS compares the byte, word, or doubleword pointed to by the source-index
+register with the byte, word, or doubleword pointed to by the
+destination-index register.
+<p>
+If the address-size attribute of this instruction is 16 bits, SI and DI
+will be used for source- and destination-index registers; otherwise ESI and
+EDI will be used. Load the correct index values into SI and DI (or ESI and
+EDI) before executing CMPS.
+<p>
+The comparison is done by subtracting the operand indexed by
+the destination-index register from the operand indexed by the source-index
+register.
+<p>
+Note that the direction of subtraction for CMPS is [SI] - [DI] or
+[ESI] - [EDI]. The left operand (SI or ESI) is the source and the right
+operand (DI or EDI) is the destination. This is the reverse of the usual
+Intel convention in which the left operand is the destination and the right
+operand is the source.
+<p>
+The result of the subtraction is not stored; only the flags reflect the
+change. The types of the operands determine whether bytes, words, or
+doublewords are compared. For the first operand (SI or ESI), the DS register
+is used, unless a segment override byte is present. The second operand (DI
+or EDI) must be addressable from the ES register; no segment override is
+possible.
+<p>
+After the comparison is made, both the source-index register and
+destination-index register are automatically advanced. If the direction flag
+is 0 (CLD was executed), the registers increment; if the direction flag is 1
+(STD was executed), the registers decrement. The registers increment or
+decrement by 1 if a byte is compared, by 2 if a word is compared, or by 4 if
+a doubleword is compared.
+<p>
+CMPSB, CMPSW and CMPSD are synonyms for the byte, word, and
+doubleword CMPS instructions, respectively.
+<p>
+CMPS can be preceded by the REPE or REPNE prefix for block comparison of CX
+or ECX bytes, words, or doublewords. Refer to the description of the REP
+instruction for more information on this operation.
+<p>
+<b>Flags Affected</b>
+<p>
+OF, SF, ZF, AF, PF, and CF as described in Appendix C
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS, ES,
+FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+#PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF (fault-code) for a page fault
+<p>
+<p>
+<a name="17-03-CWD"></a>
+<h3>CWD/CDQ -- Convert Word to Doubleword/Convert Doubleword to</h3>
+<pre>
+           Quadword
+
+Opcode    Instruction        Clocks   Description
+</pre>
+99        CWD                2        DX:AX <- sign-extend of AX
+99        CDQ                2        EDX:EAX <- sign-extend of EAX
+<p>
+<p>
+Operation
+<p>
+IF OperandSize = 16 (* CWD instruction *)
+THEN
+   IF AX < 0 THEN DX <- 0FFFFH; ELSE DX <- 0; FI;
+ELSE (* OperandSize = 32, CDQ instruction *)
+   IF EAX < 0 THEN EDX <- 0FFFFFFFFH; ELSE EDX <- 0; FI;
+FI;
+<p>
+<b>Description</b>
+<p>
+CWD converts the signed word in AX to a signed doubleword in DX:AX
+by extending the most significant bit of AX into all the bits of DX. CDQ
+converts the signed doubleword in EAX to a signed 64-bit integer in the
+register pair EDX:EAX by extending the most significant bit of EAX
+(the sign bit) into all the bits of EDX. Note that CWD is different from
+CWDE. CWDE uses EAX as a destination, instead of DX:AX.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-b3.htm">17.3.B  'B' Instructions </a><br>
+Next: <a href="chp17-d3.htm">17.3.D  'D' Instructions </a>
+</body>
+</html>

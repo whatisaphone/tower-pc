@@ -1,0 +1,435 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage 2.0">
+<title>Sizing memory in Protected Mode</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h1 align="center"><font color="#0000FF">Sizing Memory in
+Protected Mode</font></h1>
+
+<h2 align="center"><font color="#0000FF">By Robert R. Collins</font></h2>
+
+<hr>
+
+<table border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+        <td width="20%"><h2><font color="#FF0000">Caveats:</font></h2>
+        </td>
+        <td valign="top" width="80%">I wrote this article 6-1/2
+        years ago. Even though some of the techniques of memory
+        size have changed since then, the basic concepts are
+        still the same. Forgive me if you see some outdated
+        terms, or references to outdated CPU's and memory sizes.
+        If you see some instances of outdated material, instead
+        of sending me flames, please send a kind note of
+        correction.</td>
+    </tr>
+</table>
+
+<hr>
+
+<h2><font color="#FF0000">The Concepts of Sizing Memory</font></h2>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td valign="top" width="60%">The concepts of memory
+        sizing wouldn't be complete without an explanation of how
+        RAM works. Think of memory as a square, two-dimensional
+        array; there are as many columns as rows. Each element in
+        the array represents a bit (not byte) of memory. To
+        address an individual bit in the array, we provide the
+        RAM chip with a row address and a column address. To
+        minimize the number of pins on the chip, RAM chips have
+        only one set of address pins, and uses them for both row
+        and column addresses (<a
+        href="../../articles/memsize/MemSizing.html#Fig1">see
+        figure 1</a>). The memory controller must provide signals
+        telling the RAM chip when the row address is valid via
+        the Row Address Strobe (RAS), and when the column address
+        is valid via the Column Address Strobe (CAS). The concept
+        of using a single set of address lines for both row and
+        column addressing is called multiplexing (MUX). As a
+        result of multiplexing the address lines, RAM chip sizes
+        are always a square power of 2 (or even multiple of 2).
+        Chips with 8 address lines hold 64k bits of information
+        ((2<sup>8</sup>)<sup>2</sup> = 65536); 9 address lines
+        yield 256k chips ((2<sup>9</sup>)<sup>2</sup> = 262144),
+        10 address lines yield 1M chips, and so on.<p>Now, armed
+        with this information, we can discuss the relationship
+        between the CPU address bus and the memory address bus.
+        The CPU has 24 address pins if it is a '286, and 32
+        address pins if it's the '386, '486, or Pentium; 36
+        address pins if it's a Pentium Pro. The RAM chips
+        obviously have far fewer address pins than the CPU; so to
+        convert the CPU address to RAM RAS &amp; CAS addresses,
+        the CPU address bus enters a memory controller. The
+        memory controller converts the CPU address signals to RAS
+        addresses, CAS addresses, and BANK addresses (<a
+        href="../../articles/memsize/MemSizing.html#Banks">more
+        on BANK addressing</a> later). Let's suppose our computer
+        was a '286 design supporting only 4 banks of memory.
+        (Even though the 80286 is obsolete, describing it's
+        memory configuration is perfect for this example.) This
+        memory can consist of any combination of 64k, 256k, 1M,
+        and 4M chips, but each bank must be populated with a
+        consistent size of RAM chips. To support 4M memory chips,
+        our memory controller must provide signals to 11 RAS
+        addresses, plus 11 CAS addresses. This takes 22 of our 24
+        address lines available from the CPU. The remaining two
+        address lines from the CPU are interpreted by the memory
+        controller to select which BANK of memory to access. <a
+        href="../../articles/memsize/MemSizing.html#Fig2">Figure
+        2</a> shows a hypothetical relationship between the CPU
+        address bus and the memory address bus. According to this
+        diagram, anytime the CPU asserts A00..A10, the RAM chip
+        receives a column address. Likewise, anytime the CPU
+        asserts A13..A23, the RAM chip receives a row address.
+        CPU address lines A11 and A12 are used to select between
+        RAM banks. Since our hypothetical computer supports only
+        four banks of memory, when &lt;A12,A11&gt;=00, the memory
+        controller selects BANK0; when &lt;A12,A11&gt;=01, the
+        memory controller selects BANK1; &lt;A12,A11&gt;=10 the
+        memory controller selects BANK2; and &lt;A12,A11&gt;=11,
+        the memory controller selects BANK3. With this
+        information, we can write to any row of any bank of RAM
+        chips in the computer. In this manner, we can detect how
+        many banks of RAM are installed in the computer, and
+        determine the size of each RAM bank. All that we need to
+        complete our RAM sizing discussion is some theory and
+        algorithms to apply our knowledge.</p>
+        <p>In our hypothetical computer, the memory controller
+        multiplexes the addresses according to the size of RAM
+        chips. <a
+        href="../../articles/memsize/MemSizing.html#Fig2">Figure
+        2</a> showed the CPU address bus/memory address bus
+        relationship for 4M chips. When the chip size is smaller
+        than 4M, the relationship between the CPU address bus and
+        RAM address bus changes. In our computer, chip size in
+        each RAM bank is programmable; therefore we need to
+        determine the size of the chip in the socket and
+        subsequently re-program the memory controller before we
+        can have full access to all the memory in the computer.</p>
+        <p>To size memory, we start by assuming each RAM bank has
+        the maximum size RAM chips which are supported by the
+        memory controller. In our hypothetical computer, the
+        memory controller supports up to 4M chips. Therefore, we
+        program the memory controller for four banks of 4 MB
+        chips. By programming the memory controller for this
+        configuration, we can detect when a smaller memory chip
+        is installed in the socket. But before we check the size
+        of the chip, we need to detect if any RAM is in the
+        socket. RAM detection is achieved by writing to the RAM
+        bank, completely reloading the prefetch queue, and
+        checking the value we wrote. If we get back the value we
+        wrote, we have sufficiently determined that RAM is
+        available for that bank of memory. And then we can check
+        the size of the chip.</p>
+        </td>
+        <td align="center" valign="top" width="40%"><a
+        name="Fig1"></a><img
+        src="Fig1.gif"
+        width="222" height="396"><p>Figure 1 - 64k, 256k, 1M, 4M,
+        64M, 256M<br>
+        DRAM pin out</p>
+        <hr color="#FF0000">
+        <p><a name="Fig2"></a><img
+        src="Fig2.gif"
+        width="375" height="256"></p>
+        <p>Figure 2 - CPU Address Bus Conversion<br>
+        for 4 MB DRAM Chips</p>
+        </td>
+    </tr>
+</table>
+
+<p>To determine the actual size of RAM, we need to detect how
+many address lines are connected to the RAM chip. Consider the 11
+address lines on our 4 MB RAM chip socket. If our RAM is a 4M
+chip, then all 11 address lines are connected (MA0 - MA10). If
+the RAM chip is a 1M chip, only 10 address lines are connected
+(MA0 - MA9); 256k has 9 lines connected (MA0 - MA8); and 64k has
+8 lines connected (MA0 - MA7). To determine whether a 4M chip is
+installed, we need to determine if MA10 is connected. We write to
+MA10, then read back at RAM address 0 (MA0-MA10 not asserted). If
+a 4M chip is in the socket, then the data we wrote at MA10, will
+appear at MA10, and not at RAM address 0. But if the RAM chip
+isn't a 4M chip, then MA10 isn't connected; therefore the data we
+wrote at MA10 would have been written to address 0. Our algorithm
+repeats itself by using MA9 for 1M chips and MA8 for 256k chips.
+If MA8 - MA10 all fail, then it is safe to assume the bank is
+populated with 64k chips, as we already determined the presence
+of RAM in the socket.</p>
+
+<p><a name="Banks"></a>To determine how many banks of memory are
+in the computer, we test the existence of RAM for each bank. This
+is done by writing to the CPU address lines that control RAM bank
+selection. For our computer, these are address lines A11 and A12.</p>
+
+<p>By repeating this RAM sizing algorithm for each bank of
+memory, we can determine how much RAM is installed in the
+computer. <a href="../../articles/memsize/MemSizing.html#Fig3">Figure
+3</a> summarizes the relationship between Multiplexed Addresses
+(MA) on the RAM address bus, and CPU addresses on the CPU address
+bus. The CPU addresses in this figure are calculated from the
+table of MA addresses. If we need to assert &lt;A23&gt;,
+&lt;A11&gt;, and &lt;A12&gt;, then we calculate the CPU address
+as 2<sup>23</sup> + 2<sup>11</sup> + 2<sup>12</sup> = 801800h.</p>
+
+<table border="1" cellpadding="2" cellspacing="0" width="100%">
+    <caption align="top"><a name="Fig3"></a>Figure 3 - Where to
+    Read/Write to test for RAM chip size</caption>
+    <tr>
+        <td width="20%">&nbsp;</td>
+        <td align="center" valign="top" width="15%"><strong>Write
+        at CPU Address Lines</strong></td>
+        <td align="center" valign="top" width="15%"><strong>Write
+        at CPU Address</strong></td>
+        <td align="center" valign="top" width="15%"><strong>Read
+        at CPU Address Lines</strong></td>
+        <td align="center" valign="top" width="15%"><strong>Read
+        at CPU Address</strong></td>
+    </tr>
+    <tr>
+        <td width="20%">Bank 0:</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="20%">4 MB</td>
+        <td align="center" valign="top" width="15%">&lt;A23&gt;</td>
+        <td align="center" valign="top" width="15%">800000h</td>
+        <td align="center" valign="top" width="15%">&lt;&gt;</td>
+        <td align="center" valign="top" width="15%">000000h</td>
+    </tr>
+    <tr>
+        <td width="20%">1 MB</td>
+        <td align="center" valign="top" width="15%">&lt;A22&gt;</td>
+        <td align="center" valign="top" width="15%">400000h</td>
+        <td align="center" valign="top" width="15%">&lt;&gt;</td>
+        <td align="center" valign="top" width="15%">000000h</td>
+    </tr>
+    <tr>
+        <td width="20%">256 kb</td>
+        <td align="center" valign="top" width="15%">&lt;A21&gt;</td>
+        <td align="center" valign="top" width="15%">200000h</td>
+        <td align="center" valign="top" width="15%">&lt;&gt;</td>
+        <td align="center" valign="top" width="15%">000000h</td>
+    </tr>
+    <tr>
+        <td width="20%">64 kb</td>
+        <td align="center" valign="top" width="15%">&lt;A20&gt;</td>
+        <td align="center" valign="top" width="15%">100000h</td>
+        <td align="center" valign="top" width="15%">&lt;&gt;</td>
+        <td align="center" valign="top" width="15%">000000h</td>
+    </tr>
+    <tr>
+        <td width="20%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="20%">Bank 1:</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="20%">4 MB</td>
+        <td align="center" valign="top" width="15%">&lt;A23,
+        A11&gt;</td>
+        <td align="center" valign="top" width="15%">800800h</td>
+        <td align="center" valign="top" width="15%">&lt;A11&gt;</td>
+        <td align="center" valign="top" width="15%">000800h</td>
+    </tr>
+    <tr>
+        <td width="20%">1 MB</td>
+        <td align="center" valign="top" width="15%">&lt;A22,
+        A11&gt;</td>
+        <td align="center" valign="top" width="15%">400800h</td>
+        <td align="center" valign="top" width="15%">&lt;A11&gt;</td>
+        <td align="center" valign="top" width="15%">000800h</td>
+    </tr>
+    <tr>
+        <td width="20%">256 kb</td>
+        <td align="center" valign="top" width="15%">&lt;A21,
+        A11&gt;</td>
+        <td align="center" valign="top" width="15%">200800h</td>
+        <td align="center" valign="top" width="15%">&lt;A11&gt;</td>
+        <td align="center" valign="top" width="15%">000800h</td>
+    </tr>
+    <tr>
+        <td width="20%">64 kb</td>
+        <td align="center" valign="top" width="15%">&lt;A20,
+        A11&gt;</td>
+        <td align="center" valign="top" width="15%">100800h</td>
+        <td align="center" valign="top" width="15%">&lt;A11&gt;</td>
+        <td align="center" valign="top" width="15%">000800h</td>
+    </tr>
+    <tr>
+        <td width="20%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="20%">Bank 2:</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="20%">4 MB</td>
+        <td align="center" valign="top" width="15%">&lt;A23,
+        A12&gt;</td>
+        <td align="center" valign="top" width="15%">801000h</td>
+        <td align="center" valign="top" width="15%">&lt;A12&gt;</td>
+        <td align="center" valign="top" width="15%">001000h</td>
+    </tr>
+    <tr>
+        <td width="20%">1 MB</td>
+        <td align="center" valign="top" width="15%">&lt;A22,
+        A12&gt;</td>
+        <td align="center" valign="top" width="15%">401000h</td>
+        <td align="center" valign="top" width="15%">&lt;A12&gt;</td>
+        <td align="center" valign="top" width="15%">001000h</td>
+    </tr>
+    <tr>
+        <td width="20%">256 kb</td>
+        <td align="center" valign="top" width="15%">&lt;A21,
+        A12&gt;</td>
+        <td align="center" valign="top" width="15%">201000h</td>
+        <td align="center" valign="top" width="15%">&lt;A12&gt;</td>
+        <td align="center" valign="top" width="15%">001000h</td>
+    </tr>
+    <tr>
+        <td width="20%">64 kb</td>
+        <td align="center" valign="top" width="15%">&lt;A20,
+        A20&gt;</td>
+        <td align="center" valign="top" width="15%">101000h</td>
+        <td align="center" valign="top" width="15%">&lt;A12&gt;</td>
+        <td align="center" valign="top" width="15%">001000h</td>
+    </tr>
+    <tr>
+        <td width="20%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="20%">Bank 3:</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+        <td align="center" valign="top" width="15%">&nbsp;</td>
+    </tr>
+    <tr>
+        <td>4 MB</td>
+        <td align="center" valign="top">&lt;A23, A12, A11&gt;</td>
+        <td align="center" valign="top">801800h</td>
+        <td align="center" valign="top">&lt;A12, A11&gt;</td>
+        <td align="center" valign="top">001800h</td>
+    </tr>
+    <tr>
+        <td>1 MB</td>
+        <td align="center" valign="top">&lt;A22, A12, A11&gt;</td>
+        <td align="center" valign="top">401800h</td>
+        <td align="center" valign="top">&lt;A12, A11&gt;</td>
+        <td align="center" valign="top">001800h</td>
+    </tr>
+    <tr>
+        <td>256 kb</td>
+        <td align="center" valign="top">&lt;A21, A12, A11&gt;</td>
+        <td align="center" valign="top">201800h</td>
+        <td align="center" valign="top">&lt;A12, A11&gt;</td>
+        <td align="center" valign="top">001800h</td>
+    </tr>
+    <tr>
+        <td>64 kb</td>
+        <td align="center" valign="top">&lt;A20, A12, A11&gt;</td>
+        <td align="center" valign="top">101800h</td>
+        <td align="center" valign="top">&lt;A12, A11&gt;</td>
+        <td align="center" valign="top">001800h</td>
+    </tr>
+</table>
+
+<p>To summarize: knowing the relationship between CPU addresses,
+RAM row and column addresses, and bank selection addresses is
+essential to determining RAM size and quantity. RAM Bank
+selection is done by writing to the CPU address lines that are
+interpreted by the memory controller as controls for bank
+selection. RAM sizing is done by writing to the highest RAM ROW
+address for a given chip size and reading the RAM at 0. If the
+data appears at 0, you know the RAM ROW address line on the chip
+isn't connected. Continue this process until all RAM sizes are
+determined for each bank. At the completion of this process, we
+re-program the memory controller for the proper RAM configuration
+in the system.</p>
+
+<p>Sizing RAM under program control is accomplished differently
+than it was during the power-on sequence. During the power-on
+sequence, the BIOS is guaranteed absolute control of the system,
+and its resources. During this sequence, BIOS can guarantee that
+cache is disabled so that it won't interfere with the results.
+Under program control, we can't write a RAM sizing algorithm that
+makes any assumptions about the state of the hardware or the
+cache. If we re-program the memory controller, our program would
+most certainly fail, as CPU address translation changes with the
+RAM address translation. In determining the amount of RAM under
+program control, we must use a different approach, an approach
+that doesn't rely on knowledge of the hardware. This means we
+can't re-program the hardware, the memory controller, or the
+cache controller. Since we can't re-program the memory controller
+(or make any assumptions about the existence, state, or
+programmability of a cache controller), we must write an
+algorithm that can detect the presence of memory without the
+intrusion of cache RAM. Therefore, the algorithm must be able to
+invalidate the cache RAM contents while checking for the
+existence of memory.</p>
+
+<hr>
+
+<p><a href="../../articles/articles.html#MemSizePtr">Back to
+Books and Articles</a></p>
+
+<P><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/bighand_left.gif" ALT="Return to the" VSPACE=14 BORDER=0 HEIGHT=48 WIDTH=64></A><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/gohome.gif" ALT="Intel
+Secrets home page" BORDER=0 ></A>
+<img src="http://www.x86.org/Count.cgi?ft=0|frgb=69;139;50;tr=0|trgb=0;0;0|wxh=15;20|md=6|dd=C|st=1532481|sh=0|df=Total.html.dat" border=0  align=abscenter
+width=0 height=0>
+
+<HR><BR>
+<ADDRESS>&copy; 1991-1999 <b><font color="#FF0000">Intel Secrets Web Site</font></b> and Robert Collins. <A HREF="http://pgp5.ai.mit.edu/pks-commands.html#extract">PGP
+key available</A>.<BR>
+<BR>
+<FONT SIZE=-2>Make no mistake!<BR>
+</FONT>This web site is proud to provide superior information and service
+without any affiliation to Intel Corporation.<BR>
+<BR>
+&quot;<B><FONT COLOR="#FF0000">Intel Secrets</FONT></B>&quot;, &quot;<B><FONT COLOR="#FF0000">What
+Intel doesn't want you to know</FONT></B>&quot; <B><FONT COLOR="#FF0000">and
+anything with a dropped e in it</FONT></B>, are phrases that infuriate
+Intel Corporation.</ADDRESS>
+
+<ADDRESS><BR>
+Pentium, Intel, and the letter "I" are registered trademarks of Intel Corporation. 386, 486, 586, P6,
+all other letters, and all other numbers <B><FONT COLOR="#FF0000">are not!<BR>
+</FONT></B>All other trademarks are those of their respective companies.
+See <A HREF="http://www.x86.org/Trademarks.html">Trademarks and Disclaimers</A>
+for more info.<BR>
+<BR>
+Robert Collins works somewhere in the United States of America. Robert
+may be <A HREF="http://www.x86.org/Contact.html">reached via email or telephone</A>.</ADDRESS>
+</body>
+</html>

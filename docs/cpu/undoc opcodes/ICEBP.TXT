@@ -1,0 +1,193 @@
+Undocumented OpCodes: ICEBP 
+
+----------------------------------------------------------------------------
+
+This instruction exists in this form on all 386-class processors. 
+
+
+ICEBP - F1 - INT01 (ICE BreakPoint)
+
+An undocumented op code that will make debugging run-time code on an ICE 
+easier. Normally, to set an arbitrary breakpoint in a program which was 
+loaded by an operating system, you must perform a laborious task of 
+figuring out where your program was loaded in memory. Follow that 
+process with an equally laborious task of calculating the offset in 
+memory which corresponds to the desired breakpoint. This process is 
+exacerbated by programs which use many segments, especially many code 
+segments. Now for one final complication, consider that your program 
+switches from real mode, to protected mode, with paging enabled, and you 
+are not using a 1-to-1 mapping of physical to virtual memory. You want 
+to talk about a nightmare just to figure out where to set a breakpoint? 
+
+All of these problems are eliminated, simply by using this instruction -
+- provided you know its caveats. 
+
+
+Undocumented:  Available to all 80386-class (and above)
+               processors as described herein.
+               May be available to 80286 processors, but 
+                 implemented in a different manner.
+               Useful to BONDOUT (ICE) processors.
+               Especially useful during ICE debugging.
+               Useful in production source code.
+                                                            ICEBP
+Flags:                                            ICE Break Point
++-+-+-+-+-+-+-+-+-+                                  +----------+
+|O|D|I|T|S|Z|A|P|C|                                  | 11110001 |
++-+-+-+-+-+-+-+-+-+                                  +----------+
+| | | | | | | | | |                                  |    F1    |
++-+-+-+-+-+-+-+-+-+                                  +----------+ 
+
+
+The name ICEBP was given by a pre-production Intel ICE that had the 
+ability to disassemble undocumented op codes. The name ICEBP is a 
+misnomer because the instruction is actually a single byte single-step 
+exception (INT-01).
+
+How you use ICEBP depends upon whether or not you are using an 80386 
+ICE, Intel486 ICE, or Pentium ICE. For the purposes of this article, 
+usage of ICEBP on 80386 and Intel486 are identical. Pentium enables 
+ICEBP a little differently than its predecessors.
+
+
+Two effects of ICEBP -- 80386 and Intel486
+
+]ICEBP has two operational effects: When Interrupt Redirection (IR) is 
+disabled, ICEBP acts as a single byte INT 01. When this instruction 
+occurs, it invokes the standard INT 01 handler. Unlike the single step 
+exception (Trap Flag=1), this instruction does not set the trap flag on 
+the stack image, nor modifies the trap flag on the stack image. 
+Therefore, upon termination of the INT 01 handler, execution continues 
+without further occurrences of the single step breakpoints.
+
+When Interrupt Redirection is enabled, ICEBP will attempt to invoke the 
+hardware breakpoint handler associated with an In Circuit Emulator 
+(ICE). If the processor is a production CPU, the processor will hang. If 
+the processor is a BONDOUT CPU attached to an ICE, ICEBP will cause the 
+ICE to break from emulation. On an Intel ICE, the message "Unknown 
+Breakpoint at address xxxx:xxxx:xxxxxxxx" appears on the screen.
+
+There are two ways to enable Interrupt Redirection. It can be done by 
+directly programming DR7 (see "Undocumented Bits in DR7"), or this bit 
+can be set (indirectly) using an ICE. To set this bit using an ICE, you 
+must first be in HALT mode. Any "go til" command that uses the debug 
+registers will enable Interrupt Redirection. For example, "go til 
+1234:5678 execute," "go til 1025:3245 write," or simply "go til 0 p" 
+will enable Interrupt Redirection. This work because the ICE actually 
+uses the debug registers to trap debug exceptions. Of course, this 
+directly implies that any time the ICE uses the debug registers to 
+signify break points, and emulation halts, it does so following an INT 
+01 to the ICE break point handler (since interrupt redirection is 
+enabled).
+
+
+ICEBP on a Pentium Processor
+
+The usage of ICEBP is identical on 80386 and Intel486 processors, as it 
+is on Pentium. The only difference, is how Interrupt Redirection is 
+enabled. On Pentium, Interrupt Redirection is enabled and disabled in 
+the Probe Mode Control Register (PMCR). The PMCR is only accessible via 
+the Pentium debug port. The PMCR exists inside the Pentium, but is not 
+software-accessible by any means. You must have an ICE connected to the 
+debug port to modify bits in the PMCR. This feature protects software 
+against programmers intent on finding undocumented bits in the 
+processor. The benefit of this design, is that the Interrupt Redirection 
+bit may be enabled and disabled while the processor is running. You 
+don't have to wait until a halt, or halt the ICE to enable and disable 
+Interrupt Redirection. And like its predecessors, the Pentium ICE will 
+enable and disable Interrupt Redirection by setting a breakpoint which 
+uses the debug registers. On the Microtek Pentium ICE, any breakpoint 
+called a hardware breakpoint, uses the debug registers. Therefore, 
+setting any of these breakpoints, will enable Interrupt Redirection. 
+
+
+ICEBP on a P6.
+
+I expect that ICEBP will work identically on the P6 as it does on a 
+Pentium. Like the undocumented instruction SALC, ICEBP may be documented 
+beginning with the P6. I found ICEBP in the P6 opcode map. However, the 
+instruction is no longer called ICEBP on the P6. It is officially named 
+INT01. This is in contrast to the preproduction 80386 ICE which 
+disassembled this instruction as ICEBP. Regardless of the name change, 
+the operational effects will be identical.
+
+
+A word of caution on enabling Interrupt Redirection:
+
+Here are all of the ways to crash the production CPU when Interrupt 
+Redirection is enabled, but an ICE is not connected:
+
+1. When an ICEBP instruction is invoked; 
+2. When a software INT 01 is invoked; 
+3. When the Trap Flag gets set, as any subsequent instruction causes INT 01 
+   to be invoked. 
+4. When a breakpoint exception occurs. 
+5. When a task switch occurs, into a task whose T-bit is set.
+
+
+Using ICEBP
+
+ICEBP is most useful for debugging purposes using an ICE. I use it in 
+code where I need the ICE to break from emulation, but I don't know 
+where the program is loaded in physical memory. At the beginning of a 
+subroutine where I want a breakpoint to occur, I insert an ICEBP 
+instruction. Before I invoke my software, I halt the ICE, and simply say 
+"go til 0 p." On the Pentium, this is even easier. On the Pentium, from 
+the command window of the ICE, I type "pmcr=1." This will cause the ICE 
+to enable Interrupt Redirection. Once my program begins to execute the 
+desired subroutine, the ICE automatically breaks from emulation. This 
+instruction can be used in a similar manner to debug a UNIX kernel, and 
+any application that switches to page mode (CR0[b31]=1). Insert an ICEBP 
+instruction at the beginning of a subroutine, issue the appropriate ICE 
+command, and emulation will HALT at the desired location. When used in 
+this manner, this instruction saves considerable amounts of time. The 
+engineer doesn't need to manually convert page directories, and page 
+table entries to physical addresses in an attempt to determine where the 
+subroutine is in memory. The engineer also doesn't need to worry that 
+the debug registers used by the ICE, break on linear addresses, not 
+physical addresses. The engineer doesn't need to look at an assembly map 
+file to find the (relative) address of a subroutine, then try and figure 
+out where the operating system loaded the program. The use of this 
+instructions makes all of these, and many more debugging techniques 
+obsolete. 
+
+----------------------------------------------------------------------------
+
+Get description of other opcodes:
+AAM:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAM.txt
+AAD:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAD.txt
+CMOV:     ftp://ftp.x86.org/pub/x86/p6/opcodes/CMOV.txt
+FCMOV:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCMOV.txt
+FCOMI:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCOMI.txt
+ICEBP:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+INT01:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+LOADALL:  ftp://ftp.x86.org/pub/x86/secrets/opcodes/LOADALL.txt
+RDPMC:    ftp://ftp.x86.org/pub/x86/p6/opcodes/RDPMC.txt
+SALC:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/SALC.txt
+UMOV:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/UMOV.txt
+
+----------------------------------------------------------------------------
+
+Download this file -- OpCodes.ZIP 
+ftp://ftp.x86.org/pub/x86/dloads/OPCODES.ZIP 
+
+----------------------------------------------------------------------------
+
+(c) 1991, 1995, 1996 Intel Secrets(TM) home page. PGP key available. 
+
+Make no mistake! 
+The Intel Secrets web site is proud to provide superior information and 
+service without any affilation to Intel. 
+
+"Intel Secrets" and "What Intel doesn't want you to know" are trademarks 
+of Robert Collins. 
+
+Pentium and Intel are trademarks of Intel Corporation. 386, 486, 586, 
+P6, and all other numbers.are not!
+
+All other trademarks are those of their respective companies. See 
+Trademarks and Disclaimers for more info. 
+
+Robert Collins is a Senior Design Engineer and Manager of some sort of 
+Research in Dallas, TX. Robert may be reached via email at 
+rcollins@x86.org or via phone at (214) 491-7718. 

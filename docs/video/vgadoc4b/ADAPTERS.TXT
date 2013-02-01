@@ -1,0 +1,347 @@
+Motherboards/Laptops built-ins:
+
+Acer Acros 486DX2/66MHz                  Cirrus CL-GD5426
+
+Aero Computers 8466T250                  Cirrus CL-GD6235AD
+
+Altima Virage II                         WD90c24
+
+Ambra N75                                Chips&Tech CT65540
+Amrel SLT                                Cirrus CL-GD6225/6235
+
+Amstrad PC7486SLC-33                     Cirrus CL-GD5420
+
+ALR ProVEISA V                           WD90c31
+
+AMS MediaPro, MediaPro II                WD90c24
+    SoundWave 486, Travelpro             WD90c24
+
+ARMNote TS30PH                           Chips&Tech CT65545
+        TS30MC                           Chips&Tech CT65540
+
+Aspen Universa-CD                        Chips&Tech CT65545
+
+AST Ascentia 900N, 910N                  WD90c24A
+    Ascentia 950N                        Cirrus CL-GD7543
+    PowerExec 4/25SL                     WD90c26
+
+AstroNote SKD III                        Chips&Tech CT65540
+
+AT&T Globalyst 200S                      WD90c24
+               250                       Chips&tech 65545
+               130                       Chips&Tech CT65535
+
+Austin Business Audio Notebook/75,/100   WD90c24
+       StepLite                          Chips&Tech CT65535
+       Vista                             Chips&Tech CT65540
+
+BSI NP7657D,NP7659T,NP9549D              Chips&Tech CT65545
+
+CAF Aqualite 2                           Cirrus CL-GD6225
+
+Canon Notejet II 486c                    WD90c24
+      Innova Book 200LS IB199/520LS      Chips&Tech CT65545
+
+Commodore PC 60                          WD PVGA1A
+
+Compaq Presario 425                      Cirrus CL-GD5420
+       Prolinea 386                      WD90c11
+       Prolinea 486                      ET4000
+       Prolinea 4/66                     ET4000/W32
+
+CompuAdd 450 ColorPro                    Chips&Tech CT65535
+
+CTX EzBook, EzNote                       WD90c24
+
+Dell 325D, 333D, 320SX, 3xxSXcr,
+     V386DX/33, V386SX/25, 4xxTE         WD90c11
+     3xxP  rev <1.3                      WD90c11
+           rev >=1.3                     WD90c30
+     316LT, 320LT                        C&T 82c455
+     316SX, 320SX                        PVGA1A
+     320N, 320N+                         WD90c20
+     325N, 325NC                         WD90c22
+     320SLi, 325SLi                      Cirrus CL-GD6410
+     333s/L                              Cirrus CL-GD5420
+     NL25/20, NX20                       Cirrus CL-GD640/620
+     NL25C                               Cirrus CL-GD6410 with 6340
+     4000/XE, 486/L, 486/M, 486/T        S3-86c805
+     486D                                WD90c30/31
+     486/L(V), 486/MX(V)                 Tseng ET4000-W32
+     4xxSE                               Tseng ET4000
+     4xxDE rev 1.0                       WD90c11
+           rev 1.1                       Tseng ET4000
+     486P rev <2                         WD90c30/31
+          rev >=2                        Cirrus CL-GD5428
+     V486/xx rev 1                       WD90c30
+             rev 2                       WD90c31
+     V486/xx/SDT rev 3                   Cirrus CL-GD5424
+     V486/xx FS or MDT rev 3 no cache    Cirrus CL-GD5424
+     V486/xx FS or MDT rev 3 w/cache     Cirrus CL-GD5426
+     Latitude XP 4100CX                  WD90c24A2
+              475C, XP4100CX,XP450C/CX   WD90c24
+              XPi P75D                   Cirrus CL-GD7543
+
+DFI MediaBook 5110T                      Cirrus CL-GD6440
+
+Digital HiNote CT475                     Chips&tech 65540
+               Ultra CT475               Chips&Tech CT65545
+
+Dolch L-PAC 586                          Chips&Tech 65535
+
+DTK DTN-4T100P                           Cirrus CL-GD6440
+
+Epson ActionNote 880CX                   Chips&Tech CT65535
+
+Ergo PowerBrick                          WD90c24
+     SubBrick 75                         Chips&Tech CT65535
+
+EuroPak Eurocom 9600                     Chips&tech 65540
+
+Everex StepNote P75,D100                 Chips&Tech CT65545
+
+FurureMate FM309T,FM559D                 Chips&Tech CT65545
+
+Gateway Colorbook DX4-75                 Cirrus CL-GD6235
+        ColorBook DX4/100                Chips&Tech CT65545
+        Handbook DX2-50                  Chips&Tech CT65510
+        Liberty DX4/100                  Chips&Tech CT65545
+
+HP NetServer 5/60 LM                     WD90c31
+   OmniBook 4000,4000CT                  WD90c24
+   Vectra 486/25VL PC 120                Cirrus CL-GD5426
+
+HyperData HP32Open                       Cirrus CL-GD6235
+          HyperBook 900A                 Chips&Tech CT65545
+
+IBM Aptiva 6144-766                      Cirrus CL-GD5430
+    PS/1 2133461                         Cirrus CL-GD5426
+    ThinkPad 350,360c,720, 750c, 755c    WD90c24
+    THinkPad 701C                        Chips&Tech CT65545
+
+Maximus MediaNote                        Chips&Tech CT65540
+        PowerMax                         Chips&Tech CT65545
+
+MaxTech YesBook X-740C,X-740T            Chips&Tech CT65540
+
+Micro Mint 7500T, HCP Pentium 3600D      Cirrus CL-GD6440
+      HCP Pentium 6500                   Cirrus CL-GD6235AD
+
+MicroExpress NP92DX4                     Cirrus CL-GD6440
+
+Midwest Micro SoundBook II, Plus         Chips&Tech CT65545
+
+Mitsuba NINJA-P90                        Chips&Tech 65545
+        NINJA II DX4-75                  Chips&Tech CT65540
+
+MPC Touchnote                            WD90c24
+    CD-Book                              Chips&Tech CT65540
+
+NEC Image 486                            ET4000/W32
+    Versa/V                              WD90c24
+    Versa M/75, Versa M, Versa P/75      Chips&Tech 65545
+
+Nova OpenNote                            Chips&Tech CT65530
+
+Panasonic CP-V21P                        WD90c24
+          V41                            Chips&Tech 65545
+
+Sager NP3656D                            Cirrus CL-GD6440
+      NP7659T, NP9549A                   Chips&Tech CT65545
+
+Samsung NoteMaster S3945T, SENS700       WD90c24A
+
+Sceptre Pentium Soundx                   Chips&Tech CT65545
+        Soundx Series 3000               Chips&Tech 65545
+
+Schneider EuroPC 386                     ATI 28800-5
+
+Sharp PC-3050,PC-8900                    Chips&Tech CT65545
+
+TI Travelmate 4000E DX2/50               Cirrus CL-GD6420
+              4000M, 4000E WinDX475      Cirrus CL-GD6440
+              5000                       Cirrus CL-GD7543
+
+Toshiba T4850CT,T4900CT                  WD90c24A
+        4800CT,2150CS,2150CT             WD90c24
+        Portege T3400CT                  WD90c24
+        T4700CT                          WD90c26
+        T2100CS                          Chips&Tech CT65540
+        T4900CT,Satellite Pro T2150CDT   Chips&Tech CT65545
+
+Twinhead Slimnote 5100T                  WD90c24A
+         Slimnote 8                      Cirrus CL-GD7542
+
+Unisys PW2 Advantage 4666                S3 86c805
+           Travel Asset, Travel Partner  WD90c24
+
+Wedge Showbook EL                        Chips&Tech CT65530
+      Showbook P5                        Chips&Tech CT65545
+
+WinBook WinBook XP                       WD90c24C
+
+Zenith Z-466X+ Model 340                 WD90c31
+       Z-NoteFlex                        WD90c24A
+       Z-Server LT                       WD90c31
+       Z-Lite 425Sl                      Chips&Tech CT65535
+       Z-Star EX                         Chips&Tech CT65540
+
+Zeos Meridian 800                        Cirrus CL-GD6440
+     Meridian 850A,850C                  Chips&Tech CT65545
+
+
+
+Add-On Cards:
+
+2-the-Max Cheetah                        Cirrus CL-GD5422
+          Cheetah XG/XL                  Cirrus CL-GD5424/26
+
+#9 GXe Level 10/11/12/14/16              S3 86c928
+   GTi Level 2x                          TMS 34020
+
+Actix GraphicsEngine 1280                S3 86c924
+                     32i VL              S3 86c805i
+      Picasso 64/Video                   ARK 2000PV
+      ProStar VL                         CL-GD5428
+      Ultra VL +                         S3 86c928
+
+AMI Fast View VLB                        Weitek Power 9000
+
+Appian Rendition                         TIGA
+       Renegrade 1280                    AGC98032
+
+Artist Graphics WinSprint 100+           S3 86c924
+
+ATI 8514/A                               ATI 38800
+    Graphics Ultra                       ATI 28800-5 + 38800
+    Graphics Ultra +                     ATI 68800
+    Graphics Ultra Pro                   ATI 68800
+    VGAWonder XL                         ATI 28800-5
+    VGAWomder XL 24                      ATI 28800-5
+    Prism Elite                          Trident 8900 ??
+
+Boca SuperX Accelerator VGA              CL-GD5428
+     Vortex VRAM Accelerator             IIT AGX014
+                 Local Bus               IIT AGX015
+
+Cardex W32                               Tseng ET4000/W32
+
+Cardinal VGA 900                         S3 86c911A
+         VideoSpectrum                   CL-GD5426
+         WarpSpeed VL90                  Weitek Power 9000
+
+Celerite Galaxy 2000                     Primus P2000
+
+Compaq AVGA                              Compaq AVGA
+       QVision 1024/I or /E              Compaq QVision 1024 (128084)
+               1280/I or /E              Compaq QVision 1280
+
+Criterion Graphics Genie                 ALG2228
+          Graphics Genie Pro             NCR 77c32BLT
+
+CRM Grizzled Skipper                     S3 86c924
+
+Diamond SpeedStar                        ET4000
+                  24                     ET4000 with SS2410 DAC
+                  24X                    WD90c31
+                  64                     Cirrus CL-GD5434
+                  64 Pro SE              Cirrus CL-GD5430
+                  Pro                    Cirrus CL-GD5426/28
+        Stealth VRAM                     S3 86c911
+                VLB                      S3 86c805
+                Pro VLB                  S3 86c928
+                32                       Tseng ET4000/W32, W32i or W32p
+                64 DRAM                  S3 86c864 or Trio64
+                64 VRAM                  S3 86c964
+                SE                       S3 Trio32
+                VRAM Video               S3 86c968
+                2001                     ARK 2000PV
+        Viper                            Weitek W5186 + P9000
+        Viper Pro/SE                     Weitek P9100
+
+Edge V24 BitBlaster                      S3 86c924
+
+ELSA Winner 1000                         S3 86c928
+
+Everex Ultragraphics (Ev236)             Trident 8800CS ?
+       Vision VGA (Ev620)                Trident 8800CS ?
+       EVGA (Ev673)                      Trident 8800CS ?
+       Viewpoint (Ev678)                 Trident 8800CS ?
+       Viewpoint TC (Ev629)              Tseng ET4000 & custom DAC
+
+Focus 2-the-Max VGA GUI 6000             S3 86c911
+                Cheetah                  Cirrus CL-GD5422
+                Cheetah XG/XL            Cirrus CL-GD5424/26
+
+Genoa 5100/5200/5300/5400                Tseng ET3000
+      6100/6200/6300/6400/6600           Genoa GVGA
+      7900                               Tseng ET4000 with SS2410 DAC
+      8300 (Hornet)                      NCR 77c32BLT
+      8500                               Cirrus CL-GD5428
+      8900                               Tseng ET4000W32i
+
+Hercules Dynamite                        ET4000/W32
+         Dynamite Pro                    ET4000/W32i or W32p
+         Dynamite Power                  ET4000/W32p
+         Graphite                        IIT AGX-014
+         Graphite Pro                    IIT AGX-015
+         Graphite Power                  IIT AGX-016
+         Graphics Station Gold 16+2      TMS 34010
+                               24+2      TMS 34010
+                          Card GB1024+2  TMS 34010
+         Stingray                        Avance ALG2301
+                  64                     ARK 1000PV
+                  Video                  ARK 2000PV
+         Terminator 64                   S3 86c964
+
+Kingston View Rx                         Weitek W5186
+
+Matrox HiPer VGA                         S3 86c924
+       Impression 1024                   S3 86c911 (Special hardware for 3MB)
+
+Metheus Premier 1280NI                   S3 86c928
+
+Mylex GLI911                             S3 86c911
+
+NDI Volante AT600 Plus                   S3 86c924
+            AT1000                       TMS 34020
+            Warp 10                      S3 86c801
+                    VLB                  S3 86c805
+                 20-2                    IIT AGX014
+
+Orchid Celsius                           IIT AGX-015
+       Fahrenheit                        S3 86c911
+       Fahrenheit VLB                    S3 86c805
+       P9000                             Weitek W5286 + P9000
+       Prodesigner                       ET3000
+       Prodesigner II                    ET4000
+
+Paradise Accelerator Card for Windows    WD90c31
+         VL Pro                          WD90c33
+
+Philips 1280V                            Mach32
+
+Puretek VGA Ultra PT-2011F               Tseng ET3000
+                  PT-2017                Trident TVGA8900B
+                  PT-2023                Cirrus CL-GD5422
+                  PT-2030                NCR 77c22e
+
+Sigma Concorde VLB                       ET4000/W32i
+      Legend 24LX                        Cirrus CL-GD5426
+             GX                          S3 86c924
+      WinMach 1600                       S3 86c928
+
+SPEA V7-Mirage                           S3 86c805
+     V7-VEGA                             Cirrus CL-GD5426
+
+STB Express                              Avance Logic ALG2301?
+    Horizon VL                           Cirrus CL-GD5426
+    Pegasus VL                           S3 86c928
+    Powergraph X24                       S3 86c801
+               VL24                      S3 86c805
+    Velocity 64V                         S3 86c968
+    Wind/X                               S3 86c911/924
+
+Video7 Win.VGA                           HT 216
+
+VidTech GraphMax VLB                     IIT AGX015

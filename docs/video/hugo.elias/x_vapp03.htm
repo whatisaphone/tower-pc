@@ -1,0 +1,60 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>Vesa BIOS Example. Page 3: Save The State of the Video Mode</title>
+
+<h1>VESA BIOS Example</h1>
+<h4>Page 3: Save The State of the Video Mode</h4>
+<p><tr><td colspan=2><hr></td></tr><p>
+
+Right, now this isn't always necessary, and there's no need to bother doing this unless you
+really need to. For example if you were writing a popup TSR or something. However, most programs
+will just want to drop back into DOS in mode 3.<p>
+
+What has to be done here is to ask the graphics card how much memory it would require to save
+its current state. I.E. its resolution, virtual screen width, palette etc. You can actually choose
+what parts of the state are saved by setting bits in the CX register.<p>
+
+CX bit 0: Hardware state<br>
+CX bit 1: BIOS data state<br>
+CX bit 2: DAC state<br>
+CX bit 3: SuperVGA state<p>
+
+The BIOS replies, telling you how many blocks of 64 bytes it needs.<br>
+You must then allocate enough memory to hold the buffer.<br>
+And lastly, call the BIOS again to save the state.<p>
+
+All the requesting buffer sizes, saving and restoring are handled by the same function, Function 04h.<br>
+It is split up into 3 sub functions:<p>
+
+subfunction 00h: Request buffer size<br>
+subfunction 01h: Save state<br>
+subfunction 02h: Restore state<p>
+
+Right here's some pseudo code which will save the video state, and then restore it again:<p>
+
+<h4>Firstly ask it how much memory we need:</h4>
+<pre>
+   AH = 4Fh        ;Super VGA support
+   AL = 04h        ;Function 04h (save state)
+   DL = 00h        ;Subfunction 00h (request amount of memory needed)
+   CX = 00001111b  ;save everything please
+
+   call interrupt 10h
+</pre>
+<h4>Next allocate enough memory to hold the buffer, and save the state</h4>
+<pre>
+   SaveBuffer = AllocateMemory (BX * 64) bytes
+
+   AH = 4Fh        ;Super VGA support
+   AL = 04h        ;Function 04h (save state)
+   DL = 01h        ;Subfunction 01h (save the state)
+   CX = 00001111b  ;save everything please
+   ES:[DI] -> SaveBuffer
+
+   call interrupt 10h
+</pre>
+
+</body>
+</html>

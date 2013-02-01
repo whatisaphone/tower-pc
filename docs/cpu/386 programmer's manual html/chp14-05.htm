@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>
+14.5  Switching Back to Real-Address Mode
+</title>
+<body>
+<a name="14-05"></a>
+Prev: <a href="chp14-04.htm">14.4  Entering and Leaving Real-Address Mode</a><br>
+Next: <a href="chp14-06.htm">14.6  Real-Address Mode Exceptions</a>
+<hr>
+<h2>
+14.5  Switching Back to Real-Address Mode
+</h2>
+<p>
+The processor reenters real-address mode if software clears the PE bit in
+CR0 with a MOV to CR0 instruction. A procedure that attempts to do this,
+however, should proceed as follows:
+<ol>
+ <li> If paging is enabled, perform the following sequence:
+ <ul>
+     <li>Transfer control to linear addresses that have an identity mapping;
+         i.e., linear addresses equal physical addresses.
+
+    <li> Clear the PG bit in CR0.
+
+    <li> Move zeros to CR3 to clear out the paging cache.
+ </ul>
+ <li> Transfer control to a segment that has a limit of 64K (FFFFH). This
+      loads the CS register with the limit it needs to have in real mode.
+
+ <li> Load segment registers SS, DS, ES, FS, and GS with a selector that
+      points to a descriptor containing the following values, which are
+      appropriate to real mode:
+<pre>
+      -  Limit = 64K   (FFFFH)
+      -  Byte granular (G = 0)
+      -  Expand up     (E = 0)
+      -  Writable      (W = 1)
+      -  Present       (P = 1)
+      -  Base = any value
+</pre>
+ <li> Disable interrupts. A CLI instruction disables INTR interrupts. NMIs
+      can be disabled with external circuitry.
+
+ <li> Clear the PE bit.
+
+ <li> Jump to the real mode code to be executed using a far JMP. This
+      action flushes the instruction queue and puts appropriate values in
+      the access rights of the CS register.
+
+ <li> Use the LIDT instruction to load the base and limit of the real-mode
+      interrupt vector table.
+
+ <li> Enable interrupts.
+
+ <li> Load the segment registers as needed by the real-mode code.
+</ol>
+<p>
+<hr>
+Prev: <a href="chp14-04.htm">14.4  Entering and Leaving Real-Address Mode</a><br>
+Next: <a href="chp14-06.htm">14.6  Real-Address Mode Exceptions</a>
+</body>
+</html>

@@ -1,0 +1,967 @@
+    Tseng Super VGA
+
+    ET3000-AX    100pin  Max 512k 8/16bit databus, 32bit memory bus. Main chip
+          -BX     84pin      512k  8 bit databus.
+          -Bp                256k  8 bit  Basic chip
+    ET4000AX     144pin  Max 1M   8/16 bit
+    ET4000/W32   160pin  Max 4MB  Accelerator.
+    ET4000/W32i  160pin  Max 4MB  Accelerator. Can interleave DRAM
+    ET4000/W32p  208pin  Max 4MB  Accelerator, PCI support, point-point Line
+                                  draw
+
+Note: W32x means any of W32, W32i and W32p
+
+    Registers:
+
+
+  *** ET3000 *****
+
+102h: Microchannel Setup Control
+bit 0  Disable Card if set
+
+3B8h (W):  Display Mode Control Register
+bit   0  80x25. Set for 80x25 text mode, clear for 40x25 text mode
+      1  Hercules graphics mode if set, text mode else
+      3  Video enabled if set
+      5  Blink enabled if set
+      7  Graphics page 1 displayed if set, page 0 else
+
+3BFh (R/W): Hercules Compatibility Mode
+bit   1  Enable second page (B800h-BFFFh)
+Note: to enable the Tseng 4000 extensions this register must be written with 3
+      and then 3d8h must be written with A0h. To disable extensions write 29h
+      to 3d8h and then 1 to this register.
+      Extended registers include 3d4h index >18h, except index 33h and 35h
+
+3C0h index 16h:  Miscellaneous
+bit   0  If set disables writes to bits 0-3 of the Overscan (3C0h index 11h)
+         register.
+      1  If set disables writes to Internal/External Palette RAM.
+      4  If set the Horizontal Timings (3d4gh index 0-5), CRTC Offset (3d4h
+         index 13h) and Display Start Address (3d4h index 0Ch,0Dh) are doubled
+         (or more correctly: the units they are specified in are doubled).
+      6  If set enables 2byte character codes
+      7  Ignore EGA internal palette if set
+
+3C0h index 17h (R/W):  Miscellaneous 1
+bit   7  If set protects the internal palette ram and redefines the attribute
+         bits as follows:
+           Monochrome:
+           bit 0-2  Select font 0-7
+                 3  If set selects blinking
+                 4  If set selects underline
+                 5  If set prevents the character from being displayed
+                 6  If set displays the character at half intensity
+                 7  If set selects reverse video
+           Color:
+           bit 0-1  Selects font 0-3
+                 2  Foreground Blue
+                 3  Foreground Green
+                 4  Foreground Red
+                 5  Background Blue
+                 6  Background Green
+                 7  Background Red
+
+3C3h (R/W): Microchannel Video Subsystem Enable Register:
+bit 0  Enable Microchannel VGA if set
+
+3C4h index  6  (R/W): Zoom Control
+bit 0-2  Yzoom factor 0=x1, 1: x2 .... 7: x8
+    4-6  Xzoom factor 0=x1, 1: x2 .... 7: x8
+      7  Hardware zoom enabled if set
+
+3C4h index  7  (R/W): TS Auxiliary Mode
+bit 0  Switch Normal Window if set. Switches the normal window to text mode if
+       programmed for graphics mode, and vice versa.
+    1  Switch Zoom Window if set. Switches the zoom window to text mode if
+       programmed for graphics mode, and vice versa.
+    2  Switch Split Window if set. Switches the spilt window to text mode if
+       programmed for graphics mode, and vice versa.
+    4  If set 8 simultaneous fonts are enabled, using bit 3,4,6 of each
+       attribute byte to select the font.
+  3,5  ROM Bios Enable/Disable:
+         0 0  C000-C3FF Enabled
+         0 1  ROM disabled (-AX), C000-C5FFF (-AF)
+         1 0  C000-C5FF,C680-C7FF Enabled
+         1 1  C000-C7FF Enabled
+    6  MCLK/2 if set
+    7  VGA compatible if set, EGA if clear.
+
+3CBh (R/W): PEL Address/Data Wd                                  (3000/4000 ?)
+
+3CDh (R/W): Segment Select
+bit 0-2  64k Write bank number
+    3-5  64k Read bank number
+    6-7  Segment Configuration.
+           0  128K segments
+           1   64K segments
+           2  1M linear memory
+
+3CEh index 0Dh (R/W): Microsequencer Mode
+
+3CEh index 0Eh (R/W): Microsequencer Reset
+
+3d4h index 1Bh (R/W): X Zoom Start Address
+bit 0-7  Offset of Zoom window start in character clocks (8 pixels) from left
+         edge. The horizontal zoom area (End - Start) should be an integral
+         (positive) multipla of the horizontal zoom factor
+
+3d4h index 1Ch (R/W): X Zoom End
+bit 0-7  Offset of Zoom window end in char clocks from left edge
+
+3d4h index 1Dh (R/W): Y Zoom Start Address
+bit 0-7  Start line of zoom window bit 0-7
+
+3d4h index 1Eh (R/W): Y Zoom End Address
+bit 0-7  End line of zoom window bit 0-7. This is the last line to be zoomed.
+
+3d4h index 1Fh (R/W): Y Zoom Start and End High
+bit 0-2  End line of zoom window bit 8-10. Bits 0-7 are in index 1Eh
+    3-5  Start line of zoom window bit 8-10. Bits 0-7 are in index 1Dh
+
+3d4h index 20h (R/W): Zoom Start Address Low
+bit 0-7  Zoom Start Address bit 0-7. Address of the data to be zoomed in the
+         zoom window
+
+3d4h index 21h (R/W): Zoom Start Address Middle
+bit 0-7  Zoom Start Address bit 8-15
+
+3d4h index 23h (R/W): Extended start ET3000
+bit   0  Cursor start address bit 16
+      1  Display start address bit 16
+      2  Zoom start address bit 16
+      7  If set memory address 8 is output on the MBSL pin (allowing access to
+         1MB), if clear the blanking signal is output.
+
+3d4h index 24h (R/W): Compatibility Control
+bit   0  Enable Clock Translate if set
+      1  Clock Select bit 2. Bits 0-1 are in 3C2h/3CCh.
+      2  Enable tri-state for all output pins if set
+      3  Enable input A8 of 1MB DRAMs from the INTL output if set
+      4  Reserved
+      5  Enable external ROM CRTC translation if set
+      6  Enable Double Scan and Underline Attribute if set
+      7  Enable 6845 compatibility if set.
+
+3d4h index 25h (R/W): Overflow High
+bit   0  Vertical Blank Start bit 10
+      1  Vertical Total Start bit 10
+      2  Vertical Display End bit 10
+      3  Vertical Sync Start bit 10
+      4  Line Compare bit 10
+    5-6  Reserved
+      7  Vertical Interlace if set
+
+3D8h (W): Mode Control register
+bit   0  80x25 Alpha mode if set, 40x25 else
+      1  Graphics mode if set, alpha else.
+      2  BW mode if set, color else
+      3  Video Enable. Enable video signal if set
+      4  640x200 Graphics mode if set, 320x200 else
+      5  if set bit 7 of the attribute controls background, else blink
+
+3D9h (W): Color Select Register
+         The function of this register depends on the active mode.
+         Text modes:      320x200 modes:         640x200 mode:
+Bit   0  Blue border      Blue background        Blue ForeGround
+      1  Green border     Green background       Green ForeGround
+      2  Red border       Red background         Red ForeGround
+      3  Bright border    Bright background      Bright ForeGround
+      4  Backgr. color    Alt. intens. colors    Alt. intens colors
+      5  No func.         Selects palette
+                     Palette 0 is Green, red and brown,
+                     Palette 1 is Cyan, magenta and white.
+
+3dAh (W):  Feature Control Register
+bit   5  (R) Hercules Compatibility Register (3BFh) bit 1
+      7  Enable NMI generation if set
+Note: Read at 3CAh, Written at 3dAh
+Note: Bits 0,1 and 3 are standard EGA/VGA
+
+3DEh (W);  AT&T Mode Control Register
+bit    0  Set to double scanlines (200 -> 400)
+       2  Alternate Font Select.
+       3  Alternate Page Select. If bit 0 is clear, selects the 16KB page to
+          display from
+       6  Underline Color Attribute. If set text with underline attribute is
+          shown with the white underline, if clear it is shown in blue
+          foreground color
+Note: To update this register the system must be in color mode (3CCh bit 0
+      set) and 3d4h index 34h bits 6 and 7 must be set as follows:
+         bit   0    3d4h index 34h bits 7 must be set
+             2,3    3d4h index 34h bits 7 must be set
+               6    3d4h index 34h bits 6 must be set
+
+
+
+
+    ***  Tseng ET4000AX and ET4000/W32 variants
+
+102h: Microchannel Setup Control
+bit 0  Disable Card if set
+
+3BFh (R/W): Hercules Compatibility Mode
+bit   1  Enable second page (B800h-BFFFh)
+Note: to enable the Tseng 4000 extensions this register must be written with 3
+      and then 3d8h must be written with A0h. To disable extensions write 29h
+      to 3d8h and then 1 to this register.
+      Extended registers include 3d4h index >18h, except index 33h and 35h
+
+3C0h index 16h:  Miscellaneous
+bit   0  If set disables writes to bits 0-3 of the Overscan (3C0h index 11h)
+         register.
+      1  If set disables writes to Internal/External Palette RAM.
+    4,5  (4000) High resolution timings.
+                 0: Normal powerup mode
+                 2: Hiresolution 256color mode
+                 3: 15/16 bit HiColor mode (bytes on rising AND falling edge
+                    of the dot clock)
+         (W32x) High Resolution /color mode
+                  0: Normal 8bits/clock
+                  2: 16bits per clock (HiColor)
+      6  If set enables 2byte character codes
+      7  Ignore EGA internal palette if set
+
+3C0h index 17h (R/W):  Miscellaneous 1
+bit   7  If set protects the internal palette RAM and redefines the attribute
+         bits as follows:
+           Monochrome:
+           bit 0-2  Select font 0-7
+                 3  If set selects blinking
+                 4  If set selects underline
+                 5  If set prevents the character from being displayed
+                 6  If set displays the character at half intensity
+                 7  If set selects reverse video
+           Color:
+           bit 0-1  Selects font 0-3
+                 2  Foreground Blue
+                 3  Foreground Green
+                 4  Foreground Red
+                 5  Background Blue
+                 6  Background Green
+                 7  Background Red
+
+3C3h (R/W): Microchannel Video Subsystem Enable Register:
+bit 0  Enable Microchannel VGA if set
+
+3C4h index  6  (R/W): TS State Control
+bit 1-2  Font Width Select in dots/character
+         If 3C4h index 4 bit 0 clear:
+           0: 9 dots, 1: 10 dots, 2: 12 dots, 3: 6 dots
+         If 3C4h index 5 bit 0 set:
+           0: 8 dots, 1: 11 dots, 2: 7 dots, 3: 16 dots
+         Only valid if 3d4h index 34h bit 3 set.
+
+3C4h index  7  (R/W): TS Auxiliary Mode
+bit 0  Selects MCLK/4 as video clock if set (bit 6 must be set)
+    1  Selects SCLK=MCLK
+    2  (4000) Always 1
+  2,4  (W32x) CRTC Horizontal Scale Factor. The number of times each pixel is
+              replicated horizontally. 0: x8, 1: x4, 2: x2, 3: x8
+  3,5  ROM Bios Enable/Disable:
+         0 0  C000-C3FF Enabled
+         0 1  ROM disabled
+         1 0  C000-C5FF,C680-C7FF Enabled
+         1 1  C000-C7FF Enabled
+    6  MCLK/2 if set and bit 0 is 0
+    7  VGA compatible if set, EGA if clear.
+
+3CBh (R/W): PEL Address/Data Wd                                  (3000/4000 ?)
+
+3CBh (R/W): Extended bank register                                  (W32 only)
+bit 0-1  Write bank bit 4-5. The lower 4 bits are in 3CDh bit 0-3.
+    4-5  Read bank bit 4-5.  The lower 4 bits are in 3CDh bit 4-7.
+
+3CDh (R/W): Segment Select
+bit 0-3  64k Write bank number (0..15)
+    4-7  64k Read bank number (0..15)
+
+3CEh index 0Dh (R/W): Microsequencer Mode
+
+3CEh index 0Eh (R/W): Microsequencer Reset
+
+3d4h index 30h (R/W):                                                 (W32x ?)
+bit 0-?  Linear Frame Buffer Address in units of 4Mb
+
+3d4h index 31h (R/W):  General Purpose
+bit  0-3  Scratch pad
+       3  (W32p?) 1280x1024 frequency: 0: 43Hz i-lace, 1: 60Hz
+     6-7  Clock Select bits 3-4. Bits 0-1 are in 3C2h/3CCh bits 2-3.
+
+3d4h index 32h (R/W): RAS/CAS Configuration
+bit  0-1  CAS low Pulse Width (Tcsw). The CAS low pulse width in SCLK cycles.
+          For graphics modes and the CAS0,CAS1 signals in text mode the period
+          is 2 SCLK cycles if this value is 1, 1 SCLK cycle if not.
+          For the CAS2 and CAS3 signals in text mode the period is:
+            0: 1 SCLK cycle, 1: 2, 2: 3, 3: 4
+       2  CAS Pre-charge Time (Tcsp). The CAS high pulse width is 1 SCLK cycle
+          if clear, 2 if set
+     3-4  RAS Pre-charge Time (Trsp). The RAS high pulse width in SCLK cycles
+            0: 2 SCLK cycles, 1: 3, 2: 4, 3: 5
+       5  Recharge time (Trcd). If set Trcd is 3 SCLK cycles, if clear only 2
+       6  RAL RAS & CAS Column Setup Time (Tral).
+       7  (W32i/p) Set if using interleaved memory.
+
+3d4h index 33h (R/W): Extended start Address
+bit  0-1  (4000) Display Start Address bits 16-17
+     2-3  (4000) Cursor start address bits 16-17
+          Can be used to ID ET4000
+     0-3  (W32x) Display Start Address bits 16-19. Bits 0-15 are in 3d4h index
+                 0Ch,0Dh
+     4-7  (W32x) Cursor Start Address bits 16-19. Bits 0-15 are in 3d4h index
+                 0Eh,0Fh
+Note: This register can be accessed whether or not the extensions are enabled
+
+3d4h index 34h (R/W): 6845 Compatibility Control Register
+bit    0  Enable CS0 (alternate clock timing)
+       1  Clock Select bit 2.  Bits 0-1 in 3C2h bits 2-3, bits 3-4 are in 3d4h
+          index 31h bits 6-7
+       2  Tristate ET4000 bus and color outputs if set
+       3  Video Subsystem Enable Register at 46E8h if set, at 3C3h if clear.
+       4  Enable Translation ROM for reading CRTC and MISCOUT if set
+       5  Enable Translation ROM for writing CRTC and MISCOUT if set
+       6  Enable double scan in AT&T compatibility mode if set
+       7  Enable 6845 compatibility if set
+
+3d4h index 35h (R/W): Overflow High
+bit    0  Vertical Blank Start Bit 10 (3d4h index 15h).
+       1  Vertical Total Bit 10 (3d4h index 6).
+       2  Vertical Display End Bit 10 (3d4h index 12h).
+       3  Vertical Sync Start Bit 10 (3d4h index 10h).
+       4  Line Compare Bit 10 (3d4h index 18h).
+       5  Gen-Lock Enabled if set (External sync)
+       6  (4000) Read/Modify/Write Enabled if set. Currently not implemented.
+          (W32x) If set selects the CRTCB or Sprite registers as the source
+                 for Vertical Retrace Interrupts, if clear selects the
+                 standard CRTC registers
+       7  Vertical interlace if set. The Vertical timing registers are
+          programmed as if the mode was non-interlaced!!
+
+3d4h index 36h (R/W): Video System Configuration 1
+bit  0-2  Refresh count. Number (-1) of refreshes per display line
+       3  (4000) 16 bit wide fonts if set, else 8 bit wide
+          (W32x) If set enables the Memory Management buffers
+       4  Linear addressing if set
+          (4000) Video Memory is mapped as a 1 Meg block above 1MB.
+          (W32x) Video Memory is mapped as a 4MB block
+       5  ? Enable Tseng Addressing Mode
+          (W32x) If set enables Memory Mapped registers. Three MMU areas
+            exist. All accesses to these areas will be translated by the MMU
+            to find the resulting address in display memory (or if the access
+            is to the Accelerator data buffers). The translation happens by
+            adding the offset into the MMU area to the MMU base address.
+            In the standard VGA graphics modes (A0000h-AFFFFh VGA buffer) the
+            area B8000h-B9FFFh is MMU area 0, BA000h-BBFFFh is MMU area 1 and
+            BC000h-BDFFFh is MMU area 2.
+       6  16 bit data path (video memory) if set
+       7  16 bit data (I/O operations) if set
+Note: Access to video memory, the MMU buffers and the Memory Mapped registers
+      are controlled by bits 3-5, 3CEh index 6 bits 2-3 (MAP) and whether the
+      IMA port is enabled:
+          Bits                                      MMU
+         3 5 4 MAP    VGA mem          MMU 0-2     Size     Mem. Regs
+         0 0 0  0  A0000h- BFFFFh
+         0 0 0  1  A0000h- AFFFFh
+         0 0 0  2  B0000h- B7FFFh
+         0 0 0  3  B8000h- BFFFFh
+         1 0 0  0  A0000h- BFFFFh
+         1 0 0  1  A0000h- AFFFFh   B8000h- BDFFFh   8K
+         1 0 0  2  B0000h- B7FFFh   A8000h- ADFFFh   8K
+         1 0 0  3  B8000h- BFFFFh   A8000h- ADFFFh   8K
+         1 1 0  0  A0000h- BFFFFh
+         1 1 0  1  A0000h- AFFFFh   B8000h- BDFFFh   8K   BFF00h- BFFFFh
+         1 1 0  2  B0000h- B7FFFh   A8000h- ADFFFh   8K   AFF00h- AFFFFh
+         1 1 0  3  B8000h- BFFFFh   A8000h- ADFFFh   8K   AFF00h- AFFFFh
+
+             IMA port enabled:
+         0 0 1  0  00000h-0FFFFFh
+         1 1 1  0  00000h-07FFFFh  080000h-0DFFFFh 128K  0FFF00h-0FFFFFh
+
+             IMA port not enabled
+         0 0 1  0  00000h-3FFFFFh
+         1 1 1  0  00000h-1FFFFFh  200000h-37FFFFh 512K  3FFF00h-3FFFFFh
+Note: If Memory Mapped Registers are enabled (bit 5 set) The addresses
+      following the last MMU aperture appears to be mapped to "External Mapped
+      Registers". The size of this area is half the MMU size, I.e for the
+      standard VGA graphics mode (A0000h-AFFFFh VGA buffer) the External
+      Mapped Registers would be in the area: BE000h-BEFFFh
+
+3d4h index 37h (R/W): Video System Configuration 2
+bit  0-1  (4000) Bus width (VGA chip to video memory):
+                   1: 8 bit, 2: 16 bit, 3: 32 bit.
+       0  (W32x) Bus Width (VGA chip to video memory) 0: 16bit, 1: 32bit
+       2  (4000) Bus Read Latch control (0: Delay one clock before latching)
+          (W32x) If set the CAS signals are output on the CAS0-3 pins and the
+                 Write Enable signals are output on the MWA and MWB pins.
+                 If clear this is reversed.
+       3  (4000) Size of RAM chips. 0: 64Kx, 1: 256Kx
+          (W32x) Size of RAM chips. 0: 1Mx, 1: 256Kx (or 512Kx)
+          RAM size is (Chip size 64k/256k/1M) * (Bus Width 1/2/4 bytes)
+          For W32i/p multiply with 2 if interleaved (index 32h bit 7 set).
+          Note: Probably doesn't work for 512Kx DRAMs
+       4  16 bit ROM access if set, if clear 32bit in Local Bus systems, 8bit
+          for ISA and MicroChannel systems.
+       5  Priority Threshold Control. If clear increases the Memory bandwidth
+          but also increases the response time.
+       6  Enable test mode if set, should be clear
+       7  (4000) VRAM installed if set, DRAM if clear.
+
+3d4h index 3Fh (R/W):
+bit    0  Bit 8 of the Horizontal Total (3d4h index 0)
+       2  Bit 8 of the Horizontal Blank Start (3d4h index 3)
+       4  Bit 8 of the Horizontal Retrace Start (3d4h index 4)
+       7  Bit 8 of the CRTC offset register (3d4h index 13h).
+
+3DEh (W);  AT&T Mode Control Register
+bit    0  Set to double scanlines (200 -> 400)
+       2  Alternate Font Select
+       3  Alternate Page Select. If bit 0 is clear, selects the 16KB page to
+          display from
+       6  Underline Color Attribute. If set text with underline attribute is
+          shown with the white underline, if clear it is shown in blue
+          foreground color
+Note: To update this register the system must be in color mode (3CCh bit 0
+      set) and 3d4h index 34h bits 6 and 7 must be set as follows:
+         bit   0    3d4h index 34h bits 7 must be set
+             2,3    3d4h index 34h bits 7 must be set
+               6    3d4h index 34h bits 6 must be set
+
+3d8h (R/W): Display Mode Control
+
+
+
+   ****  The memory mapped registers and index registers at 21xAh are only
+   present on the ET4000/W32 series chips, not on the ET3000 and ET4000s ****
+
+21xAh index E0h W(R/W):  CRTCB/Sprite Horizontal Pixel Position
+bit 0-11  The X position of the HardWare Cursor/CRTCB window in pixels from
+          the left edge of the display
+Note: The CRTCB/Sprite&IMA registers are at index 21xAh, where x is 0..7.
+      The index used by the chip is determined on powerup by the powerup/down
+      resistors tied to pin IOD0-2. All systems I have seen uses 217Ah.
+Note: The E0h-EFh indexes holds either the CRTCB or the Sprite (Cursor)
+      parameters depending on index EFh bit 0
+
+21xAh index E2h W(R/W):  CRTCB Width/Sprite Horizontal Preset
+bit 0-11  (CRTCB) The width in pixels (-1) of the CRTCB window
+     0-5  (Sprite) The pixel number (from the left) within the 64x64 cursor
+          bitmap of the first used pixel. The last pixel displayed is the 63th
+          pixel in the bitmap.
+
+21xAh index E4h W(R/W):  CRTCB/Sprite Vertical Pixel Position
+bit 0-11  The Vertical position of the CRTCB Window/Sprite (Cursor) in
+          scanlines from the top of the display
+
+21xAh index E6h W(R/W):  CRTCB Height/Sprite Vertical Preset
+bit 0-11  (CRTCB) The height in scanlines (-1) of the CRTCB window
+     0-5  (Sprite) The pixel number (from the top) within the 64x64 cursor
+          bitmap of the first used pixel. The last line displayed is line 63
+          of the bitmap.
+
+21xAh index E8 3(R/W):  CRTCB/Sprite Starting Address
+bit 0-19  The address in Video Memory of the start of the CRTCB/Sprite
+          (Cursor) BitMap.
+          In bytes in planar modes, and in DWORDs in packed modes.
+Note: The sprite data is a 64x64 2bit bitmap
+        0:  Sprite Color 0
+        1:  Sprite Color 1
+        2:  Transparent
+
+21xAh index EBh W(R/W):  CRTCB/Sprite Row Offset
+bit 0-11  Width of the each CRTCB/Sprite (Cursor) scanline. Should be 4 for
+          Sprite data. For the CRTCB window it is in bytes in planar modes and
+          DWORDs in packed modes
+   12-15  (R) Chip version. 0: W32, 1: W32i revA, 2: W32p revA, 3: W32i revB,
+               5: W32p revB, 6: W32p revD, 7: W32p rev C, 11: W32i rev C
+
+21xAh index EDh (R/W):  CRTCB Pixel Panning
+bit  0-2  Number of pixels to shift the CRTCB data left
+
+21xAh index EEh (R/W):  CRTCB Color Depth
+bit  0-3  The color depth (bits/pixel) of the CRTCB window data
+           0: 1bit/pixel, 1: 2b/p, 2: 4b/p, 3: 8b/p, 4: 16b/p
+     4-5  CRTCB Horizontal Zoom Factor. 0: x1, 1: x2, 2: x3, 3: x4
+     6-7  CRTCB Vertical Zoom Factor. 0: x1, 1: x2, 2: x3, 3: x4
+
+21xAh index EFh (R/W):  CRTCB/Sprite Control
+bit    0  If set selects the CRTCB window, if clear selects the Sprite
+       1  If set the CRTCB/Sprite is overlayed on the screen data, if clear it
+          is output on the SP0-1 pins
+       2  Sprite Size. 0: 64x64, 1: 128x128
+Note: 21xAh index F7h bit 7 must be set to enable the CRTCB window or the
+      Sprite (Cursor).
+
+21xAh index F0h 3(R/W):  Image Starting Address
+bit 0-19  Image port Storage address. In bytes in planar modes and in DWORDs
+          in packed modes. The data input from the IMA port is stored at this
+          address, starting anew for each frame
+
+21xAh index F3h W(R/W):  Image Transfer Length
+bit 0-11  The number of DWORDs to transfer per scan line
+
+21xAh index F5h W(R/W):  Image Row Offset
+bit 0-11  The number of DWORDs from the start of one scanline to the start of
+          the next scan line.
+
+21xAh index F7h (R/W):  Image Port Control
+bit    0  Set to enable the Image Port
+       1  Set to enable odd/even interlace transfers, clear for linear
+          transfers
+       7  Set to enable the CRTCB window or the HardWare Cursor (Sprite).
+
+46E8h (R):  Video Subsystem Enable Register
+bit   3  Enable VGA if set
+
+
+M+00h D(R/W): MMU Memory Base Pointer Register 0
+bit 0-21  The address in display memory where MMU Aperture 0 starts in bytes
+
+M+04h D(R/W): MMU Memory Base Pointer Register 1
+bit 0-21  The address in display memory where MMU Aperture 1 starts in bytes
+
+M+08h D(R/W): MMU Memory Base Pointer Register 2
+bit 0-21  The address in display memory where MMU Aperture 2 starts in bytes
+
+M+13h (R/W):  MMU Control Register
+bit    0  If set accesses via MMU Aperture 0 go to the Accelerator registers
+       1  If set accesses via MMU Aperture 1 go to the Accelerator registers
+       2  If set accesses via MMU Aperture 2 go to the Accelerator registers
+       4  If set the memory accessed via MMU Aperture 0 is organised linearly
+          (As if 3C4h index 2 bits 0-3 = 0Fh, 3C4h index 4 bit 3 = 1, 3CEh
+           index 1 bits 0-3 = 0, 3CEh index 3 bits 0-4 = 0, 3CEh index 5 bits
+            0-1 and 3 = 0, 3CEh index 6 bit 1 = 0 and 3CEh index 8 = 0FFh),
+          if clear the memory is organised according to the current display
+          mode
+       5  Same as bit 4, but for MMU Aperture 1
+       6  Same as bit 4, but for MMU Aperture 2
+
+M+30h (R/W):  ACL Suspend/Terminate Register
+bit    0  To suspend an Accelerator operation the programmer should set this
+          bit, wait for the ACL Status Register (Memory 36h) bit 0 to clear
+          and then clear this bit.
+       4  Same as bit 0, bit terminates the operation.
+
+M+31h (W):  ACL Operation State Register
+bit    0  When set the contents of the Queued registers (Memory 80h-FFh) are
+          transfered to the accelerators internal registers
+       3  When set a paused screen-to-screen operation is resumed.
+       4  Should be set on startup for the W32p ??
+
+M+32h (R/W):  ACL Sync Enable Register
+bit    0  If set a write to a "full" queue (Ie. the queued registers are being
+          transferred to the internal registers) will be delayed until the
+          transfer has completed, if clear the write will be ignored. An
+          interrupt can be generated in this situation.
+
+M+33h (R?):  ACL Write Interface Valid Bits                   (W32p rev B + ?)
+bit    0
+
+M+34h (R/W):  ACL Interrupt Mask Register
+bit    0  Write Interrupt Enable. If set generates an interrupt when the queue
+          is next not-full (I.e. wake me when the transfer has completed).
+          Clear this bit to clear the resulting interrupt.
+       1  Read Interrupt Enable.
+       2  Write Fault Interrupt Enable.
+
+M+35h (R/W):  ACL Interrupt Status Register
+bit    0  (R) If set a Write Interrupt is pending
+       1  If set a Read Interrupt is pending. Set the bit to clear the
+          Interrupt condition.
+       2  If set a Write Fault Interrupt is pending. Set the bit to clear the
+          Interrupt condition.
+
+M+36h (R/W):  ACL Accelerator Status Register
+bit    0  (R) Write Status (WRST). If set the accelerators queue is full and
+          cannot accept further writes to the queued registers
+       1  (R) Read Status (RDST). If set the Accelerator is busy or the queue
+          is not empty
+       2  XY Status (XYST). If set the Accelerator is processing an X/Y block,
+          I.e. the internal XPOS/YPOS have not yet stabilised. When a
+          suspended operation is restored this bit must also be restored
+       3  (R) Screen-to Screen Status (SSO). Set if the current Accelerator
+          operation is screen-to-screen. This bit is only valid if bit 2 is
+          set
+       4  (R) Queue Modified Status (QMOD). If set a queued register has been
+          written since the last accelerator operation was started.
+       6  (W32p rev B +) Accelerator Pipeline not empty.
+       7  (W32p rev B +) Accelerator Data Ready Status. If set data waiting
+           for the host to read.
+
+M+38h W(R/W):  ACL X Position Register                             (W32p only)
+bit 0-11  The accelerators current X position
+Note: this register is at offset 94h in the W32 and W32i
+
+M+3Ah W(R/W):  ACL Y Position Register                             (W32p only)
+bit 0-11  The accelerators current Y position
+Note: this register is at offset 96h in the W32 and W32i
+
+M+80h D(R/W):  ACL Pattern Address Register
+bit 0-21  The byte address in display memory of the Pattern Map
+
+M+84h D(R/W):  ACL Source Address Register
+bit 0-21  The byte address in display memory of the Source Map
+
+M+88h W(R/W):  ACL Pattern Y Offset Register
+bit 0-11  The number of bytes (-1) between lines in the pattern
+
+M+8Ah W(R/W):  ACL Source Y Offset Register
+bit 0-11  The number of bytes (-1) between lines in the source
+
+M+8Ch W(R/W):  ACL Destination Y Offset Register
+bit 0-11  The number of bytes (-1) between lines in the destination
+
+M+8Eh (R/W):  ACL Virtual Bus Size Register                    (W32,W32i only)
+bit  0-1  Virtual Bus Size (VBS). When the host provides Source Map or Mix Map
+          data this is the number of bytes handled at a time. The number of
+          bytes transferred must be rounded up to an integral multiplum of
+          this number. 0: 1byte, 1: 2bytes, 2: 4bytes
+
+M+8Eh (R/W):  ACL Pixel Depth Register                             (W32p only)
+bit  0-?  Pixel depth. 0: 1 byte per pixel, 1: 2 bytes per pixel
+
+M+8Fh (R/W):  ACL X/Y Direction Register
+bit    0  X Direction. If set the accelerator moves from high to low addresses
+          (right -> left), if clear from low to high (left -> right)
+       1  Y Direction. If set the accelerator moves from high to low addresses
+          (down -> up), if clear from low to high (up -> down)
+     0-2  (W32p) Axial Direction for linedraw
+       4  (W32p) Line Draw Algorithm.
+       5  (W32p) LETQ Load Error Term. If set the internal Bresenham Error
+           term is loaded from the ACL Error Term register (M+AAh) (used for
+           clipping), if clear it is automatically calculated from the ACL
+           Delta Major register (M+AEh) at the start of the line draw.
+       7  (W32p) Graphics Opcode. 0 for BitBLT, 1 for linedraw
+
+M+90h (R/W):  ACL Pattern Wrap Register
+bit  0-2  Pattern X Wrap. The pattern Map will wrap back to the start when
+          this number of bytes have been processed.
+           2: 4bytes, 3: 8bytes, 4: 16bytes, 5: 32bytes, 6: 64bytes, 7:never
+     4-6  Pattern Y Wrap. The pattern Map will wrap back to the start when
+          this number of lines have been processed.
+           0: 1 line, 1: 2 lines, 2: 4 lines, 3: 8 lines, 7: never
+
+M+92h (R/W):  ACL Source Wrap Register
+bit  0-2  Source X Wrap. The Source Map will wrap back to the start when
+          this number of bytes have been processed.
+           2: 4bytes, 3: 8bytes, 4: 16bytes, 5: 32bytes, 6: 64bytes, 7:never
+     4-6  Source Y Wrap. The Source Map will wrap back to the start when
+          this number of lines have been processed.
+           0: 1 line, 1: 2 lines, 2: 4 lines, 3: 8 lines, 7: never
+
+M+94h W(R/W):  ACL X Position Register                         (W32,W32i only)
+bit 0-11  The accelerators current X position
+Note this register is at offset 38h in the W32p
+
+M+96h W(R/W):  ACL Y Position Register                         (W32,W32i only)
+bit 0-11  The accelerators current Y position
+Note this register is at offset 3Ah in the W32p
+
+M+98h W(R/W):  ACL X Count Register
+bit 0-11  The number of bytes (-1) in the blit area horizontally. For 15/16/24
+          bpp modes the number of bytes is the number of pixels * 2/3/4
+          depending on the mode.
+
+M+9Ah W(R/W):  ACL Y Count Register
+bit 0-11  The number of lines (-1) in the blit area vertically
+
+M+9Ch (R/W):  ACL Routing Control Register
+bit  0-2  Routing of CPU Data (DARO).
+            0: CPU data not used
+            1: CPU data is Source data
+            2: CPU data is Mix data
+            4: CPU data is X Count
+            5: CPU data is Y Count
+       3  (W32p) MixMap Enable (MXEN). If set mixed data is display data, if
+           clear mixed data is 1. Only used if bits 0-2 are 0 or 1.
+     4-5  Routing of CPU Address (ADRO).
+            0: CPU address not used. Only the first write to an accelerated
+               MMU Aperture is used as the destination address
+            1: CPU address is Destination address
+       6  (W32p) Routing of Accelerator data.
+       7  (W32p) Invalidate disable
+
+M+9Dh (R/W):  ACL Reload Control Register
+bit    0  If set the resulting Source Address from the last operation is used
+          as the new starting Source Address, if clear the address programmed
+          in the ACL Source Address Register (M+84h).
+       1  If set the resulting Pattern Address from the last operation is used
+          as the new starting Pattern Address, if clear the address programmed
+          in the ACL Pattern Address Register (M+80h).
+
+M+9Eh (R/W):  ACL Background Raster Operation Register
+bit  0-7  The Background Raster Operation
+
+M+9Fh (R/W):  ACL Foreground Raster Operation Register
+bit  0-7  The Foreground Raster Operation
+
+M+A0h D(R/W):  ACL Destination Address Register
+bit 0-21  The byte address in display memory of the Destination Map
+          The Destination address can also be set by writing via a MMU
+          Aperture with the APT bit set. Then the address (after MMU
+          translation) is used as the Destination address and the Accelerator
+          operation is started. Reading this register returns the accelerator
+          internal Destination address
+
+M+A4h D(R):  ACL Internal Pattern Address Register             (W32,W32i only)
+bit 0-21  The accelerator internal Pattern Address
+
+M+A4h D(R):  ACL Mix Address Register                    (W32p rev A & B only)
+bit 0-24  Address of the Mix map in display memory. The Mix map has one bit
+          for each byte processed by any other map
+
+M+A8h D(R):  ACL Internal Source Address Register              (W32,W32i only)
+bit 0-21  The accelerator internal Source Address
+
+M+A8h W(R):  ACL Mix Y Offset Register                             (W32p only)
+bit 0-11  Number of bits (-1) per scan line in the Mix map.
+
+M+AAh W(R):  ACL Error Term Register                               (W32p only)
+bit 0-15  Bresenham linedraw error term. Only used if ACL X/Y Direction
+          Register (M+8Fh) bit 5 is set. Usually this is automatically
+          calculated from the ACL Delta Major register (M+AEh), however for
+          restoring a suspended operation or for clipping of the line this
+          register can be used for direct control.
+
+M+ACh W(R/W):  ACL Delta Minor                                     (W32p only)
+bit  0-?  Bresenham linedraw length of the minor axis. min(abs(dX),abs(dY))
+
+M+AEh W(R/W):  ACL Delta Major                                     (W32p only)
+bit  0-?  Bresenham linedraw length of the major axis. max(abs(dX),abs(dY))
+          Where dX and dY are the distances in the X and Y directions.
+
+
+  **** The PCI Interfece registers are only present on the W32p ****
+
+Byte 00h W(R):  Vendor ID
+bit  0-15  100Ch for Tseng Labs
+
+Byte 02h W(R):  Device ID
+bit   0-3  Revision ID. Same as 210Ah index ECh bits 4-7. Also same as Byte 8.
+     4-15  Device ID. 320h for all ET4000/W32p's
+
+Byte 04h W(R/W):  Command Register
+bit     0  I/O Space. If set the device may respond to I/O accesses
+        1  Memory Space. If set the device may respond to memory accesses
+        2  Reserved(0)
+        3  Special cycles. If set the device is allowed to monitor special
+           cycles
+        4  Reserved(0)
+        5  VGA Palette snoop. If set VGA palette snooping is enabled and the
+           DAC can not respond to writes. If clear the DAC operates normally
+        6  Parity error. If set the device responds to parity errors, if clear
+           they are ignored. Must be reset to 0. The device will (and must)
+           generate parity even when parity errors are disabled.
+        7  Wait cycle control. If set address/data stepping is enabled
+        8  System error driver. If set the system error driver reports parity
+           errors, if clear it is disconnected.
+        9  Reserved(0)
+
+Byte 06h W(R/W):  Device Status Register
+bit     8  Bus Master
+     9-10  (R) Device Select Timing. Timing of DEVSEL#. 0: fast, 1: medium,
+            2: slow
+       11  Device Target-abort.
+Note: The bits are set when the corresponding event occurs, and are reset when
+      a one (1) is written to the bit.
+
+Byte 08h (R):  Revision ID
+bit   0-7  Revision ID. Same as 210Ah index ECh bits 4-7. Also same as Byte 2
+           bits 0-3.
+
+Byte 09h 3(R):  Class Code
+bit  0-23  30000h for a VGA compatible display controller
+
+Byte 10h D(R/W):  Base Address Register
+bit 24-31 Selects the 16MB area where the Linear Aperture resides (A24-31 =
+          these bits) when enabled.
+
+Byte 30h D(R/W):  Expansion ROM Address
+bit     0  If set the ROM is enabled, if clear it is disabled
+     1-27  Reserved(0)
+    28-31  (rev A,B) Reserved (0)
+           (rev C +) Selects the 256MB area where the ROM resides (A28-31 =
+             these bits).
+Note: when bit 1-31 is 0 the ROM is at C0000h, else it is replicated every 32K
+      within the 256MB area (if enabled).
+
+Byte 3Ch (R/W):  Interrupt Line
+bit   0-3  (rev A)  Reserved (all 1)
+           (rev B +) Input to the system interrupt controller ??
+      4-7  (rev A,B) Reserved (all 1)
+           (rev C +) Reserved (0)
+
+Byte 3Dh (R):  Interrupt Pin
+
+
+  Bank Switching:
+
+    64k banks are selected by the Segment Select Register at 3CDh.
+    Both a Read and a Write segment can be selected.
+    For the W32 series extra bank bits are in 3CBh
+
+  Hardware Zoom (ET3000 Only).
+
+   The ET3000 can zoom a part of display memory in a window.
+   The display memory position and window position are selected by 3d4h index
+   1Bh to 21h.
+
+
+  Identify Tseng Chipset:
+
+  outp($3BF,3);
+  outp($3D8,$A0);   {Enable ET4000 extensions}
+  if tstrg($3CD,$3F) then
+    if testinx2(base,$33,$F) then
+      if tstrg($3CB,$33) then
+        case rdinx($217A,$EC) shr 4 of
+          0:Tseng ET4000W32
+          3:Tseng ET4000W32i
+          2:Tseng ET4000W32p    {Not quite sure yet}
+        end
+      else Tseng 4000
+    else Tseng 3000;
+
+Memory:     (Tseng BIOS version 3.00 and up)
+0:488h  BYTE  Bit 4  High bit of the 1024x768 mode flag
+                      0: 87Hz interlaced, 1: 60Hz, 2: 72Hz, 3: 70Hz
+                  5  High bit of 800x600 mode flag
+                      0: 60Hz, 1: 56Hz, 2: 72Hz
+                  6  If set 640x480 is 72Hz, else 60Hz
+0:489h  BYTE  Bit 5  Low bit of the 1024x768 mode flag
+                  6  Low bit of the 800x600 flag
+
+
+
+  Video Modes:
+     8   T   132   25   2                   (STB only)
+     Ah  T   132   44   2
+    18h  T   132   44   4  (8x8)   B000
+    19h  T   132   25   4  (9x14)  B000
+    1Ah  T   132   28   4  (9x13)  B000
+    22h  T   132   44  16  (8x8)
+    23h  T   132   25  16  (8x14)
+    24h  T   132   28  16  (8x13)
+    25h  G   640  480  16  planar
+    26h  T    80   60  16  (8x8)
+    27h  G   720  512  16  PL4        (Tseng recommended, few boards)
+    29h  G   800  600  16  PL4
+    2Ah  T   100   40  16  PL4
+    2Dh  G   640  350 256  P8
+    2Eh  G   640  480 256  P8
+    2Fh  G   640  400 256  P8         (ET4000 Only)
+    2Fh  G   720  512 256  P8         (Tseng recommended, few boards)
+    30h  G   800  600 256  P8
+    36h  G   960  720  16  PL4        (STB only)
+    37h  G  1024  768  16  PL4
+    38h  G  1024  768 256  P8         (ET4000 Only)
+    3Dh  G  1280 1024  16  PL4        (newer ET4000s)
+    3Eh  G  1280  960  16  PL4        (Definicon)
+    3Fh  G  1280 1024 256  P8
+    6Ah  G   800  600  16  PL4        Newer ET4000s
+
+   BIOS extensions  (Tseng 4000 Sierra HiColor DAC):
+
+----------1010E0-----------------------------
+INT 10 - VIDEO - SpeedStar 24 - Set TrueColor Graphics Mode
+        AX = 10E0h
+        BL = 2Eh
+Return: AX = 0010h if successful
+             other on error
+Enters 24bit 640x480 mode if SS24 DAC present.
+Video memory is NOT cleared.
+Each line uses 2048 bytes with only 640x3=1920 bytes actually used.
+So that a line can never cross a 64K border.
+----------1010F0-----------------------------
+INT 10 - VIDEO - Tseng ET-4000 BIOS - Set HiColor Graphics Mode
+        AX = 10F0h
+        BL = video mode (see also AH=00h)
+             32768-color modes:
+                   13h =  320x200
+                   2Dh =  640x350
+                   2Eh =  640x480
+                   2Fh =  640x400
+                   30h =  800x600
+                   38h = 1024x768
+             16M color modes:
+                   3Eh = 640x480   (Genoa 7900)
+        BX =     2DFFh = 640x350   (MEGAVGA/2)
+                 2EFFh = 640x480   (MEGAVGA/2)
+                 2FFFh = 640x400   (MEGAVGA/2)
+Return: AX = 0010h if successful
+             other on error
+----------1010F1-----------------------------
+INT 10 - VIDEO - Tseng ET-4000 BIOS - GET DAC TYPE
+        AX = 10F1h
+Return: AX = 0010h if successful, errorcode if not
+        BL = type of digital/analog converter
+             00h normal VGA DAC
+             01h Sierra SC11481/6/8 HiColor DAC
+
+         (Diamond SpeedStar 24:)
+             02h SS24 DAC (MUSIC MU9c1880)
+
+         (Tseng generic BIOS rev 8.00 or later:)
+             02h Sierra Mark2 (15-bit) or Mark3 (15/16-bit) DAC
+             03h ATT20c490/1/2 & Winbond 490/491 15/16/24 bit HiColor DAC
+             04h AcuMos ADAC1 & CL-GD5200 (15/16/24 bit)
+             05h Sierra SC15025/26 (15/16/24 bit DAC)
+             06h Cirrus Internal 15/16/24 bit DAC (from CL-GD54xx series).
+             07h Diamond SS2410 & MUSIC MU9C1880. (15/16/24 bit).
+             08h Music MU9c4910/9910 (15/16/24 bit DAC).
+             09h Brooktree Bt481/482
+             20h SGS-Thompson STG1700
+             21h SC15021
+             22h AT&T 20c498
+             23h ICS 5340/5341
+             24h STG1702/3
+             25h Chrontel CH8398
+----------1010F2-----------------------------
+INT 10 - VIDEO - Tseng ET-4000 BIOS - GET/SET HiColor MODE
+        AX = 10F2h
+        BL = 00h  Get current HiColor mode
+             01h  Set 15bit HiColor mode
+             02h  Set 16bit HiColor mode
+Return: AX = 0010h if successful, errorcode if not
+        BL = Current HiColor mode:
+             00h  Not in HiColor mode or not a HiColor DAC
+             01h  15-bit RGB mode
+             02h  16-bit RGB mode
+             03h  24-bit RGB mode
+Note: Set HiColor mode (BL=1 or 2) only works if already in some HiColor mode.
+----------101D-------------------------------
+INT 10 - VIDEO - SpeedSTAR Plus BIOS v4.23+ - SET SYNC PARAMETERS
+        AH = 1Dh
+        AL = Video Mode
+        ES = Caller's segment
+Note: The caller's segment contains a table at offset 5Ch or 100h
+Offset    Size    Description
+ 00h    9 BYTEs   ID string 'ey5CENTER'
+ 09h    5 BYTEs   sync parameters for 640x480 modes 11h,12h,25h,26h,2Eh
+ 0Eh    5 BYTEs   sync parameters for 800x600 modes 29h,30h,2Ah
+ 13h    5 BYTEs   sync parameters for 1024x768 modes 37h, 38h
+----------101DAA-----------------------------
+INT 10 - VIDEO - Diamond SpeedSTAR - CHECK FOR SPEEDSTAR
+        AX = 1DAAh
+        BX = FDECh
+Return: BX = DECFh if found
+        AL = AH = DACtype:
+                    00h  Standard VGA DAC
+                    01h  Highcolor DAC with command bit 3 not writable
+                         (Sierra "Mark 1" - SC11481/6/8)
+                    02h  SS2410 DAC
+                    05h  Highcolor DAC with command bit 3 writable (Sierra
+                         "Mark 2/3" - SC11482/3/4/5/7/9)
+        SI:DI -> BIOS version & Copyright string
+
+
+
+
+Notes:
+  The sequence:
+
+      port[$3BF]:=3;
+      port[$3D8]:=$A0;
+
+is needed to enable the extensions in the Tseng 3000/4000.
+Most BIOSes do this by default, but some such as the Sigma VGA Legend
+requires this sequence.

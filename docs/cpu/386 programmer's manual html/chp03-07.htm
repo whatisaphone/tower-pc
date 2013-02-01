@@ -1,0 +1,363 @@
+<html>
+<head>
+<title>
+3.7  Instructions for Block-Structured Languages
+</title>
+<body>
+<a name="03-07"></a>
+Prev: <a href="chp03-06.htm">3.6  String and Character Translation Instructions</a><br>
+Next: <a href="chp03-08.htm">3.8  Flag Control Instructions</a>
+<hr>
+<h2>
+3.7  Instructions for Block-Structured Languages
+</h2>
+<p>
+The instructions in this section provide machine-language support for
+functions normally found in high-level languages. These instructions include
+ENTER and LEAVE, which simplify the programming of procedures.
+<p>
+ENTER (Enter Procedure) creates a stack frame that may be used to implement
+the scope rules of block-structured high-level languages. A LEAVE
+instruction at the end of a procedure complements an ENTER at the beginning
+of the procedure to simplify stack management and to control access to
+variables for nested procedures.
+<p>
+The ENTER instruction includes two parameters. The first parameter
+specifies the number of bytes of dynamic storage to be allocated on the
+stack for the routine being entered. The second parameter corresponds to the
+lexical nesting level (0-31) of the routine. (Note that the lexical level
+has no relationship to either the protection privilege levels or to the I/O
+privilege level.)
+<p>
+The specified lexical level determines how many sets of stack frame
+pointers the CPU copies into the new stack frame from the preceding frame.
+This list of stack frame pointers is sometimes called the display. The first
+word of the display is a pointer to the last stack frame. This pointer
+enables a LEAVE instruction to reverse the action of the previous ENTER
+instruction by effectively discarding the last stack frame.
+<p>
+<pre>
+   Example: ENTER 2048,3
+
+   Allocates 2048 bytes of dynamic storage on the stack and sets up pointers
+   to two previous stack frames in the stack frame that ENTER creates for
+   this procedure.
+</pre>
+After ENTER creates the new display for a procedure, it allocates the
+dynamic storage space for that procedure by decrementing ESP by the number
+of bytes specified in the first parameter. This new value of ESP serves as a
+starting point for all PUSH and POP operations within that procedure.
+<p>
+To enable a procedure to address its display, ENTER leaves EBP pointing to
+the beginning of the new stack frame. Data manipulation instructions that
+specify EBP as a base register implicitly address locations within the stack
+segment instead of the data segment.
+<p>
+The ENTER instruction can be used in two ways: nested and non-nested. If
+the lexical level is 0, the non-nested form is used. Since the second
+operand is 0, ENTER pushes EBP, copies ESP to EBP and then subtracts the
+first operand from ESP. The nested form of ENTER occurs when the second
+parameter (lexical level) is not 0.
+<p>
+Figure 3-16 gives the formal definition of ENTER.
+<p>
+The main procedure (with other procedures nested within) operates at the
+highest lexical level, level 1. The first procedure it calls operates at the
+next deeper lexical level, level 2. A level 2 procedure can access the
+variables of the main program which are at fixed locations specified by the
+compiler. In the case of level 1, ENTER allocates only the requested
+dynamic storage on the stack because there is no previous display to copy.
+<p>
+A program operating at a higher lexical level calling a program at a lower
+lexical level requires that the called procedure should have access to the
+variables of the calling program. ENTER provides this access through a
+display that provides addressability to the calling program's stack frame.
+<p>
+A procedure calling another procedure at the same lexical level implies
+that they are parallel procedures and that the called procedure should not
+have access to the variables of the calling procedure. In this case, ENTER
+copies only that portion of the display from the calling procedure which
+refers to previously nested procedures operating at higher lexical levels.
+The new stack frame does not include the pointer for addressing the calling
+procedure's stack frame.
+<p>
+ENTER treats a reentrant procedure as a procedure calling another procedure
+at the same lexical level. In this case, each succeeding iteration of the
+reentrant procedure can address only its own variables and the variables of
+the calling procedures at higher lexical levels. A reentrant procedure can
+always address its own variables; it does not require pointers to the stack
+frames of previous iterations.
+<p>
+By copying only the stack frame pointers of procedures at higher lexical
+levels, ENTER makes sure that procedures access only those variables of
+higher lexical levels, not those at parallel lexical levels (see Figure
+3-17). Figures 3-18 through 3-21 demonstrate the actions of the ENTER
+instruction if the modules shown in Figure 3-17 were to call one another in
+alphabetic order.
+<p>
+Block-structured high-level languages can use the lexical levels defined by
+ENTER to control access to the variables of previously nested procedures.
+Referring to Figure 3-17 for example, if PROCEDURE A calls PROCEDURE B
+which, in turn, calls PROCEDURE C, then PROCEDURE C will have access to the
+variables of MAIN and PROCEDURE A, but not PROCEDURE B because they operate
+at the same lexical level. Following is the complete definition of access to
+variables for Figure 3-17.
+<p>
+<pre>
+  1.  MAIN PROGRAM has variables at fixed locations.
+
+  2.  PROCEDURE A can access only the fixed variables of MAIN.
+
+  3.  PROCEDURE B can access only the variables of PROCEDURE A and MAIN.
+      PROCEDURE B cannot access the variables of PROCEDURE C or PROCEDURE D.
+
+  4.  PROCEDURE C can access only the variables of PROCEDURE A and MAIN.
+      PROCEDURE C cannot access the variables of PROCEDURE B or PROCEDURE D.
+
+  5.  PROCEDURE D can access the variables of PROCEDURE C, PROCEDURE A, and
+      MAIN. PROCEDURE D cannot access the variables of PROCEDURE B.
+</pre>
+ENTER at the beginning of the MAIN PROGRAM creates dynamic storage space
+for MAIN but copies no pointers. The first and only word in the display
+points to itself because there is no previous value for LEAVE to return to
+EBP. See Figure 3-18.
+<p>
+After MAIN calls PROCEDURE A, ENTER creates a new display for PROCEDURE A
+with the first word pointing to the previous value of EBP (BPM for LEAVE to
+return to the MAIN stack frame) and the second word pointing to the current
+value of EBP. Procedure A can access variables in MAIN since MAIN is at
+level 1. Therefore the base for the dynamic storage for MAIN is at [EBP-2].
+All dynamic variables for MAIN are at a fixed offset from this value. See
+Figure 3-19.
+<p>
+After PROCEDURE A calls PROCEDURE B, ENTER creates a new display for
+PROCEDURE B with the first word pointing to the previous value of EBP, the
+second word pointing to the value of EBP for MAIN, and the third word
+pointing to the value of EBP for A and the last word pointing to the current
+EBP. B can access variables in A and MAIN by fetching from the display the
+base addresses of the respective dynamic storage areas. See Figure 3-20.
+<p>
+After PROCEDURE B calls PROCEDURE C, ENTER creates a new display for
+PROCEDURE C with the first word pointing to the previous value of EBP, the
+second word pointing to the value of EBP for MAIN, and the third word
+pointing to the EBP value for A and the third word pointing to the current
+value of EBP. Because PROCEDURE B and PROCEDURE C have the same lexical
+level, PROCEDURE C is not allowed access to variables in B and therefore
+does not receive a pointer to the beginning of PROCEDURE B's stack frame.
+See Figure 3-21.
+<p>
+LEAVE (Leave Procedure) reverses the action of the previous ENTER
+instruction. The LEAVE instruction does not include any operands. LEAVE
+copies EBP to ESP to release all stack space allocated to the procedure by
+the most recent ENTER instruction. Then LEAVE pops the old value of EBP from
+the stack. A subsequent RET instruction can then remove any arguments that
+were pushed on the stack by the calling program for use by the called
+procedure.
+<p>
+<p>
+<a name="F-03-16"></a>
+<h3>Figure 3-16.  Formal Definition of the ENTER Instruction</h3>
+<p>
+The formal definition of the ENTER instruction for all cases is given by the
+following listing. LEVEL denotes the value of the second operand.
+<p>
+Push EBP
+Set a temporary value FRAME_PTR := ESP
+If LEVEL > 0 then
+<pre>
+      Repeat (LEVEL-1) times:
+          EBP :=EBP - 4
+          Push the doubleword pointed to by EBP
+      End repeat
+      Push FRAME_PTR
+End if
+EBP := FRAME_PTR
+ESP := ESP - first operand.
+</pre>
+<p>
+<a name="F-03-17"></a>
+<h3>Figure 3-17.  Variable Access in Nested Procedures</h3>
+<p>
+<pre>
+      +----------------------------------------------------------------+
+      |                MAIN PROCEDURE (LEXICAL LEVEL 1)                |
+      |   +--------------------------------------------------------+   |
+      |   |              PROCEDURE A (LEXICAL LEVEL 2)             |   |
+      |   |  +--------------------------------------------------+  |   |
+      |   |  |           PROCEDURE B (LEXICAL LEVEL 3)          |  |   |
+      |   |  +--------------------------------------------------+  |   |
+      |   |                                                        |   |
+      |   |  +--------------------------------------------------+  |   |
+      |   |  |           PROCEDURE C (LEXICAL LEVEL 3)          |  |   |
+      |   |  |  +--------------------------------------------+  |  |   |
+      |   |  |  |        PROCEDURE D (LEXICAL LEVEL 4)       |  |  |   |
+      |   |  |  +--------------------------------------------+  |  |   |
+      |   |  |                                                  |  |   |
+      |   |  +--------------------------------------------------+  |   |
+      |   |                                                        |   |
+      |   +--------------------------------------------------------+   |
+      |                                                                |
+      +----------------------------------------------------------------+
+</pre>
+<p>
+<a name="F-03-18"></a>
+<h3>Figure 3-18.  Stack Frame for MAIN at Level 1</h3>
+<p>
+<pre>
+                                     * 31          0 *
+                D  O                 |               |
+                I  F              +- |-------+-------|
+                R                 |  |    OLD ESP    |
+                E  E     DISPLAY -|  |-------+-------|<--EBP FOR
+                C  X              |  |      EBPM
+EBPM = EBP VALUE FOR MAIN    |    MAIN
+                T  P              |- |-------+-------|
+                I  A              |  |               |
+                O  N              |  |-------+-------|
+                N  S     DYNAMIC -|  |               |
+                   I     STORAGE  |  |-------+-------|
+                 | O              |  |               |
+                 | N              +- |-------+-------|<--ESP
+                 |                   |               |
+                 !                   *               *
+</pre>
+<p>
+<a name="F-03-19"></a>
+<h3>Figure 3-19.  Stack Frame for Procedure A</h3>
+<p>
+<pre>
+                                     * 31          0 *
+                D  O                 |               |
+                I  F                 |-------+-------|
+                R                    |    OLD ESP    |
+                E  E                 |-------+-------|
+                C  X                 |      EBPM
+EBPM = EBP VALUE FOR MAIN    |
+                T  P                 |-------+-------|
+                I  A                 |               |
+                O  N                 |-------+-------|
+                N  S                 |               |
+                   I                 |-------+-------|
+                 | O                 |               |
+                 | N              +- |-------+-------|
+                 |                |  |      EBPM     |
+                 !                |  |-------+-------|<--EBP FOR A
+                         DISPLAY -|  |      EBPM     |
+                                  |  |-------+-------|
+                                  |  |      EBPA
+EBPA = EBP VALUE FOR PROCEDURE A    |
+                                  |- |-------+-------|
+                                  |  |               |
+                                  |  |-------+-------|
+                         DYNAMIC -|  |               |
+                         STORAGE  |  |-------+-------|
+                                  |  |               |
+                                  +- |-------+-------|<--ESP
+                                     |               |
+                                     *               *
+</pre>
+<p>
+<a name="F-03-20"></a>
+<h3>Figure 3-20.  Stack Frame for Procedure B at Level 3 Called from A</h3>
+<p>
+<pre>
+                                     * 31          0 *
+                D  O                 |               |
+                I  F                 |-------+-------|
+                R                    |    OLD ESP    |
+                E  E                 |-------+-------|
+                C  X                 |      EBPM
+EBPM = EBP VALUE FOR MAIN    |
+                T  P                 |-------+-------|
+                I  A                 |               |
+                O  N                 |-------+-------|
+                N  S                 |               |
+                   I                 |-------+-------|
+                 | O                 |               |
+                 | N                 |-------+-------|
+                 |                   |      EBPM     |
+                 !                   |-------+-------|
+                                     |      EBPM     |
+                                     |-------+-------|
+                                     |      EBPA     |
+                                     |-------+-------|
+                                     |               |
+                                     |-------+-------|
+                                     |               |
+                                     |-------+-------|
+                                     |               |
+                                  +- |-------+-------|
+                                  |  |      EBPA     |
+                                  |  |-------+-------|<--EBP
+                                  |  |      EBPM     |
+                         DISPLAY -|  |-------+-------|
+                                  |  |      EBPA     |
+                                  |  |-------+-------|
+                                  |  |      EBPB
+EBPB = EBP VALUE FOR PROCEDURE B    |
+                                  |- |-------+-------|
+                                  |  |               |
+                                  |  |-------+-------|
+                         DYNAMIC -|  |               |
+                         STORAGE  |  |-------+-------|
+                                  |  |               |
+                                  +- |-------+-------|<--ESP
+                                     |               |
+                                     *               *
+</pre>
+<p>
+<a name="F-03-21"></a>
+<h3>Figure 3-21.  Stack Frame for Procedure C at Level 3 Called from B</h3>
+<p>
+<pre>
+                                     * 31          0 *
+                D  O                 |               |
+                I  F                 |-------+-------|
+                R                    |    OLD ESP    |
+                E  E                 |-------+-------|
+                C  X                 |      EBPM
+EBPM = EBP VALUE FOR MAIN    |
+                T  P                 |-------+-------|
+                I  A                 |               |
+                O  N                 |-------+-------|
+                N  S                 |               |
+                   I                 |-------+-------|
+                 | O                 |               |
+                 | N                 |-------+-------|
+                 |                   |      EBPM     |
+                 !                   |-------+-------|
+                                     |      EBPM     |
+                                     |-------+-------|
+                                     |      EBPA
+EBPA = EBP VALUE FOR PROCEDURE A    |
+                                     |-------+-------|
+                                     |               |
+                                     |-------+-------|
+                                     |               |
+                                     |-------+-------|
+                                     |               |
+                                  +- |-------+-------|
+                                  |  |      EBPA     |
+                                  |  |-------+-------|<--EBP
+                                  |  |      EBPM     |
+                         DISPLAY -|  |-------+-------|
+                                  |  |      EBPA     |
+                                  |  |-------+-------|
+                                  |  |      EBPB
+EBPB = EBP VALUE FOR PROCEDURE B    |
+                                  |- |-------+-------|
+                                  |  |               |
+                                  |  |-------+-------|
+                         DYNAMIC -|  |               |
+                         STORAGE  |  |-------+-------|
+                                  |  |               |
+                                  +- |-------+-------|<--ESP
+                                     |               |
+                                     *               *
+</pre>
+<p>
+<hr>
+Prev: <a href="chp03-06.htm">3.6  String and Character Translation Instructions</a><br>
+Next: <a href="chp03-08.htm">3.8  Flag Control Instructions</a>
+</body>
+</html>

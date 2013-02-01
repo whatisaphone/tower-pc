@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <META http-equiv=Content-Type content="text/html; charset=shift_jis">
+ <TITLE>Keyboard scancodes: Japanese keyboards</TITLE>
+ <LINK HREF="scancodes-7.html" REL=next>
+ <LINK HREF="scancodes-5.html" REL=previous>
+ <LINK HREF="scancodes.html#toc6" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="scancodes-7.html">Next</A>
+<A HREF="scancodes-5.html">Previous</A>
+<A HREF="scancodes.html#toc6">Contents</A>
+<HR>
+<H2><A NAME="japanese"></A> <A NAME="s6">6. Japanese keyboards</A></H2>
+
+<P>
+<P>
+<P>
+<FIGURE>
+<EPS FILE="absent">
+<IMG SRC="jp106.jpg">
+</FIGURE>
+
+<FIGURE>
+<EPS FILE="absent">
+<IMG SRC="jp106-with-scancodes.jpg">
+</FIGURE>
+<P>
+<H2><A NAME="ss6.1">6.1 Japanese 86/106 keyboards</A>
+</H2>
+
+<P>(Information from Barry Yip &lt;<CODE>g609296@cc.win.or.jp</CODE>&gt;,
+Norman Diamond, NIIBE Yutaka and H. Peter Anvin, who
+contributed the photographs of his
+JP106 keyboard above and of his
+<A HREF="jplaptop.jpg">Japanese laptop</A>.)
+<P>Common Japanese keyboards have five additional keys
+(106-key, or 86-key for a notebook; these days there may also
+be 3 extra Windows keys). These keys have scancodes
+<B>70</B> (hiragana/katakana),
+<B>73</B> (backslash/underscore),
+<B>79</B> (henkan/zenkouho),
+<B>7b</B> (muhenkan),
+<B>7d</B> (yen/vertical bar).
+<P>Scancode <B>0b</B> is zero/tilde. (Some keyboards
+have the tilde printed on the keycap, and some don't.)
+Scancode <B>0d</B> is circumflex/overbar.
+Scancode <B>29</B> is hankaku/zenkaku.
+<P>(ASCII and JIS-Roman differ in two or three points: the code positions
+where ASCII has backslash, tilde, broken bar,
+JIS-Roman uses yen, overbar and vertical bar, respectively.)
+<P>
+<H2><A NAME="ss6.2">6.2 Description of the all-Japanese keys</A>
+</H2>
+
+<P>Norman Diamond adds to the previous section:
+<P><I>To the left of the spacebar,</I>
+(Shift-JIS) 無変換
+<I>(muhenkan) means no conversion
+from kana to kanji.  To the right of the spacebar,
+変換
+(henkan) means conversion from kana to kanji. In Microsoft systems
+it converts the most recently input sequence of kana to the system's
+first guess at a string of kanji/kana/etc. with the correct pronunciation
+and a guess at the meaning. Repeated keypresses change it to other
+possible guesses which are either less common or less recently used,
+depending on the situation. The shifted version of this key is
+前侯補
+(zenkouho) which means "previous candidate" -- "zen" means "previous",
+while "kouho" means "candidate"</I> (explanation courtesy of NIIBE Yutaka)
+<I>-- it rotates back to earlier guesses for kanji conversion.
+The alt version of this key is
+全侯補
+also pronounced (zenkouho), which means "all candidates" -- here,
+"zen" means "all" -- it displays a menu of all known guesses.
+I never use the latter two functions of the key, because after
+pushing the henkan key about three times and not getting the desired guess,
+it displays a menu of all known guesses anyway.</I>
+<P><I>Next on the right,
+ひらがな
+(hiragana) means that
+phonetic input uses one conventional Japanese phonetic alphabet,
+which of course can be converted to kanji by pressing the henkan key later.
+The shifted version is
+カタカナ
+(katakana) which means the other Japanese phonetic alphabet,
+and the alt version is
+ローマ字
+(ro-maji) which means the Roman alphabet.</I>
+<P><I>Near the upper left,
+半/全
+(han/zen) means switch between hankaku
+(half-size, the same size as an ASCII character) and zenkaku
+(full-size, since the amount of space occupied by a kanji
+is approximately a square, twice as fat as an ASCII character).
+It only affects katakana and a few other characters
+(for example there's a full-width copy of each ASCII character
+in addition to the single-byte half-width encodings).
+The alt version of this is
+漢字
+(kanji) which
+actually causes typed Roman phonetic keys to be displayed as Japanese
+phonetic kana (either hiragana or katakana depending on one of the other
+keys described above) and doesn't cause conversion to kanji.</I>
+<P>
+<H2><A NAME="e0_as_key"></A> <A NAME="ss6.3">6.3 A keyboard using e0 as ordinary scancode</A>
+</H2>
+
+<P>Benjamin Carter &lt;<CODE>bcarter@ultra5.cs.umr.edu</CODE>&gt; reports:
+<P><I>I recently came into possession of a 97-key keyboard with Japanese
+markings on the keys.  (The keys also have the standard
+qwerty-characters on them, with the exception of some of the meta-keys
+(there are 3 keys near the Alt keys on either side of the spacebar with
+only Japanese characters on them so I don't know what they are).
+In any case, the keyboard sends out scancodes that work for all the main
+keys (backspace, letters and numbers, enter, shift), but the numeric
+keypad, Alt keys, and function keys don't work.
+I have run the board through <CODE>showkey -s</CODE>, so I know what
+scancodes this keyboard sends out.
+However, the F9 and F10 keys send out <B>60</B> and <B>61</B>,
+respectively, so their key release events send out <B>e0</B>
+and <B>e1</B>, confusing the keyboard driver.</I>
+<P># These are across the top of the keyboard.
+<P><B>58</B> (F1), <B>59</B> (F2), <B>5a</B> (F3),
+<B>5b</B> (F4), <B>5c</B> (F5), <B>5d</B> (F6),
+<B>5e</B> (F7), <B>5f</B> (F8), <B>60</B> (F9),
+<B>61</B> (F10), <B>62</B> (F11), <B>63</B> (F12)
+<P> 
+<B>76</B> (Break), <B>77</B> (Setup).
+<P> 
+# top row
+<P><B>64</B> (Esc),
+<B>02</B> (1), <B>03</B> (2), <B>04</B> (3),
+<B>05</B> (4), <B>06</B> (5), <B>07</B> (6),
+<B>08</B> (7), <B>09</B> (8), <B>0a</B> (9),
+<B>0b</B> (0), <B>0c</B> (-), <B>0d</B> (=),
+<B>29</B> (`), <B>0e</B> (Backspace)
+<P>
+<P># 2nd row
+<P><B>0f</B> (Tab),
+<B>10</B> (Q), <B>11</B> (W), <B>12</B> (E),
+<B>13</B> (R), <B>14</B> (T), <B>15</B> (Y),
+<B>16</B> (U), <B>17</B> (I), <B>18</B> (O),
+<B>19</B> (P), <B>1a</B> ([), <B>1b</B> (]),
+<B>79</B> (Del), <B>6e</B> (Line Feed)
+<P>
+<P># 3rd row
+<P><B>38</B> (Ctrl),
+<B>1e</B> (A), <B>1f</B> (S), <B>20</B> (D),
+<B>21</B> (F), <B>22</B> (G), <B>23</B> (H),
+<B>24</B> (J), <B>25</B> (K), <B>26</B> (L),
+<B>27</B> (;), <B>28</B> ('), <B>75</B> (\),
+<B>1c</B> (Return)
+<P>
+<P># 4th row
+<P><B>2a</B> (Shift_L),
+<B>2c</B> (Z), <B>2d</B> (X), <B>2e</B> (C),
+<B>2f</B> (V), <B>30</B> (B), <B>31</B> (N),
+<B>32</B> (M), <B>33</B> (,), <B>34</B> (.),
+<B>35</B> (/),
+<B>3a</B> ((unknown)),
+<B>36</B> (Shift_R)
+<P>
+<P># bottom row
+<P><B>1d</B> (Caps Lock), <B>71</B> (Alt_L),
+<B>01</B> ((unknown)),
+<B>39</B> (Space),
+<B>45</B> ((unknown)),
+<B>72</B> (Alt_R),
+<B>46</B> ((unknown))
+<P>
+<P># numeric keypad.  No "grey" section on the keyboard.
+<P><B>47</B> (7), <B>48</B> (8), <B>49</B> (9),
+<B>54</B> (Keypad -),
+<B>4b</B> (4), <B>4c</B> (5), <B>4d</B> (6),
+<B>37</B> (Keypad +),
+<B>4f</B> (1), <B>50</B> (2), <B>51</B> (3),
+<B>4e</B> (Keypad Enter),
+<B>52</B> (0),
+<B>78</B> (Up),
+<B>53</B> (Keypad .),
+<B>56</B> (Left),
+<B>55</B> (Down),
+<B>7d</B> (Right),
+<B>7e</B> (Keypad ,).
+<P>
+<P>There are more keyboards that do not use <B>e0</B> as escape code.
+For example, Paul Schulz &lt;<CODE>pauls@caemrad.com.au</CODE>&gt;
+reports the same for Sun Type 5 Keyboard with PS/2 connector,
+NCD model N-123NA. A kernel patch is required for such keyboards.
+<P>
+<P>
+<P>
+<HR>
+<A HREF="scancodes-7.html">Next</A>
+<A HREF="scancodes-5.html">Previous</A>
+<A HREF="scancodes.html#toc6">Contents</A>
+</BODY>
+</HTML>

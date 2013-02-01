@@ -1,0 +1,24 @@
+CHARSET: Display all characters of current screen font. Ver 1.5 Apr 16 1993
+Copyright (c) 1990-1993 by Yossi Gil, P.O.Box 3148, Jerusalem, ISRAEL.
+
+     Usage: charset [-p]
+
+Will display a 16x80 screen comprising of a table of all 256 different chars
+in current screen font, text demos (the quick brown fox..., figures, currency
+symbols, and miscellaneous other characters), business graphic, ASCII controls,
+arrows, boxes, mathematical symbols, dots, etc. CHARSET is useful for
+demonstrating and examining a screen font.
+
+FLAGS
+   -p          Wait for a key hit before terminating.
+   -h          Display this message.
+   -H          Display this message.
+   -?          Display this message.
+
+SEE ALSO
+    loadfont, withfont, palette, fontcomp
+    The font collection.
+
+COPYING POLICY Copy freely for private use. Usage as part of any commerical
+  package is under the same restrictions as of Rhaul Dehsi ZOO program. If you
+  cannot obtain ZOO, you cannot use 'charset' commercially.

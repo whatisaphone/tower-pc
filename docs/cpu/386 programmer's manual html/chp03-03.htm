@@ -1,0 +1,78 @@
+<html>
+<head>
+<title>
+3.3  Decimal Arithmetic Instructions
+</title>
+<body>
+<a name="03-03"></a>
+Prev: <a href="chp03-02.htm">3.2  Binary Arithmetic Instructions</a><br>
+Next: <a href="chp03-04.htm">3.4  Logical Instructions</a>
+<hr>
+<h2>
+3.3  Decimal Arithmetic Instructions
+</h2>
+<p>
+Decimal arithmetic is performed by combining the binary arithmetic
+instructions (already discussed in the prior section) with the decimal
+arithmetic instructions. The decimal arithmetic instructions are used in one
+of the following ways:
+<p>
+<ul>
+<li> To adjust the results of a previous binary arithmetic operation to
+     produce a valid packed or unpacked decimal result.
+
+<li> To adjust the inputs to a subsequent binary arithmetic operation so
+     that the operation will produce a valid packed or unpacked decimal
+     result.
+</ul>
+These instructions operate only on the AL or AH registers. Most utilize the
+AF flag.
+<p>
+<p>
+<a name="03-03-01"></a>
+<h3>3.3.1  Packed BCD Adjustment Instructions</h3>
+<p>
+DAA (Decimal Adjust after Addition) adjusts the result of adding two valid
+packed decimal operands in AL. DAA must always follow the addition of two
+pairs of packed decimal numbers (one digit in each half-byte) to obtain a
+pair of valid packed decimal digits as results. The carry flag is set if
+carry was needed.
+<p>
+DAS (Decimal Adjust after Subtraction) adjusts the result of subtracting
+two valid packed decimal operands in AL. DAS must always follow the
+subtraction of one pair of packed decimal numbers (one digit in each half-
+byte) from another to obtain a pair of valid packed decimal digits as
+results. The carry flag is set if a borrow was needed.
+<p>
+<p>
+<a name="03-03-02"></a>
+<h3>3.3.2  Unpacked BCD Adjustment Instructions</h3>
+<p>
+AAA (ASCII Adjust after Addition) changes the contents of register AL to a
+valid unpacked decimal number, and zeros the top 4 bits. AAA must always
+follow the addition of two unpacked decimal operands in AL. The carry flag
+is set and AH is incremented if a carry is necessary.
+<p>
+AAS (ASCII Adjust after Subtraction) changes the contents of register AL to
+a valid unpacked decimal number, and zeros the top 4 bits. AAS must always
+follow the subtraction of one unpacked decimal operand from another in AL.
+The carry flag is set and AH decremented if a borrow is necessary.
+<p>
+AAM (ASCII Adjust after Multiplication) corrects the result of a
+multiplication of two valid unpacked decimal numbers. AAM must always follow
+the multiplication of two decimal numbers to produce a valid decimal result.
+The high order digit is left in AH, the low order digit in AL.
+<p>
+AAD (ASCII Adjust before Division) modifies the numerator in AH and AL to
+prepare for the division of two valid unpacked decimal operands so that the
+quotient produced by the division will be a valid unpacked decimal number.
+AH should contain the high-order digit and AL the low-order digit. This
+instruction adjusts the value and places the result in AL. AH will contain
+zero.
+<p>
+<p>
+<hr>
+Prev: <a href="chp03-02.htm">3.2  Binary Arithmetic Instructions</a><br>
+Next: <a href="chp03-04.htm">3.4  Logical Instructions</a>
+</body>
+</html>

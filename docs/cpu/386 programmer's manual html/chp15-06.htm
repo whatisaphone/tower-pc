@@ -1,0 +1,149 @@
+<html>
+<head>
+<title>
+15.6  Differences From 8086
+</title>
+<body>
+<a name="15-06"></a>
+Prev: <a href="chp15-05.htm">15.5  Virtual I/O</a><br>
+Next: <a href="chp15-07.htm">15.7  Differences From 80286 Real-Address Mode</a>
+<hr>
+<h2>
+15.6  Differences From 8086
+</h2>
+<p>
+In general, V86 mode will correctly execute software designed for the 8086,
+8088, 80186, and 80188. Following is a list of the minor differences between
+8086 execution on the 80386 and on an 8086.
+<ol>
+<li>  Instruction clock counts.
+<br>
+      The 80386 takes fewer clocks for most instructions than the 
+      8086/8088. The areas most likely to be affected are:
+<ul>
+    <li> Delays required by I/O devices between I/O operations.
+
+    <li> Assumed delays with 8086/8088 operating in parallel with an 8087.
+</ul>
+<li>  Divide exceptions point to the DIV instruction.
+<br>
+      Divide exceptions on the 80386 always leave the saved CS:IP value
+      pointing to the instruction that failed. On the 8086/8088, the CS:IP
+      value points to the next instruction.
+
+<li>  Undefined 8086/8088 opcodes.
+<br>
+      Opcodes that were not defined for the 8086/8088 will cause exception
+      6 or will execute one of the new instructions defined for the 80386.
+
+<li>  Value written by PUSH SP.
+<br>
+      The 80386 pushes a different value on the stack for PUSH SP than the
+      8086/8088. The 80386 pushes the value of SP before SP is incremented
+      as part of the push operation; the 8086/8088 pushes the value of SP
+      after it is incremented. If the value pushed is important, replace
+      PUSH SP instructions with the following three instructions:
+<pre>
+      PUSH  BP
+      MOV   BP, SP
+      XCHG  BP, [BP]
+</pre>
+      This code functions as the 8086/8088 PUSH SP instruction on the 
+      80386.
+
+<li>  Shift or rotate by more than 31 bits.
+<br>
+      The 80386 masks all shift and rotate counts to the low-order five
+      bits. This MOD 32 operation limits the count to a maximum of 31 bits,
+      thereby limiting the time that interrupt response is delayed while
+      the instruction is executing.
+
+<li>  Redundant prefixes.
+<br>
+      The 80386 sets a limit of 15 bytes on instruction length. The only
+      way to violate this limit is by putting redundant prefixes before an
+      instruction. Exception 13 occurs if the limit on instruction length
+      is violated. The 8086/8088 has no instruction length limit.
+
+<li>  Operand crossing offset 0 or 65,535.
+<br>
+      On the 8086, an attempt to access a memory operand that crosses
+      offset 65,535 (e.g., MOV a word to offset 65,535) or offset 0 (e.g.,
+      PUSH a word when SP = 1) causes the offset to wrap around modulo
+      65,536. The 80386 raises an exception in these cases--exception 13 if
+      the segment is a data segment (i.e., if CS, DS, ES, FS, or GS is
+      being used to address the segment), exception 12 if the segment is a
+      stack segment (i.e., if SS is being used).
+
+<li>  Sequential execution across offset 65,535.
+<br>
+      On the 8086, if sequential execution of instructions proceeds past
+      offset 65,535, the processor fetches the next instruction byte from
+      offset 0 of the same segment. On the 80386, the processor raises
+      exception 13 in such a case.
+
+<li>  LOCK is restricted to certain instructions.
+<br>
+      The LOCK prefix and its corresponding output signal should only be
+      used to prevent other bus masters from interrupting a data movement
+      operation. The 80386 always asserts the LOCK signal during an XCHG
+      instruction with memory (even if the LOCK prefix is not used). LOCK
+      may only be used with the following 80386 instructions when they
+      update memory: BTS, BTR, BTC, XCHG, ADD, ADC, SUB, SBB, INC, DEC,
+      AND, OR, XOR, NOT, and NEG. An undefined-opcode exception (interrupt
+      6) results from using LOCK before any other instruction.
+
+<li>  Single-stepping external interrupt handlers.
+<br>
+      The priority of the 80386 single-step exception is different from
+      that of the 8086/8088. The change prevents an external interrupt
+      handler from being single-stepped if the interrupt occurs while a
+      program is being single-stepped. The 80386 single-step exception has
+      higher priority that any external interrupt. The 80386 will still
+      single-step through an interrupt handler invoked by the INT
+      instructions or by an exception.
+
+<li>  IDIV exceptions for quotients of 80H or 8000H.
+<br>
+      The 80386 can generate the largest negative number as a quotient for
+      the IDIV instruction. The 8086/8088 causes exception zero instead.
+
+<li>  Flags in stack.
+<br>
+      The setting of the flags stored by PUSHF, by interrupts, and by
+      exceptions is different from that stored by the 8086 in bit positions
+      12 through 15. On the 8086 these bits are stored as ones, but in V86
+      mode bit 15 is always zero, and bits 14 through 12 reflect the last
+      value loaded into them.
+
+<li>  NMI interrupting NMI handlers.
+<br>
+      After an NMI is recognized on the 80386, the NMI interrupt is masked
+      until an IRET instruction is executed.
+
+<li>  Coprocessor errors vector to interrupt 16.
+<br>
+      Any 80386 system with a coprocessor must use interrupt vector 16 for
+      the coprocessor error exception. If an 8086/8088 system uses another
+      vector for the 8087 interrupt, both vectors should point to the
+      coprocessor-error exception handler.
+
+<li>  Numeric exception handlers should allow prefixes.
+<br>
+      On the 80386, the value of CS:IP saved for coprocessor exceptions
+      points at any prefixes before an ESC instruction. On 8086/8088
+      systems, the saved CS:IP points to the ESC instruction itself.
+
+<li>  Coprocessor does not use interrupt controller.
+<br>
+      The coprocessor error signal to the 80386 does not pass through an
+      interrupt controller (an 8087 INT signal does). Some instructions in
+      a coprocessor error handler may need to be deleted if they deal with
+      the interrupt controller.
+</ol>
+<p>
+<hr>
+Prev: <a href="chp15-05.htm">15.5  Virtual I/O</a><br>
+Next: <a href="chp15-07.htm">15.7  Differences From 80286 Real-Address Mode</a>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>Vesa BIOS Example. Page 1: Detect VESA BIOS</title>
+
+<h1>VESA BIOS Example</h1>
+<h4>Page 1: Detect VESA BIOS</h4>
+<p><tr><td colspan=2><hr></td></tr><p>
+
+For this I am going to need some pseudo-assembler for calling interrupts. It should be fairly
+self explanitary to anyone familiar with interrupts.<p>
+
+<h2>1: set up the data buffer</h2>
+First thing to do is call function 00h, and let it fill up the data buffer.
+<pre>
+   AX = 4F00h				;function 00h return SVGA information
+   ES = SegmentOf (DataBuffer)		;
+   DI = OffsetOf (DataBuffer)		;es:[di] points to DataBuffer
+
+   call interrupt 10h
+</pre>
+
+<h2>2: check it was sucessful</h2>
+Now we have to make sure the function call was sucessful by checking the values of AH and AL.<p>
+<pre>
+   if AL = 4Fh then
+      print "Function call 00h supported"
+      if AH = 4Fh then
+         print "Function call 00h sucessful"
+      else
+         print "Function call 00h failed"
+         exit to DOS
+      end if 
+	
+      continue onto section 3
+
+   else
+      print "Function call 00h unsupported"
+      exit to DOS
+   end if 
+
+</pre>
+
+<h2>3: interpret the data</h2>
+Right assuming all that was sucessful, our DataBuffer will now be full of useful information:
+<pre>
+    if DataBuffer.Signature = "VESA" then
+	print "VESA BIOS found. Version ", DataBuffer.VersionH, ".", DataBuffer.VersionL
+	
+	continue to next page
+    else
+	print "VESA BIOS not found"
+	exit to DOS
+    end if
+</pre>
+
+
+
+
+      
+</body>
+</html>

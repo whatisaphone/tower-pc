@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>
+3.11  Miscellaneous Instructions
+</title>
+<body>
+<a name="03-11"></a>
+Prev: <a href="chp03-10.htm">3.10  Segment Register Instructions</a><br>
+Next: <a href="chp04-00.htm">Chapter 4  Systems Architecture</a>
+<hr>
+<h2>
+3.11  Miscellaneous Instructions
+</h2>
+<p>
+The following instructions do not fit in any of the previous categories,
+but are nonetheless useful.
+<p>
+<p>
+<a name="03-11-01"></a>
+<h3>3.11.1  Address Calculation Instruction</h3>
+<p>
+LEA (Load Effective Address) transfers the offset of the source operand
+(rather than its value) to the destination operand.  The source operand must
+be a memory operand, and the destination operand must be a general register.
+This instruction is especially useful for initializing registers before the
+execution of the string primitives (ESI, EDI) or the XLAT instruction (EBX).
+The LEA can perform any indexing or scaling that may be needed.
+<p>
+Example: LEA EBX, EBCDIC_TABLE
+<p>
+Causes the processor to place the address of the starting location of the
+table labeled EBCDIC_TABLE into EBX.
+<p>
+<p>
+<a name="03-11-02"></a>
+<h3>3.11.2  No-Operation Instruction</h3>
+<p>
+NOP (No Operation) occupies a byte of storage but affects nothing but the
+instruction pointer, EIP.
+<p>
+<p>
+<a name="03-11-03"></a>
+<h3>3.11.3  Translate Instruction</h3>
+<p>
+XLAT (Translate) replaced a byte in the AL register with a byte from a
+user-coded translation table. When XLAT is executed, AL should have the
+unsigned index to the table addressed by EBX. XLAT changes the contents of
+AL from table index to table entry. EBX is unchanged. The XLAT instruction
+is useful for translating from one coding system to another such as from
+ASCII to EBCDIC.  The translate table may be up to 256 bytes long.  The
+value placed in the AL register serves as an index to the location of the
+corresponding translation value.
+<p>
+<p>
+<hr>
+Prev: <a href="chp03-10.htm">3.10  Segment Register Instructions</a><br>
+Next: <a href="chp04-00.htm">Chapter 4  Systems Architecture</a>
+</body>
+</html>

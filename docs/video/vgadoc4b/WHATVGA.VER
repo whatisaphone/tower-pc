@@ -1,0 +1,160 @@
+WHATVGA history list:
+
+Version 2.00 29/Sep/95 - Released with VGADOC4
+Support for Alliance ProMotion
+Fixed NCR 77c32BLT BitBLT.
+Fixes for WD90c11 & CT82c450
+QVision 2Mb & clock support
+SiS 86c201 support
+Added DAC Gamma test (only Bt484/5 and SC1502x)
+Changed the A000h/B000h/B800h segments to "segA000/.." to simplify
+ identification of these segment values (for protected mode use).
+Added WHATVGA.CFG configuration file feature.
+
+Version 1.80 10/Jul/95 - Released as public BETA
+New DAC mode test (D) and submenues.
+Added ARK1000VL support & 1000PV/2000PV detection
+New R/W bank test
+1st attempt at Mach64 support
+Fixes for Cirrus CL-GD5430 and S3 864P support
+Fixed S3 SDAC
+Finally fixed TKD8001/Bt481/Sc1148x DAC detection (I hope)
+Support for Trident 9440AGi HW cursor
+Changed DAC types to specific sub-versions
+
+Version 1.71 - /Nov/94:
+Fixed OAK-87 clock 
+Fixed Viper w/OAK detection (only OAK detected!) This caused lockups
+ on the newer Vipers (PCI or VLB with BIOS 3.xx). Forced a change in the
+ Oak detection (3DEh index 0Dh can cause a lockup on the Viper w/OAK).
+Started on OAK-87 HW cursor. Looks a bit weird sometimes.
+Added CT 64300 (only VGA side)
+Fixed bug in WRTEXT that could cause a "half" character in the first 64K
+Attempted HMC '304 vs '314 detection
+
+Version 1.70 - 10/Nov/94:
+Distributed as "1st Private BETA" for upcomming WHATVGA 2.0/VGADOC4
+Spilt IDVGA to its own unit (size limitatons).
+Integrated CHIPS.LST into the new IDVGA module.
+More S3 Bitblt&Linedraw fixes.
+Split IIT into AGX and Trident parts.
+Fixed IIT AGX BitBlt&linedraw and clock handling
+(almost) Fixed ET4000/W32 BitBlt& added Linedraw
+Added WD90c33 BitBlt & Linedraw
+Revised DAC detection rutine
+Numerous minor fixes & changes.
+
+Version 1.56 - 26/sep/94:
+Added S3-864/964 detection (untested)
+Added Sierra SC15021, SGS-Thompson STG 1702 and Bt477 DAC detection
+Fixed Compaq AVGA bitblt, 16c AVGA style bitblt still f*cked
+Fixed Trident TDK DAC detection. 8bit DAC (256 of 16M) now works for TDK.
+Changed 256c modes to use continous palette (since some BIOSes f*cks up
+  the palette, including Mach32).
+Added Mach32 (__Mach) extended modes, scroll, bitblt and Cursor
+Fixed Cirrus Mode 13h
+
+Version 1.55 - 30/may/94:
+Fixed Video7 for good (at least the HT208A)
+Fixed WD90c24 detection (must write both 34h and 35h)
+Fixed Trident 9400CXi. TDK8001 DAC detection works, except for 9000C
+Added Avance Logic ALG2201&2228 (Cursor & BitBlt still missing).
+Added Weitek W5286. Scroll still missing
+
+Version 1.54 - 1/may/94:
+Fixed Video7 bank select (I hope!)
+Fixed Tseng 4000 24bit mode detection (Genoa/SpeedStar)
+Automatic clock detection
+Fixed Oak initialisatiion bug in 256 color modes (Ouch..)
+Fixed Tseng ET3000 mode 13h and 800x600 16c.
+Fixed C&T for 655x0 series (incl Mode 13h).
+
+Version 1.52 - 2/feb/94:
+1st attemp at Zoom
+Changed Weitek detection & enable
+Changed C&T detection and init rutines
+
+Version 1.50 - 18/jan/94  - Released with VGADOC3:
+Changed BitBLT test image
+Added WD90c31 BitBLT functions and WD90c31/33 HW cursor
+Added Weitek scroll (untested)
+Changed Trident 8800BR detection (Arrgh - what a scr*wup)
+Numerous minor details.
+
+Version 1.49e - 3/jan/94:
+Fixed = Memory switch
+Added AutoTest (/a) facility
+
+Version 1.49d - 21/dec/93:
+Changed Tseng ET4000W32 detection, memory test and scroll
+Added DAC access via DAC_RS2/3 addresses
+
+Version 1.49c - 11/dec/93:
+Added ET4000W32 modes
+Added 6/8bit DAC test (D)
+
+Version 1.49b - 9/dec/93:
+Moved Chips&Tech test to the end to avoid lockups.
+Added special 256color mode detection for ATI 18800
+ATI now removes unsupported modes
+
+Version 1.49 - 8/dec/93:
+Changed Chips&Tech detection code.
+Changed CT450 to be CT453 with VRAM rather than 451.
+Register Bit test function (B) added
+
+Version 1.48 - 22/nov/93 - WHATVGA BETA mailing:
+Changed WD and Tseng (W32) detection
+Minor change in C&T451 initialisation.
+
+Version 1.47 - 17/nov/93 - WHATVGA BETA:
+
+Version 1.46 - 11/nov/93:
+Added Video7 HWcursor
+Fixed OAK-087 scroll and analysis.
+Fixed Cirrus 64xx detection and initialisation
+Fixed Trident 8900C scrolling
+Fixed WD initialisation
+
+Version 1.45 - 3/nov/93:
+Added ATI and Video7 frequency calculation.
+
+Version 1.44 -
+Changed Video7 detection.
+Added Trident 16color bank rutine.
+Numerus layout and user interface changes
+Added MXIC scrolling and detection
+Added the tests for hardware cursor and BitBLT for QVision and Cirrus
+Added hardware cursor, BitBLT, Line draw and Read/Write bank to many chipsets.
+Added ATI GUP bank and display start, and fixed IIT memory detect
+Added handling of multiple adapters/interfaces
+Changed Acumos to Cirrus 5402.
+Added CGA detection. Added frequency calculation for Trident & Cirrus
+
+Version 1.40 - 1/sep/93:
+Added RealTek scroll and fixed detection.
+Added Compaq modes and fixed bank switch
+
+Version 1.20 - 4/jul/93:
+Fixed OAK scroll, Interlace and scanline length detection.
+Fixed NCR interlace and scanline length detection.
+Added partial handling of Compaq, XGA, IIT & Weitek
+Modified DAC detection & handling
+Added ATI mode 75h and Video7 mode 6Ah & 70h
+Added Video7 Enable Ext.
+
+Version 1.02 - 27/mar/93:
+Added detection of S3 stepings.
+Added VESA version number
+Fixed Cirrus scanline width detection problem in "Search for modes"
+Changed Trident Scroll rutine. Now works with 256 colors.
+16 colors still doesn't work.
+Fixed Chips&Tech 16 color bank switching
+Added tests for new Trident chips (not tested yet).
+Fixed VESA problem with optional information (partially)
+Added detection for S3 801/805 & 928.
+Not tested yet (no cards). Note memory size problem
+
+Version 1.00 - 5/feb/93 - Released with VGADOC2:
+
+Original - dec/91 - Released with VGADOC01

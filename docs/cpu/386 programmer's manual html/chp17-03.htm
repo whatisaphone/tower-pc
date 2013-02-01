@@ -1,0 +1,134 @@
+<html>
+<head>
+<title>
+17.3  Instruction Set
+</title>
+<body>
+<a name="17-03"></a>
+Prev: <a href="chp17-02.htm">17.2  Instruction Format</a><br>
+Next: <a href="chp17-a3.htm">17.3.A  'A' Instructions </a>
+<hr>
+<h2>
+17.3  Instruction Set
+</h2>
+<ul>
+<li><a href="chp17-a3.htm#17-03-A">17.3.A  'A' Instructions </a>
+    <li><a href="chp17-a3.htm#17-03-AAA">AAA -- ASCII Adjust after Addition</a>
+    <li><a href="chp17-a3.htm#17-03-AAD">AAD -- ASCII Adjust AX before Division</a>
+    <li><a href="chp17-a3.htm#17-03-AAM">AAM -- ASCII Adjust AX after Multiply</a>
+    <li><a href="chp17-a3.htm#17-03-AAS">AAS -- ASCII Adjust AL after Subtraction</a>
+    <li><a href="chp17-a3.htm#17-03-ADC">ADC -- Add with Carry</a>
+    <li><a href="chp17-a3.htm#17-03-ADD">ADD -- Add</a>
+    <li><a href="chp17-a3.htm#17-03-AND">AND -- Logical AND</a>
+    <li><a href="chp17-a3.htm#17-03-ARPL">ARPL -- Adjust RPL Field of Selector</a>
+<li><a href="chp17-b3.htm#17-03-B">17.3.B  'B' Instructions </a>
+    <li><a href="chp17-b3.htm#17-03-BOUND">BOUND -- Check Array Index Against Bounds</a>
+    <li><a href="chp17-b3.htm#17-03-BSF">BSF -- Bit Scan Forward</a>
+    <li><a href="chp17-b3.htm#17-03-BSR">BSR -- Bit Scan Reverse</a>
+    <li><a href="chp17-b3.htm#17-03-BT">BT -- Bit Test</a>
+    <li><a href="chp17-b3.htm#17-03-BTC">BTC -- Bit Test and Complement</a>
+    <li><a href="chp17-b3.htm#17-03-BTR">BTR -- Bit Test and Reset</a>
+    <li><a href="chp17-b3.htm#17-03-BTS">BTS -- Bit Test and Set</a>
+<li><a href="chp17-c3.htm#17-03-C">17.3.C  'C' Instructions </a>
+    <li><a href="chp17-c3.htm#17-03-CALL">CALL -- Call Procedure</a>
+    <li><a href="chp17-c3.htm#17-03-CBW">CBW/CWDE -- Convert Byte to Word/Convert Word to Doubleword</a>
+    <li><a href="chp17-c3.htm#17-03-CLC">CLC -- Clear Carry Flag</a>
+    <li><a href="chp17-c3.htm#17-03-CLD">CLD -- Clear Direction Flag</a>
+    <li><a href="chp17-c3.htm#17-03-CLI">CLI -- Clear Interrupt Flag</a>
+    <li><a href="chp17-c3.htm#17-03-CLTS">CLTS -- Clear Task-Switched Flag in CR0</a>
+    <li><a href="chp17-c3.htm#17-03-CMC">CMC -- Complement Carry Flag</a>
+    <li><a href="chp17-c3.htm#17-03-CMP">CMP -- Compare Two Operands</a>
+    <li><a href="chp17-c3.htm#17-03-CMPS">CMPS/CMPSB/CMPSW/CMPSD -- Compare String Operands</a>
+    <li><a href="chp17-c3.htm#17-03-CWD">CWD/CDQ -- Convert Word to Doubleword/Convert Doubleword to</a>
+<li><a href="chp17-d3.htm#17-03-D">17.3.D  'D' Instructions </a>
+    <li><a href="chp17-d3.htm#17-03-DAA">DAA -- Decimal Adjust AL after Addition</a>
+    <li><a href="chp17-d3.htm#17-03-DAS">DAS -- Decimal Adjust AL after Subtraction</a>
+    <li><a href="chp17-d3.htm#17-03-DEC">DEC -- Decrement by 1</a>
+    <li><a href="chp17-d3.htm#17-03-DIV">DIV -- Unsigned Divide</a>
+<li><a href="chp17-e3.htm#17-03-E">17.3.E  'E' Instructions </a>
+    <li><a href="chp17-e3.htm#17-03-ENTER">ENTER -- Make Stack Frame for Procedure Parameters</a>
+<li><a href="chp17-h3.htm#17-03-H">17.3.H  'H' Instructions </a>
+    <li><a href="chp17-h3.htm#17-03-HLT">HLT -- Halt</a>
+<li><a href="chp17-i3.htm#17-03-I">17.3.I  'I' Instructions </a>
+    <li><a href="chp17-i3.htm#17-03-IDIV">IDIV -- Signed Divide</a>
+    <li><a href="chp17-i3.htm#17-03-IMUL">IMUL -- Signed Multiply</a>
+    <li><a href="chp17-i3.htm#17-03-IN">IN -- Input from Port</a>
+    <li><a href="chp17-i3.htm#17-03-INC">INC -- Increment by 1</a>
+    <li><a href="chp17-i3.htm#17-03-INS">INS/INSB/INSW/INSD -- Input from Port to String</a>
+    <li><a href="chp17-i3.htm#17-03-INT">INT/INTO -- Call to Interrupt Procedure</a>
+    <li><a href="chp17-i3.htm#17-03-IRET">IRET/IRETD -- Interrupt Return</a>
+<li><a href="chp17-j3.htm#17-03-J">17.3.J  'J' Instructions </a>
+    <li><a href="chp17-j3.htm#17-03-Jcc">Jcc -- Jump if Condition is Met</a>
+    <li><a href="chp17-j3.htm#17-03-JMP">JMP -- Jump</a>
+<li><a href="chp17-l3.htm#17-03-L">17.3.L  'L' Instructions </a>
+    <li><a href="chp17-l3.htm#17-03-LAHF">LAHF -- Load Flags into AH Register</a>
+    <li><a href="chp17-l3.htm#17-03-LAR">LAR -- Load Access Rights Byte</a>
+    <li><a href="chp17-l3.htm#17-03-LEA">LEA -- Load Effective Address</a>
+    <li><a href="chp17-l3.htm#17-03-LEAVE">LEAVE -- High Level Procedure Exit</a>
+    <li><a href="chp17-l3.htm#17-03-LGDT">LGDT/LIDT -- Load Global/Interrupt Descriptor Table Register</a>
+    <li><a href="chp17-l3.htm#17-03-LGS">LGS/LSS/LDS/LES/LFS -- Load Full Pointer</a>
+    <li><a href="chp17-l3.htm#17-03-LLDT">LLDT -- Load Local Descriptor Table Register</a>
+    <li><a href="chp17-l3.htm#17-03-LMSW">LMSW -- Load Machine Status Word</a>
+    <li><a href="chp17-l3.htm#17-03-LOCK">LOCK -- Assert LOCK# Signal Prefix</a>
+    <li><a href="chp17-l3.htm#17-03-LODS">LODS/LODSB/LODSW/LODSD -- Load String Operand</a>
+    <li><a href="chp17-l3.htm#17-03-LOOP">LOOP/LOOPcond -- Loop Control with CX Counter</a>
+    <li><a href="chp17-l3.htm#17-03-LSL">LSL -- Load Segment Limit</a>
+    <li><a href="chp17-l3.htm#17-03-LTR">LTR -- Load Task Register</a>
+<li><a href="chp17-m3.htm#17-03-M">17.3.M  'M' Instructions </a>
+    <li><a href="chp17-m3.htm#17-03-MOV">MOV -- Move Data</a>
+    <li><a href="chp17-m3.htm#17-03-MOV">MOV -- Move to/from Special Registers</a>
+    <li><a href="chp17-m3.htm#17-03-MOVS">MOVS/MOVSB/MOVSW/MOVSD -- Move Data from String to String</a>
+    <li><a href="chp17-m3.htm#17-03-MOVSX">MOVSX -- Move with Sign-Extend</a>
+    <li><a href="chp17-m3.htm#17-03-MOVZX">MOVZX -- Move with Zero-Extend</a>
+    <li><a href="chp17-m3.htm#17-03-MUL">MUL -- Unsigned Multiplication of AL or AX</a>
+<li><a href="chp17-n3.htm#17-03-N">17.3.N  'N' Instructions </a>
+    <li><a href="chp17-n3.htm#17-03-NEG">NEG -- Two's Complement Negation</a>
+    <li><a href="chp17-n3.htm#17-03-NOP">NOP -- No Operation</a>
+    <li><a href="chp17-n3.htm#17-03-NOT">NOT -- One's Complement Negation</a>
+<li><a href="chp17-o3.htm#17-03-O">17.3.O  'O' Instructions </a>
+    <li><a href="chp17-o3.htm#17-03-OR">OR -- Logical Inclusive OR</a>
+    <li><a href="chp17-o3.htm#17-03-OUT">OUT -- Output to Port</a>
+    <li><a href="chp17-o3.htm#17-03-OUTS">OUTS/OUTSB/OUTSW/OUTSD -- Output String to Port</a>
+<li><a href="chp17-p3.htm#17-03-P">17.3.P  'P' Instructions </a>
+    <li><a href="chp17-p3.htm#17-03-POP">POP -- Pop a Word from the Stack</a>
+    <li><a href="chp17-p3.htm#17-03-POPA">POPA/POPAD -- Pop all General Registers</a>
+    <li><a href="chp17-p3.htm#17-03-POPF">POPF/POPFD -- Pop Stack into FLAGS or EFLAGS Register</a>
+    <li><a href="chp17-p3.htm#17-03-PUSH">PUSH -- Push Operand onto the Stack</a>
+    <li><a href="chp17-p3.htm#17-03-PUSHA">PUSHA/PUSHAD -- Push all General Registers</a>
+    <li><a href="chp17-p3.htm#17-03-PUSHF">PUSHF/PUSHFD -- Push Flags Register onto the Stack</a>
+<li><a href="chp17-r3.htm#17-03-R">17.3.R  'R' Instructions </a>
+    <li><a href="chp17-r3.htm#17-03-RCL">RCL/RCR/ROL/ROR -- Rotate</a>
+    <li><a href="chp17-r3.htm#17-03-REP">REP/REPE/REPZ/REPNE/REPNZ -- Repeat Following String Operation</a>
+    <li><a href="chp17-r3.htm#17-03-RET">RET -- Return from Procedure</a>
+<li><a href="chp17-s3.htm#17-03-S">17.3.S  'S' Instructions </a>
+    <li><a href="chp17-s3.htm#17-03-SAHF">SAHF -- Store AH into Flags</a>
+    <li><a href="chp17-s3.htm#17-03-SAL">SAL/SAR/SHL/SHR -- Shift Instructions</a>
+    <li><a href="chp17-s3.htm#17-03-SBB">SBB -- Integer Subtraction with Borrow</a>
+    <li><a href="chp17-s3.htm#17-03-SCAS">SCAS/SCASB/SCASW/SCASD -- Compare String Data</a>
+    <li><a href="chp17-s3.htm#17-03-SETcc">SETcc -- Byte Set on Condition</a>
+    <li><a href="chp17-s3.htm#17-03-SGDT">SGDT/SIDT -- Store Global/Interrupt Descriptor Table Register</a>
+    <li><a href="chp17-s3.htm#17-03-SHLD">SHLD -- Double Precision Shift Left</a>
+    <li><a href="chp17-s3.htm#17-03-SHRD">SHRD -- Double Precision Shift Right</a>
+    <li><a href="chp17-s3.htm#17-03-SLDT">SLDT -- Store Local Descriptor Table Register</a>
+    <li><a href="chp17-s3.htm#17-03-SMSW">SMSW -- Store Machine Status Word</a>
+    <li><a href="chp17-s3.htm#17-03-STC">STC -- Set Carry Flag</a>
+    <li><a href="chp17-s3.htm#17-03-STD">STD -- Set Direction Flag</a>
+    <li><a href="chp17-s3.htm#17-03-STI">STI -- Set Interrupt Flag</a>
+    <li><a href="chp17-s3.htm#17-03-STOS">STOS/STOSB/STOSW/STOSD -- Store String Data</a>
+    <li><a href="chp17-s3.htm#17-03-STR">STR -- Store Task Register</a>
+    <li><a href="chp17-s3.htm#17-03-SUB">SUB -- Integer Subtraction</a>
+<li><a href="chp17-t3.htm#17-03-T">17.3.T  'T' Instructions </a>
+    <li><a href="chp17-t3.htm#17-03-TEST">TEST -- Logical Compare</a>
+<li><a href="chp17-v3.htm#17-03-V">17.3.V  'V' Instructions </a>
+    <li><a href="chp17-v3.htm#17-03-VERR">VERR, VERW -- Verify a Segment for Reading or Writing</a>
+<li><a href="chp17-w3.htm#17-03-W">17.3.W  'W' Instructions </a>
+    <li><a href="chp17-w3.htm#17-03-WAIT">WAIT -- Wait until BUSY# Pin is Inactive (HIGH)</a>
+<li><a href="chp17-x3.htm#17-03-X">17.3.X  'X' Instructions </a>
+    <li><a href="chp17-x3.htm#17-03-XCHG">XCHG -- Exchange Register/Memory with Register</a>
+    <li><a href="chp17-x3.htm#17-03-XLAT">XLAT/XLATB -- Table Look-up Translation</a>
+    <li><a href="chp17-x3.htm#17-03-XOR">XOR -- Logical Exclusive OR</a>
+</ul><hr>
+Prev: <a href="chp17-02.htm">17.2  Instruction Format</a><br>
+Next: <a href="chp17-a3.htm">17.3.A  'A' Instructions </a>
+</body>
+</html>

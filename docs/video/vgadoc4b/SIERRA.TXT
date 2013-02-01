@@ -1,0 +1,84 @@
+ Sierra superVGAs:
+
+SC15064  Falcon/64
+
+3C4h index  7h
+bit 5-7  (R) Chip id. 4: 15064
+
+3C4h index 11h
+bit   5  Clear to enable extensions
+    6-7  Set to 0 to enable access >1Mb, 3 to disable banking?
+Note: When unlocking read this register, write it back twice and write bit 5
+      back as 0.
+
+3C4h index 13h (R/W):
+bit 0-7  Linear Frame Buffer Address in units of 1Mb.
+
+3C4h index 14h (R/W):
+bit 4-5  CRTC Offset bits 8-9. Bits 0-7 are in 3d4h index 13h
+
+3C4h index 15h (R/W):
+bit 0-7  Read Bank in units of 32Kbytes
+
+3CDh (R/W):
+bit 0-7  Write Bank in units of 32Kbytes
+
+3CEh index 05h (R/W):
+bit   7  Set to enable the Linear Frame Buffer
+Note: Bits 0-6 are standard VGA.
+
+3CEh index 0Ch (R/W):
+bit 0-1  Set to 3 to enable 16bits/pixel?
+
+3d4h index 1Eh (R/W):
+bit 0-3  Display Start Address bits 16-19. Bits 0-15 are in 3d4h index 0Ch,0Dh
+
+Video modes:
+
+ 58h G   800  600   16color
+ 59h G  1600 1200   16color
+ 5Ah G  1280 1024   16color
+ 5Bh G  1280 1024  256color
+ 5Ch G   800  600  256color
+ 5Dh G  1024  768   16color
+ 5Eh G  1024  768  256color
+ 5Fh G   640  480  256color
+ 60h G  1600 1280  256color
+ 69h G   640  480  16Mcolor
+ 6Eh G   640  480  32Kcolor
+ 6Fh G   800  600  32Kcolor
+ 70h G   800  600  16Mcolor
+ 71h G  1024  768  32Kcolor
+ 73h G  1024  768  16Mcolor
+ 75h G  1280 1024  32Kcolor
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

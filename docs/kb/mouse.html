@@ -1,0 +1,667 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<TITLE>PC mouse info</TITLE>
+<meta name="description" content="PC mouse hardware information.">
+<meta name="keywords" content="PC, mouse, hardware, protocol, serial, port, pin, PS/2, bus, programming, driver, data, packet, DOS, Genius, Logitech, reference, guide">
+<meta name="distribution" content="global">
+<meta name="copyright" content="1995-1998 Tomi Engdahl">
+<meta name="author" contents="Tomi Engdahl">
+<meta name="GENERATOR" content="Emacs">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>ePanorama.net - Circuits</title>
+<link href="/css/style.css" rel="stylesheet" type="text/css" />
+<link href="/css/print.css" rel="stylesheet" type="text/css" media="print"/>
+<SCRIPT TYPE="text/javascript">
+<!--
+function changeImages(elem, changeimg) {
+	if(document.images){
+		document.images[elem].src = eval(changeimg + ".src");
+	}
+}
+
+if (document.images) {
+	var links_btn  = new Image();
+	links_btn.src = "/images/links-btn.jpg";
+	var links_btn_over  = new Image();
+	links_btn_over.src = "/images/links-btn-over.jpg";
+	var circuits_btn = new Image();
+	circuits_btn.src = "/images/circuits-btn.jpg";
+	var circuits_btn_over = new Image();
+	circuits_btn_over.src = "/images/circuits-btn-over.jpg";
+	var documents_btn = new Image();
+	documents_btn.src = "/images/documents-btn.jpg";
+	var documents_btn_over = new Image();
+	documents_btn_over.src = "/images/documents-btn-over.jpg";
+	var forum_btn = new Image();
+	forum_btn.src = "/images/forum-btn.jpg";
+	var forum_btn_over = new Image();
+	forum_btn_over.src = "/images/forum-btn-over.jpg";
+	var software_btn = new Image();
+	software_btn.src = "/images/software-btn.jpg";
+	var software_btn_over = new Image();
+	software_btn_over.src = "/images/software-btn-over.jpg";
+	var rfc_btn = new Image();
+	rfc_btn.src = "/images/rfc-btn.jpg";
+	var rfc_btn_over = new Image();
+	rfc_btn_over.src = "/images/rfc-btn-over.jpg";
+	var search_btn = new Image();
+	search_btn.src = "/images/search-btn.jpg";
+	var search_btn_over = new Image();
+	search_btn_over.src = "/images/search-btn-over.jpg"; 
+	var toolbox_btn = new Image();
+	toolbox_btn.src = "/images/toolbox-btn.jpg";
+	var toolbox_btn_over = new Image();
+	toolbox_btn_over.src = "/images/toolbox-btn-over.jpg";
+}
+// -->
+</SCRIPT>
+
+<!-- ValueClick Media POP-UNDER CODE v1.8 for epanorama.net (12 hour) -->
+<script language="javascript"><!--
+var dc=document; var date_ob=new Date();
+dc.cookie='h2=o; path=/;';var bust=date_ob.getSeconds();
+if(dc.cookie.indexOf ('e=llo') <= 0 && dc.cookie.indexOf('2=o') > 0){
+dc.write('<scr'+'ipt language="javascript" src="http://media.fastclick.net' );
+dc.write('/w/pop.cgi?sid=6044&m=2&tp=2&v=1.8&c='+bust+'"></scr'+'ipt>');
+date_ob.setTime(date_ob.getTime()+43200000);
+dc.cookie='he=llo; path=/; expires='+ date_ob.toGMTString();} // -->
+</script>
+<!-- ValueClick Media POP-UNDER CODE v1.8 for epanorama.net -->
+
+<!-- FASTCLICK.COM INTERSTITIAL HEAD CODE v1.0 for epanorama.net -->
+<script language="javascript"><!--
+function FCx(x){
+  var min=15; // minimum minutes between interstitials (needs to be >15)
+  if(x.indexOf('get.media')>0){
+    x=unescape(x.substring(x.indexOf('&url=')+5,x.length));
+  }else{
+    if(document.cookie.indexOf('CxIC=1')<=0){
+      x='http://media.fastclick.net/w/get.media?sid=6044&m=5&url='+escape(x);
+      var date_ob=new Date();
+      date_ob.setTime(date_ob.getTime()+min*1000*60);
+      document.cookie='FCxIC=1; path=/; expires='+date_ob.toGMTString();
+    }
+  }
+  return x
+}
+// -->
+</script>
+<!-- FASTCLICK.COM INTERSTITIAL HEAD CODE v1.0 for epanorama.net -->
+</HEAD>
+<BODY>
+<DIV class="fullpage region1" id=wrapper>
+	<div class="googlebanner">
+		 <script type="text/javascript"><!--
+google_ad_client = "pub-3257650267345122";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="5495687474";
+google_color_border = "336699";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+	</div>
+	
+	<div class="coname"><a href="/index.php"><img border="0px" src="/images/logo.jpg" name="logo"/></a></div>
+	
+	<div class="hline"> <hr /> </div>
+	
+	  <div class="navbtns" id="navbuttons"> 
+<a href="/index.php?index=link" onMouseOver="changeImages('links_btn', 'links_btn_over')" onMouseOut="changeImages('links_btn', 'links_btn')"><img class="imgplain" id="links_btn" src="/images/links-btn.jpg" alt="Links" title="Links"></a> 
+<a href="/index.php?index=circuit" onMouseOver="changeImages('circuits_btn', 'circuits_btn_over')" onMouseOut="changeImages('circuits_btn', 'circuits_btn')"> <img class="imgplain" id="circuits_btn" src="/images/circuits-btn.jpg" alt="Circuits" title="Circuits"></a>
+<a href="/index.php?index=document" onMouseOver="changeImages('documents_btn', 'documents_btn_over')" onMouseOut="changeImages('documents_btn', 'documents_btn')"> <img class="imgplain" id="documents_btn" src="/images/documents-btn.jpg" alt="Documents" title="Documents"></a> 
+<a href="/index.php?index=discussion" onMouseOver="changeImages('forum_btn', 'forum_btn_over')" onMouseOut="changeImages('forum_btn', 'forum_btn')"> <img class="imgplain" id="forum_btn" src="/images/forum-btn.jpg" alt="Forum" title="Forum"></a> 
+<a href="/software-list.php" onMouseOver="changeImages('software_btn', 'software_btn_over')" onMouseOut="changeImages('software_btn', 'software_btn')"> <img class="imgplain" id="software_btn" src="/images/software-btn.jpg" alt="Software" title="Software"></a> 
+<a href="/RFC/rfc_index.html" onMouseOver="changeImages('rfc_btn', 'rfc_btn_over')" onMouseOut="changeImages('rfc_btn', 'rfc_btn')"> <img class="imgplain" id="rfc_btn" src="/images/rfc-btn.jpg" alt="RFC" title="RFC"></a> 
+<a href="/index.php?index=calculator" onMouseOver="changeImages('toolbox_btn', 'toolbox_btn_over');" onMouseOut="changeImages('toolbox_btn', 'toolbox_btn');"> <img class="imgplain" id="toolbox_btn" src="/images/toolbox-btn.jpg" alt="ToolBox" title="ToolBox"></a>
+<a href="/multi.php" onMouseOver="changeImages('search_btn', 'search_btn_over')" onMouseOut="changeImages('search_btn', 'search_btn')"> <img class="imgplain" id="search_btn" src="/images/search-btn.jpg" alt="Search" title="Search"></a> </div>
+  
+<div class="navtext" id="nav2">|
+ <a href="/index.php" class="btext">Index</a> | 
+ <a href="/schematicsforfree/index.php" class="btext">Schematics</a> | 
+ <a href="/acronym.html" class="btext">Acronyms</a> | 
+ <a href="/wwwboard/wwwboard.html" class="btext">Discussion</a> | 
+ <a href="/m2f/friendmail.php" class="btext">Mail to a friend</a> | 
+ <a href="/pagediscuss.php" class="btext">Post a message</a> |
+ </div>
+
+ <div class="searcht" id="searchtop">
+<form action="http://new.epanorama.net/multi.php" method=GET name="searchfrm">
+  <select class="btext" name="search">
+        <option value="">Search this site</option>
+	<option value="search">Site pages/links</option>
+	<option value="companysearch">Company</option>
+	<option value="acro">Acronym info</option>
+	<option value="semi">Semiconductor info</option>
+	<option value="wwwboardsearch">Discussion messages</option>
+	<option value="circuitsitesearch">Circuit sites</option>
+	<option value="otherlink">Other search engines</option>
+  </select> <input type="text" name="keyword" size="20">
+  <a href="#"><img src="/images/search.gif" width=52 height=21 alt="" border="0" align="absbottom" onClick="javascript: document.searchfrm.submit();"></a>
+</form>
+ </div>   
+
+<DIV class="midPage" id="mainContent">
+<H1>PC mouse information</H1>
+<P>
+This documents tries to tell how PC mouse hardware works and how
+to read it at the lowest level. If you are programming under some
+ready made operating systems, then it would be better to use the
+routines supplied by the mouse driver (a good description of DOS mouse driver
+programming is available at <A HREF="ftp://x2ftp.oulu.fi/pub/msdos/programming/docs/gmouse.doc">ftp://x2ftp.oulu.fi/pub/msdos/programming/docs/gmouse.doc</A> in ascii format). There is also a good tutorial <A HREF="http://www.geocities.com/SiliconValley/2151/mouse.html">Programming the Microsoft Mouse</A> in the <A HREF="http://www.geocities.com/SiliconValley/2151/pcgpe.html">PC Game Programmer's Encyclopedia</A>.
+<P>
+
+<H2>How mouse system works</H2>
+<P>
+Typical PC mouse controlling system has the following parts:
+<PRE>
+sensors -> mouse controller -> communication link -> data interface -> driver -> software
+</PRE>
+Sensors are the movement detectors (typically optomechanical) which sense the mouse
+movement and button swiches which sense the button states. Mouse controller reads
+the state of those sensors and takes acount of current mouse position. When this information
+changes the mouse controller sends a packet of data to the computer data interface controller.
+<P>
+The mouse driver in the computer received that data packet and decodes the information
+from it and does actions based on the information. Typically mouse driver has the information
+of the current mouse state (position and button states) and tells them to the
+application or operating when it asks them. Typically the mouse drive calls mouse
+cursor moving routines when mouse is moved and sends messages to the software when
+buttons are pressed. 
+<P>
+In typical modern PC mouse driver the actual cursor movement is not linearly related
+to the mouse movement. This might sound a bit strange but it has been found that
+there are better ways to change the mouse movement to cursor muvement than just simply
+causing one mouse step to move the cursor one pixel. During the pioneering research
+done at <A HREF="http://www.apple.com/">Apple Computer</A> in the devellopment of
+the graphical user interface (GUI), it became apparent that no particular ratio between
+mouse movement and cursor movement was best suited for all tasks.
+<P>
+Early work detected that
+there are two basic movements in the use of pointing devices: move cursor to
+desired area and then exactly to desired target. Those two movements have contradictory
+requirements, so Apple solved the problem by monitoring the mouse movements and change
+it's CPI (counts per inch) characteristics. When the mouse was moved slowly it
+remained 100 CPI and when the mouse was moved fast it appears to be 400 CPI mouse.
+This method of adjusting CPI based on its usage has now been adopted by the default driver
+in Windows 95 and is now the most commonly accepted way of translating mouse movements
+to cursor screen movement
+<P>
+<HR>
+<H1>Mouse hardware information</H1>
+
+<H2>	Serial mouse</H2>
+
+<H3>Voltage levels:</H3>
+<P>
+Mouse takes standard RS-232C output signals (+-12V) as its input signals.
+Those outputs are in +12V when mouse is operated. Mouse takes some current
+from each of the RS-232C port output lines it is connected (about 10mA).
+Mouse send data to computer in levels that RS-232C receiver chip in the 
+computer can uderstand as RS-232C input levels. Mouse outputs are normally
+something like +-5V, 0..5V or sometimes +-12V. Mouse electronics
+normally use +5V voltage.
+<P>
+<H3>Hardware implementation</H3>
+<P>
+PC serial mouse uses typically DRT and RTS lines for generating +5V power for microcontroller circuit in the
+mouse. Because typical optomechanical mouse also needs power for 4 leds in the optocoupler movevement
+detectors, there is not much power to loose. A typical approach is to use diodes to take current fron DTR and
+RTS lines and then feed it through resistor to all of the (infrared) leds in the movement detectors. All four (infrared)
+leds are connected in series, which gives about +5V voltage drop over all leds (typical to leds used in moused).
+This +5V is adequate power for low power mouse microcontroller. The serial data transimitting circuit consists of
+simple discrete transistor circuir to make it consume as little power as possible. The positive power supply usually
+taken from RTS and DRT lines (just after the diodes and before the resistor going to leds). The negative supply for
+transmitter is taken from TD pin. Typical PC serial port mouse takes 10 mA total current and operates at voltage
+range of 6-15V. The data itself in sent using standard asuncronous RS-232C serial format:
+<PRE>
+              Start D0  D1  D2  D3  D4  D5  D6  D7  Stop
+   Logic 0      ___ ___ ___ ___ ___ ___ ___ ___ ___
+  +3..+15V     |   |   |   |   |   |   |   |   |   |
+               |   |   |   |   |   |   |   |   |   |
+               |   |   |   |   |   |   |   |   |   |
+   Logic 1     |   |   |   |   |   |   |   |   |   |
+  -3..-15V  ___|   |___|___|___|___|___|___|___|___|____
+
+</PRE>
+
+<P>
+
+<H3>Microsoft serial mouse</H3>
+<P>
+Microsoft serial mouse is the most popular 2 button serial mouse type.
+Typically that cheap tho button mouse which comes with the computer is
+Microsoft mouse system. Microsoft mouse is supported in all major
+operating systems.
+<P>
+<H3>Mouse resolution and tracking rate</H3>
+<P>
+Maximum tracking rate for Microsoft mouse is 40 reports/second * 127 counts per report
+= 5080 counts per second. The most common range for typical mouses is 100 to 400 CPI (count per inch) but can be up to 1000 CPI (cheap ones typically are 100 CPI or 200 CPI models).
+This means that you can move 100 CPI mouse up to speed of 50.8 inches per second
+and 400 CPI mouse maximally at 12.7 inches per second. The actual accuracy of movement the
+software sees is detemined by the settings of the mouse driver (many mouse drivers
+have option to adjust mouse sensitivity).
+<P>
+<H3>Pinout</H3>
+<PRE>
+9 pin    25 pin     Wire Name            Comments
+shell     1         Protective Ground
+3         2         TD                  Serial data from host to mouse (only for power)
+2         3         RD                  Serial data from mouse to host
+7         4         RTS                 Positive voltage to mouse
+8         5         CTS
+6         6         DSR
+5         7         Signal Ground
+4         20        DTR                 Positive voltage to mouse and reset/detection
+
+RTS = Request to Send   CTS = Clear to Send
+DSR = Data Set Ready    DTR = Data Terminal Ready
+</PRE>
+To function correctly, both the RTS and DTR lines must be positive.  The
+lines DTR-DSR and RTS-CTS must NOT be shorted.  Implement the RTS toggle
+function by setting the RTS line negative and positive again.  The
+negative pulse width is at least 100ms.  After a cold boot, the RTS line
+is usually set to a negative level.  In this case, setting the RTS line to
+a positive level is also considered an RTS toggle.
+<P>
+
+<H3>Serial data parameters:</H3>
+1200bps, 7 databits, 1 stop-bit<BR>
+
+<H3>Data packet format:</H3>
+
+Data packet is 3 byte packet. It is send to the computer every time
+mouse state changes (mouse moves or keys are pressed/released).
+<PRE>
+        D7      D6      D5      D4      D3      D2      D1      D0
+ 
+1.      X       1       LB      RB      Y7      Y6      X7      X6
+2.      X       0       X5      X4      X3      X2      X1      X0      
+3.      X       0       Y5      Y4      Y3      Y2      Y1      Y0
+</PRE>
+Note: The bit marked with X is 0 if the mouse received with
+7 databits and 2 stop bits format. It is also possible to use
+8 databits and 1 stop bit format for receiving. In this case
+X gets value 1. The safest thing to get everything working is
+to use 7 databits and 1 stopbit when receiving mouse information
+(and if you are making mouse then send out 7 databits and 2 stop bits).
+<P>
+The byte marked with 1. is send first, then the others. The bit D6
+in the first byte is used for syncronizing the software to mouse
+packets if it goes out of sync.
+<PRE>
+LB is the state of the left button (1 means pressed down)
+RB is the state of the right button (1 means pressed down)
+X7-X0 movement in X direction since last packet (signed byte)
+Y7-Y0 movement in Y direction since last packet (signed byte)
+</PRE>
+<H3>Graphical description how the data is contained in the packet</H3>
+<PRE>
+              1st byte        2nd byte         3rd byte
+          ================  ===============  ================
+           - 1 ? ? Y Y X X  - 0 X X X X X X  - 0 Y Y Y Y Y Y
+          ================  ===============  ================
+               | | \ / \ /      \---------/      \---------/
+               | |  |   |            |                |
+               | |  |   \----\       |                |
+               | |  \--------|-------|--------\       |
+               | |          / \ /---------\  / \ /---------\
+               | |         ================ =================
+               | |          0 0 0 0 0 0 0 0  0 0 0 0 0 0 0 0
+ Left Button --/ |         ================ =================
+Right Button ----/            X increment      Y increment
+</PRE>
+<H3>Mouse identification</H3>
+When DTR line is toggled, mouse should
+send one data byte containing letter 'M' (ascii 77).
+<P>
+<H3>Logitech extension to protocol</H3>
+<P>
+Logitech uses this same protocol in their mouses (for example
+Logitech Pilot mouse and others). The origianal protocol supports only
+two buttons, but logitech as added third button to some of their
+mouse models. To make this possible logitech has made one extension to the
+protocol.
+<P>
+I have not seen any documentation about the exact documents, but here is
+what I have found out:
+The information of the third button state is sent using one extra byte
+which is send after the normal packet when needed. Value 32 (dec) is
+sent every time when the center button is pressed down. It is also
+sent every time with the data packet when center button is kept
+down and the mouse data packet is sent for other reasons. When
+center button is released, the mouse sends the normal data packet followed
+by data bythe which has value 0 (dec). As you can see the extra data
+byte is sent only when you mess with the center button.
+<P>
+<H3>Mouse systems mouse</H3>
+
+<H3>Serial data parameters:</H3>
+1200bps, 8 databits, 1 stop-bit<BR>
+
+<H3>The data is sent in 5 byte packets in following format:</H3>
+<PRE>
+        D7      D6      D5      D4      D3      D2      D1      D0
+
+1.      1       0       0       0       0       LB      CB      RB
+2.      X7      X6      X5      X4      X3      X2      X1      X0
+3.      Y7      Y6      Y5      Y4      Y3      Y4      Y1      Y0
+4.      X7'     X6'     X5'     X4'     X3'     X2'     X1'     X0'
+5.      Y7'     Y6'     Y5'     Y4'     Y3'     Y4'     Y1'     Y0'
+
+LB is left button state (0=pressed, 1=released)
+CB is center button state (0=pressed, 1=released)
+RB is right button state (0=pressed, 1=released)
+X7-X0 movement in X direction since last packet in signed byte 
+      format (-128..+127), positive direction right
+Y7-Y0 movement in Y direction since last packet in signed byte 
+      format (-128..+127), positive direction up
+X7'-X0' movement in X direction since sending of X7-X0 packet in signed byte 
+      format (-128..+127), positive direction right
+Y7'-Y0' movement in Y direction since sending of Y7-Y0 in signed byte 
+      format (-128..+127), positive direction up
+</PRE>
+The last two bytes in the packet (bytes 4 and 5) contains
+information about movement data changes which have occured
+after data butes 2 and 3 have been sent.
+<P>
+<HR>
+<H2>Bus mouse</H2>
+<P>
+Bus mouse is connected to the PC using a mouse card put to ISA bus.
+The card has the intelligence in it and the mouse has only the detectors
+for mouse movement and mosue button switches.
+The mouse is connected to card using 9 pin Hosiden connector.
+<P>
+<H3>Connector pinout</H3>
+(the pin umbering might be wrong in this)
+<PRE>
+        1 2 3
+
+       4 5 6 7
+
+         8 9
+
+
+1.      SW2
+2.      SW3
+3.      Signal Ground
+4.      XB
+5.      YA
+6.      YB
+7.      SW1
+8.      +5V
+9.      XA
+</PRE>
+SW1, SW2 and SW3 are signals from mouse buttons.<BR>
+XA, XB, YA and YB are quadriture signals from mouse movement detectors.<BR>
+<P>
+<H3>Another connector numbering scheme</H3>
+<PRE>
+
+         7 8 9
+
+        3 4 5 6
+
+          1 2
+
+ 1.      +5v
+ 2.      XA  (H-Pulse)
+ 3.      XB  (HQ-Pulse)
+ 4.      YA  (V-Pulse)
+ 5.      YB  (VQ-Pulse)
+ 6.      SW1 (Left)
+ 7.      SW2 (Middle)
+ 8.      SW3 (Right)
+ 9.      GND
+ SW1, SW2 and SW3 are signals from mouse buttons.XA, XB, YA and YB are
+ quadriture signals from mouse movement detectors.
+</PRE>
+
+<H3>Wiring according logitech documentation</H3>
+<P>
+Pinout:
+<PRE>
+         7 8 9
+
+        3 4 5 6
+
+          1 2
+</PRE>
+Pin functions:
+<PRE>
+Wire     Mini-DIN       Logitech             Microsoft
+Color      Pin       P-Series Signal       InPort Signal
+Black       1             +5V                  +5V
+Brown       2              X2                   XA
+Red         3              X1                   XB
+Orange      4              Y1                   YA
+Yellow      5              Y2                   YB
+Green       6              Left                 SW1
+Violet      7              Middle               SW2
+Gray        8              Right                SW3
+White       9              GND                  Logic GND
+SHIELD    shell            chassis              chassis
+</PRE>
+<HR>
+<H2>PS/2 mouse</H2>
+<P>
+PS/2 mouse is connected to computer motherboard using same type of
+6 pin connector as PS/2 keyboard. The data is sent using syncronous
+serial protocol similar to protocol used by PS/2 keyboard.
+The mouse data is handled using keyboard controller.
+PS/2 type mouse is becoming more and more common because many new computers
+(nearly all big brands and new no brand computers made using ATX standard motherboards)
+have PS/2 mouse port integrated it in it and using PS/2 mouse connected to that port
+also frees one serial port for other uses.
+<P>
+<H3>Mouse resolution and tracking rate</H3>
+<P>
+The standard PS/2 mouse (with Logitech mouse) defaults to 160 CPI and can be switched
+to 40, 80, 160 or 320 CPI with software. Microsoft mouse driver for Windows 3.x and
+Windows 95 defauls to 160 couns per inch. The maximum tracking rate for PS/2 mouse is
+40 report/second * 255 counts per report = 10200 counts per second. For 100 CPI mouse
+this would indicate maximum trackign rate of 102 inches per second and for 400 CPI mouse
+only 25.2 inches per second.
+<P>
+<H3>Connector pinout</H3>
+<P>
+Pin     Wire Name
+1       DATA
+2       Reserved
+3       Ground
+4       +5V Supply
+5       CLK
+6       Reserved
+Shield  Chassis
+<P>
+<H3>Data packet format</H3>
+<PRE>
+        D7      D6      D5      D4      D3      D2      D1      D0
+1.      XV      XV      YS      XS      1       0       R       L
+2.      X7      X6      X5      X4      X3      X2      X1      X0
+3.      Y7      Y6      Y5      Y4      Y3      Y2      Y1      Y0
+
+L       Left button state (1 = pressed down)
+R       Right button state (1 = pressed down)
+X0-X7   Movement in X direction
+Y0-Y7   Movement in Y direction
+XS,YS   Movement data sign bits (1 = negative)
+XV,YV   Movement data overflow bits (1 = overflow has occured)
+</PRE>
+<P>
+<H3>Physical connector</H3>
+<P>
+The PS/2 mouse connector has the following pinout when looking at
+the connector on the back of the computer:
+<PRE>
+6 Pin PS2
+
+1   DATA
+2   No connection
+3   GND
+4   +5V
+5   CLK
+6   No connection
+
+The PS2 is numbered as follows:
+        
+      6   5
+     4     3
+       2 1
+</PRE>
+<P>
+Bi-directional transmission is controlled by the CLK and DATA lines.  Both
+are fed by an open collector device which lets either host or mouse force
+the line to "0".  During non-transmission, CLK is at "1" and  DATA can be
+at "0" or "1".
+<P>
+The host can inhibit mouse transmission by forcing CLK to "0".  If the
+host inhibits the mouse while it is transmitting, the byte must be
+retransmitted (if the inhibit state arrived before the 11th clock).
+<P>
+There is a simple description in my old IBM PS/2 model 50/60 technical
+reference. The mouse interface is the same as the keyboard interface.
+The Intel 8042 supports two channels, one for keyboard and one for
+the auxiliary device (mouse, trackball, touchpad).
+Pin 1 is the data, pin3 ground, pin 4 +5V and pin 5 clock.
+<P>
+Receiving data: Check 'clock'. If inactive, there is a bit on the 'data'
+line. Each transmission unit is one start bit, eight data bits, odd parity
+and one stop bit. Start bits are low, stop bits high.
+Each clock active or inactive period is 30 to 50 microseconds.
+Data transition to falling edge of clock is 5 to 25 microseconds.
+<P>
+Sending: Check that both clock and data are high. Pull down
+data for start bit, and start clocking.
+<P>
+NOTE: Logitech has made their own extension also to this protocol
+to allow three buttons.
+<P>
+<HR>
+<H2>Mouse movement detectors</H2>
+<P>
+The most tyical construction of mouse movement detectors are optomechanical
+detectors. The system works so that X and Y movement of the mouse
+rotates slotted disks. The movement info is then picked from those slotted
+disks using optical sensors. There are two sensors for each slotted disk
+and those sensors give out two singals which are 90 degreed
+out of phase compared to each other.
+<PRE>
+
+sensor #0 ----    ----    ----    ----   light
+              ----    ----    ----       no light
+
+sensor #1   ----    ----    ----    --   light
+          --    ----    ----    ----    no light
+</PRE>
+So if we call the getting light phase '1', and the not
+getting light phase (when the light is blocked by the
+wheel) '0' then it looks like this:
+<PRE>
+sensor #0 - 1111000011110000111100001111
+sensor #1 - 0011110000111100001111000011
+            ^^^^^^^^
+            full cycle of pulses
+</PRE>
+This can be decoded into four discrete bit pairs for the two sensors:
+<PRE>
+         Forward direction     Backwards direction
+            0 1 2 3                3 2 1 0
+sensor #0 - 1 1 0 0                0 0 1 1
+sensor #1 - 0 1 1 0                0 1 1 0
+</PRE>
+This information can be easily decoded usign small microcontroller
+and then sent to computer in correct format.
+<P>
+<H2>Information sources</H2>
+<UL>
+  <LI>PC Magazine May 28, 1991
+  <LI>Various articles form usenet news (the information later verified with measurement or other sources)
+  <LI><A HREF="ftp://x2ftp.oulu.fi/pub/msdos/programming/docs/gmouse.doc">Programmer's Reference to Genius Mouse</A>
+  <LI>My own experimenting with Genius Mouse GM6 ja Logitech Pilot Mouse
+  <LI><A HREF="ftp://ftp.logitech.com/pub/TechSupport/MOUSE/HELP/1410.txt">Logitech Pointing Device Hardware Information Product Support Document # 1410</A>
+  <LI><A HREF="http://www.4qd.co.uk/faq/meece.html">Mice: How do they work?</A> by <A HREF="mailto:4qd@argonet.co.uk">Richard Torrens</A>
+  <LI>In Pursuit Of The Perfect Portable Pointer by Intelink Electronics from EDN Products Edition April 16, 1977 pages 43-45
+</UL>
+<P>
+<HR>
+<ADDRESS><A HREF="http://www.hut.fi/~then/">Tomi Engdahl</A> &lt;then@delta.hut.fi&gt;</ADDRESS>
+
+</DIV>
+<div class="spacer">&nbsp;</div>
+<!-- Footer section begins -->
+<div class="footer">
+<div>
+      <div class="googlebanner">
+                 <script type="text/javascript"><!--
+google_ad_client = "pub-3257650267345122";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="5495687474";
+google_color_border = "336699";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+        </div>
+  <div class="hline">
+    <hr />
+  </div>
+  <center>
+    <div style="padding-left:25px; width:730px;">| <a href="/submitSite.php" class="btext">Submit site</a> | <a href="/index.php?index=info" class="btext">Info</a> | <a href="/index.php?index=advertising" class="btext">Advertise</a> | <a href="mailto:webmaster@epanorama.net?subject=Feedback" class="btext">Feedback</a> | <a href="/index.php?index=disclaimer" class="btext">Disclaimer</a> | <a href="/index.php?index=privacy" class="btext">Privacy</a> | <a href="/index.php?index=ad_faq" class="btext">Ad. FAQ</a> | <a href="/index.php?index=terms" class="btext">Legal Notice</a> |</div>
+    <div style="padding-left:25px; width:730px;" class="btext">Copyright &copy; 1994-2007</div> <!-- Copyright Section -->
+  </center>
+</div>
+<div>&nbsp;</div>
+</div>
+<!-- Kontera ContentLink -->
+
+<script type="text/javascript">
+var dc_UnitID = 14;
+var dc_PublisherID = 16320;
+var dc_AdLinkColor = 'blue';
+var dc_isBoldActive= 'no';
+var dc_adprod='ADL';
+</script>
+<script type="text/javascript" 
+SRC="http://kona.kontera.com/javascript/lib/KonaLibInline.js"></script>
+<!-- Kontera ContentLink -->
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-272685-1";
+urchinTracker();
+</script>
+
+<!-- Footer section ends here -->
+</body>
+
+</html>
+
+</BODY>
+</HTML>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

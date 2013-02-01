@@ -1,0 +1,73 @@
+<html>
+<head>
+<title>
+Chapter 7  Multitasking
+</title>
+<body>
+Prev: <a href="chp06-05.htm">6.5  Combining Page and Segment Protection</a><br><br>
+Next: <a href="chp07-01.htm">7.1  Task State Segment</a>
+<hr>
+<h2>
+Chapter 7  Multitasking
+</h2>
+<hr>
+<p>
+To provide efficient, protected multitasking, the 80386 employs several
+special data structures. It does not, however, use special instructions to
+control multitasking; instead, it interprets ordinary control-transfer
+instructions differently when they refer to the special data structures. The
+registers and data structures that support multitasking are:
+</p>
+<pre>
+  Task state segment
+  Task state segment descriptor
+  Task register
+  Task gate descriptor
+</pre><p></pre>
+With these structures the 80386 can rapidly switch execution from one task
+to another, saving the context of the original task so that the task can be
+restarted later. In addition to the simple task switch, the 80386 offers two
+other task-management features:
+<ol>
+<li>  Interrupts and exceptions can cause task switches (if needed in the
+<pre>
+      system design). The processor not only switches automatically to the
+      task that handles the interrupt or exception, but it automatically
+      switches back to the interrupted task when the interrupt or exception
+      has been serviced. Interrupt tasks may interrupt lower-priority
+      interrupt tasks to any depth.
+</pre>
+<li>  With each switch to another task, the 80386 can also switch to
+<pre>
+      another LDT and to another page directory. Thus each task can have a
+      different logical-to-linear mapping and a different linear-to-physical
+      mapping. This is yet another protection feature, because tasks can be
+      isolated and prevented from interfering with one another.
+</ol></pre>
+<p><ul>
+<li><a href="chp07-01.htm#07-01">7.1  Task State Segment</a>
+<li><a href="chp07-02.htm#07-02">7.2  TSS Descriptor</a>
+<li><a href="chp07-03.htm#07-03">7.3  Task Register</a>
+<li><a href="chp07-04.htm#07-04">7.4  Task Gate Descriptor</a>
+<li><a href="chp07-05.htm#07-05">7.5  Task Switching</a>
+<li><a href="chp07-06.htm#07-06">7.6  Task Linking</a>
+<li>    <a href="chp07-06.htm#07-06-01">7.6.1  Busy Bit Prevents Loops</a>
+<li>    <a href="chp07-06.htm#07-06-02">7.6.2  Modifying Task Linkages</a>
+<li><a href="chp07-07.htm#07-07">7.7  Task Address Space</a>
+<li>    <a href="chp07-07.htm#07-07-01">7.7.1  Task Linear-to-Physical Space Mapping</a>
+<li>    <a href="chp07-07.htm#07-07-02">7.7.2  Task Logical Address Space</a>
+<p>
+<li><a href="chp07-01.htm#F-07-01">Figure  7-1.   80386 32-Bit Task State Segment</a>
+<li><a href="chp07-02.htm#F-07-02">Figure  7-2.   TSS Descriptor for 32-bit TSS</a>
+<li><a href="chp07-03.htm#F-07-03">Figure  7-3.   Task Register </a>
+<li><a href="chp07-04.htm#F-07-04">Figure  7-4.   Task Gate Descriptor</a>
+<li><a href="chp07-04.htm#F-07-05">Figure  7-5.   Task Gate Indirectly Identifies Task</a>
+<p>
+<li><a href="chp07-05.htm#T-07-01">Table   7-1.   Checks Made during a Task Switch</a>
+<li><a href="chp07-06.htm#T-07-02">Table   7-2.   Effect of Task Switch on BUSY, NT, and Back-Link</a>
+</ul>
+<hr>
+Prev: <a href="chp06-05.htm">6.5  Combining Page and Segment Protection</a><br><br>
+Next: <a href="chp07-01.htm">7.1  Task State Segment</a>
+</body>
+</html>

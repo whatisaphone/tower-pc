@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>A20/RESET ANOMALIES</TITLE>
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.0Gold (Win95; I) [Netscape]">
+</HEAD>
+<BODY>
+
+<H1>A20/RESET ANOMALIES</H1>
+
+<P>
+<HR></P>
+
+<P>Since the 8088 only has 20 address lines, IBM decided to add extra hardware
+in the AT to ensure that it would emulate the 8088 memory wrap &quot;feature.&quot;
+They did this by ANDING the CPU A20 with an output of the keyboard controller
+(KBC). Both signals must be active before the real A20 is asserted on the
+bus. When the KBC was programmed appropriately, it's output is always LOW.
+This inhibits the CPU A20 from ever being asserted on the address bus.
+This condition emulates the memory wrap that the 8088 has. When the keyboard
+controller is programmed to allow CPU A20 on the address bus, all address
+lines are presented without any other side effects. And when programmed
+to inhibit A20, nobody thought there would be any adverse side effects
+-- but there are.</P>
+
+<P>Since CPU A20 is the only address line gated, then any memory access
+to extended memory on odd megabyte boundaries is inhibited (1M-2M, 3M-4M,
+etc.). Regardless of the state of the gate, the programmer always has access
+to every even megabyte of memory (0M-1M, 2M-3M, etc.). A peculiar situation
+arises when CPU A20 is inhibited from the address bus, and a RESET occurs.
+Since execution begins at the top of memory (and not F000:FFF0), when CPU
+A20 is gated off, the system will crash. Why? Consider CPU A20. The top
+of memory is FFFFF0h on the '286 and FFFFFFF0 on the '386 and later processors.
+If CPU A20 is gated off, then the RESET will cause execution to begin at
+EFFFF0 on the '286 and FFEFFFF0 on the '386. Unless these addresses are
+mapped through hardware to appear at the top of memory, then the computer
+will crash -- as it will try and execute whatever lies at these addresses
+(most likely a floating BUS).</P>
+
+<P>The moral to the story? Don't ever RESET the CPU without enabling CPU
+A20 to the address BUS. 
+<HR></P>
+
+<P><A HREF="ProductivityEnhancements.html#A20Ptr">Back to Productivity
+Enhancements</A></P>
+
+<P><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/bighand_left.gif" ALT="Return to the" VSPACE=14 BORDER=0 HEIGHT=48 WIDTH=64></A><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/gohome.gif" ALT="Intel
+Secrets home page" BORDER=0></A>
+<img src="http://www.x86.org/Count.cgi?ft=0|frgb=69;139;50;tr=0|trgb=0;0;0|wxh=15;20|md=6|dd=C|st=1532481|sh=0|df=Total.html.dat" border=0  align=abscenter width=0 height=0>
+
+<HR><BR>
+<ADDRESS>&copy; 1991-1999 <b><font color="#FF0000">Intel Secrets Web Site</font></b> and Robert Collins. <A HREF="http://pgp5.ai.mit.edu/pks-commands.html#extract">PGP
+key available</A>.<BR>
+<BR>
+<FONT SIZE=-2>Make no mistake!<BR>
+</FONT>This web site is proud to provide superior information and service
+without any affiliation to Intel Corporation.<BR>
+<BR>
+&quot;<B><FONT COLOR="#FF0000">Intel Secrets</FONT></B>&quot;, &quot;<B><FONT COLOR="#FF0000">What
+Intel doesn't want you to know</FONT></B>&quot; <B><FONT COLOR="#FF0000">and
+anything with a dropped e in it</FONT></B>, are phrases that infuriate
+Intel Corporation.</ADDRESS>
+
+<ADDRESS><BR>
+Pentium, Intel, and the letter "I" are registered trademarks of Intel Corporation. 386, 486, 586, P6,
+all other letters, and all other numbers <B><FONT COLOR="#FF0000">are not!<BR>
+</FONT></B>All other trademarks are those of their respective companies.
+See <A HREF="http://www.x86.org/Trademarks.html">Trademarks and Disclaimers</A>
+for more info.<BR>
+<BR>
+Robert Collins works somewhere in the United States of America. Robert
+may be <A HREF="http://www.x86.org/Contact.html">reached via email or telephone</A>.</ADDRESS>
+
+
+</BODY>
+</HTML>

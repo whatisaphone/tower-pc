@@ -1,0 +1,92 @@
+<html>
+<head>
+<title>
+2.1  Memory Organization and Segmentation
+</title>
+<body>
+<a name="02-01"></a>
+Prev: <a href="chp02-00.htm">Chapter 2  Basic Programming Model</a><br>
+Next: <a href="chp02-02.htm">2.2  Data Types</a>
+<hr>
+<h2>
+2.1  Memory Organization and Segmentation
+</h2>
+<p>
+The physical memory of an 80386 system is organized as a sequence of 8-bit
+bytes. Each byte is assigned a unique address that ranges from zero to a
+maximum of 2^(32) -1 (4 gigabytes).
+<p>
+80386 programs, however, are independent of the physical address space.
+This means that programs can be written without knowledge of how much
+physical memory is available and without knowledge of exactly where in
+physical memory the instructions and data are located.
+<p>
+The model of memory organization seen by applications programmers is
+determined by systems-software designers. The architecture of the 80386
+gives designers the freedom to choose a model for each task. The model of
+memory organization can range between the following extremes:
+<ul>
+<li> A "flat" address space consisting of a single array of up to 4
+     gigabytes.
+
+<li> A segmented address space consisting of a collection of up to 16,383
+     linear address spaces of up to 4 gigabytes each.
+</ul>
+Both models can provide memory protection. Different tasks may employ
+different models of memory organization. The criteria that designers use to
+determine a memory organization model and the means that systems programmers
+<pre>
+use to implement that model are covered in Part II--Systems Programming.
+</pre>
+<p>
+<a name="02-01-01"></a>
+<h3>2.1.1  The "Flat" Model</h3>
+<p>
+In a "flat" model of memory organization, the applications programmer sees
+a single array of up to 2^(32) bytes (4 gigabytes). While the physical
+memory can contain up to 4 gigabytes, it is usually much smaller; the
+processor maps the 4 gigabyte flat space onto the physical address space by
+the address translation mechanisms described in Chapter 5. Applications
+programmers do not need to know the details of the mapping.
+<p>
+A pointer into this flat address space is a 32-bit ordinal number that may
+range from 0 to 2^(32) -1. Relocation of separately-compiled modules in this
+space must be performed by systems software (e.g., linkers, locators,
+binders, loaders).
+<p>
+<a name="02-01-02"></a>
+<h3>2.1.2  The Segmented Model</h3>
+<p>
+In a segmented model of memory organization, the address space as viewed by
+an applications program (called the logical address space) is a much larger
+space of up to 2^(46) bytes (64 terabytes). The processor maps the 64
+terabyte logical address space onto the physical address space (up to 4
+gigabytes) by the address translation mechanisms described in Chapter 5.
+Applications programmers do not need to know the details of this mapping.
+<p>
+Applications programmers view the logical address space of the 80386 as a
+collection of up to 16,383 one-dimensional subspaces, each with a specified
+length. Each of these linear subspaces is called a segment. A segment is a
+unit of contiguous address space. Segment sizes may range from one byte up
+to a maximum of 2^(32) bytes (4 gigabytes).
+<p>
+A complete pointer in this address space consists of two parts (see Figure
+2-1):
+<ol>
+<li>  A segment selector, which is a 16-bit field that identifies a
+      segment.
+
+<li>  An offset, which is a 32-bit ordinal that addresses to the byte level
+      within a segment.
+</ol>
+During execution of a program, the processor associates with a segment
+selector the physical address of the beginning of the segment. Separately
+compiled modules can be relocated at run time by changing the base address
+of their segments. The size of a segment is variable; therefore, a segment
+can be exactly the size of the module it contains.
+<p>
+<hr>
+Prev: <a href="chp02-00.htm">Chapter 2  Basic Programming Model</a><br>
+Next: <a href="chp02-02.htm">2.2  Data Types</a>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>
+14.2  Registers and Instructions
+</title>
+<body>
+<a name="14-02"></a>
+Prev: <a href="chp14-01.htm">14.1  Physical Address Formation</a><br>
+Next: <a href="chp14-03.htm">14.3  Interrupt and Exception Handling</a>
+<hr>
+<h2>
+14.2  Registers and Instructions
+</h2>
+<p>
+The register set available in real-address mode includes all the registers
+defined for the 8086 plus the new registers introduced by the 80386: FS, GS,
+debug registers, control registers, and test registers. New instructions
+that explicitly operate on the segment registers FS and GS are available,
+and the new segment-override prefixes can be used to cause instructions to
+utilize FS and GS for address calculations. Instructions can utilize 32-bit
+operands through the use of the operand size prefix.
+<p>
+The instruction codes that cause undefined opcode traps (interrupt 6)
+include instructions of the protected mode that manipulate or interrogate
+80386 selectors and descriptors; namely, VERR, VERW, LAR, LSL, LTR, STR,
+LLDT, and SLDT. Programs executing in real-address mode are able to take
+advantage of the new applications-oriented instructions added to the
+architecture by the introduction of the 80186/80188, 80286 and 80386:
+<p>
+- New instructions introduced by 80186/80188 and 80286.
+<p>
+<pre>
+   -- PUSH immediate data
+   -- Push all and pop all (PUSHA and POPA)
+   -- Multiply immediate data
+   -- Shift and rotate by immediate count
+   -- String I/O
+   -- ENTER and LEAVE
+   -- BOUND
+</pre>
+- New instructions introduced by 80386.
+<p>
+<pre>
+   -- LSS, LFS, LGS instructions
+   -- Long-displacement conditional jumps
+   -- Single-bit instructions
+   -- Bit scan
+   -- Double-shift instructions
+   -- Byte set on condition
+   -- Move with sign/zero extension
+   -- Generalized multiply
+   -- MOV to and from control registers
+   -- MOV to and from test registers
+   -- MOV to and from debug registers
+</pre>
+<p>
+<hr>
+Prev: <a href="chp14-01.htm">14.1  Physical Address Formation</a><br>
+Next: <a href="chp14-03.htm">14.3  Interrupt and Exception Handling</a>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>Vesa BIOS Example. Page 2: </title>
+
+<h1>VESA BIOS Example</h1>
+<h4>Page 2: </h4>
+<p><tr><td colspan=2><hr></td></tr><p>
+
+<h2>Read list of mode numbers</h2>
+Now we have to take the list of modes available and check to see if we can switch to a 256
+colour mode.
+
+<pre>
+
+   ModePtr = DataBuffer.VidModePtr
+
+   loop
+      if the word pointed at [ModePtr] not= -1 then
+         add this number to ModeList
+      else
+	 exit the loop
+      end if
+      add 2 to ModePtr			; point to next word
+   end loop
+
+   loop through the list of numbers in ModeList
+      AX = 4F01h			; function 01h, Get Mode Information
+      CX = mode number
+      ES = SegmentOf (ModeInfoBlock)	;es:[di] points to ModeInfoBlock
+      DI = OffsetOf (ModeInfoBlock)	;
+      
+      call interrupt 10h		
+
+      make a list of all the mode numbers whose ModeInfoBlock.BitsPerPixel = 8
+   end loop
+   and let the user choose one of those modes
+</pre>
+
+
+</body>
+</html>

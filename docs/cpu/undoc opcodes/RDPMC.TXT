@@ -1,0 +1,151 @@
+New P6 OpCodes: RDPMC 
+
+----------------------------------------------------------------------------
+
+RDPMC - 0F 33 - Read Performance Monitor Counter
+
+
+                                                            RDPMC
+Flags:                                      Conditional MOVE data
++-+-+-+-+-+-+-+-+-+                       +----------+----------+
+|O|D|I|T|S|Z|A|P|C|                       | 00001111 | 00110011 |
++-+-+-+-+-+-+-+-+-+                       +----------+----------+
+| | | | | | | | | |                       |    0F    |    33    |
++-+-+-+-+-+-+-+-+-+                       +----------+----------+
+
+
+Syntax: 
+    RDPMC
+
+
+Operation: 
+RDPMC {
+    IF (CPL != 0) && (CR4.PCE == 0) {
+        #GP(0);
+    }
+    IF (ECX = 0) {
+        EDX:EAX = Performance_Counter0;
+    } ELSE IF (ECX = 1) {
+        EDX:EAX = Performance_Counter1;
+    } ELSE #GP(0);
+}
+
+
+Description: 
+This is a native instruction which reads the P6 performance monitor 
+counters. Like the Pentium, the P6 contains two 40-bit monitor counters 
+which can be programmed to monitor independent events. The performance 
+monitor counters reside in the model-specific register space, like the 
+Pentium, but can now be accessed via this new instruction.
+
+The purpose of providing this instruction is to eliminate the fault 
+which occurs when a user application (like CPL-3) attempts to read the 
+performance counters. Normally, a user-program would attempt to read the 
+MSR, which would generate a fault to the operating system, which would 
+then execute the instruction, and provide the results back to the user 
+program. User access of the RDPMC instruction is not guaranteed. Like 
+RDTSC, user access is controlled by a bit in CR4. CR4.PCE (bit-8) 
+controls whether or not a user program can execute the RDPMC instruction 
+without faulting. The benefits of providing user access, are finer 
+granularity of event timing. Suppose an user program was monitoring some 
+events, and needed a high degree of accuracy. Without user-level access 
+of this instruction, the overhead required to fault to the operating 
+system would ruin the results.
+
+Like many other features, the P6 performance counters are 
+implementation-specific. Therefore, there is no CPUID feature flags bit 
+indicating the presence of this instruction.
+
+
+Serialization:
+
+The weird thing about this instructions, is that Intel doesn't guarantee 
+that it serializes the instruction stream. The P6' dynamic execution 
+doesn't necessarily execute instructions in order. This could imply that 
+if two RDPMC instruction appeared in close proximity to each other, that 
+the second could be executed before the first. If this were allowed to 
+occur, then the results obtained would be meaningless, as the second 
+RDPMC results were less than that of the first RDPMC. Thank goodness, 
+the P6 will not let this happen. But the moral to the story is, that 
+RDPMC does not serialize instructions on the P6. Consider the following 
+code sequence:
+
+        XOR     ECX,ECX                 ; Use 1st performance monitor counter
+        RDPMC                           ; Read 1st counter
+        MOV     [MEM1],EAX              ; save the performance counter
+        MOV     [MEM2],EDX              ;   save upper bits of counter
+        ADD     EDX,EAX                 ; do something completely useless
+        RDPMC                           ; Read 1st counter again
+
+
+If P6 retired the second RDPMC instruction before the first RDPMC, then 
+the results would be invalid. Moreover due the out-of-order execution in 
+the P6, there is no guarantee that all of the instructions between the 
+two RDPMC instructions were completed (retired) at the time of the 
+second RDPMC.
+
+The above example is a derivative of one which Intel provided. In their 
+example, they indicated that the performance counter could be programmed 
+to track the number of instructions which were retired. If it was 
+programmed for such an operation, then the above example should show 
+that 4 instructions were retired between the two RDPMC instructions. 
+(The Intel documents state that 5 instructions would be completed, but I 
+believe this is in error.) Due to out-of-order execution, the actual 
+number between the two RDPMC instructions could be 5, 6, or even 7 or 
+more; or it could even be negative (though the P6 will not allow this to 
+happen). To obtain reliable results from the counter, Intel recommends 
+putting in a serializing instruction, like CPUID.
+
+16-bit code: 
+Even though RDPMC returns values in 32-bit registers (EDX:EAX), it may 
+be executed in 16-bit code, including v86 mode, without an operand size 
+override. Even when executed in 16-bit code segments, RDPMC always uses 
+the full 32-bits of ECX to select which performance counter to return 
+(so don't set any of the high-order bits).
+
+Flags affected: 
+None.
+
+Exceptions: 
+#GP(0) as listed above. 
+
+----------------------------------------------------------------------------
+
+Get description of other opcodes:
+AAM:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAM.txt
+AAD:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAD.txt
+CMOV:     ftp://ftp.x86.org/pub/x86/p6/opcodes/CMOV.txt
+FCMOV:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCMOV.txt
+FCOMI:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCOMI.txt
+ICEBP:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+INT01:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+LOADALL:  ftp://ftp.x86.org/pub/x86/secrets/opcodes/LOADALL.txt
+RDPMC:    ftp://ftp.x86.org/pub/x86/p6/opcodes/RDPMC.txt
+SALC:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/SALC.txt
+UMOV:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/UMOV.txt
+
+----------------------------------------------------------------------------
+
+Download this file -- OpCodes.ZIP 
+ftp://ftp.x86.org/pub/x86/dloads/OPCODES.ZIP 
+
+----------------------------------------------------------------------------
+
+(c) 1995, 1996 Intel Secrets(TM) home page. PGP key available. 
+
+Make no mistake! 
+The Intel Secrets web site is proud to provide superior information and 
+service without any affilation to Intel. 
+
+"Intel Secrets" and "What Intel doesn't want you to know" are trademarks 
+of Robert Collins. 
+
+Pentium and Intel are trademarks of Intel Corporation. 386, 486, 586, 
+P6, and all other numbers.are not!
+
+All other trademarks are those of their respective companies. See 
+Trademarks and Disclaimers for more info. 
+
+Robert Collins is a Senior Design Engineer and Manager of some sort of 
+Research in Dallas, TX. Robert may be reached via email at 
+rcollins@x86.org or via phone at (214) 491-7718. 

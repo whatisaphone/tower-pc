@@ -1,0 +1,182 @@
+New P6 OpCodes: FCMOV 
+
+----------------------------------------------------------------------------
+
+FCMOV - Dn xx - Floating Point Conditional Move 
+
+
+                                                            FCMOV
+Flags:                                   FP Conditional MOVE data
++-+-+-+-+-+-+-+-+-+                       +----------+----------+
+|O|D|I|T|S|Z|A|P|C|                       | 1101101n | 11cccrrr |
++-+-+-+-+-+-+-+-+-+                       +----------+----------+
+| | | | | | | | | |                       |    Dn    |    xx    |
++-+-+-+-+-+-+-+-+-+                       +----------+----------+
+
+
+Syntax: 
+    FCMOVcc     ST, STi
+
+
+Encoding 
+  n=0
+    DA C0 + i   FCMOVB   ST, STi         ; Move if Below
+    DA C8 + i   FCMOVE   ST, STi         ; Move if Equal
+    DA D0 + i   FCMOVBE  ST, STi         ; Move if Below or Equal
+    DA D8 + i   FCMOVU   ST, STi         ; Move if Unordered
+
+  n=1
+    DB C0 + i   FCMOVNB  ST, STi         ; Move if Not Below
+    DB C8 + i   FCMOVNE  ST, STi         ; Move if Not Equal
+    DB D0 + i   FCMOVNBE ST, STi         ; Move if Not Below or Equal
+    DB D8 + i   FCMOVNU  ST, STi         ; Move if Not Unordered
+
+
+Operation: 
+FCMOV {
+    TEMP0 = STi;        /* Both operands are read to detect an underflow        */
+    TEMP1 = ST0;        /*   condition before proceeding.                       */
+    IF condition {
+        ST0 = STi;
+}
+
+
+Description:
+
+The FCMOV instruction performs a similar function as CMOV. FCMOV check a 
+condition in the integer flags (EFLAGS) and moves data to the stack top 
+(ST0) if the condition is met. In addition to six integer conditions, 
+two floating point conditions may also be tested. The two floating point 
+conditions checked are Ordered and Unordered which result from FCOM and 
+FTST operations. Conditional move assignments for other conditions, such 
+as denormalized numbers must use the traditional technique of using 
+FSTSW, and integer test instruction, and branching. See Table 1 for a 
+list of all of the condition FCMOV may use.
+
+From the operational description given above, it is clear that the 
+operation unconditionally reads both operands, regardless of the test 
+condition. The purpose of reading both operands is to detect an 
+underflow condition. If reading either operand would generate an 
+underflow exception, then that exception is signaled before the 
+condition is checked. FCMOV will never cause an overflow exception.
+
+Table 1 -- FCMOV condition codes
+ftp://ftp.x86.org/pub/x86/p6/opcodes/FCMOV.conditions.gif
+
+
+FPU Flags Affected:
+
+Normally, no FPU flags are affected by FCMOV. However, if an exception 
+occurs, then the FPU flags are affected as follows:
+
+FSW.C1 will be set to indicate a stack underflow condition (U#). The FTW 
+field will correspond to the top of stack, and ST0 will be marked FULL 
+(unless there was an unmasked stack underflow exception). See Table 2 
+for a description of FCMOV stack exception behavior.
+
+
+Table 2 -- FCMOV Stack Exception Characteristics
+ftp://ftp.x86.org/pub/x86/p6/opcodes/FCMOV.exceptions.gif
+
+
+Implementation notes:
+
+The FCMOV opcodes are newly defined for P6, however don't always produce 
+an invalid opcode exception (#UD) on previous x86 processors. The 
+encodings for FCMOV produce an invalid opcode exception on the Pentium 
+and Intel486 processors, but are ignored, and treated like an FNOP by 
+the Intel387 math coprocessor. Behavior for the 8087 and 80287 math 
+coprocessors is undefined.
+
+
+Numeric Exception:
+
+IS
+
+
+Protected Mode Exceptions:
+
+Exception 7 (#NM) if EM or TS is set in CR0.
+
+
+Real Mode Exceptions:
+
+Exception 7 (#NM) if EM or TS is set in CR0.
+
+
+v86 Mode Exceptions:
+
+Exception 7 (#NM) if EM or TS is set in CR0.
+
+
+Examples:
+
+The first example shows a normal stream of instructions which would be 
+used to perform a conditional move in an Intel386-compatible manner. The 
+second example replaces this code with use of the FCMOV instruction. 
+Then the third example combines the use of the new FCOMI instruction and 
+FCMOV to perform the same function in a very efficient manner. Note: 
+these code examples don't attempt to take into account the possibility 
+of unordered numbers. If unordered numbers must be accommodated, then 
+more code is required.
+
+Example 1: traditional Intel386-compatible code. 
+        FCOM    ST0, ST1                ; Floating point compare
+        FNSTSW  AX                      ; Store floating point flags in AX (no wait)
+        SAHF                            ; Move AH to integer flags register
+        JB      Continue                ; Branch if we don't replace ST0
+        FXCH    ST0, ST1                ; Exchange ST0 and ST1
+Continue:
+
+
+Example 2: same example using FCMOV instruction. 
+        FCOM    ST0, ST1                ; Floating point compare
+        FNSTSW  AX                      ; Store floating point flags in AX (no wait)
+        SAHF                            ; Move AH to integer flags register
+        FCMOVNB ST0, ST1                ; Conditionally move ST0 and ST1 if not below
+
+
+Example 3: Combining FCOMI and FCMOV instructions. 
+        FCOMI   ST0, ST1                ; Compare and move results to integer flags
+        FCMOVNB ST0, ST1                ; Conditionally move ST0 and ST1 if not below
+
+----------------------------------------------------------------------------
+
+Get description of other opcodes:
+AAM:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAM.txt
+AAD:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAD.txt
+CMOV:     ftp://ftp.x86.org/pub/x86/p6/opcodes/CMOV.txt
+FCMOV:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCMOV.txt
+FCOMI:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCOMI.txt
+ICEBP:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+INT01:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+LOADALL:  ftp://ftp.x86.org/pub/x86/secrets/opcodes/LOADALL.txt
+RDPMC:    ftp://ftp.x86.org/pub/x86/p6/opcodes/RDPMC.txt
+SALC:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/SALC.txt
+UMOV:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/UMOV.txt
+
+----------------------------------------------------------------------------
+
+Download this file -- OpCodes.ZIP 
+ftp://ftp.x86.org/pub/x86/dloads/OPCODES.ZIP 
+
+----------------------------------------------------------------------------
+
+(c) 1995, 1996 Intel Secrets(TM) home page. PGP key available. 
+
+Make no mistake! 
+The Intel Secrets web site is proud to provide superior information and 
+service without any affilation to Intel. 
+
+"Intel Secrets" and "What Intel doesn't want you to know" are trademarks 
+of Robert Collins. 
+
+Pentium and Intel are trademarks of Intel Corporation. 386, 486, 586, 
+P6, and all other numbers.are not!
+
+All other trademarks are those of their respective companies. See 
+Trademarks and Disclaimers for more info. 
+
+Robert Collins is a Senior Design Engineer and Manager of some sort of 
+Research in Dallas, TX. Robert may be reached via email at 
+rcollins@x86.org or via phone at (214) 491-7718. 

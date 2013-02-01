@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>
+14.4  Entering and Leaving Real-Address Mode
+</title>
+<body>
+<a name="14-04"></a>
+Prev: <a href="chp14-03.htm">14.3  Interrupt and Exception Handling</a><br>
+Next: <a href="chp14-05.htm">14.5  Switching Back to Real-Address Mode</a>
+<hr>
+<h2>
+14.4  Entering and Leaving Real-Address Mode
+</h2>
+<p>
+Real-address mode is in effect after a signal on the RESET pin. Even if the
+system is going to be used in protected mode, the start-up program will
+execute in real-address mode temporarily while initializing for protected
+mode.
+<p>
+<p>
+<a name="14-04-01"></a>
+<h3>14.4.1  Switching to Protected Mode</h3>
+<p>
+The only way to leave real-address mode is to switch to protected mode. The
+processor enters protected mode when a MOV to CR0 instruction sets the PE
+(protection enable) bit in CR0. (For compatibility with the 80286, the LMSW
+instruction may also be used to set the PE bit.)
+<p>
+Refer to Chapter 10 "Initialization" for other aspects of switching to
+protected mode.
+<p>
+<p>
+<hr>
+Prev: <a href="chp14-03.htm">14.3  Interrupt and Exception Handling</a><br>
+Next: <a href="chp14-05.htm">14.5  Switching Back to Real-Address Mode</a>
+</body>
+</html>

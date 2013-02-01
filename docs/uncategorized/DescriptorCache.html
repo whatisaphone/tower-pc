@@ -1,0 +1,272 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>Descriptor Cache Anomalies</TITLE>
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.0Gold (Win95; I) [Netscape]">
+</HEAD>
+<BODY>
+
+<H1><A NAME="desc_anomalies"></A>DESCRIPTOR CACHE REGISTERS</H1>
+
+<P>
+<HR></P>
+
+<P>Whether in real or protected mode, the CPU stores the base address of
+each segment in hidden registers called descriptor cache registers. Each
+time a segment register is loaded, the segment base address, segment size
+limit, and access attributes (access rights) are loaded, or &quot;cached,&quot;
+into these hidden registers. To enhance performance, all subsequent memory
+references are made via the descriptor cache registers instead of calculating
+the physical address, or looking up the base address in the descriptor
+table. Understanding the role of these hidden registers is paramount for
+exploiting highly advanced programming techniques, and for exploiting the
+undocumented instruction LOADALL. <A HREF="../articles/loadall/tspec_a3_f2.html#fig2a">Figure
+2a</A> shows the descriptor cache layout for the 80286, and <A HREF="../articles/loadall/tspec_a3_f2.html#fig2b">figure
+2b</A> shows the layout for the 80386, and 80486.</P>
+
+<P>At power-up, the descriptor cache registers are loaded with fixed, default
+values; the CPU is in real-mode, and all segments are marked as read/write
+data segments, including the Code Segment (CS). According to Intel, each
+time any segment register is loaded in real-mode, the base address is 16x
+the segment value, while the access rights and size limit attributes are
+given fixed, &quot;real-mode compatible&quot; values. This is not true.
+In fact, only the CS descriptor cache gets loaded with fixed values each
+time the segment register is loaded. Loading any other segment register
+in real mode doesn't change the access rights or the segment size limit
+attributes stored in the descriptor cache registers. For these segments,
+the access rights and segment size limit attributes are &quot;honored&quot;
+from any previous setting (see <A HREF="../articles/loadall/tspec_a3_f3.html">figure
+3</A>). Thus it is possible to have a 4G-byte Read-Only data segment in
+real-mode on the 80386, but Intel won't acknowledge, or support this mode
+of operation.</P>
+
+<P>Protected mode differs from real mode in this respect: as each time
+a segment register is loaded, the descriptor cache register gets fully
+loaded; no values are &quot;honored.&quot; The descriptor cache is loaded
+directly from the descriptor table. The CPU checks the validity of the
+segment by testing the access rights in the descriptor table. Complete
+checks are made, and illegal values will generate exceptions. Any attempt
+to load CS with a read/write data segment will generate a protection error.
+Likewise, any attempt to load a data segment register as an executable
+segment will also generate an exception. The CPU enforces these &quot;protection&quot;
+rules very strictly. If the descriptor table entry passes all the tests,
+then the descriptor cache register gets loaded. 
+<HR></P>
+
+<H1>DESCRIPTOR CACHE REGISTER ANOMALIES</H1>
+
+<P>
+<HR></P>
+
+<P>Anomalies exist in the real mode handling of the access-rights attributes.
+Using LOADALL, it is possible to prove that these anomalies exist by directly
+loading the segment descriptor cache registers (access rights), then performing
+a series of tests that demonstrate the CPU behavior. The tests provided
+in DESCRIPT.ASM and its accompanying include files demonstrate that the
+CPU honors the access rights in the descriptor cache registers, and with
+the exception of CS, never changes those access attributes.Furthermore,
+by setting access attributes for data segments that would be illegal in
+protected mode (setting the executable bit), it is possible to observe
+undocumented CPU behavior.</P>
+
+<P>Each test subgroup performs the same tests as each other. Separate subgroups
+are defined because each subgroup has a unique aspect that requires special
+attention. For example, making SS read-only requires being prepared to
+recover from a CPU RESET. Therefore, the subgroups are defined as follows:
+1) DS, ES, FS, and GS; 2) SS; 3) CS.</P>
+
+<P>DS, ES, FS, and GS require no special handling. The DS (etc.) test is
+broken down into two sub-subgroups DS, FS, and ES, GS to allow access to
+the data segment during tests where segment access is prohibited.</P>
+
+<P>SS and CS require separate, special handling. SS must be handled separately
+to accommodate a stack that can be marked as inaccessible (read-only),
+or not present. Such cases will force the CPU to RESET, as any exception
+will generate a double-fault, which in turn will triple-fault the CPU and
+RESET it. CS and SS require further special handling to accommodate expand-down
+segments. SS expand down is simple, but CS requires moving the entire code
+segment into the expand-down area, along with any exception handlers --
+and be able to detect if the expand down segment has been cleared by the
+CPU. The CS test is further differentiated from other tests in the way
+it must handle the expand-down CS segment. Not only does the entire code
+segment need to be relocated, as do exception handlers, but the test introduces
+the concept of CS_BIAS (called EXPANSION_BIAS in the code). CS BIAS is
+0 in all cases except when the expansion direction bit is being tested.
+CS BIAS is used to BIAS all destination address, including those affected
+by IRET. When the expansion direction bit is being tested, CS BIAS is set
+to the two's-compliment code segment size (-CS_SIZE) -- as this is where
+the code segment will start IF expand-down is recognized in real mode (as
+it is).</P>
+
+<P>I have found that in real mode, the only segment load that causes the
+access rights to be changed is a FAR JuMP -- which reloads the CS access
+rights to real-mode compatible values (93h). The segment limit is still
+honored, as is the CS32 (USE32) default operand size attribute. 
+<HR></P>
+
+<H1><A NAME="desc_anomalies_source"></A>DESCRIPTOR CACHE REGISTER ANOMALIES</H1>
+
+<P>
+<HR></P>
+
+<H3>(SOURCE CODE)</H3>
+
+<P>I have written source code to demonstrate that the CPU does not behave
+consistently with respect to real mode vs. protected mode. Intel documentation
+states that the descriptor register cache's get fixed default values in
+real mode. The source code demonstrates that the descriptor cache registers
+retain -- or honor -- whatever values they have received from protected
+mode, or by using <A HREF="../articles/loadall/tspec_a3_doc.html">LOADALL</A>.</P>
+
+<P>The source code consists of many modules, and a batch file to compile
+the multiple files. The two main files: <A HREF="../ftp/source/descript/descript.asm">DESCRIPT.ASM</A>
+and <A HREF="../ftp/source/descript/desc32.asm">DESC32.ASM</A> must be
+linked together. The batch file A.BAT will assemble and link these modules
+together. Because the Microsoft LINK utility will not allow one to link
+16-bit and 32-bit segments together (whose segment names are the same),
+I have provided a utility that I have written to change the segment definition
+bit in .OBJ files to USE16 or USE32. This will allow you to LINK these
+modules together. Just type <A HREF="../ftp/dloads/CVTUBIT.ZIP">CVTUBIT</A>
+with no arguments to get a list of the syntax.</P>
+
+<P>View source code:<BR>
+<A HREF="../ftp/source/descript/descript.asm">ftp://ftp.x86.org/pub/x86/source/descript/descript.asm<BR>
+</A><A HREF="../ftp/source/descript/testdseg.inc">ftp://ftp.x86.org/pub/x86/source/descript/testdseg.inc<BR>
+</A><A HREF="../ftp/source/descript/testsseg.inc">ftp://ftp.x86.org/pub/x86/source/descript/testsseg.inc<BR>
+</A><A HREF="../ftp/source/descript/testcseg.inc">ftp://ftp.x86.org/pub/x86/source/descript/testcseg.inc<BR>
+</A><A HREF="../ftp/source/descript/desc32.asm">ftp://ftp.x86.org/pub/x86/source/descript/desc32.asm<BR>
+</A><A HREF="../ftp/source/include/struc.inc">ftp://ftp.x86.org/pub/x86/source/include/struc.inc<BR>
+</A><A HREF="../ftp/source/include/macros.inc">ftp://ftp.x86.org/pub/x86/source/include/macros.inc<BR>
+</A><A HREF="../ftp/source/include/equates.inc">ftp://ftp.x86.org/pub/x86/source/include/equates.inc<BR>
+</A><A HREF="../ftp/source/include/kbc.inc">ftp://ftp.x86.org/pub/x86/source/include/kbc.inc<BR>
+<BR>
+</A>Download entire source code archive:<BR>
+<A HREF="../ftp/dloads/DESCRIPT.ZIP">ftp://ftp.x86.org/pub/x86/dloads/DESCRIPT.ZIP<BR>
+<BR>
+</A>Download CVTUBIT utility:<BR>
+<A HREF="../ftp/dloads/CVTUBIT.ZIP">ftp://ftp.x86.org/pub/x86/dloads/CVTUBIT.ZIP</A></P>
+
+<P>
+<HR></P>
+
+<H1>Descritpor Table Access Rights</H1>
+
+<P>
+<HR></P>
+
+<P>The definition of these bits is exactly as that of the access rights
+in the descriptor table, with the following exceptions:</P>
+
+<OL>
+<LI>The &quot;PRESENT&quot; bit becomes a valid bit. Using LOADALL, you
+may load a descriptor cache register whose P bit is marked not present
+(P=0). During normal CPU operaion, simply loading the segment selector
+with a descriptor table entry whose P=0 will cause an exception-11. This
+is different that operating with LOADALL. LOADALL will let you load the
+descriptor cache register with P=0. But any memory reference using that
+segment selector will cause exception-13.</LI>
+
+<LI>The DPL field for SS &amp; CS descriptors determine the CPL.</LI>
+
+<LI>The DPL field for DS, ES, FS, &amp; GS should be 3.</LI>
+
+<LI>The Granularity (G) bit has no effect on the limit field in the descriptor
+cache register</LI>
+
+<LI>A Code segment (CS) may be Read/Write/Executable by setting the access
+rights as a Read/Write/Data segment. This will even work in protected mode.</LI>
+</OL>
+
+<PRE>;---------------------------------------------------------------------
+; A closer look at the access rights field definitions:
+;
+;  2 2 2 2 1 1 1 1 1 1 1  Bit     2 2 2 2 1 1 1 1 1 1
+;  3 2 1 0 9 8 7 6 5 4 3  Offset  3 2 1 0 9 8 7 6 5 4
+; +-+---+-+-----+-+-+-+-+        +-+---+-+-----+-+-+-+
+; |P|DPL|S|Type |A|0|G|D|        |P|DPL|S| Type  |G|D|
+; | | | |0| | | | | | | |        | | | |1| | | | | | |
+; +-+---+-+-----+-+-+-+-+        +-+---+-+-----+-+-+-+
+; Bit:
+; P     Present bit.  1=Present, 0=Not present.
+;         This bit signals the CPU if the segment addressed by the
+;         segment base address is actually present in memory.
+; DPL   Descriptor Privilege Level:  0=highest, 3=lowest
+; S     System descriptor:  0=Code, Data; 1=System descriptor
+; Type  Segment Type:  (S=0)
+;         +-+-+-+
+;         |X|Y|Z|
+;         +-+-+-+
+;          | | |
+;          | | +-- Read/Write            0=Read-only  1=Read/Write
+;          | +---- Expansion direction.  0=Expand up  1=Expand down
+;          +------ Executable            0=Data Seg   1=Code Seg
+; Type  Segment Type:  (S=1)
+;         0000 = Reserved
+;         0001 = Available 286 TSS
+;         0010 = LDT
+;         0011 = Busy 286 TSS
+;         0100 = 286 Call Gate
+;         0101 = Task Gate
+;         0110 = 286 Interrupt Gate
+;         0111 = 286 Trap Gate
+;         1000 = Reserved
+;         1001 = Available 386, 486 TSS
+;         1010 = Reserved
+;         1011 = Busy 386, 486 TSS
+;         1100 = 386, 486 Call Gate
+;         1101 = Reserved
+;         1110 = 386, 486 Interrupt Gate
+;         1111 = 386, 486 Trap Gate
+; A     Accessed  (S=0)          0=Not Accessed 1=Accessed
+;         The processor sets this bit when the descriptor is
+;         accessed.
+; G     Granularity                      0=Byte 1=4k
+;         When set, upon loading the limit field of the descriptor
+;         cache register, the CPU shifts the limit by 12, and fills
+;         in the 1st 12 bits with 1's as follows:
+;           SHL   LIMIT,12
+;           OR    LIMIT,0FFFh
+; D     Default operand size             0=16-bit       1=32-bit
+;         When set, the CPU interprets all operands, and effective
+;         addresses as 32-bit values.  When clear, all operands
+;         and effective addresses are 16-bit values.  This bit
+;         is only applicable to the CS descriptor cache.
+;---------------------------------------------------------------------
+</PRE>
+
+<P>
+<HR></P>
+
+<P><A HREF="ProductivityEnhancements.html#DescriptorPtr">Back to Productivity
+Enhancements</A></P>
+
+<P><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/bighand_left.gif" ALT="Return to the" VSPACE=14 BORDER=0 HEIGHT=48 WIDTH=64></A><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/gohome.gif" ALT="Intel
+Secrets home page" BORDER=0></A>
+<img src="http://www.x86.org/Count.cgi?ft=0|frgb=69;139;50;tr=0|trgb=0;0;0|wxh=15;20|md=6|dd=C|st=1532481|sh=0|df=Total.html.dat" border=0  align=abscenter width=0 height=0>
+
+<HR><BR>
+<ADDRESS>&copy; 1991-1999 <b><font color="#FF0000">Intel Secrets Web Site</font></b> and Robert Collins. <A HREF="http://pgp5.ai.mit.edu/pks-commands.html#extract">PGP
+key available</A>.<BR>
+<BR>
+<FONT SIZE=-2>Make no mistake!<BR>
+</FONT>This web site is proud to provide superior information and service
+without any affiliation to Intel Corporation.<BR>
+<BR>
+&quot;<B><FONT COLOR="#FF0000">Intel Secrets</FONT></B>&quot;, &quot;<B><FONT COLOR="#FF0000">What
+Intel doesn't want you to know</FONT></B>&quot; <B><FONT COLOR="#FF0000">and
+anything with a dropped e in it</FONT></B>, are phrases that infuriate
+Intel Corporation.</ADDRESS>
+
+<ADDRESS><BR>
+Pentium, Intel, and the letter "I" are registered trademarks of Intel Corporation. 386, 486, 586, P6,
+all other letters, and all other numbers <B><FONT COLOR="#FF0000">are not!<BR>
+</FONT></B>All other trademarks are those of their respective companies.
+See <A HREF="http://www.x86.org/Trademarks.html">Trademarks and Disclaimers</A>
+for more info.<BR>
+<BR>
+Robert Collins works somewhere in the United States of America. Robert
+may be <A HREF="http://www.x86.org/Contact.html">reached via email or telephone</A>.</ADDRESS>
+
+
+</BODY>
+</HTML>

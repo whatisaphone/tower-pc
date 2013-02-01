@@ -1,0 +1,270 @@
+<html>
+<head>
+<title>
+3.5  Control Transfer Instructions
+</title>
+<body>
+<a name="03-05"></a>
+Prev: <a href="chp03-04.htm">3.4  Logical Instructions</a><br>
+Next: <a href="chp03-06.htm">3.6  String and Character Translation Instructions</a>
+<hr>
+<h2>
+3.5  Control Transfer Instructions
+</h2>
+<p>
+The 80386 provides both conditional and unconditional control transfer
+instructions to direct the flow of execution. Conditional control transfers
+depend on the results of operations that affect the flag register.
+Unconditional control transfers are always executed.
+<p>
+<p>
+<a name="03-05-01"></a>
+<h3>3.5.1  Unconditional Transfer Instructions</h3>
+<p>
+JMP, CALL, RET, INT and IRET instructions transfer control from one code
+segment location to another. These locations can be within the same code
+segment (near control transfers) or in different code segments (far control
+transfers). The variants of these instructions that transfer control to
+other segments are discussed in a later section of this chapter. If the
+model of memory organization used in a particular 80386 application does
+not make segments visible to applications programmers, intersegment control
+transfers will not be used.
+<p>
+<p>
+<a name="03-05-01-01"></a>
+<h3>3.5.1.1  Jump Instruction</h3>
+<p>
+JMP (Jump) unconditionally transfers control to the target location. JMP is
+a one-way transfer of execution; it does not save a return address on the
+stack.
+<p>
+The JMP instruction always performs the same basic function of transferring
+control from the current location to a new location. Its implementation
+varies depending on whether the address is specified directly within the
+instruction or indirectly through a register or memory.
+<p>
+A direct JMP instruction includes the destination address as part of the
+instruction. An indirect JMP instruction obtains the destination address
+indirectly through a register or a pointer variable.
+<p>
+Direct near JMP. A direct JMP uses a relative displacement value contained
+in the instruction. The displacement is signed and the size of the
+displacement may be a byte, word, or doubleword. The processor forms an
+effective address by adding this relative displacement to the address
+contained in EIP. When the additions have been performed, EIP refers to the
+next instruction to be executed.
+<p>
+Indirect near JMP. Indirect JMP instructions specify an absolute address in
+one of several ways:
+<p>
+<pre>
+  1.  The program can JMP to a location specified by a general register
+      (any of EAX, EDX, ECX, EBX, EBP, ESI, or EDI). The processor moves
+      this 32-bit value into EIP and resumes execution.
+
+  2.  The processor can obtain the destination address from a memory
+      operand specified in the instruction.
+
+  3.  A register can modify the address of the memory pointer to select a
+      destination address.
+</pre>
+<p>
+<a name="03-05-01-02"></a>
+<h3>3.5.1.2  Call Instruction</h3>
+<p>
+CALL (Call Procedure) activates an out-of-line procedure, saving on the
+stack the address of the instruction following the CALL for later use by a
+RET (Return) instruction. CALL places the current value of EIP on the stack.
+The RET instruction in the called procedure uses this address to transfer
+control back to the calling program.
+<p>
+CALL instructions, like JMP instructions have relative, direct, and
+indirect versions.
+<p>
+Indirect CALL instructions specify an absolute address in one of these
+ways:
+<p>
+<pre>
+  1.  The program can CALL a location specified by a general register (any
+      of EAX, EDX, ECX, EBX, EBP, ESI, or EDI). The processor moves this
+      32-bit value into EIP.
+
+  2.  The processor can obtain the destination address from a memory
+      operand specified in the instruction.
+</pre>
+<p>
+<a name="03-05-01-03"></a>
+<h3>3.5.1.3  Return and Return-From-Interrupt Instruction</h3>
+<p>
+RET (Return From Procedure) terminates the execution of a procedure and
+transfers control through a back-link on the stack to the program that
+originally invoked the procedure. RET restores the value of EIP that was
+saved on the stack by the previous CALL instruction.
+<p>
+RET instructions may optionally specify an immediate operand. By adding
+this constant to the new top-of-stack pointer, RET effectively removes any
+arguments that the calling program pushed on the stack before the execution
+of the CALL instruction.
+<p>
+IRET (Return From Interrupt) returns control to an interrupted procedure.
+IRET differs from RET in that it also pops the flags from the stack into the
+flags register. The flags are stored on the stack by the interrupt
+mechanism.
+<p>
+<p>
+<a name="03-05-02"></a>
+<h3>3.5.2  Conditional Transfer Instructions</h3>
+<p>
+The conditional transfer instructions are jumps that may or may not
+transfer control, depending on the state of the CPU flags when the
+instruction executes.
+<p>
+<p>
+<a name="03-05-02-01"></a>
+<h3>3.5.2.1  Conditional Jump Instructions</h3>
+<p>
+Table 3-2 shows the conditional transfer mnemonics and their
+interpretations. The conditional jumps that are listed as pairs are actually
+the same instruction. The assembler provides the alternate mnemonics for
+greater clarity within a program listing.
+<p>
+Conditional jump instructions contain a displacement which is added to the
+EIP register if the condition is true. The displacement may be a byte, a
+word, or a doubleword. The displacement is signed; therefore, it can be used
+to jump forward or backward.
+<p>
+<p>
+<a name="T-03-02"></a>
+<h3>Table 3-2. Interpretation of Conditional Transfers</h3>
+<p>
+Unsigned Conditional Transfers
+<p>
+<pre>
+Mnemonic         Condition Tested          "Jump If..."
+
+JA/JNBE           (CF or ZF) = 0           above/not below nor equal
+JAE/JNB           CF = 0                   above or equal/not below
+JB/JNAE           CF = 1                   below/not above nor equal
+JBE/JNA           (CF or ZF) = 1           below or equal/not above
+JC                CF = 1                   carry
+JE/JZ             ZF = 1                   equal/zero
+JNC               CF = 0                   not carry
+JNE/JNZ           ZF = 0                   not equal/not zero
+JNP/JPO           PF = 0                   not parity/parity odd
+JP/JPE            PF = 1                   parity/parity even
+</pre>
+Signed Conditional Transfers
+<p>
+<pre>
+Mnemonic         Condition Tested          "Jump If..."
+JG/JNLE          ((SF xor OF) or ZF) = 0   greater/not less nor equal
+JGE/JNL          (SF xor OF) = 0           greater or equal/not less
+JL/JNGE          (SF xor OF) = 1           less/not greater nor equal
+JLE/JNG          ((SF xor OF) or ZF) = 1   less or equal/not greater
+JNO              OF = 0                    not overflow
+JNS              SF = 0                    not sign (positive, including 0)
+JO               OF = 1                    overflow
+JS               SF = 1                    sign (negative)
+</pre>
+<p>
+<a name="03-05-02-02"></a>
+<h3>3.5.2.2  Loop Instructions</h3>
+<p>
+The loop instructions are conditional jumps that use a value placed in ECX
+to specify the number of repetitions of a software loop. All loop
+instructions automatically decrement ECX and terminate the loop when ECX=0.
+Four of the five loop instructions specify a condition involving ZF that
+terminates the loop before ECX reaches zero.
+<p>
+LOOP (Loop While ECX Not Zero) is a conditional transfer that automatically
+decrements the ECX register before testing ECX for the branch condition. If
+ECX is non-zero, the program branches to the target label specified in the
+instruction. The LOOP instruction causes the repetition of a code section
+until the operation of the LOOP instruction decrements ECX to a value of
+zero. If LOOP finds ECX=0, control transfers to the instruction immediately
+following the LOOP instruction. If the value of ECX is initially zero, then
+the LOOP executes 2^(32) times.
+<p>
+LOOPE (Loop While Equal) and LOOPZ (Loop While Zero) are synonyms for the
+same instruction. These instructions automatically decrement the ECX
+register before testing ECX and ZF for the branch conditions. If ECX is
+non-zero and ZF=1, the program branches to the target label specified in the
+instruction. If LOOPE or LOOPZ finds that ECX=0 or ZF=0, control transfers
+to the instruction immediately following the LOOPE or LOOPZ instruction.
+<p>
+LOOPNE (Loop While Not Equal) and LOOPNZ (Loop While Not Zero) are synonyms
+for the same instruction. These instructions automatically decrement the ECX
+register before testing ECX and ZF for the branch conditions. If ECX is
+non-zero and ZF=0, the program branches to the target label specified in the
+instruction. If LOOPNE or LOOPNZ finds that ECX=0 or ZF=1, control transfers
+to the instruction immediately following the LOOPNE or LOOPNZ instruction.
+<p>
+<p>
+<a name="03-05-02-03"></a>
+<h3>3.5.2.3  Executing a Loop or Repeat Zero Times</h3>
+<p>
+JCXZ (Jump if ECX Zero) branches to the label specified in the instruction
+if it finds a value of zero in ECX. JCXZ is useful in combination with the
+LOOP instruction and with the string scan and compare instructions, all of
+which decrement ECX. Sometimes, it is desirable to design a loop that
+executes zero times if the count variable in ECX is initialized to zero.
+Because the LOOP instructions (and repeat prefixes) decrement ECX before
+they test it, a loop will execute 2^(32) times if the program enters the
+loop with a zero value in ECX. A programmer may conveniently overcome this
+problem with JCXZ, which enables the program to branch around the code
+within the loop if ECX is zero when JCXZ executes. When used with repeated
+string scan and compare instructions, JCXZ can determine whether the
+repetitions terminated due to zero in ECX or due to satisfaction of the
+scan or compare conditions.
+<p>
+<p>
+<a name="03-05-03"></a>
+<h3>3.5.3  Software-Generated Interrupts</h3>
+<p>
+The INT n, INTO, and BOUND instructions allow the programmer to specify a
+transfer to an interrupt service routine from within a program.
+<p>
+INT n (Software Interrupt) activates the interrupt service routine that
+corresponds to the number coded within the instruction. The INT instruction
+may specify any interrupt type. Programmers may use this flexibility to
+implement multiple types of internal interrupts or to test the operation of
+interrupt service routines. (Interrupts 0-31 are reserved by Intel.) The
+interrupt service routine terminates with an IRET instruction that returns
+control to the instruction that follows INT.
+<p>
+INTO (Interrupt on Overflow) invokes interrupt 4 if OF is set. Interrupt 4
+is reserved for this purpose. OF is set by several arithmetic, logical, and
+string instructions.
+<p>
+BOUND (Detect Value Out of Range) verifies that the signed value contained
+in the specified register lies within specified limits. An interrupt (INT 5)
+occurs if the value contained in the register is less than the lower bound
+or greater than the upper bound.
+<p>
+The BOUND instruction includes two operands. The first operand specifies
+the register being tested. The second operand contains the effective
+relative address of the two signed BOUND limit values. The BOUND instruction
+assumes that the upper limit and lower limit are in adjacent memory
+locations. These limit values cannot be register operands; if they are, an
+invalid opcode exception occurs.
+<p>
+BOUND is useful for checking array bounds before using a new index value to
+access an element within the array. BOUND provides a simple way to check the
+value of an index register before the program overwrites information in a
+location beyond the limit of the array.
+<p>
+The block of memory that specifies the lower and upper limits of an array
+might typically reside just before the array itself. This makes the array
+bounds accessible at a constant offset from the beginning of the array.
+Because the address of the array will already be present in a register, this
+practice avoids extra calculations to obtain the effective address of the
+array bounds.
+<p>
+The upper and lower limit values may each be a word or a doubleword.
+<p>
+<p>
+<hr>
+Prev: <a href="chp03-04.htm">3.4  Logical Instructions</a><br>
+Next: <a href="chp03-06.htm">3.6  String and Character Translation Instructions</a>
+</body>
+</html>

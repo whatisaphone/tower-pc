@@ -1,0 +1,87 @@
+Undocumented OpCodes: UMOV 
+
+----------------------------------------------------------------------------
+
+UMOV - 0F 10, 0F 11, 0F 12, 0F 13 - User Move Data
+
+An undocumented op code used by ICE host software to perform memory 
+cycles to the target system during HALT mode. 
+
+
+Undocumented:  Available on all 80386/80486 processors.
+               Useful only to BONDOUT (ICE) processors.
+                                                             UMOV
+Flags:                                             User MOVE data
++-+-+-+-+-+-+-+-+-+         +----------+----------+-------------+
+|O|D|I|T|S|Z|A|P|C|         | 00001111 | 000100dw | mod,reg,r/m |
++-+-+-+-+-+-+-+-+-+         +----------+----------+-------------+
+| | | | | | | | | |         |    0F    |    1x    |      xx     |
++-+-+-+-+-+-+-+-+-+         +----------+----------+-------------+
+
+UMOV is an acronym for User-MOVe.  When the In-Circuit Emulator 
+(ICE) is in HALT mode, the CPU performs no recognizable bus 
+cycles.  Since the '386 is a dynamic device, it must be executing 
+some instructions during HALT, but it is not doing it in a way 
+recognizable to a logic analyzer with a '386 probe attached.  
+During HALT mode, the ICE differentiates between USER space and 
+HOST space.  The ICE is fetching, and performing all bus cycles 
+to HOST memory space during HALT, and not USER space.  Since the 
+ICE differentiates between these two memory spaces, it needs a 
+mechanism to access user memory space.  That mechanism is UMOV.  
+When a user request to view memory, or disassemble memory, the 
+ICE executes UMOV instructions to get data from User space.  
+If UMOV is executed by a user program, it will appear it is a 
+alias for MOV.
+
+
+The field operands to UMOV are exactly the same as the MOV 
+instruction.  For example:
+
+d    Direction.  If set (d=1), do memory to register, or register 
+     to register; the reg field is the destination.  If cleared 
+     (d=0), do register to memory; the reg field is the source.
+w    Width.  Selects the default data width.  W=1 selects      
+     word width, according to the appropriate CPU operating mode, 
+     and/or size prefix override.  W=0 selects 8-bit operands.
+
+
+----------------------------------------------------------------------------
+
+Get description of other opcodes:
+AAM:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAM.txt
+AAD:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAD.txt
+CMOV:     ftp://ftp.x86.org/pub/x86/p6/opcodes/CMOV.txt
+FCMOV:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCMOV.txt
+FCOMI:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCOMI.txt
+ICEBP:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+INT01:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+LOADALL:  ftp://ftp.x86.org/pub/x86/secrets/opcodes/LOADALL.txt
+RDPMC:    ftp://ftp.x86.org/pub/x86/p6/opcodes/RDPMC.txt
+SALC:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/SALC.txt
+UMOV:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/UMOV.txt
+
+----------------------------------------------------------------------------
+
+Download this file -- OpCodes.ZIP 
+ftp://ftp.x86.org/pub/x86/dloads/OPCODES.ZIP 
+
+----------------------------------------------------------------------------
+
+(c) 1991, 1995, 1996 Intel Secrets(TM) home page. PGP key available. 
+
+Make no mistake! 
+The Intel Secrets web site is proud to provide superior information and 
+service without any affilation to Intel. 
+
+"Intel Secrets" and "What Intel doesn't want you to know" are trademarks 
+of Robert Collins. 
+
+Pentium and Intel are trademarks of Intel Corporation. 386, 486, 586, 
+P6, and all other numbers.are not!
+
+All other trademarks are those of their respective companies. See 
+Trademarks and Disclaimers for more info. 
+
+Robert Collins is a Senior Design Engineer and Manager of some sort of 
+Research in Dallas, TX. Robert may be reached via email at 
+rcollins@x86.org or via phone at (214) 491-7718. 

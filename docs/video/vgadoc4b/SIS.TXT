@@ -1,0 +1,191 @@
+SiS
+
+SG86c201  160pin
+
+
+3C4h index 5 (R/W):
+bit 0-7  Write 0 to lock the extended registers, 86h to unlock them.
+         Returns A1h when locked, 21h when unlocked
+
+3C4h index 6 (R/W):
+bit   0  ??
+      1  Enable bank registers if set. For 256color modes this also disables
+         the pixel doubling used in mode 13h.
+    2-4  DAC mode. 0: Palette, 1: 32Kcolor, 2: 64Kcolor, 4: 24bit
+      5  Set for interlaced modes. In interlaced modes the CRTC Offset is for
+         two lines (I.e. twice the normal).
+      6  Enable hardware cursor if set ?
+      7  ??
+
+3C4h index 7 (R/W):
+bit 0-3  Clock select 2-5. If 3C2h/3CCh bits 2-3 is 3 these bits selects the
+         video clock.
+      4  Clock ??
+    5-7  ??
+
+3C4h index 8 (R/W):
+bit 0-7  ??
+
+3C4h index 9 (R/W):
+bit 0-7  ??
+
+3C4h index 0Ah (R/W):
+bit 0-3  Clock ??
+    4-7  CRTC Offset bits 8-11. Bits 0-7 are in 3d4h index 13h.
+
+3C4h index 0Bh (R/W):
+bit   0  If set all pixels are written black (some sort of color expand ?) ??
+    1-2  ??
+      3  If set 3CDh is the write bank and 3CBh the read bank. If clear both
+         the read and write banks are in 3CDh
+    4-7  ??
+
+3C4h index 0Ch (R/W):
+bit   0  Locks up if set ??
+    1-2  memory layout (bus width ?). 0: 1Mb, 1: 2Mb, 2: 4Mb
+      3  Clock ??
+      4  Displays a vertically striped screen if clear ?
+    5-7  ??
+
+3C4h index 0Dh (R):
+
+3C4h index 0Eh (R):
+
+3C4h index 0Fh (R/W):
+bit 0-1  Video Memory. 0: 1Mb, 1: 2Mb, 2: 4Mb
+    2-7  ??
+
+3C4h index 10h (R/W):
+bit 0-7  ??
+
+3C4h index 11h (R/W):
+bit 0-3  ??
+    4-5  Set to 3 to enable VESA DPMS ??
+    6-7  Blanks screen if set ??
+
+3C4h index 14h 3(R/W):
+bit 0-23  Cursor Color 0
+
+3C4h index 17h 3(R/W):
+bit 0-23  Cursor Color 1
+
+3C4h index 1Ah W(R/W):
+bit 0-10  Hardware cursor X position
+
+3C4h index 1Ch (R/W):
+bit  0-4  Cursor X hot-spot
+
+3C4h index 1Dh W(R/W):
+bit 0-10  Hardware cursor Y position. For interlaced modes this is half the
+          line number
+      12  Set for interlaced mode w/odd cursor start line
+Note: The hardware cursor is stored as a 64x64 2bit bitmap with 4 "pixels"
+      in each byte. The cursor map is at the last 16Kbytes of video memory
+      Each "pixel" defines the cursor appearance as follows:
+      Cursor map  Appearence:
+          0       Cursor Color 0 (index 14h-16h)
+          1       Cursor Color 1 (index 17h-19h)
+          2       Transparent (screen data)
+          3       Inverse (XOR cursor)
+Note: In interlaced modes there should be two similar cursor maps of 400h
+      bytes, one just after the other
+
+3C4h index 1Fh (R/W):
+bit  0-4  Cursor X hot-spot
+
+3C4h index 20h W(R/W):
+bit 0-12  Address of linear aperture in units of 512Kbytes (I.e. A19-31)
+   13-14  Set to 3 to enable linear aperture ?
+
+3C4h index 22h
+bit 0-3  DPMS Standby
+    4-7  DPMS Suspend
+
+3C4h index 27h (R/W):
+bit 0-3  Display Start Address bits 16-19. Bits 0-15 are in 3d4h index Ch,Dh
+
+3CBh (R/W):
+bit 0-5  Read bank number in units of 64Kb (if 3C4h index Bh bit 3 set)
+
+3CDh (R/W):
+bit 0-5  Write bank number in units of 64Kb (if 3C4h index Bh bit 3 set)
+    0-3  Write bank number in units of 64Kb (if 3C4h index Bh bit 3 clear)
+    4-7  Read bank number in units of 64Kb (if 3C4h index Bh bit 3 clear)
+
+
+    *** Memory mapped registers ***
+
+M+8284h D():
+bit 0-?  Destination start address
+
+M+8288h W():
+M+828Ah W():
+bit 0-?  Scanline width
+M+828Ch D()
+bit 0-?  Width & height ??
+
+M+8290h D():
+bit 0-?   Color ?
+   24-31  ROP ?
+
+M+8294h D():
+bit 0-?   Color ?
+   24-31  ROP
+
+M+8298h D():
+
+M+829Ch D();
+
+M+82A0h D():
+
+M+82A4h D():
+
+M+82A8h (R):
+bit  0-?  Number of free command FIFO slots ?
+
+M+82AAh W():
+bit    3  If set source data is from CPU
+      14
+      15  Engine busy if set
+
+
+PCI 00h W(R):  Vendor
+bit 0-15  1039h for SiS
+
+PCI 02h W(R):  Device
+bit 0-15  1 for 86c201
+
+
+
+
+Video Modes:
+ 22h   132   44  TXT
+ 23h   132   25  TXT
+ 24h   132   28  TXT
+ 26h    80   60  TXT
+ 29h   800  600  PL4
+ 2Ah   100   40  TXT
+ 2Dh   640  350  P8
+ 2Eh   640  480  P8
+ 2Fh   640  400  P8
+ 30h   800  600  P8
+ 37h  1024  768  PL4
+ 38h  1024  768  P8
+ 39h  1280 1024  PL4
+ 40h   320  200  P15
+ 41h   320  200  P16
+ 42h   320  200  P24
+ 43h   640  480  P15
+ 44h   640  480  P16
+ 45h   640  480  P24
+ 46h   800  600  P15
+ 47h   800  600  P16
+ 48h   800  600  P24
+ 49h  1024  768  P15
+ 4Ah  1024  768  P16
+ 4Bh  1024  768  P24
+ 4Ch  1280 1024  P15
+ 4Dh  1280 1024  P16
+
+
+

@@ -1,0 +1,151 @@
+<HTML>
+<HEAD>
+<TITLE>keyboard commands</TITLE>
+</HEAD>
+
+<BODY><PRE></PRE>
+
+<H2 ALIGN=Center>Keyboard Commands & Responses</H2>
+
+<PRE>
+
+</PRE>
+
+<H2 ALIGN=Center>Commands System Issues to Keyboard (via 8042 port 60h)</H2>
+
+<PRE>
+
+	ED  Set/Reset Mode Indicators, keyboard responds with ACK then
+	    waits for a following option byte.	When the option byte is
+	    received the keyboard again ACK's and then sets the LED's
+	    accordingly.  Scanning is resumed if scanning was enabled.
+	    If another command is received instead of the option byte
+	    (high bit set on) this command is terminated.  Hardware
+	    defaults to these indicators turned off.
+
+	    |7-3|2|1|0| Keyboard Status Indicator Option Byte
+	      |  | | `--- Scroll-Lock indicator  (0=off, 1=on)
+	      |  | `---- Num-Lock indicator  (0=off, 1=on)
+	      |  `----- Caps-Lock indicator  (0=off, 1=on)
+	      `------- reserved (must be zero)
+
+	EE  Diagnostic Echo, keyboard echoes the EE byte back to the system
+	    without an acknowledgement.
+	F0  PS/2 Select/Read Alternate Scan Code Sets, instructs keyboard
+	    to use one of the three make/break scan code sets.	 Keyboard
+	    responds by clearing the output buffer/typematic key and then
+	    transmits an ACK.  The system must follow up by sending an
+	    option byte which will again be ACK'ed by the keyboard:
+
+	      00  return byte indicating scan code set in use
+	      01  select scan code set 1  (used on PC & XT)
+	      02  select scan code set 2
+	      03  select scan code set 3
+
+	F2  PS/2 Read Keyboard ID, keyboard responds with an ACK and a two
+	    byte keyboard ID of 83AB.
+	F3  Set Typematic Rate/Delay, keyboard responds with ACK and waits
+	    for rate/delay byte.   Upon receipt of the rate/delay byte the
+	    keyboard responds with an ACK, then sets the new typematic
+	    values and scanning continues if scanning was enabled.
+	    
+	    |7|6|5|4|3|2|1|0|  Typematic Rate/Delay Option Byte
+	     | | | |-+-+-+-+---- typematic rate indicator (see <A HREF="int_16-3.html">INT 16,3</A>)
+	     | | | | | `------- A in period formula (see below)
+	     | | | `---------- B is period formula (see below)
+	     | `------------- typematic delay
+	     `-------------- always zero
+
+	    delay = (rate+1) * 250   (in milliseconds)
+	    rate = (8+A) * (2**B) * 4.17  (in seconds, ñ 20%)
+
+	    Defaults to 10.9 characters per second and a 500ms delay.  If a
+	    command byte (byte with high bit set) is received instead of an
+	    option byte this command is cancelled.
+	F4  Enable Keyboard, cause the keyboard to clear its output buffer
+	    and last typematic key and then respond with an ACK.  The
+	    keyboard then begins scanning.
+	F5  Default w/Disable, resets keyboard to power-on condition by
+	    clearing the output buffer, resetting typematic rate/delay,
+	    resetting last typematic key and setting default key types.
+	    The keyboard responds with an ACK and waits for the next
+	    instruction.
+	F6  Set Default, resets to power-on condition by clearing the output
+	    buffer, resetting typematic rate/delay and last typematic key
+	    and sets default key types.  The keyboard responds with an ACK
+	    and continues scanning.
+	F7  PS/2 Set All Keys to Typematic, keyboard responds by sending an
+	    ACK, clearing its output buffer and setting the key type to
+	    Typematic.	 Scanning continues if scanning was enabled.  This
+	    command may be sent while using any Scan Code Set but only has
+	    effect when Scan Code Set 3 is in use.
+	F8  PS/2 Set All Keys to Make/Break, keyboard responds by sending an
+	    ACK, clearing its output buffer and setting the key type to
+	    Make/Break.  Scanning continues if scanning was enabled.  This
+	    command may be sent while using any Scan Code Set but only has
+	    effect when Scan Code Set 3 is in use.
+	F9  PS/2 Set All Keys to Make, keyboard responds by sending an ACK,
+	    clearing its output buffer and setting the key type to Make.
+	    Scanning continues if scanning was enabled.  This command may
+	    be sent while using any Scan Code Set but only has effect when
+	    Scan Code Set 3 is in use.
+	FA  PS/2 Set All Keys to Typematic Make/Break, keyboard responds by
+	    sending an ACK, clearing its output buffer and setting the key
+	    type to Typematic Make/Break.  Scanning continues if scanning
+	    was enabled.  This command may be sent while using any Scan Code
+	    Set but only has effect when Scan Code Set 3 is in use.
+	FB  PS/2 Set Key Type to Typematic, keyboard responds by sending an
+	    ACK, clearing its output buffer and then waiting for the key ID
+	    (make code from Scan Code Set 3).  The specified key type is then
+	    set to typematic.	This command may be sent while using any
+	    Scan Code Set but only has effect when Scan Code Set 3 is in use.
+	FC  PS/2 Set Key Type to Make/Break, keyboard responds by sending an
+	    ACK, clearing its output buffer and then waiting for the key ID
+	    (make code from Scan Code Set 3).  The specified key type is then
+	    set to Make/Break.	 This command may be sent while using any Scan
+	    Code Set but only has effect when Scan Code Set 3 is in use.
+	FD  PS/2 Set Key Type to Make, keyboard responds by sending an ACK,
+	    clearing its output buffer and then waiting for the key ID (make
+	    code from Scan Code Set 3).  The specified key type is then set
+	    to Make.  This command may be sent while using any Scan Code Set
+	    but only has effect when Scan Code Set 3 is in use.
+	FE  Resend, should be sent when a transmission error is detected
+	    from the keyboard
+	FF  Reset, Keyboard sends ACK and waits for system to receive it
+	    then begins a program reset and Basic Assurance Test (BAT).
+	    Keyboard returns a one byte completion code then sets default
+	    Scan Code Set 2.
+
+
+</PRE>
+
+<H2 ALIGN=Center>Keyboard Responses to System (via 8042 port 60h)</H2>
+
+<PRE>
+
+	00  Key Detection Error or Overrun Error for Scan Code Set 1,
+	    replaces last key in the keyboard buffer if the buffer is full. 
+	AA  BAT Completion Code, keyboard sends this to indicate the keyboard
+	    test was successful.
+	EE  Echo Response, response to the Echo command.
+	F0  Break Code Prefix in Scan Code Sets 2 and 3.
+	FA  Acknowledge, keyboard sends this whenever a valid command or
+	    data byte is received (except on Echo and Resend commands).
+	FC  BAT Failure Code, keyboard sends this to indicate the keyboard
+	    test failed and stops scanning until a response or reset is sent.
+	FE  Resend, keyboard request resend of data when data sent to it is
+	    invalid or arrives with invalid parity.
+	FF  Key Detection Error or Overrun Error for Scan Code Set 2 or 3,
+	    replaces last key in the keyboard buffer if the buffer is full.
+	id  Keyboard ID Response, keyboard sends a two byte ID after ACK'ing
+	    the Read ID command.  The byte stream contains 83AB in LSB, MSB
+	    order.  The keyboard then resumes scanning.
+
+
+	- command F7 through FD are NOP's on the AT and are ACK'ed but not
+	  acted upon
+	- see	<A HREF="8042.html">8042</A>  <A HREF="make_codes.html">MAKE CODES</A>  <A HREF="make_codes.html">BREAK CODES</A>  <A HREF="int_16-3.html">INT 16,3</A>
+</PRE>
+
+</BODY>
+</HTML>

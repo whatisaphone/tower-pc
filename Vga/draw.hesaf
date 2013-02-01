@@ -1,0 +1,9 @@
+#pragma once
+#include "stdafx.h"
+
+/*#include "Piston\Win32\types.h"
+
+namespace Tower { namespace Vga {
+	void GfxModeDraw(int8 mode, Piston::Win32::HDC hDC);
+	void TextModeDraw(int8 mode, Piston::Win32::HDC hDC);
+}}*/

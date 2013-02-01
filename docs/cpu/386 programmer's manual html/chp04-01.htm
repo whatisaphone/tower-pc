@@ -1,0 +1,227 @@
+<html>
+<head>
+<title>
+4.1  Systems Registers
+</title>
+<body>
+<a name="04-01"></a>
+Prev: <a href="chp04-00.htm">Chapter 4  Systems Architecture</a><br>
+Next: <a href="chp04-02.htm">4.2  Systems Instructions</a>
+<hr>
+<h2>
+4.1  Systems Registers
+</h2>
+<p>
+The registers designed for use by systems programmers fall into these
+classes:
+<p>
+<pre>
+  EFLAGS
+  Memory-Management Registers
+  Control Registers
+  Debug Registers
+  Test Registers
+</pre>
+<p>
+<a name="04-01-01"></a>
+<h3>4.1.1  Systems Flags</h3>
+<p>
+The systems flags of the EFLAGS register control I/O, maskable interrupts,
+debugging, task switching, and enabling of virtual 8086 execution in a
+protected, multitasking environment. These flags are highlighted in Figure
+4-1.
+<p>
+IF (Interrupt-Enable Flag, bit 9)
+<p>
+<pre>
+   Setting IF allows the CPU to recognize external (maskable) interrupt
+   requests. Clearing IF disables these interrupts. IF has no effect on
+   either exceptions or nonmaskable external interrupts. Refer to Chapter
+   9 for more details about interrupts.
+</pre>
+NT (Nested Task, bit 14)
+<p>
+<pre>
+   The processor uses the nested task flag to control chaining of
+   interrupted and called tasks. NT influences the operation of the IRET
+   instruction. Refer to Chapter 7 and Chapter 9 for more information on
+   nested tasks.
+</pre>
+RF (Resume Flag, bit 16)
+<p>
+<pre>
+   The RF flag temporarily disables debug exceptions so that an instruction
+   can be restarted after a debug exception without immediately causing
+   another debug exception. Refer to Chapter 12 for details.
+</pre>
+TF (Trap Flag, bit 8)
+<p>
+<pre>
+   Setting TF puts the processor into single-step mode for debugging. In
+   this mode, the CPU automatically generates an exception after each
+   instruction, allowing a program to be inspected as it executes each
+   instruction. Single-stepping is just one of several debugging features of
+   the 80386. Refer to Chapter 12 for additional information.
+</pre>
+VM (Virtual 8086 Mode, bit 17)
+<p>
+<pre>
+   When set, the VM flag indicates that the task is executing an 8086
+   program. Refer to Chapter 14 for a detailed discussion of how the 80386
+   executes 8086 tasks in a protected, multitasking environment.
+</pre>
+<p>
+<a name="F-04-01"></a>
+<h3>Figure 4-1.  System Flags of EFLAGS Register</h3>
+<p>
+<pre>
+      31              23               15                7           0
+     +---------------+-----------+-+-+++-+----+-+-+-+-+++-+-+-+-+-+-+-+
+     |###########################|V|R|#|N|ID  |O|D|I|T|S|Z|#|A|#|P|#|C|
+     |0 0 0 0 0 0 0 0 0 0 0 0 0 0| | |0| |    |#|#| |#|#|#|0|#|0|#|1|#|
+     |###########################|M|F|#|T|  PL|F|F|F|F|F|F|#|F|#|F|#|F|
+     +---------------+-----------+++++++++-+--+-+-+++-+++-+-+-+-+-+-+-+
+                                  | |   |  |       |
+             VIRTUAL 8086 MODE----+ |   |  |       |
+                   RESUME FLAG------+   |  |       |
+              NESTED TASK FLAG----------+  |       |
+           I/O PRIVILEGE LEVEL-------------+       |
+              INTERRUPT ENABLE---------------------+
+
+----------------------------------------------------------------------------
+NOTE
+      0 OR 1 INDICATES INTEL RESERVED. DO NOT DEFINE.
+----------------------------------------------------------------------------
+</pre>
+<p>
+<a name="04-01-02"></a>
+<h3>4.1.2  Memory-Management Registers</h3>
+<p>
+Four registers of the 80386 locate the data structures that control
+segmented memory management:
+<p>
+<pre>
+GDTR    Global Descriptor Table Register
+LDTR    Local Descriptor Table Register
+
+   These registers point to the segment descriptor tables GDT and LDT.
+   Refer to Chapter 5 for an explanation of addressing via descriptor
+   tables.
+
+IDTR    Interrupt Descriptor Table Register
+
+   This register points to a table of entry points for interrupt handlers
+   (the IDT). Refer to Chapter 9 for details of the interrupt mechanism.
+
+TR      Task Register
+
+   This register points to the information needed by the processor to define
+   the current task. Refer to Chapter 7 for a description of the
+   multitasking features of the 80386.
+</pre>
+<p>
+<a name="04-01-03"></a>
+<h3>4.1.3  Control Registers</h3>
+<p>
+Figure 4-2 shows the format of the 80386 control registers CR0, CR2, and
+CR3. These registers are accessible to systems programmers only via variants
+of the MOV instruction, which allow them to be loaded from or stored in
+general registers; for example:
+<p>
+MOV EAX, CR0
+MOV CR3, EBX
+<p>
+CR0 contains system control flags, which control or indicate conditions
+that apply to the system as a whole, not to an individual task.
+<p>
+EM (Emulation, bit 2)
+<p>
+<pre>
+   EM indicates whether coprocessor functions are to be emulated. Refer to
+   Chapter 11 for details.
+</pre>
+ET (Extension Type, bit 4)
+<p>
+<pre>
+   ET indicates the type of coprocessor present in the system (80287 or
+   80387). Refer to Chapter 11 and Chapter 10 for details.
+</pre>
+MP (Math Present, bit 1)
+<p>
+<pre>
+   MP controls the function of the WAIT instruction, which is used to
+   coordinate a coprocessor. Refer to Chapter 11 for details.
+</pre>
+PE (Protection Enable, bit 0)
+<p>
+<pre>
+   Setting PE causes the processor to begin executing in protected mode.
+   Resetting PE returns to real-address mode. Refer to Chapter 14 and
+   Chapter 10 for more information on changing processor modes.
+</pre>
+PG (Paging, bit 31)
+<p>
+<pre>
+   PG indicates whether the processor uses page tables to translate linear
+   addresses into physical addresses. Refer to Chapter 5 for a description
+   of page translation; refer to Chapter 10 for a discussion of how to set
+   PG.
+</pre>
+TS (Task Switched, bit 3)
+<p>
+<pre>
+   The processor sets TS with every task switch and tests TS when
+   interpreting coprocessor instructions. Refer to Chapter 11 for details.
+</pre>
+CR2 is used for handling page faults when PG is set. The processor stores
+in CR2 the linear address that triggers the fault. Refer to Chapter 9 for a
+description of page-fault handling.
+<p>
+CR3 is used when PG is set. CR3 enables the processor to locate the page
+table directory for the current task. Refer to Chapter 5 for a description
+of page tables and page translation.
+<p>
+<p>
+<a name="F-04-02"></a>
+<h3>Figure 4-2.  Control Registers</h3>
+<p>
+<pre>
+ 31                23                15                7               0
++-----------------+-----------------+--------+--------+-----------------+
+|                                            |                          |
+|    PAGE DIRECTORY BASE REGISTER (PDBR)     |         RESERVED         |CR3
+|--------------------------------------------+--------------------------|
+|                                                                       |
+|                       PAGE FAULT LINEAR ADDRESS                       |CR2
+|-----------------------------------------------------------------------|
+|                                                                       |
+|                                RESERVED                               |CR1
+|-+-----------------------------------------------------------+-+-+-+-+-|
+|P|                                                           |E|T|E|M|P|
+|G|                              RESERVED                     |T|S|M|P|E|CR0
++-+---------------+-----------------+-----------------+-------+-+-+-+-+-+
+</pre>
+<p>
+<a name="04-01-04"></a>
+<h3>4.1.4  Debug Register</h3>
+<p>
+The debug registers bring advanced debugging abilities to the 80386,
+including data breakpoints and the ability to set instruction breakpoints
+without modifying code segments. Refer to Chapter 12 for a complete
+description of formats and usage.
+<p>
+<p>
+<a name="04-01-05"></a>
+<h3>4.1.5  Test Registers</h3>
+<p>
+The test registers are not a standard part of the 80386 architecture. They
+are provided solely to enable confidence testing of the translation
+lookaside buffer (TLB), the cache used for storing information from page
+tables. Chapter 12 explains how to use these registers.
+<p>
+<p>
+<hr>
+Prev: <a href="chp04-00.htm">Chapter 4  Systems Architecture</a><br>
+Next: <a href="chp04-02.htm">4.2  Systems Instructions</a>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<html>
+<head>
+<title>
+3.6  String and Character Translation Instructions
+</title>
+<body>
+<a name="03-06"></a>
+Prev: <a href="chp03-05.htm">3.5  Control Transfer Instructions</a><br>
+Next: <a href="chp03-07.htm">3.7  Instructions for Block-Structured Languages</a>
+<hr>
+<h2>
+3.6  String and Character Translation Instructions
+</h2>
+<p>
+The instructions in this category operate on strings rather than on logical
+or numeric values. Refer also to the section on I/O for information about
+the string I/O instructions (also known as block I/O).
+<p>
+The power of 80386 string operations derives from the following features of
+the architecture:
+<p>
+1.  A set of primitive string operations
+<p>
+<pre>
+   MOVS   -- Move String
+   CMPS   -- Compare string
+   SCAS   -- Scan string
+   LODS   -- Load string
+   STOS   -- Store string
+</pre>
+2.  Indirect, indexed addressing, with automatic incrementing or
+<pre>
+    decrementing of the indexes.
+
+   Indexes:
+
+      ESI    -- Source index register
+      EDI    -- Destination index register
+
+   Control flag:
+
+      DF     -- Direction flag
+
+   Control flag instructions:
+
+      CLD    -- Clear direction flag instruction
+      STD    -- Set direction flag instruction
+</pre>
+3.  Repeat prefixes
+<p>
+<pre>
+   REP          -- Repeat while ECX not xero
+   REPE/REPZ    -- Repeat while equal or zero
+   REPNE/REPNZ  -- Repeat while not equal or not zero
+</pre>
+The primitive string operations operate on one element of a string. A
+string element may be a byte, a word, or a doubleword. The string elements
+are addressed by the registers ESI and EDI. After every primitive operation
+ESI and/or EDI are automatically updated to point to the next element of the
+string. If the direction flag is zero, the index registers are incremented;
+if one, they are decremented. The amount of the increment or decrement is
+1, 2, or 4 depending on the size of the string element.
+<p>
+<p>
+<a name="03-06-01"></a>
+<h3>3.6.1  Repeat Prefixes</h3>
+<p>
+The repeat prefixes REP (Repeat While ECX Not Zero), REPE/REPZ (Repeat
+While Equal/Zero), and REPNE/REPNZ (Repeat While Not Equal/Not Zero) specify
+repeated operation of a string primitive. This form of iteration allows the
+CPU to process strings much faster than would be possible with a regular
+software loop.
+<p>
+When a primitive string operation has a repeat prefix, the operation is
+executed repeatedly, each time using a different element of the string. The
+repetition terminates when one of the conditions specified by the prefix is
+satisfied.
+<p>
+At each repetition of the primitive instruction, the string operation may
+be suspended temporarily in order to handle an exception or external
+interrupt. After the interruption, the string operation can be restarted
+again where it left off. This method of handling strings allows operations
+on strings of arbitrary length, without affecting interrupt response.
+<p>
+All three prefixes causes the hardware to automatically repeat the
+associated string primitive until ECX=0. The differences among the repeat
+prefixes have to do with the second termination condition. REPE/REPZ and
+REPNE/REPNZ are used exclusively with the SCAS (Scan String) and CMPS
+(Compare String) primitives. When these prefixes are used, repetition of the
+next instruction depends on the zero flag (ZF) as well as the ECX register.
+ZF does not require initialization before execution of a repeated string
+instruction, because both SCAS and CMPS set ZF according to the results of
+the comparisons they make. The differences are summarized in the
+accompanying table.
+<p>
+<pre>
+Prefix                      Termination         Termination
+                            Condition 1         Condition 2
+
+REP                           ECX = 0             (none)
+REPE/REPZ                     ECX = 0             ZF = 0
+REPNE/REPNZ                   ECX = 0             ZF = 1
+</pre>
+<p>
+<a name="03-06-02"></a>
+<h3>3.6.2  Indexing and Direction Flag Control</h3>
+<p>
+The addresses of the operands of string primitives are determined by the
+ESI and EDI registers. ESI points to source operands. By default, ESI refers
+to a location in the segment indicated by the DS segment register. A
+segment-override prefix may be used, however, to cause ESI to refer to CS,
+SS, ES, FS, or GS. EDI points to destination operands in the segment
+indicated by ES; no segment override is possible. The use of two different
+segment registers in one instruction allows movement of strings between
+different segments.
+<p>
+This use of ESI and DSI has led to the descriptive names source index and
+destination index for the ESI and EDI registers, respectively. In all
+cases other than string instructions, however, the ESI and EDI registers may
+be used as general-purpose registers.
+<p>
+When ESI and EDI are used in string primitives, they are automatically
+incremented or decremented after to operation. The direction flag determines
+whether they are incremented or decremented. The instruction CLD puts zero
+in DF, causing the index registers to be incremented; the instruction STD
+puts one in DF, causing the index registers to be decremented. Programmers
+should always put a known value in DF before using string instructions in a
+procedure.
+<p>
+<p>
+<a name="03-06-03"></a>
+<h3>3.6.3  String Instructions</h3>
+<p>
+MOVS (Move String) moves the string element pointed to by ESI to the
+location pointed to by EDI. MOVSB operates on byte elements, MOVSW operates
+on word elements, and MOVSD operates on doublewords. The destination segment
+register cannot be overridden by a segment override prefix, but the source
+segment register can be overridden.
+<p>
+The MOVS instruction, when accompanied by the REP prefix, operates as a
+memory-to-memory block transfer. To set up for this operation, the program
+must initialize ECX and the register pairs ESI and EDI. ECX specifies the
+number of bytes, words, or doublewords in the block.
+<p>
+If DF=0, the program must point ESI to the first element of the source
+string and point EDI to the destination address for the first element. If
+DF=1, the program must point these two registers to the last element of the
+source string and to the destination address for the last element,
+respectively.
+<p>
+CMPS (Compare Strings) subtracts the destination string element (at ES:EDI)
+from the source string element (at ESI) and updates the flags AF, SF, PF, CF
+and OF. If the string elements are equal, ZF=1; otherwise, ZF=0. If DF=0,
+the processor increments the memory pointers (ESI and EDI) for the two
+strings. CMPSB compares bytes, CMPSW compares words, and CMPSD compares
+doublewords. The segment register used for the source address can be changed
+with a segment override prefix while the destination segment register
+cannot be overridden.
+<p>
+SCAS (Scan String) subtracts the destination string element at ES:EDI from
+EAX, AX, or AL and updates the flags AF, SF, ZF, PF, CF and OF. If the
+values are equal, ZF=1; otherwise, ZF=0. If DF=0, the processor increments
+the memory pointer (EDI) for the string. SCASB scans bytes; SCASW scans
+words; SCASD scans doublewords. The destination segment register (ES) cannot
+be overridden.
+<p>
+When either the REPE or REPNE prefix modifies either the SCAS or CMPS
+primitives, the processor compares the value of the current string element
+with the value in EAX for doubleword elements, in AX for word elements, or
+in AL for byte elements. Termination of the repeated operation depends on
+the resulting state of ZF as well as on the value in ECX.
+<p>
+LODS (Load String) places the source string element at ESI into EAX for
+doubleword strings, into AX for word strings, or into AL for byte strings.
+LODS increments or decrements ESI according to DF.
+<p>
+STOS (Store String) places the source string element from EAX, AX, or AL
+into the string at ES:DSI. STOS increments or decrements EDI according to
+DF.
+<p>
+<p>
+<hr>
+Prev: <a href="chp03-05.htm">3.5  Control Transfer Instructions</a><br>
+Next: <a href="chp03-07.htm">3.7  Instructions for Block-Structured Languages</a>
+</body>
+</html>

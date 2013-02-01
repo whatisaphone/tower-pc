@@ -1,0 +1,662 @@
+Monitor Pinouts:
+
+Monochrome - TTL (18.43 KHz - 720x350) 9-pin Sub-D connector:
+Pins:
+   1  GND
+ 2-5  Unused
+   6  Intensity
+   7  Video
+   8  Horizontal Sync TTL Positive
+   9  Vertical Sync TTL Negative
+
+
+CGA - TTL (15.75 KHz - 320x200 or 640x200) 9-pin Sub-D connector:
+Pins:
+   1  Ground
+   2  Unused
+   3  RED Video
+   4  GREEN Video
+   5  BLUE Video
+   6  Intensity
+   7  Unused
+   8  Horizontal Sync TTL Positive
+   9  Vertical Sync TTL Positive
+
+
+IBM PCjr CGA (Berg style connector):
+Pins:
+       A01  TV vertical drive (not for display)
+       A02  Ground
+       A03  TV horizontal drive (not for display)
+       A04  Blue (CGA pin 5)
+       A05  Red (CGA pin 3)
+       A06  Intensity (CGA pin 6)
+       A07  Green (CGA pin 4)
+       A08  Comp sync drive (not for display)
+       A09  Audio
+       B01  + Vertical drive (CGA pin 9)
+       B02  Ground
+       B03  + Horizontal drive (CGA pin 8)
+ B04 - B08  Ground
+       B09  frame ground (CGA pin 1)
+
+
+
+EGA - TTL (15.74-21.85 KHz) 9-pin Sub-D connector:
+Pins:
+   1  GND
+   2  Secondary RED Video
+   3  Primary RED Video
+   4  Primary GREEN Video
+   5  Primary BLUE Video
+   6  Secondary Green Video/Intensity
+   7  Secondary Blue Video
+   8  Horizontal Sync TTL Positive
+   9  Vertical Sync TTL Negative
+
+
+IBM PGA (Professional Graphics Adapter):
+Pins:
+   1  Red
+   2  Green
+   3  Blue
+   4  Composite sync.
+   5  Mode control
+   6  Red ground
+   7  Green ground
+   8  Blue ground
+   9  Ground
+
+
+Original VGA (from 31.5 KHz up) 15-pin mini Sub-D (Three rows of 5 pins):
+Pins:
+   1  Red (Analog)
+   2  Green (Analog)
+   3  Blue (Analog)
+   4  Reserved
+   5  Ground
+   6  Red   Return
+   7  Green Return
+   8  Blue  Return
+   9  No Connect
+  10  Ground
+  11  ID0. GND for Color monitors, NC for Mono monitors
+  12  ID1. NC for Color monitors, GND for Mono monitors. Some systems only
+      uses ID0 for monitr ID.
+  13  Horzontal Sync
+  14  Vertical Sync
+  15  No Connect
+
+
+VESA Display Data Channel (DDC) Standard. 15-pin mini Sub-D:
+Pins:
+   1  Red (Analog)
+   2  Green (Analog)
+   3  Blue (Analog)
+   4  Reserved
+   5  Return
+   6  Red   Return
+   7  Green Return
+   8  Blue  Return
+   9  +5 VDC (from host). Should only be used for DDC2 devices
+  10  Sync return
+  11  Monitor ID0 (optional)
+  12  Data (SDA)
+  13  Horzontal Sync
+  14  Vertical  Sync
+  15  Data clock (SCL). Should only be used for DDC2 devices
+
+  There are 3 different protocols defined for DDC:
+
+  DDC1 - A unidirectional (display to host only) serial comm system which
+         provides basic display ID and feature support information (including
+         supported timings, display size, colorimetry and gamma, etc.) to the
+         host. This uses pin 12 on the 15-pin "VGA" connector as a data line.
+
+  DDC2B - Adds clock (pin 15) and return (pin 11) to enable at least ID
+          information to be obtained via an I2C interface. I2C is a
+          bidirectional interface, but display control via DDC2B is not
+          defined at this time.
+
+  DDC2AB - Full ID and control of the monitor via ACCESS.bus. As ACCESS.bus
+           is basically a command and protocol definition on top of the I2C
+           hardware interface, this uses the same lines as DDC2B.
+
+
+
+VESA Feature Connector (a 2x13 pin-header or edge connector):
+Pins:
+   1-8  Pixel data 0-7
+     9  Dot Clock
+    10  Blank
+    11  Horizontal Sync
+    12  Vertical Sync
+ 13-16  Ground
+    17  External Video Select. When high pins 1-8 are outputs, when low
+        they are inputs. This pin has an internal pull-up.
+    18  External Sync Select. When high pins 10-12 are outputs.
+        This pin has an internal pull-up.
+    19  External Dot Clock Select. When high pin 9 is an output.
+        This pin has an internal pull-up.
+    20  No Connection
+ 21-24  Ground
+ 25-26  No Connection
+Note: Pin numbers are 1-13 on the lower row (pin-header)/component side(edge)
+      and pins 14-26 on the other row/side. Low pins towards the back end.
+      Other sources may use A1-13,B1-13 or count across the pin-header.
+
+
+
+BUS connectors pin listings:
+
+ISA Bus.
+Pins:
+      A1  -I/O CH CHK
+      A2  SD07
+      A3  SD06
+      A4  SD05
+      A5  SD04
+      A6  SD03
+      A7  SD02
+      A8  SD01
+      A9  SD00
+     A10  -I/O CH RDY
+     A11  AEN
+     A12  SA19
+     A13  SA18
+     A14  SA17
+     A15  SA16
+     A16  SA15
+     A17  SA14
+     A18  SA13
+     A19  SA12
+     A20  SA11
+     A21  SA10
+     A22  SA09
+     A23  SA08
+     A24  SA07
+     A25  SA06
+     A26  SA05
+     A27  SA04
+     A28  SA03
+     A29  SA02
+     A30  SA01
+     A31  SA00
+      B1  GND
+      B2  RESET
+      B3  +5V
+      B4  IRQ9
+      B5  -5V
+      B6  DRQ2
+      B7  -12V
+      B8  0WS
+      B9  +12V
+     B10  GND
+     B11  -SMEMW
+     B12  -SMEMR
+     B13  -IOW
+     B14  -IOR
+     B15  -DACK3
+     B16  -DRQ3
+     B17  -DACK1
+     B18  -DRQ1
+     B19  -REFRESH
+     B20  BCLK
+     B21  IRQ7
+     B22  IRQ6
+     B23  IRQ5
+     B24  IRQ4
+     B25  IRQ3
+     B26  -DACK2
+     B27  T/C
+     B28  BALE
+     B29  +5V
+     B30  OSC
+     B31  GND
+      C1  SBHE
+      C2  LA23
+      C3  LA22
+      C4  LA21
+      C5  LA20
+      C6  LA19
+      C7  LA18
+      C8  LA17
+      C9  -MEMR
+     C10  -MEMW
+     C11  SD08
+     C12  SD09
+     C13  SD10
+     C14  SD11
+     C15  SD12
+     C16  SD13
+     C17  SD14
+     C18  SD15
+      D1  -MEMCS16
+      D2  -I/OCS16
+      D3  IRQ10
+      D4  IRQ11
+      D5  IRQ12
+      D6  IRQ15
+      D7  IRQ14
+      D8  -DACK0
+      D9  -DRQ0
+     D10  -DACK5
+     D11  -DRQ5
+     D12  -DACK6
+     D13  -DRQ6
+     D14  -DACK7
+     D15  -DRQ7
+     D16  +5V
+     D17  -MASTER
+     D18  GND
+Note: A & B are on the rearmost connector, C & D on the shorter front
+      connector, A & C are o the component side, B & D on the back side.
+      Lower numbers are towards the rear covers.
+Note: This is the 16bit ISA bus, the 8bit bus is essentially just A & B
+
+
+
+EISA Bus.
+Pins:
+      A1  Not used
+      A2  Data 7
+      A3  Data 6
+      A4  Data 5
+      A5  Data 4
+      A6  Data 3
+      A7  Data 2
+      A8  Data 1
+      A9  Data 0
+  A10-11  Not used
+     A12  SA19
+     A13  SA18
+     A14  SA17
+     A15  SA16
+     A16  SA15
+     A17  SA14
+     A18  SA13
+     A19  SA12
+     A20  SA11
+     A21  SA10
+     A22  SA9
+     A23  SA8
+     A24  SA7
+     A25  SA6
+     A26  SA5
+     A27  SA4
+     A28  SA3
+     A29  SA2
+     A30  SA1
+     A31  SA0
+      B1  Ground
+      B2  Reserved
+      B3  +5V
+      B4  Not used
+      B5  -5V
+      B6  Not used
+      B7  -12V
+      B8  Not used
+      B9  +12V
+     B10  Ground
+  B11-19  Not used
+     B20  BCLK
+  B21-28  Not used
+     B29  +5V
+     B30  Not used
+     B31  Ground
+      C1  Not used
+      C2  LA23
+      C3  LA22
+      C4  LA21
+      C5  LA20
+      C6  LA19
+      C7  LA18
+      C8  LA17
+      C9  MRDC*
+     C10  Not used
+     C11  Data 8
+     C12  Data 9
+     C13  Data 10
+     C14  Data 11
+     C15  Data 12
+     C16  Data 13
+     C17  Data 14
+     C18  Data 15
+      D1  M16*
+   D2-15  Not used
+     D16  +5V
+     D17  Not used
+     D18  Ground
+      E1  CMD*
+      E2  START*
+      E3  EXRDY
+      E4  EX32*
+      E5  Ground
+    E7-9  Not used
+     E10  W-R
+     E11  Ground
+  E12-14  Not used
+     E15  Ground
+     E17  BE1*
+     E18  LA31*
+     E19  Ground
+     E20  LA30*
+     E21  LA28*
+     E22  LA27*
+     E23  LA25*
+     E24  Ground
+     E26  LA15
+     E27  LA13
+     E28  LA12
+     E29  LA11
+     E30  Ground
+     E31  LA9
+      F1  Ground
+    F2-3  +5V
+    F4-5  Not used
+    F7-8  Not used
+      F9  +12V
+     F10  M-IO
+  F11-12  Not used
+     F13  Ground
+     F14  Not used
+     F15  BE3*
+     F17  BE2*
+     F18  BE0*
+     F19  Ground
+     F20  +5V
+     F21  LA29*
+     F22  Ground
+     F23  LA26*
+     F24  LA24*
+     F26  LA16
+     F27  LA14
+  F28-29  +5V
+     F30  Ground
+     F31  LA10
+      G1  LA7
+      G2  Ground
+      G3  LA4
+      G4  LA3
+      G5  Ground
+      G7  Data 17
+      G8  Data 19
+      G9  Data 20
+     G10  Data 22
+     G11  Ground
+     G12  Data 25
+     G13  Data 26
+     G14  Data 28
+     G16  Ground
+     G17  Data 30
+     G18  Data 31
+     G19  Not used
+      H1  LA8
+      H2  LA6
+      H3  LA5
+      H4  +5V
+      H5  LA2
+      H7  Data 16
+      H8  Data 18
+      H9  Ground
+     H10  Data 21
+     H11  Data 23
+     H12  Data 24
+     H13  Ground
+     H14  Data 27
+     H16  Data 29
+  H17-18  +5V
+     H19  Not used
+Note: A, B, C & D are the upper contacts, E, F, G & H the lower ones.
+      A, C, E & G are on the component side, B, D, F & H on the back side.
+      A, B, E & F are on the first (long) connector, C, D, G & H on the
+      second (short) connector.
+      Pins E6,E16,E25,F6,F16,F25,G6,G15,H6 and H15 do not exist
+
+
+
+VESA Local Bus.
+Pins:
+      A1  DAT1
+      A2  DAT3
+      A3  GND
+      A4  DAT5
+      A5  DAT7
+      A6  DAT9
+      A7  DAT11
+      A8  DAT13
+      A9  DAT15
+     A10  GND
+     A11  DAT17
+     A12  VCC
+     A13  DAT19
+     A14  DAT21
+     A15  DAT23
+     A16  DAT25
+     A17  GND
+     A18  DAT27
+     A19  DAT29
+     A20  DAT31
+     A21  ADR30
+     A22  ADR28
+     A23  ADR26
+     A24  GND
+     A25  ADR24
+     A26  ADR22
+     A27  VCC
+     A28  ADR20
+     A29  ADR18
+     A30  ADR16
+     A31  ADR14
+     A32  ADR12
+     A33  ADR10
+     A34  ADR8
+     A35  GND
+     A36  ADR6
+     A37  ADR4
+     A38  WBACK#
+     A39  BE0#
+     A40  VCC
+     A41  BE1#
+     A42  BE2#
+     A43  GND
+     A44  BE3#
+     A45  ADS#
+     A48  LRDY#
+     A49  LDEV#
+     A50  LREQ#
+     A51  GND
+     A52  LGNT#
+     A53  VCC
+     A54  ID2
+     A55  ID3
+     A56  ID4
+     A57  LKEN#
+     A58  LEADS#
+      B1  DAT0
+      B2  DAT2
+      B3  DAT4
+      B4  DAT6
+      B5  DAT8
+      B6  GND
+      B7  DAT10
+      B8  DAT12
+      B9  VCC
+     B10  DAT14
+     B11  DAT16
+     B12  DAT18
+     B13  DAT20
+     B14  GND
+     B15  DAT22
+     B16  DAT24
+     B17  DAT26
+     B18  DAT28
+     B19  DAT30
+     B20  VCC
+     B21  ADR31
+     B22  GND
+     B23  ADR29
+     B24  ADR27
+     B25  ADR25
+     B26  ADR23
+     B27  ADR21
+     B28  ADR19
+     B29  VCC
+     B30  ADR17
+     B31  ADR15
+     B32  VCC
+     B33  ADR13
+     B34  ADR11
+     B35  ADR9
+     B36  ADR7
+     B37  ADR5
+     B38  VCC
+     B39  ADR3
+     B40  ADR2
+     B41  N/C
+     B42  RESET#
+     B43  D/C#
+     B44  M/IO#
+     B45  W/R#
+     B48  RDYRTN#
+     B49  GND
+     B50  IRQ9
+     B51  BRDY#
+     B52  BLAST#
+     B53  ID0
+     B54  ID1
+     B55  GND
+     B56  LCLK
+     B57  VCC
+     B58  BS16#
+Note: This is the VESA special 3rd connector (with the narrow traces), the two
+      other connectors are essentially the ISA 16bit connectors. Lower numbers
+      are towards the rear covers. A is the component side, B the backside.
+      Pins A46,A47,B46 and B47 do not exist.
+
+
+
+PCI Bus.
+Pins:
+      A1  TRST-
+      A2  +12V
+      A3  TMS
+      A4  TD1
+      A5  VCC
+      A6  INTA-
+      A7  INTC-
+      A8  VCC
+      A9  Reserved
+     A10  VCC
+     A11  Reserved
+ A12-A13  Ground
+     A14  Reserved
+     A15  RST-
+     A16  VCC
+     A17  GNT-
+     A18  GNC
+     A19  Reserved
+     A20  AD30
+     A21  +3.3V
+     A22  AD28
+     A23  AD26
+     A24  Ground
+     A25  AD24
+     A26  IDSEL
+     A27  +3.3V
+     A28  AD22
+     A29  AD20
+     A30  Ground
+     A31  AD18
+     A32  AD16
+     A33  +3.3V
+     A34  FRAME-
+     A35  Ground
+     A36  TRDY
+     A37  Ground
+     A38  STOP-
+     A39  +3.3V
+     A40  SDONE
+     A41  SBO-
+     A42  Ground
+     A43  PAR
+     A44  AD15
+     A45  +3.3V
+     A46  AD13
+     A47  AD11
+     A48  Ground
+     A49  AD9
+     A52  C/BE0-
+     A53  +3.3V
+     A54  AD6
+     A55  AD4
+     A56  Ground
+     A57  AD2
+     A58  AD0
+     A59  VCC
+     A60  REQ64-
+     A61  VCC
+     A62  VCC
+      B1  -12V
+      B2  TCK
+      B3  Ground
+      B4  TD0
+      B5  VCC
+      B6  VCC
+      B7  INTB-
+      B8  INTD-
+      B9  PRSNT1-
+     B10  Reserved
+     B11  PRSNT2-
+     B12  Ground
+     B13  Ground
+     B14  Reserved
+     B15  Ground
+     B16  CLK
+     B17  Ground
+     B18  REQ-
+     B19  VCC
+     B20  AD31
+     B21  AD29
+     B22  Ground
+     B23  AD27
+     B24  AD25
+     B25  +3.3V
+     B26  C/BE3-
+     B27  AD23
+     B28  Ground
+     B29  AD21
+     B30  AD19
+     B31  +3.3V
+     B32  AD17
+     B33  C/BE2-
+     B34  Ground
+     B35  IRDY-
+     B36  +3.3V
+     B37  DEVSEL-
+     B38  Ground
+     B39  LOOK-
+     B40  PERR-
+     B41  +3.3V
+     B42  SERR
+     B43  +3.3V
+     B44  C/BE1-
+     B45  AD14
+     B46  Ground
+     B47  AD12
+     B48  AD10
+     B49  Ground
+     B52  AD8
+     B53  AD7
+     B54  +3.3V
+     B55  AD5
+     B56  AD3
+     B57  Ground
+     B58  AD1
+     B59  VCC
+     B60  ACK64-
+     B61  VCC
+     B62  VCC
+Note: A50,51 & B50,51 don't exist
+
+

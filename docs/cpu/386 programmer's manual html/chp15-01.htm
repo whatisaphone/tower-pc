@@ -1,0 +1,119 @@
+<html>
+<head>
+<title>
+15.1  Executing 8086 Code
+</title>
+<body>
+<a name="15-01"></a>
+Prev: <a href="chp15-00.htm">Chapter 15  Virtual 8086 Mode</a><br>
+Next: <a href="chp15-02.htm">15.2  Structure of a V86 Task</a>
+<hr>
+<h2>
+15.1  Executing 8086 Code
+</h2>
+<p>
+The processor executes in V86 mode when the VM (virtual machine) bit in the
+EFLAGS register is set. The processor tests this flag under two general
+conditions:
+<p>
+<ol>
+<li>  When loading segment registers to know whether to use 8086-style
+      address formation.
+
+<li>  When decoding instructions to determine which instructions are
+      sensitive to IOPL.
+</ol>
+Except for these two modifications to its normal operations, the 80386 in
+V86 mode operated much as in protected mode.
+<p>
+<p>
+<a name="15-01-01"></a>
+<h3>15.1.1  Registers and Instructions</h3>
+<p>
+The register set available in V86 mode includes all the registers defined
+for the 8086 plus the new registers introduced by the 80386: FS, GS, debug
+registers, control registers, and test registers. New instructions that
+explicitly operate on the segment registers FS and GS are available, and the
+new segment-override prefixes can be used to cause instructions to utilize
+FS and GS for address calculations. Instructions can utilize 32-bit
+operands through the use of the operand size prefix.
+<p>
+8086 programs running as V86 tasks are able to take advantage of the new
+applications-oriented instructions added to the architecture by the
+introduction of the 80186/80188, 80286 and 80386:
+<p>
+<pre>
+  -  New instructions introduced by 80186/80188 and 80286.
+     -- PUSH immediate data
+     -- Push all and pop all (PUSHA and POPA)
+     -- Multiply immediate data
+     -- Shift and rotate by immediate count
+     -- String I/O
+     -- ENTER and LEAVE
+     -- BOUND
+
+  -  New instructions introduced by 80386.
+     -- LSS, LFS, LGS instructions
+     -- Long-displacement conditional jumps
+     -- Single-bit instructions
+     -- Bit scan
+     -- Double-shift instructions
+     -- Byte set on condition
+     -- Move with sign/zero extension
+     -- Generalized multiply
+</pre>
+<p>
+<a name="15-01-02"></a>
+<h3>15.1.2  Linear Address Formation</h3>
+<p>
+In V86 mode, the 80386 processor does not interpret 8086 selectors by
+referring to descriptors; instead, it forms linear addresses as an 8086
+would. It shifts the selector left by four bits to form a 20-bit base
+address. The effective address is extended with four high-order zeros and
+added to the base address to create a linear address as Figure 15-1
+illustrates.
+<p>
+Because of the possibility of a carry, the resulting linear address may
+contain up to 21 significant bits. An 8086 program may generate linear
+addresses anywhere in the range 0 to 10FFEFH (one megabyte plus
+approximately 64 Kbytes) of the task's linear address space.
+<p>
+V86 tasks generate 32-bit linear addresses. While an 8086 program can only
+utilize the low-order 21 bits of a linear address, the linear address can be
+mapped via page tables to any 32-bit physical address.
+<p>
+Unlike the 8086 and 80286, 32-bit effective addresses can be generated (via
+the address-size prefix); however, the value of a 32-bit address may not
+exceed 65,535 without causing an exception. For full compatibility with
+80286 real-address mode, pseudo-protection faults (interrupt 12 or 13 with
+no error code) occur if an address is generated outside the range 0 through
+65,535.
+<p>
+<p>
+<a name="F-15-01"></a>
+<h3>Figure 15-1.  V86 Mode Address Formation</h3>
+<p>
+<pre>
+                      19                                3       0
+                     +---------------------------------+---------+
+         BASE        |     16-BIT SEGMENT SELECTOR     | 0 0 0 0 |
+                     +---------------------------------+---------+
+
+         +
+                      19        15                              0
+                     +---------+---------------------------------+
+         OFFSET      | 0 0 0 0 |    16-BIT EFFECTIVE ADDRESS     |
+                     +---------+---------------------------------+
+
+         =
+                    20                                          0
+         LINEAR    +---------------------------------------------+
+         ADDRESS   | X X X X X X X X X X X X X X X X X X X X X X |
+                   +---------------------------------------------+
+</pre>
+<p>
+<hr>
+Prev: <a href="chp15-00.htm">Chapter 15  Virtual 8086 Mode</a><br>
+Next: <a href="chp15-02.htm">15.2  Structure of a V86 Task</a>
+</body>
+</html>

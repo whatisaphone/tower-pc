@@ -1,0 +1,349 @@
+Matrox MGA series
+
+MGA-I  "IS-ATLAS" Used for the Impression series. Upto 3Mb VRAM, 2Mb DRAM
+       (Z-buffer) Impression Pro: Upto 4.5Mb VRAM, 4Mb DRAM (Z-buffer)
+       BitBLT, 3D-acceleration
+MGA-II "IS-DUBIC","IS-TITAN" 2chips (160pin & 240pin). Used for the Ultima
+       series.  Upto 4MB VRAM. BitBLT. No 3D support
+ ?     "IS-HELENA" 240 pin chip. Used for the Impression Lite/Plus series
+       3D support
+ ?     "2064W". Millenium series. 32bit VGA core. Upto 8Mb
+
+
+The Impression (original/Pro/Lite/Plus) boards have 3D functions (Gouraud
+ shading), the Ultima series does not.
+
+The Compaq QVision 2000 card is based on the MGA-II
+
+VGA registers. The VGA engine can be disabled.
+
+3d4h index E0h (R):
+Note:
+
+3d4h index E1h (R/W):
+bit  0-7  ??
+
+3d4h index E2h (R/W):
+bit  0-7  ??
+
+3d4h index E3h (R/W):
+bit  0-7  ??
+
+3DEh index 00h (R/W):
+bit  0-7  ??
+       2  If set blanks the first ~256 pixels
+       4  If set the display wraps at 128Kbytes
+
+3DEh index 01h (R/W):
+bit    0  In 256color modes enables the bank system when set.
+     1-2  ??
+       3  Set for Extended 256 color modes.
+     4-7  ??
+
+3DEh index 02h (R/W):
+bit  0-7  ??
+
+3DEh index 03h (R/W):
+bit  0-7  ??
+
+3DEh index 04h (R/W):
+bit  0-7  ??
+
+3DEh index 07h (R):
+3DEh index 08h (R):
+
+3DEh index 09h (R/W):
+bit  0-3  64K bank number.
+
+3DEh index 0Ah (R/W):
+bit  0-1  Display Start Address bit 16-17. Bits 0-15 are in 3d4h index 0Ch-0Dh
+          Note that for 256color modes bits 0-1 of 3d4h index 0Dh appears to be
+          ignored. The data intended for these bits should be written to 3d4h
+          index 8 bits 5-6 instead.
+     2-3  ??
+       4  Appears to be set when the display start address is set ??
+     6-7  ??
+
+3DEh index 0Ch (R/W):
+bit  0-4  ??
+       7  ??
+
+3DEh index 0Dh (R/W):
+bit  0-7  ??
+       0  If set
+     1-2  Swaps lines (0/1 -> 1/0 ???)
+       4  If set changes memory layout
+       6  Interlaced if set ?
+       7  Clock ??
+
+3DEh index 0Eh
+
+
+
+Matrox Native mode:
+In native mode the Matrox chips use a 16Kbyte memory mapped area. In the MGA-I
+(Impression) series this was apparently always at AC00h:0, in the MGA-II
+(Ultima) series it can be at AC00h:0, C800h:0, CC00h:0, D000h:0, D400h:0,
+ D800h:0 or DC00h:0.
+
+M+0000h - M+1BFFh:  Source/DMA Window
+M+1C00h - M+1CFFh:  Drawing Registers
+
+M+1C00h  D(W): Drawing Control Register (DWGCTL)
+bit  0-3  Opcode. 0: Open Line, 1: Auto/Open Autoline, 2: Closed Line,
+           3: Closed Autoline, 4: Trap, 8: BitBLT, 9: Iload, Ah: Idump
+     4-5  Auto line type. 0: RPL, 1: RSTR, 2: ANTI, 3: ZI
+       6  Blockmode ON if set
+       7  Linear BitBLT if set, XY BitBLT if clear
+   16-19  ROP. 0: Black/Blackness (0), 1: NotMergePen (Not (Dst OR Src)),
+           2: MaskNotPen (Dst AND Not Src), 3: NotCopyPen (Not Src),
+           4: MaskPennot ((Not Dst) AND Src), 5: NOT (Not Dst), 6: XORPEN
+           (Dst XOR Src), 7: NOTMASKPEN (Not (Dst AND Src)), 8: MASKPEN
+           (Dst AND Src), 9: NOTXORPEN (Not Dst XOR Src), Ah: NOP (Dst),
+           Bh: MERGENOTPEN (Dst OR Not Src), Ch: COPYPEN/SRCCOPY (Src),
+           Dh: MERGEPENNOT ((Not Dst) OR Src), Eh: MERGEPEN (Dst OR Src),
+           Fh: WHITE/WHITENESS (1)
+   20-23  Trans 0-15 ??
+      24  Alpha Dither. Set for RED, clear for foreground
+   25-26  (BitBLT) Blt Mode. 0: Mono, 1: Planar, 2: Foreground color, 3: UCOL?
+      25  (Z buffer?) ZDRWEN?. Set for Depth, clear for No Depth
+      26  (Z buffer?) ZLTE?. Set for Less_Than_or_Equal, clear for Less_Than
+      27  (Autoline?) Autoline foreground is Foreground Color if set, ALU data
+            if clear
+          (h?) Background Source is BGR/Windows if set, RGB/EC3 if clear ??
+      28  (Auto line?) ABAC is Background color if set, old data if clear
+          (?) HCPRS Source is 24bpp if set, 32bpp if clear
+      29  Pattern enabled if set, disabled if clear
+      30  Transc. Background is Transparent if set, Opaque if clear
+
+M+1C04h  (W): Memory Access Register (MACCESS)
+bit  0-1  Pixel Width. 0: 8bpp, 1: 16bpp, 2: 32bpp
+     2-3    0: Source buffer, 2: Dest buffer A, 3: Dest buffer B
+
+M+1C08h  (W): Memory Control Wait State Register (MCTLWTST)
+Note: Set to C4001000h for IDUMPs ??
+
+
+M+1C10h  (W): Destination In Register (DST0)
+
+M+1C14h  (W): Destination In Register (DST1)
+
+M+1C18h  (W): Z Mask Control Register (ZMSK)
+
+M+1C1Ch  (W): Plane write Mask (PLNWT)
+bit 0-31  Each bit if set enables writing to the corresponding bit in video
+          memory. FFFFFFFFh enables all of memory, FFh enables only the low
+          byte of each DWORD (Blue), FF00h enables Green, FF0000h enables
+          the Red byte and FF000000h enables the free byte.
+
+M+1C20h  (W): Background Color (BCOL)
+
+M+1C24h  (W): ForeGround Color (FCOL)
+
+M+1C2Ch  (W): Source Register for Blit (SRCBLT)
+
+M+1C30h  (W): Source Register 0 (SRC0)
+
+M+1C34h  (W): Source Register 1 (SRC1)
+
+M+1C38h  (W): Source Register 2 (SRC2)
+
+M+1C3Ch  (W): Source Register 3 (SRC3)
+
+M+1C40h  (W): X Y Start Address (XYSTRT)
+
+M+1C44h  (W): X Y End Address (XYEND)
+
+M+1C50h  (W): Funnel Shifter Control Register (SHIFT)
+bit 16-21  Rightwise Shift count (2's complement -32 to 31).
+
+M+1C58h  (W): Sign Register (SGN)
+bit     0  (Blit) If set the X coordinate moves from right to left (decreasing
+             X), if clear from left to right (increasing X).
+           (Line) Set if DeltaX > DeltaY.
+        1
+        2  If set the Y coordinate moves from bottom to top (decreasing Y),
+           if clear from top to bottom (increasing Y).
+        5
+
+M+1C5Ch  (W): Length Register (LEN)
+
+M+1C60h  AR0
+bit  0-16  ??
+
+M+1C64h  AR1
+M+1C68h  AR2
+M+1C6Ch  AR3
+M+1C70h  AR4
+M+1C74h  AR5
+M+1C78h  AR6
+
+M+1C8Ch  (W): Memory Pitch (PITCH)
+bit  5-12  Memory pitch in units of 32 (pixels or bytes?)
+       15  If set Y is not linear ??
+
+M+1C90h  (W): Y Address Register (YDST)
+
+M+1C94h  (W): Memory Origin Register (YDSTORG)
+M+1C98h  (W): Clipper Y Top Boundary (CYTOP)
+M+1C9Ch  (W): Clipper Y Bottom Boundary (CYBOT)
+M+1CA0h  (W): Clipper X Minimum Boundary (CXLEFT)
+M+1CA4h  (W): Clipper X Maximum Boundary (CXRIGHT)
+M+1CA8h  (W): X Address Register Left (FXLEFT)
+M+1CACh  (W): X Address Register Right (FXRIGHT)
+M+1CB0h  (W): X Destination Address Register (XDST)
+M+1CC0h - M+1CFFh  DR0 - DR15
+
+M+1D00h - M+1DFFh:  Start Drawing Registers
+M+1E00h - M+1EFFh:  Host Registers
+
+M+1E00h  (R/W): Source Page Register (SRCPAGE)
+
+M+1E04h  (R/W): Destination Page Register (DSTPAGE)
+
+M+1E08h  (R/W): Byte Accumulator Data (BYTACCDATA)
+
+M+1E0Ch  (R/W): Address Generator Register (ADRGEN)
+
+M+1E10h  (R/W): Bus FIFO Status Register (FIFOSTATUS)
+bit   0-6  FIFO count
+        8  Full
+        9  Empty
+    16-22  Byte Accumulator Address
+    24-29  Address Generator State
+
+M+1E14h  D(R/W): Status Register (STATUS)
+bit     0  Bus FIFO Error Interrupt Status
+        1  DMA Controller Interrupt Status
+        2  Pick Interrupt Status
+        3  Vsync Status
+     8-11  Byte flag
+       16  Drawing Engine Status. Set if the engine is busy.
+
+M+1E18h  (W): Interrupt Clear Register (ICLEAR)
+bit     0  Write 1 to clear the Bus FIFO Interrupt
+        1  Write 1 to clear the DMA Controller Interrupt
+        2  Write 1 to clear the Pick Interrupt
+
+M+1E1Ch  (R/W): interrupt Enable Register (IEN)
+bit     0  Bus FIFO Interrupt enabled if set
+        1  DMA Controller Interrupt enabled if set
+        2  Pick Interrupt enabled if set
+        3  Vsync Interrupt enabled if set
+Note: "DMA Controller" could be "DMA Terminal Count" ?
+
+M+1E40h  (R/W): Reset Register (RST)
+bit     0  Write 1 to perform a soft reset
+
+M+1E44h  (R/W): Test Register (TEST)
+bit     0  VGA test
+        8  Robitwren ?
+
+M+1E48h  (R): Revision Register (REV)
+bit  0-31  A2681700h for the MGA-II (Ultima)
+           A2681702h for the Impression LIte/Plus
+
+M+1E50h  (R/W): Configuration Register (CONFIG_REG)
+
+M+1E54h  (R/W): Operating Mode Register (OPMODE)
+bit     0  Pseudo DMA enabled if set
+        1  DMA Act? enabled if set
+      2-3  DMA mode. 1: Blit Write, 2: Vector Write, 3: Blit Read
+
+M+1E5Ch  (R/W): CRTC Control (CRTC_CTRL)
+
+M+1E60h  (R/W): VCOUNT Register (VCOUNT)
+
+M+1F00h - M+1FFFh:  VGA registers
+Accesses to these addresses will access the VGA registers at 3xxh, I.e.
+ M+1FC4h accesses 3C4h.
+
+M+2000h - M+3BFFh:  Destination Window
+M+3C00h - M+3C7Fh:  RamDAC Registers
+  The RamDAC registers are mapped 4 addresses apart (I.e. REG00 at M+3C00h,
+   REG01 at M+3C04h...).
+
+M+3C80h - M+3CFFh:  Dubic Chip Registers
+
+M+3C80h (R/W): DUB_SEL
+M+3C84h (R/W): NDX_PTR
+The indexed DUBIC registers are accessed by writing the index to M+3C84h
+and reading or writing the data at M+3C88h.
+
+M+3C88h (R/W): DUB_DATA
+Data port for the indexed registers
+
+M+3C84h index 00h  (R/W): DUB_CTL
+M+3C84h index 01h  (R/W): KEY_COL
+M+3C84h index 02h  (R/W): KEY_MSK
+M+3C84h index 03h  W(R/W): DBX_MIN_MAX
+M+3C84h index 05h  W(R/W): DBY_MIN_MAX
+M+3C84h index 07h  (R/W): OVS_COL
+M+3C84h index 08h  (R/W): CUR_X
+M+3C84h index 09h  (R/W): CUR_Y
+M+3C84h index 0Ah  (R/W): DUB_CTL2
+M+3C84h index 0Ch  (R/W): DUB_COL0
+M+3C84h index 0Dh  (R/W): DUB_COL1
+M+3C84h index 0Eh  (R/W): CRC_CTL
+M+3C84h index 0Fh  (R/W): CRC_DAT
+
+M+3C83h (R/W): LASER
+M+3C84h (R/W): MOUSE0
+M+3C85h (R/W): MOUSE1
+M+3C86h (R/W): MOUSE2
+M+3C87h (R/W): MOUSE3
+
+
+M+3D00h - M+3D7Fh:  Viwic Chip Registers
+M+3D80h - M+3DFFh:  Clock Generator
+M+3E00h - M+3FFFh:  Expansion Devices
+
+
+Identifying Matrox chips:
+
+
+
+
+Modes (VGA part):
+
+27h G   800  600  PL4
+2Ah G  1024  768  PL4
+33h G   640  400  P8
+34h G   640  480  P8
+39h G   800  600  P8
+3Bh G  1024  768  P8
+41h T    90   25
+43h T   120   25
+44h T   132   25
+
+
+----------10BD-----------------------------------
+INT 10 - VIDEO - Matrox - Check for Matrox card
+        AX = BDFFh
+Returns: AX = 00BDh if Matrox card installed
+         DX = BIOS segment
+----------10BD-----------------------------------
+INT 10 - VIDEO - Matrox
+        AX = BDFEh
+
+
+        AL = Emulation
+               43h  CGA emulation
+               45h  EGA emulation
+               4Dh  Hercules emulation
+               56h  VGA emulation
+        ES:DI -> signature string "Calamity"
+Switches to the desired emulation
+
+
+
+MCA specifics:
+  POS ID - 80ECh  (Ultima)
+
+POS registers:
+ 00h bit   0  Set if adapter enabled
+
+ 01h bit 0-2  Memory Mapping. Controls location of the 16K aperture
+               0: AC00h, 2: C800h, 3: CC00h, 4: D000h, 5: D400h, 6: D800h,
+               7: DC00h
+

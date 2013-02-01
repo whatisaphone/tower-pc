@@ -1,0 +1,53 @@
+<html>
+<head>
+<title>
+6.2  Overview of 80386 Protection Mechanisms
+</title>
+<body>
+<a name="06-02"></a>
+Prev: <a href="chp06-01.htm">6.1  Why Protection?</a><br>
+Next: <a href="chp06-03.htm">6.3  Segment-Level Protection</a>
+<hr>
+<h2>
+6.2  Overview of 80386 Protection Mechanisms
+</h2>
+<p>
+Protection in the 80386 has five aspects:
+<p>
+<pre>
+  1.  Type checking
+  2.  Limit checking
+  3.  Restriction of addressable domain
+  4.  Restriction of procedure entry points
+  5.  Restriction of instruction set
+</pre>
+The protection hardware of the 80386 is an integral part of the memory
+management hardware. Protection applies both to segment translation and to
+page translation.
+<p>
+Each reference to memory is checked by the hardware to verify that it
+satisfies the protection criteria. All these checks are made before the
+memory cycle is started; any violation prevents that cycle from starting and
+results in an exception. Since the checks are performed concurrently with
+address formation, there is no performance penalty.
+<p>
+Invalid attempts to access memory result in an exception. Refer to
+Chapter 9 for an explanation of the exception mechanism. The present
+chapter defines the protection violations that lead to exceptions.
+<p>
+The concept of "privilege" is central to several aspects of protection
+(numbers 3, 4, and 5 in the preceeding list). Applied to procedures,
+privilege is the degree to which the procedure can be trusted not to make a
+mistake that might affect other procedures or data. Applied to data,
+privilege is the degree of protection that a data structure should have
+from less trusted procedures.
+<p>
+The concept of privilege applies both to segment protection and to page
+protection.
+<p>
+<p>
+<hr>
+Prev: <a href="chp06-01.htm">6.1  Why Protection?</a><br>
+Next: <a href="chp06-03.htm">6.3  Segment-Level Protection</a>
+</body>
+</html>

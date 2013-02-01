@@ -1,0 +1,123 @@
+New P6 OpCodes 
+
+----------------------------------------------------------------------------
+
+As new opcodes for P6 are discovered, this page will provide a link 
+to their description. So far, these are the only opcodes I know of which 
+are described in the P6. As other new opcodes for P6 are discovered, or 
+multimedia extensions are implemented, links to describe those opcodes 
+will appear from this page. 
+
+
+This page was last updated on 08/10/95. (See UD2.) 
+
+----------------------------------------------------------------------------
+
+CMOV
+
+CMOV is the new conditional move instruction. CMOV tests the same EFLAGS 
+conditions as the Jcc instruction. If the condition specified in the 
+opcode is true, then the move takes place.
+
+
+FCMOV
+
+FCMOV is the floating point counterpart to CMOV. There are differences 
+however. FCMOV doesn't use the same conditions as Jcc, but uses a 
+subset, and an FPU-specific condition as well.
+
+
+FCOMI
+
+FCOMI will perform a floating point compare, and move the flags results 
+to EFLAGS. This will allow the following instruction to immediately jump 
+on a specific condition. This instruction saves quite a few assembly 
+language instructions, as seen from the enclosed examples.
+
+
+RDPMC
+
+RDPMC will read the performance monitor counters. This instruction 
+should have been included in the Pentium, but it's better late than 
+never.
+
+
+INT01
+
+Who knows if Intel will finally document this instruction. I found this 
+mnemonic in the appendix of a preliminary 32-bit optimization guide. I 
+would speculate that this new document will be forthcoming when the P6 
+is introduced. Don't be disappointed that this link points to the same 
+description as ICEBP, as it's really the same instruction. I choose a 
+specific entry for this instruction in the P6 opcode file, because I 
+found this mnemonic in the P6 opcode table. Hopefully, Intel will 
+finally disclose this instruction.
+
+
+SALC
+
+If memory serves me correctly, this instruction is on every processor 
+from the 8086. Like INT01, I choose a specific entry in this P6 opcode 
+file, because I found this mnemonic in the P6 opcode table. Hopefully, 
+Intel will finally disclose this instruction.
+
+
+UD2
+
+I found the following entry in a P6 document, somewhere: "UD2, an 
+official, two byte long, undefined instruction is defined." This could 
+mean one of two things.
+
+There is a new exception called UD2, and a new opcode, which is 
+guaranteed to generate the UD2 expection. 
+There is a reserved opcode called UD2, which will never be used by the 
+processor. This new opcode, though undefined, will always generate an 
+invalid opcode exception.
+
+The latest revision of the Pentium manual (rev 004), defines UD2 as two 
+opcodes. The following statement is quoted from the Pentium manual: "All 
+banks in the opcode map are reserved and should not be used. Do not 
+depend on the operation of unspecified opcodes. 0F0Bh or 0FB9h should be 
+used when deliberately generating an illegal opcode exception." So there 
+you have it. The definition of the UD2 opcodes. 
+
+----------------------------------------------------------------------------
+
+Get description of other opcodes:
+AAM:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAM.txt
+AAD:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAD.txt
+CMOV:     ftp://ftp.x86.org/pub/x86/p6/opcodes/CMOV.txt
+FCMOV:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCMOV.txt
+FCOMI:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCOMI.txt
+ICEBP:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+INT01:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+LOADALL:  ftp://ftp.x86.org/pub/x86/secrets/opcodes/LOADALL.txt
+RDPMC:    ftp://ftp.x86.org/pub/x86/p6/opcodes/RDPMC.txt
+SALC:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/SALC.txt
+UMOV:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/UMOV.txt
+
+----------------------------------------------------------------------------
+
+Download this file -- OpCodes.ZIP 
+ftp://ftp.x86.org/pub/x86/dloads/OPCODES.ZIP 
+
+----------------------------------------------------------------------------
+
+(c) 1995, 1996 Intel Secrets(TM) home page. PGP key available. 
+
+Make no mistake! 
+The Intel Secrets web site is proud to provide superior information and 
+service without any affilation to Intel. 
+
+"Intel Secrets" and "What Intel doesn't want you to know" are trademarks 
+of Robert Collins. 
+
+Pentium and Intel are trademarks of Intel Corporation. 386, 486, 586, 
+P6, and all other numbers.are not!
+
+All other trademarks are those of their respective companies. See 
+Trademarks and Disclaimers for more info. 
+
+Robert Collins is a Senior Design Engineer and Manager of some sort of 
+Research in Dallas, TX. Robert may be reached via email at 
+rcollins@x86.org or via phone at (214) 491-7718. 

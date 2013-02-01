@@ -1,0 +1,58 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>Vesa BIOS Example. Page 5: Change the Virtual Screen Width</title>
+
+<h1>VESA BIOS Example</h1>
+<h4>Page 5: Change the Virtual Screen Width</h4>
+<p><tr><td colspan=2><hr></td></tr><p>
+
+Right, we're going to want this program to do some scrolling around, so we'll make the virtual
+screen twice the width of the physical screen. The width of the virtual screen is also known
+as the Logican Scan Line Length.<p>
+
+This is done using Function 06h. You can ask it to set the width to anything you like, but it
+won't always be able to do it for you. This could be for various reasons, hardware considerations,
+or there may not be enough memory. If it is unable to set the width you require, it will set it
+to the next highest it can. Whatever the result, it will tell you what width it has been set to.
+It will also tell you the maximum number of scanlines possible with the amount of RAM on the
+graphics card, And it will tell you how many bytes each scanline uses.
+
+You can either tell it to set the width, or you can ask it what the current width is.<p>
+
+<h4>Set Logical Scan Line Length</h4>
+<pre>
+   AX = 4F06h		; Function 06h
+   BL = 00h        	; Subfunction 00h (select Scan Line Length)
+   CX = DesiredWidth
+
+   call interrupt 10h
+
+   BytesPerScanLine = BX
+   LogicalWidth = CX
+   MaxScans = DX
+
+   if LogicalWidth not= DesiredWidth then
+      print "could not set virtual screen to desired width."
+      print "it has been set to ", LogicalWidth, " instead"
+   end if
+
+   print "the maximum number of scanlines available is ", MaxScans
+   print "each scanline takes up ", BytesPerScanLine, " bytes"
+</pre>
+
+<h4>Request current Logical Scan Line Length</h4>
+
+<pre>
+   AX = 4F06h		; Function 06h
+   BL = 01h        	; Subfunction 01h (request scanline length)
+
+   BytesPerScanLine = BX
+   LogicalWidth = CX
+   MaxScans = DX
+</pre>   
+
+
+</body>
+</html>

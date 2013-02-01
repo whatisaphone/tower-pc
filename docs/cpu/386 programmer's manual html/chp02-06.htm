@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>
+2.6  Interrupts and Exceptions
+</title>
+<body>
+<a name="02-06"></a>
+Prev: <a href="chp02-05.htm">2.5  Operand Selection</a><br>
+Next: <a href="chp03-00.htm">Chapter 3  Applications Instruction Set</a>
+<hr>
+<h2>
+2.6  Interrupts and Exceptions
+</h2>
+<p>
+The 80386 has two mechanisms for interrupting program execution:
+<ol>
+<li>  Exceptions are synchronous events that are the responses of the CPU
+      to certain conditions detected during the execution of an instruction.
+
+<li>  Interrupts are asynchronous events typically triggered by external
+      devices needing attention.
+</ol>
+Interrupts and exceptions are alike in that both cause the processor to
+temporarily suspend its present program execution in order to execute a
+program of higher priority. The major distinction between these two kinds of
+interrupts is their origin. An exception is always reproducible by
+re-executing with the program and data that caused the exception, whereas an
+interrupt is generally independent of the currently executing program.
+<p>
+Application programmers are not normally concerned with servicing
+interrupts. More information on interrupts for systems programmers may be
+found in Chapter 9. Certain exceptions, however, are of interest to
+applications programmers, and many operating systems give applications
+programs the opportunity to service these exceptions. However, the operating
+system itself defines the interface between the applications programs and
+the exception mechanism of the 80386.
+<p>
+Table 2-2 highlights the exceptions that may be of interest to applications
+programmers.
+<ul>
+<li> A divide error exception results when the instruction DIV or IDIV is
+     executed with a zero denominator or when the quotient is too large for
+     the destination operand. (Refer to Chapter 3 for a discussion of DIV
+     and IDIV.)
+
+<li> The debug exception may be reflected back to an applications program
+     if it results from the trap flag (TF).
+
+<li> A breakpoint exception results when the instruction INT 3 is executed.
+     This instruction is used by some debuggers to stop program execution at
+     specific points.
+
+<li> An overflow exception results when the INTO instruction is executed
+     and the OF (overflow) flag is set (after an arithmetic operation that
+     set the OF flag). (Refer to Chapter 3 for a discussion of INTO).
+
+<li> A bounds check exception results when the BOUND instruction is
+     executed and the array index it checks falls outside the bounds of the
+     array. (Refer to Chapter 3 for a discussion of the BOUND instruction.)
+
+<li> Invalid opcodes may be used by some applications to extend the
+     instruction set. In such a case, the invalid opcode exception presents
+     an opportunity to emulate the opcode.
+
+<li> The "coprocessor not available" exception occurs if the program
+     contains instructions for a coprocessor, but no coprocessor is present
+     in the system.
+
+<li> A coprocessor error is generated when a coprocessor detects an illegal
+     operation.
+</ul>
+The instruction INT generates an interrupt whenever it is executed; the
+processor treats this interrupt as an exception. The effects of this
+interrupt (and the effects of all other exceptions) are determined by
+exception handler routines provided by the application program or as part of
+the systems software (provided by systems programmers). The INT instruction
+itself is discussed in Chapter 3. Refer to Chapter 9 for a more complete
+description of exceptions.
+<p>
+<a name="T-02-02"></a>
+<h3>Table 2-2. 80386 Reserved Exceptions and Interrupts</h3>
+<p>
+<pre>
+Vector Number      Description
+
+0                  Divide Error
+1                  Debug Exceptions
+2                  NMI Interrupt
+3                  Breakpoint
+4                  INTO Detected Overflow
+5                  BOUND Range Exceeded
+6                  Invalid Opcode
+7                  Coprocessor Not Available
+8                  Double Exception
+9                  Coprocessor Segment Overrun
+10                 Invalid Task State Segment
+11                 Segment Not Present
+12                 Stack Fault
+13                 General Protection
+14                 Page Fault
+15                 (reserved)
+16                 Coprocessor Error
+17-32              (reserved)
+</pre>
+<hr>
+Prev: <a href="chp02-05.htm">2.5  Operand Selection</a><br>
+Next: <a href="chp03-00.htm">Chapter 3  Applications Instruction Set</a>
+</body>
+</html>

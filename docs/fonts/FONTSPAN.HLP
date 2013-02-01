@@ -1,0 +1,24 @@
+FONTSPAN: Find minimal and maximal font rows. Version 1.0, Aug 28 1993
+Copyright (c) 1992-1993 by Yossi Gil, P.O.Box 3148, Jerusalem, ISRAEL.
+Email: yogi@cs.technion.ac.il
+
+  Usage: FONTSPAN fontfile(s)
+
+For each of the font files (wild cards ok) specified in the commnand line,
+FONTSPAN determines and prints the maximal and minimal rows of the fontnmatrix which are actually used by the font. FONTSPAN also prints the
+first boundary characters which give rise to these extermal values. This
+information can be used as a basis for a decision for trimming the font
+to its ``true'' height
+
+FLAGS
+  -s         Th span information is printed only if it doesn't
+             match the font height as determined from file size
+
+  -h -H -?   Display this message
+
+SEE ALSO
+            trimfont
+
+COPYING POLICY Copy freely for private use. Usage as part of any commercial
+  package is under the same restrictions as of Rhaul Dehsi ZOO program. If
+  you cannot obtain ZOO, you cannot use 'fontspan' commercially.

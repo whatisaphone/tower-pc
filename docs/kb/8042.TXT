@@ -1,0 +1,207 @@
+
+			NMI.
+
+	At power on  time, the non  maskable interrupt (NMI)  inot the 80286
+is masked off.
+
+MASK ON :  Write to I/O address 70h, with data bit 7 equal to a logic 0.
+MASK OFF : Write to I/O address 70h, with data bit 7 equal to a logic 1.
+
+	At the end of POST the system sets the NMI mask on ( NMI enable ).
+
+	To determine the location of the failing adapter, write to any
+memory location within a given adapter. If parity checks was from that
+adapter, -IO CH CK will be reset to inactive.
+
+
+			Math Coprocessor
+
+	mov	al,0
+	out 	0f1h,al	; Reset 80286
+
+	mov	al,0
+	out 	0f0h,al	; Clear the latched Math Coprocessor '-busy' signal
+
+
+		Keyboard Status  Register.
+
+	The status register  is an 8-bit  read-only register at  I/O address
+64h. It has information about the state of the keyboard controller 8042.  It
+may be read at any time.
+
+Bit 7 :  Parity Error -  A 0 indicated  the last byte  of data received from
+	keyboard  hadd  odd  parity.  A  1  indicated the last byte had even
+	parity. The keyboard should send data whith odd parity.
+
+Bit 6 : Receive Time-Out - A  1 indicated that a transmition was started  by
+	the  keyboard  but  did  not  finish  within  the programmed receive
+	time-out delay.
+
+Bit 5 : Transmit Time-Out - A 1 indicated that a transmition started by  the
+	keyboard  controller  was  not  properly  completed. If the transmit
+	byte was not clocked out  within the specified timelimit, this  will
+	be the only error.
+
+Bit 4 : Inhibit Switch - This bit is updated whenever data is placed in  the
+	keyboard controler's output  buffer. It reflects  the states of  the
+	keyboard-inhibit switch. A 0 indicates the keyboard is inhibited.
+
+Bit 3 : Command  /  Data  -  The   keyboard  controler's input buffer may be
+	addressed as either  I/O addres 60h  or 64h. Address  60h is defined
+	as the data port,  abd address 64h is  defined as the command  port.
+	Writing to address 64h sets this  bits to 1; writing to address  60h
+	sets this bit  to 0. The  controller uses this  bit to determine  if
+	the byte  is its  input buffer  should be  interpreted as  a command
+	byte or a data byte.
+
+Bit 2 : System Flag - This flag is monitored by the system during the  reset
+	routing. If it  is a 0,  the reset was  caused by a  power on.   The
+	controler sets this bit to  0 at power on and  it is set to 1  after
+	succesful self  test.   This bit  can be  changed by  writing to the
+	system flag bit in the command byte ( 64h ).
+
+Bit 1 :  Input Buffer Full  - A 0  indicated that the  keyboard controller's
+	input buffer  ( I/O  address 60h  or 64h  ) is  empty. A 1 indicated
+	that data has  been written into  the buffer but  the controller has
+	not read the data . When the controller read the input buffer,  this
+	bit will be return to 0.
+
+Bit 0  : Output  Buffer Full  - A  0 indicated  that the keyboard controller
+	output buffer  has no  data. A  1 indicated  that the controller has
+	placed  data  into  its  output  buffer  but the system not read the
+	data. When  the system  reads the  output buffer  (I/O addres  60h),
+	this bit will return to a 0.
+
+
+		Keyboard Controller Commands ( 64h )
+
+20  Read  Keyboard  Controller's  Command  Byte  -  The controller sends its
+    cuurent command byte to its output buffer (60h).
+
+60  Write  Keyboard  Controller's  Command  Byte  -  The  next byte of  data
+    written to  I/O  address  60h   is  placed  in the controller's  command
+    byte. Bit definition of the command byte are as follows:
+
+    Bit 7 Reaerved -Should be written as a 0
+
+    Bit 6  IBM PC  Comatibility Mode  - Writing  a 1  to this bit causes the
+	  controller to convert  the scan codes  received from the  keyboard
+	  to those used by  the IBM PC.   This includes converting a  2-byte
+	  break sequence to the 1-byte IBM PC format.
+
+    Bit 5 IBM PC Mode  - Writing a 1 to  this bit programms the keyboard  to
+	  support  the  IBM  PC  keyboard   interface.  In  this  mode   the
+	  controller does not check parity or convert scan codes.
+
+    Bit 4  Disable Keyboard  - Writing  1 to  this bit  disable the keyboard
+	  interface by  driving the  'clock' line  low. Data  is not sent or
+	  received.
+
+    Bit 3 Inhibit Overrid  - Writing a 1  to this bit disables  the keyboard
+	  inhibit function.
+
+    Bit 2 System  Flag  - The  value written  to this  bit is  placed in the
+	  system flsg bit of the controller's status register.
+
+    Bit 1 Reserved - Should be written as a 0.
+
+    Bit 0 Enable  Output-Buffer-Full  Interrupt -  Writing a  1 to  this bit
+	  causes  the  controller  to  generate  an intterupt when it places
+	  data into its output buffer.
+
+AAh Self-Test - This commands  the controller to perform internal  diagnosic
+    tests.  A  hex  55  is  plased  in  the  output  buffer if no errors are
+    detected.
+
+ABh Interface   Test  -  This  command  the controller to test the 'keyboard
+    data' lines. The test result is placed in the output buffer as follows:
+
+    00 No error detected.
+    01 The 'keyboard clock' line is stuck low.
+    02 The 'keyboard clock' line is stuck high.
+    03 The 'keyboard data' line is stuck low.
+    04 The 'keyboard data' line is stuck high.
+
+ACh Diagnostic Dump  - Sends 16  bytes of the  controller's RAM the  current
+    state if the  input port, the  curent stae of  the output port,  and the
+    controller's programm status word to the system.
+
+ADh Disable Keyboard Feature - This commands send bit 4 of the  controller's
+    commnds byte.  This disables  tje keyboard  interface by  diriving clock
+    line low. Data will not be sent or received.
+
+AEh Enable  Keyboard Interface  - This  command clear  bit 4  of the command
+    byte, which release the keyboard interface.
+
+C0h Read Input Port  - This commands the  controller to read its  input port
+    and place the  data in its  output buffer. This  command should be  used
+    only if the output buffer is empty.
+
+D0h  Read  Outpu  Port  -  This  commands  caused the controller to read its
+    output  port  and  place  the  data  in  its output buffer. This command
+    should be used only if the output buffer is empty.
+
+D1h Write Output Port - The next byte of data written to I/O address 60h  is
+    places in the controller's output port.
+
+    NOTE :  Bit 0  of the  controller's output  port is  connected to System
+	   Reset. This bit should  not be written low  as it will reset  the
+	   microprocessor.
+
+E0h Read Test Input  - This command cause  the cotroller to read  its T0 and
+    T1  inputs.  This  data  is  placed  in  the  output  buffer. Data bit 0
+    represents T0, and dat bit 2 represents T1.
+
+F0h - FFh Pulse  Output port - Bits  0 through 3 of  the controller's output
+	  port may be  pulsed low for  approximately 6 microsecunds.  Bits 0
+	  through 3 of this command indicate which bits are to be pulsed.  A
+	  0 indicates that the bit should  be pulsed, and a 1 indicates  the
+	  bit should not be modified.
+
+I/O Ports
+
+	The keyboard controller  has two I/O  ports, one assigned  for input
+and other for output. Two test input are used by the controller to read  the
+state of the keyboard's 'clock'(T0) and 'data' (T1).
+
+	The following figures show bit definitions for the input and  output
+ports, and the test-input.
+
+	Input-Port Bit Definition
+
+Bit 7  Keyboard inhibit switch
+	0 = Keyboard inhibit
+	1 = Keyboard not inhibit
+Bit 6  Display switch - Primary display attached to:
+	0 = Color/Graphics adapter
+	1 = Monochrome adapter
+Bit 5  Manufacturing jumper
+	0 = Manufacturing jumper installed
+	1 = Jumper not installed
+Bit 4  RAM on the system board
+	0 = Enable 512K of system board RAM
+	0 = Enable 256K of system board RAM
+Bit 3  Reserved
+Bit 2  Reserved
+Bit 1  Reserved
+Bit 0  Reserved
+
+
+		Output-Port Bit Definition
+
+Bit 7  Keyboard data (output)
+Bit 6  Keyboard clock (output)
+Bit 5  Input buffer empty
+Bit 4  Output buffer full
+Bit 3  Reserved
+Bit 2  Reserved
+Bit 1  Gate A20
+Bit 0  System Reset
+
+		Test-Input Bit Definition
+
+T1   Keyboard data (input)
+T0   Keyboard clock (input)
+
+
+

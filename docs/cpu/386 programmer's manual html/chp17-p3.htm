@@ -1,0 +1,451 @@
+<html>
+<head>
+<title>
+17.3.P  'P' Instructions 
+</title>
+<body>
+<a name="17-03-P"></a>
+Prev: <a href="chp17-o3.htm">17.3.O  'O' Instructions </a><br>
+Next: <a href="chp17-r3.htm">17.3.R  'R' Instructions </a>
+<hr>
+<h2>
+17.3.P  'P' Instructions 
+</h2>
+<p>
+<a name="17-03-POP"></a>
+<h3>POP -- Pop a Word from the Stack</h3>
+<p>
+<pre>
+Opcode      Instruction   Clocks     Description
+
+8F   /0     POP m16       5          Pop top of stack into memory word
+8F   /0     POP m32       5          Pop top of stack into memory dword
+58 + rw     POP r16       4          Pop top of stack into word register
+58 + rd     POP r32       4          Pop top of stack into dword register
+1F          POP DS        7,pm=21    Pop top of stack into DS
+07          POP ES        7,pm=21    Pop top of stack into ES
+17          POP SS        7,pm=21    Pop top of stack into SS
+0F   A1     POP FS        7,pm=21    Pop top of stack into FS
+0F   A9     POP GS        7,pm=21    Pop top of stack into GS
+</pre>
+<p>
+Operation
+<p>
+IF StackAddrSize = 16
+THEN
+<pre>
+   IF OperandSize = 16
+   THEN
+      DEST <- (SS:SP); (* copy a word *)
+      SP <- SP + 2;
+   ELSE (* OperandSize = 32 *)
+      DEST <- (SS:SP); (* copy a dword *)
+      SP <- SP + 4;
+   FI;
+ELSE (* StackAddrSize = 32 * )
+   IF OperandSize = 16
+   THEN
+      DEST <- (SS:ESP); (* copy a word *)
+      ESP <- ESP + 2;
+   ELSE (* OperandSize = 32 *)
+      DEST <- (SS:ESP); (* copy a dword *)
+      ESP <- ESP + 4;
+   FI;
+FI;
+</pre>
+<b>Description</b>
+<p>
+POP replaces the previous contents of the memory, the register, or the
+segment register operand with the word on the top of the 80386 stack,
+addressed by SS:SP (address-size attribute of 16 bits) or SS:ESP
+(addresssize attribute of 32 bits). The stack pointer SP is incremented
+by 2 for an operand-size of 16 bits or by 4 for an operand-size of 32 bits.
+It then points to the new top of stack.
+<p>
+POP CS is not an 80386 instruction. Popping from the stack into the CS
+register is accomplished with a RET instruction.
+<p>
+If the destination operand is a segment register (DS, ES, FS, GS, or
+SS), the value popped must be a selector. In protected mode, loading the
+selector initiates automatic loading of the descriptor information
+associated with that selector into the hidden part of the segment register;
+loading also initiates validation of both the selector and the descriptor
+information.
+<p>
+A null value (0000-0003) may be popped into the DS, ES, FS, or GS
+register without causing a protection exception. An attempt to reference
+a segment whose corresponding segment register is loaded with a null
+value causes a #GP(0) exception. No memory reference occurs. The saved
+value of the segment register is null.
+<p>
+A POP SS instruction inhibits all interrupts, including NMI, until after
+execution of the next instruction. This allows sequential execution of POP
+SS and POP eSP instructions without danger of having an invalid stack
+during an interrupt. However, use of the LSS instruction is the preferred
+method of loading the SS and eSP registers.
+<p>
+Loading a segment register while in protected mode results in special
+checks and actions, as described in the following listing:
+<p>
+IF SS is loaded:
+<pre>
+   IF selector is null THEN #GP(0);
+   Selector index must be within its descriptor table limits ELSE
+      #GP(selector);
+   Selector's RPL must equal CPL ELSE #GP(selector);
+   AR byte must indicate a writable data segment ELSE #GP(selector);
+   DPL in the AR byte must equal CPL ELSE #GP(selector);
+   Segment must be marked present ELSE #SS(selector);
+   Load SS register with selector;
+   Load SS register with descriptor;
+</pre>
+IF DS, ES, FS or GS is loaded with non-null selector:
+<pre>
+   AR byte must indicate data or readable code segment ELSE
+      #GP(selector);
+   IF data or nonconforming code
+   THEN both the RPL and the CPL must be less than or equal to DPL in
+      AR byte
+   ELSE #GP(selector);
+   FI;
+   Segment must be marked present ELSE #NP(selector);
+   Load segment register with selector;
+   Load segment register with descriptor;
+</pre>
+IF DS, ES, FS, or GS is loaded with a null selector:
+<pre>
+   Load segment register with selector
+   Clear valid bit in invisible portion of register
+</pre>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP, #SS, and #NP if a segment register is being loaded; #SS(0) if the
+current top of stack is not within the stack segment; #GP(0) if the result
+is in a nonwritable segment; #GP(0) for an illegal memory operand
+effective address in the CS, DS, ES, FS, or GS segments; #SS(0) for an
+illegal address in the SS segment; #PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in real-address mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-POPA"></a>
+<h3>POPA/POPAD -- Pop all General Registers</h3>
+<p>
+<pre>
+Opcode   Instruction   Clocks   Description
+
+61       POPA          24       Pop DI, SI, BP, SP, BX, DX, CX, and AX
+61       POPAD         24       Pop EDI, ESI, EBP, ESP, EDX, ECX, and EAX
+</pre>
+<p>
+Operation
+<p>
+IF OperandSize = 16 (* instruction = POPA *)
+THEN
+   DI <- Pop();
+   SI <- Pop();
+   BP <- Pop();
+   throwaway <- Pop (); (* Skip SP *)
+   BX <- Pop();
+   DX <- Pop();
+   CX <- Pop();
+   AX <- Pop();
+ELSE (* OperandSize = 32, instruction = POPAD *)
+   EDI <- Pop();
+   ESI <- Pop();
+   EBP <- Pop();
+   throwaway <- Pop (); (* Skip ESP *)
+   EBX <- Pop();
+   EDX <- Pop();
+   ECX <- Pop();
+   EAX <- Pop();
+FI;
+<p>
+<b>Description</b>
+<p>
+POPA pops the eight 16-bit general registers. However, the SP value is
+discarded instead of loaded into SP. POPA reverses a previous PUSHA,
+restoring the general registers to their values before PUSHA was
+executed. The first register popped is DI.
+<p>
+POPAD pops the eight 32-bit general registers. The ESP value is
+discarded instead of loaded into ESP. POPAD reverses the previous
+PUSHAD, restoring the general registers to their values before PUSHAD
+was executed. The first register popped is EDI.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#SS(0) if the starting or ending stack address is not within the stack
+segment; #PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in real-address mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-POPF"></a>
+<h3>POPF/POPFD -- Pop Stack into FLAGS or EFLAGS Register</h3>
+<p>
+<pre>
+Opcode   Instruction   Clocks   Description
+
+9D       POPF          5        Pop top of stack FLAGS
+9D       POPFD         5        Pop top of stack into EFLAGS
+</pre>
+<p>
+Operation
+<p>
+Flags <- Pop();
+<p>
+<b>Description</b>
+<p>
+POPF/POPFD pops the word or doubleword on the top of the stack and
+stores the value in the flags register. If the operand-size attribute of
+the instruction is 16 bits, then a word is popped and the value is stored in
+FLAGS. If the operand-size attribute is 32 bits, then a doubleword is popped
+and the value is stored in EFLAGS.
+<p>
+Refer to Chapter 2 and Chapter 4 for information about the FLAGS
+and EFLAGS registers. Note that bits 16 and 17 of EFLAGS, called
+VM and RF, respectively, are not affected by POPF or POPFD.
+<p>
+The I/O privilege level is altered only when executing at privilege level
+0. The interrupt flag is altered only when executing at a level at least as
+privileged as the I/O privilege level. (Real-address mode is equivalent to
+privilege level 0.) If a POPF instruction is executed with insufficient
+privilege, an exception does not occur, but the privileged bits do not
+change.
+<p>
+<b>Flags Affected</b>
+<p>
+All flags except VM and RF
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#SS(0) if the top of stack is not within the stack segment
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+#GP(0) fault if IOPL is less than 3, to permit emulation
+<p>
+<p>
+<a name="17-03-PUSH"></a>
+<h3>PUSH -- Push Operand onto the Stack</h3>
+<p>
+<pre>
+Opcode     Instruction   Clocks   Description
+
+FF   /6    PUSH m16      5        Push memory word
+FF   /6    PUSH m32      5        Push memory dword
+50 + /r    PUSH r16      2        Push register word
+50 + /r    PUSH r32      2        Push register dword
+6A         PUSH imm8     2        Push immediate byte
+68         PUSH imm16    2        Push immediate word
+68         PUSH imm32    2        Push immediate dword
+0E         PUSH CS       2        Push CS
+16         PUSH SS       2        Push SS
+1E         PUSH DS       2        Push DS
+06         PUSH ES       2        Push ES
+0F   A0    PUSH FS       2        Push FS
+OF   A8    PUSH GS       2        Push GS
+</pre>
+<p>
+Operation
+<p>
+IF StackAddrSize = 16
+THEN
+<pre>
+   IF OperandSize = 16 THEN
+      SP <- SP - 2;
+      (SS:SP) <- (SOURCE); (* word assignment *)
+   ELSE
+      SP <- SP - 4;
+      (SS:SP) <- (SOURCE); (* dword assignment *)
+   FI;
+ELSE (* StackAddrSize = 32 *)
+   IF OperandSize = 16
+   THEN
+      ESP <- ESP - 2;
+      (SS:ESP) <- (SOURCE); (* word assignment *)
+   ELSE
+      ESP <- ESP - 4;
+      (SS:ESP) <- (SOURCE); (* dword assignment *)
+   FI;
+FI;
+</pre>
+<b>Description</b>
+<p>
+PUSH decrements the stack pointer by 2 if the operand-size attribute of
+the instruction is 16 bits; otherwise, it decrements the stack pointer by
+4. PUSH then places the operand on the new top of stack, which is
+pointed to by the stack pointer.
+<p>
+The 80386 PUSH eSP instruction pushes the value of eSP as it existed
+before the instruction. This differs from the 8086, where PUSH SP
+pushes the new value (decremented by 2).
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#SS(0) if the new value of SP or ESP is outside the stack segment limit;
+#GP(0) for an illegal memory operand effective address in the CS, DS,
+ES, FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+#PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None; if SP or ESP is 1, the 80386 shuts down due to a lack of stack
+space
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in real-address mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-PUSHA"></a>
+<h3>PUSHA/PUSHAD -- Push all General Registers</h3>
+<p>
+<pre>
+Opcode  Instruction  Clocks   Description
+
+60      PUSHA        18       Push AX, CX, DX, BX, original SP, BP, SI, and
+                              DI
+60      PUSHAD       18       Push EAX, ECX, EDX, EBX, original ESP, EBP,
+                              ESI, and EDI
+</pre>
+<p>
+Operation
+<p>
+IF OperandSize = 16 (* PUSHA instruction *)
+THEN
+   Temp <- (SP);
+<pre>
+   Push(AX);
+   Push(CX);
+   Push(DX);
+   Push(BX);
+   Push(Temp);
+   Push(BP);
+   Push(SI);
+   Push(DI);
+ELSE (* OperandSize = 32, PUSHAD instruction *)
+   Temp <- (ESP);
+   Push(EAX);
+   Push(ECX);
+   Push(EDX);
+   Push(EBX);
+   Push(Temp);
+   Push(EBP);
+   Push(ESI);
+   Push(EDI);
+FI;
+</pre>
+<b>Description</b>
+<p>
+PUSHA and PUSHAD save the 16-bit or 32-bit general registers,
+respectively, on the 80386 stack. PUSHA decrements the stack pointer
+(SP) by 16 to hold the eight word values. PUSHAD decrements the
+stack pointer (ESP) by 32 to hold the eight doubleword values. Because
+the registers are pushed onto the stack in the order in which they were
+given, they appear in the 16 or 32 new stack bytes in reverse order. The
+last register pushed is DI or EDI.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#SS(0) if the starting or ending stack address is outside the stack segment
+limit; #PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Before executing PUSHA or PUSHAD, the 80386 shuts down if SP or
+ESP equals 1, 3, or 5; if SP or ESP equals 7, 9, 11, 13, or 15, exception
+13 occurs
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in real-address mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-PUSHF"></a>
+<h3>PUSHF/PUSHFD -- Push Flags Register onto the Stack</h3>
+<p>
+<pre>
+Opcode  Instruction  Clocks   Description
+
+9C      PUSHF        4        Push FLAGS
+9C      PUSHFD       4        Push EFLAGS
+</pre>
+<p>
+Operation
+<p>
+IF OperandSize = 32
+THEN push(EFLAGS);
+ELSE push(FLAGS);
+FI;
+<p>
+<b>Description</b>
+<p>
+PUSHF decrements the stack pointer by 2 and copies the FLAGS
+register to the new top of stack; PUSHFD decrements the stack pointer by
+4, and the 80386 EFLAGS register is copied to the new top of stack
+which is pointed to by SS:eSP. Refer to Chapter 2 and Chapter 4 for
+information on the EFLAGS register.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#SS(0) if the new value of eSP is outside the stack segment boundaries
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None; the 80386 shuts down due to a lack of stack space
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+#GP(0) fault if IOPL is less than 3, to permit emulation
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-o3.htm">17.3.O  'O' Instructions </a><br>
+Next: <a href="chp17-r3.htm">17.3.R  'R' Instructions </a>
+</body>
+</html>

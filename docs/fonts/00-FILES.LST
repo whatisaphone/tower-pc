@@ -1,0 +1,306 @@
+FILE NAME        SIZE   DESCRIPTION
+----------------------------------------------------------------
+00-files.lst    18813   List of files in the FNTCOL16 distrib.
+copyleft.txt    10052   Explains limitations and author requests
+fontorig.txt    13458   Info: Where did these fonts came from? 
+history.txt      1135   List of versions of FNCTOL
+looking4.txt     2985   Request for more fonts to add to FNTCOL.
+withfont.com    10288   Run cmd using given E/VGA text mode font
+withfont.hlp     2176   Help screen extracted from WITHFONT.COM
+loadfont.com    11294   Load text mode font to EGA/VGA adapter  
+loadfont.hlp     2530   Help screen extracted from LOADFONT.COM
+dumpfont.com     5868   Dump text mode font from EGA/VGA adapter
+dumpfont.hlp     1078   Help screen extracted from DUMPFONT.COM
+charset.com      3288   Display all chars in current font       
+charset.hlp      1011   Help screen extracted from CHARSET.COM
+breakcpi.com    10796   Extract fonts from DOS 3.3+ *.cpi files 
+breakcpi.hlp     1148   Help screen extracted from BREAKCPI.COM
+trimfont.com     8330   Trim a text mode font to its true height
+trimfont.hlp     1110   Help screen extracted from TRIMFONT.COM
+fontspan.com    12660   
+fontspan.hlp     1030   Help screen extracted from FONTSPAN.COM
+fontcomp.btm      466   Batch file for viewing two font files
+greek.f06        1536   Modern Greek ANSI font at height 6 
+greek.f07        1792   Modern Greek ANSI font at height 7   
+thinasci.f07     1792   Thin letters. Ascii + block chars only
+apeaus.f08       2048   Persian-English-Arabic-Urdu font
+apls.f08         2048   Lothar Bongartz: thin fnt/special math 
+armenian.f08     2048   Armenian font; chars 128-175, 224-253.
+cp111.f08        2048   Greek code page at height 8
+cp112.f08        2048   Turkish code page at height 8
+cp113.f08        2048   Yugoslavian code page at height 8
+cp437.f08        2048   United States code page at height 8   
+cp437alt.f08     2048   Bongartz: Diacritivariations on cp437  
+cp437bgr.f08     2048   Bongartz: Like cp437 + Thin bsns. graph
+cp850.f08        2048   Multilingual code page at height 8   
+cp851.f08        2048   Greek code page at height 8
+cp852.f08        2048   Cyrillic code page at height 8     
+cp853.f08        2048   Turkish/LATIN II code page at height 8
+cp860.f08        2048   Portuguese code page at height 8    
+cp861.f08        2048   Icelandic code page at height 8
+cp862.f08        2048   Hebrew code page at height 8      
+cp863.f08        2048   Canadian-French code page at height 8  
+cp864.f08        2048   Arabic code page (DOS 5) at height  
+cp865.f08        2048   Nordic code page at height 8      
+cp866.f08        2048   Rimrock Software: Cyrillic code page
+cp880.f08        2048   Cyrillic 8859-5 code page at height 8  
+cp881.f08        2048   Latin #1 code page at height 8     
+cp882.f08        2048   Latin #2 code page at height 8     
+cp883.f08        2048   Latin #3 code page at height 8     
+cp884.f08        2048   Latin #4 code page at height 8     
+cp885.f08        2048   Latin #5 code page at height 8     
+cyrill1.f08      2048   Variations on Cyrillic font (1/3)    
+cyrill2.f08      2048   Variations on Cyrillic font (2/3)    
+cyrill3.f08      2048   Variations on Cyrillic font (3/3)    
+cyril_b.f08      2048   Lothar Bongartz: Cyrillic chars
+evga-alt.f08     2048   Alternate ega/vga font at height 8   
+grckssrf.f08     2048   Greek sanserif, with curved double lines
+greek.f08        2048   Modern Greek ANSI font at height 8   
+hercital.f08     2048   Hercules+ Card font: italics ascii.
+hercules.f08     2048   Hercules+ Card font: plain chars hgt 8
+mac.f08          2048   Standard Macintosh font characters.
+readable.f08     2048   Farah's easy to read fnt e.g for 132x60
+rom8pix.f08      2048   Bongartz: Yet another minor 437 variant
+russian.f08      2048   Russian font; chars 128-175, 224-239
+thin.f08         2560   Thin chars font. previously thin.f10
+thin_ss.f08      2048   Lothar Bongartz: Thin Sanserif font
+vga-rom.f08      2048   VGA builtin font at height 8      
+evga-alt.f09     2304   Alternate ega/vga font at height 9   
+blcksnsf.f10     2560   Hercules+ font: Block sanserif chars
+cafe.f10         2560   Like evga-alt.f10. Different diactricts.
+evga-alt.f10     2560   Alternate ega/vga font at height 10   
+hercules.f10     2560   Hercules+ Card font: plain (sanserif)
+madrid.f10       2560   Alt. design + some special math symbols
+readable.f10     2560   Farah's easy to read font at Height 10
+rimrock.f10      2560   Rimrock Software: Best font at height 10
+side.f10         2560   Bongartz's Sideways font at height 10.
+evga-alt.f11     2816   Alternate ega/vga font at height 11   
+cafe.f12         3072   Like evga-alt.f12. Different diactricts.
+evga-alt.f12     3072   Alternate ega/vga font at height 12   
+square.f12       3072   45/90 degrees comp font at height 12  
+evga-alt.f13     3328   Alternate ega/vga font at height 13   
+&arabic.f14      3584   INTEX font: Arabic at height 14
+&europe.f14      3584   INTEX font: Yugoslavian at height 14
+&farsi.f14       3584   INTEX font: Farsi at height 14
+&gaelic.f14      3584   INTEX font: Gaelic at height 14
+&greek.f14       3584   INTEX font: Greek at height 14
+&hebrew.f14      3584   INTEX font: Old fasioned Hebrew. hgt 14
+&polish.f14      3584   INTEX font: Polish at height 14
+&russian.f14     3584   INTEX font: Russian at height 14
+&turkish.f14     3584   INTEX font: Turkish at height 14
+&urdu.f14        3584   INTEX font: Urdu at height 14
+&yugosla.f14     3584   INTEX font: Yugoslavian at height 14
+2_hebrew.f14     3584   old/modern heb. chars nonstd ranges.    
+antique.f14      3584   Rusty old characters.
+apeaus.f14       3584   Persian-English-Arabic-Urdu font
+arabdrft.f14     3584   Arabic draft font for EGA
+arabkufi.f14     3584   Arabic Kufi style (?) style font for EGA
+arabnaf.f14      3584   Arabic/Naftih font at height 14
+arbnaskh.f14     3584   Arabic Naskh style font for EGA
+armenian.f14     3584   Armenian font; chars 128-175, 224-253.
+ascii.f14        3584   True ASCII standard for control chars
+backward.f14     3584   Rimrock Software: Mirror image font.
+bdeclo.f14       3584   Block chars + dec code for ctrls    
+bhexall.f14      3584   Block chars + hex code for non-ascii  
+bhexbox.f14      3584   Block /hex for non-ascii non-draw chars 
+bhexhi.f14       3584   Block chars + hex code for meta-ascii  
+bhexlo.f14       3584   Block chars + hex code for ctrls    
+bigserif.f14     3584   Big san-serif letters
+bigsf.f14        3584   Hercules+ font: Big SansSerif chars
+binaryed.f14     3584   Binaries editing font: Ctrls show hex  
+block.f14        3584   Hercules+ font: Nice block large chars
+bold.f14         3584   Hercules+ font: Bold chrs, visible ^ctrl
+boxround.f14     3584   L. Bongartz: Rounded box chars (cp437)
+broadway.f14     3584   Hercules+ font: ``Broadway'' neon chars
+bthin.f14        3584   Very thin block chars at height 14   
+bway2.f14        3584   BROADWAY.F14 edited to span Europ. chars
+cntdown.f14      3584   Minor variations on macntsh.f14.
+computer.f14     3584   Hercules+ font: Computer/Checks style
+courier.f14      3584   Hercules+ font: Courier - like LateX \tt
+cp111.f14        3584   Greek code page at height 14
+cp112.f14        3584   Turkish code page at height 14
+cp113.f14        3584   Yugoslavian code page at height 14
+cp437.f14        3584   United States code page at height 14  
+cp850.f14        3584   Multilingual code page at height 14   
+cp851.f14        3584   Greek code page at height 14
+cp852.f14        3584   Cyrillic code page at height 14     
+cp853.f14        3584   Turkish/LATIN II code page at height 14
+cp860.f14        3584   Portuguese code page at height 14    
+cp861.f14        3584   Icelandic code page at height 14
+cp862.f14        3584   Hebrew code page at height 14      
+cp863.f14        3584   Canadian-French code page at height 14 
+cp864.f14        3584   Arabic code page (DOS 5) at height  
+cp865.f14        3584   Nordic code page at height 14      
+cp866.f14        3584   Rimrock Software: Cyrillic code page
+cp880.f14        3584   Cyrillic 8859-5 code page at height 14 
+cp881.f14        3584   Latin #1 code page at height 14     
+cp882.f14        3584   Latin #2 code page at height 14     
+cp883.f14        3584   Latin #3 code page at height 14     
+cp884.f14        3584   Latin #4 code page at height 14     
+cp885.f14        3584   Latin #5 code page at height 14     
+cyril2.f14       3584   Based on draft of ISO 8859 standard
+cyrill1.f14      3584   Variations on Cyrillic font (1/3)    
+cyrill2.f14      3584   Variations on Cyrillic font (2/3)    
+cyrill3.f14      3584   Variations on Cyrillic font (3/3)    
+cyrillic.f14     3584   Cyrillic characters lin lower ascii 
+draw.f14         3584   ANSI ESC (0 Ruling Char Set / Latin-1
+drawhi.f14       3584   ANSI ESC )3 Supplementary Char Set.
+finnish.f14      3584   Font useful for finnish
+fractur.f14      3584   Lothar Bongartz: Fractur style Eng Chars
+future.f14       3584   Hercules+ font: Stylistic future chars
+gaelic.f14       3584   Lothar Bongartz: Gaelic style Eng. chars
+georgian.f14     3584   Lothar Bongartz: Georgian language font
+grckssrf.f14     3584   Greek sanserif, with curved double lines
+greek.f14        3584   Modern Greek ANSI font at height 14   
+greek2.f14       3584   Based on draft of ISO 8859 standard
+handwrit.f14     3584   Hand writing like font at height 14   
+heb-big.f14      3584   Hebrew Big chars font (I. Even Zohar)
+heb-ktab.f14     3584   Hebrew Hand-writing (I. Even Zohar)
+heb-med.f14      3584   Hebrew Mid-sized font (I. Even Zohar)
+heb-snsf.f14     3584   Hebrew Sanserif font (I. Even Zohar)
+hebclrgf.f14     3584   Calligraphic Hebrew font. Heb at 224:255
+heblarge.f14     3584   Hebrew large bold font at height 14   
+hercules.f14     3584   Hercules+ Card font: plain chars hgt 14
+hollow.f14       3584   Hercules+ font: Like Macintosh outline
+hrkgreek.f14     3584   Hercules+ font: Greek chars in [a-zA-Z]
+hylas.f14        3584   Thin characters
+icons.f14        3584   Rimrock Software: GUI font. 2chars=>icon
+inverted.f14     3584   Rimrock Software: Up-side-down font
+iso.f14          3584   Based on draft of ISO 8859 standard
+iso2.f14         3584   Based on draft of ISO 8859 standard
+iso3.f14         3584   Based on draft of ISO 8859 standard
+iso4.f14         3584   Based on draft of ISO 8859 standard
+italics.f14      3584   Rimrock Software: Italic characters font
+kana.f14         3584   Roman/japanese katakana fnt (from X11R5)
+lbarabic.f14     3584   Lothar Bongartz: Fancy arabic chars
+lbitalic.f14     3584   Lothar Bongartz's italics (European inc)
+lbscript.f14     3584   L. Bongartz script. Small. European inc.
+lb_misc.f14      3584   Bongartz: Misc: Greek/Cyrill/ram
+lb_ocr.f14       3584   Lothar Bongartz: OCR (?) like font
+lcd.f14          3584   Hercules+ font: Like calculator lcd disp
+macntosh.f14     3584   Apple's Macintosh style font height 14 
+medieval.f14     3584   Hercules+ font: Medieval != old english!
+norway.f14       3584   Nordic font.
+norway2.f14      3584   Another nordic font
+old-engl.f14     3584   Old English font at height 14      
+oldeng.f14       3584   L. Bongartz: Old English fancy chars
+pc_6.f14         3584   Lothar Bongartz: 6x14 matrix font
+pc_7.f14         3584   Lothar Bongartz: 7x16 matrix font
+persian.f14      3584   Font for Iranian incl digits at 128:255
+polish.f14       3584   L. Bongartz polish.Zz+dot,Ll+slash. 
+reverse.f14      3584   Inverse video but otherwise regular font
+rmrkbold.f14     3584   Rimrock Software: full bold font
+roman.f14        3584   Another roman/latin font
+runic.f14        3584   Vickings font for lower case chars
+russian.f14      3584   Russian font; chars 128-175, 224-239
+sanserif.f14     3584   Hercules+ Card font: SanSerif chars
+script.f14       3584   Hercules+ font: Handwriting chars.
+security.f14     3584   VT securities & exchange / Latin-1
+slant.f14        3584   Hercules+ font: 45/90 deg font.
+smalcaps.f14     3584   small caps fonts at height 14      
+smcapnum.f14     3584   Small capitals + book-style numerals
+spranto.f14      3584   Esperanto font (skewed) at height 14
+standard.f14     3584   Hercules+ font: Standard rom like chars
+stretch.f14      3584   Wide font
+tex-math.f14     3584   La/TeX font: math, symbols, greek, etc.
+thai.f14         3584   Thai characters font. [1-127]==[128-255]
+thincaps.f14     3584   Thin small caps font at height 14    
+thindemo.f14     3584   Rimrock Software: A thin demo font
+thinscrp.f14     3584   Thin script like font at height 14   
+thin_ss.f14      3584   L. Bongartz: Thin sanserif font
+vga-rom.f14      3584   VGA builtin font at height 14      
+apeaus.f16       4096   Persian-English-Arabic-Urdu font
+armenian.f16     4096   Armenian font; chars 128-175, 224-253
+art.f16          4096   Artistic letters, styled symbols font  
+bigserif.f16     4096   Hercules+ font: Big SanSerif chars
+boxround.f16     4096   Lothar Bongartz: 
+cntdown.f16      4096   Lothar Bongartz: Broadway like font
+cp111.f16        4096   Greek code page at height 16
+cp112.f16        4096   Turkish code page at height 16
+cp113.f16        4096   Yugoslavian code page at height 16
+cp437.f16        4096   United States code page at height 16  
+cp850.f16        4096   Multilingual code page at height 16   
+cp851.f16        4096   Greek code page at height 16
+cp852.f16        4096   Cyrillic code page at height 16     
+cp853.f16        4096   Turkish/LATIN II code page at height 16
+cp860.f16        4096   Portuguese code page at height 16    
+cp861.f16        4096   Icelandic code page at height 16
+cp862.f16        4096   Hebrew code page at height 16      
+cp863.f16        4096   Canadian-French code page at height 16 
+cp864.f16        4096   Arabic code page (DOS 5) at height  
+cp865.f16        4096   Nordic code page at height 16      
+cp866.f16        4096   Rimrock Software: Cyrillic code page 
+cp880.f16        4096   Cyrillic 8859-5 code page at height 16 
+cp881.f16        4096   Latin #1 code page at height 16     
+cp882.f16        4096   Latin #2 code page at height 16     
+cp883.f16        4096   Latin #3 code page at ht 16       
+cp884.f16        4096   Latin #4 code page at height 16     
+cp885.f16        4096   Latin #5 code page at height 16     
+cyrill1.f16      4096   Variations on Cyrillic font (1/3)    
+cyrill2.f16      4096   Variations on Cyrillic font (2/3)    
+cyrill3.f16      4096   Variations on Cyrillic font (3/3)    
+decorate.f16     4096   Decorative chars/symbols font      
+grckssrf.f16     4096   Greek sanserif, with curved double lines
+greek.f16        4096   Modern Greek ANSI font at height 16   
+hack4th.f16      4096   M. Marcelais Character tiles for Nethack
+handugly.f16     4096   Very bad hand writing font at height 16 
+handwrit.f16     4096   Hand writing like font at height 16   
+heb-7bit.f16     4096   Low Ascii Heb: Back-Quote to z (SINIT)
+heb-bold.f16     4096   Bold font with Hebrew chars for lcds.
+hebboldk.f16     4096   Hebrew Block Bold chars
+hebktav1.f16     4096   Hebrew script (Ktav Yad) thin letters  
+hebktav2.f16     4096   Hebrew script (Ktav Yad) thick letters 
+heblarge.f16     4096   Hebrew large bold font at height 16   
+hebugly.f16      4096   Huge and ugly Hebrew font at height 16 
+hebyogi.f16      4096   DOS CP 862 improved (?) by Yossi Gil
+kana.f16         4096   Roman/japanese katakana fnt (from X11R5)
+lbitalic.f16     4096   Lothar Bongartz's italics (European inc)
+lb_large.f16     4096   L. Bongartz:  Very large font.
+lb_ocr.f16       4096   Lothar Bongartz: OCR (?) like font
+macntosh.f16     4096   Apple's Macintosh style font height 16 
+modern.f16       4096   Straight and simple font at height 16  
+old-engl.f16     4096   Old English font at height 16      
+oldeng-f.f16     4096   Fancy old English font. Not all meta's
+persian.f16      4096   Font for Iranian incl digits at 128:255
+police.f16       4096   Like thinscrp.f14 but at height 16
+pp_roman.f16     4096   Like cp437.f16. Different diactricts.
+pp_sser.f16      4096   A little better than sanserif.f16
+readabl7.f16     4096   Farah's easy to read font for 16x8 grid
+readabl8.f16     4096   Farah's easy to read font for 16x9 grid
+roman.f16        4096   Latin should be written using this font 
+russian.f16      4096   Russian font; chars 128-175, 224-239
+sanserif.f16     4096   Modern slim characters font height 16
+scrwl---.f16     4096   Addam's family font. Straight block char
+scrwl~~~.f16     4096   Addam's family font. Wiggledblock chars 
+spranto1.f16     4096   Esperanto font (skewed) at height 16
+spranto2.f16     4096   Esperanto font (non-skewed) at height 16
+standard.f16     4096   Rom like font. Includes o/ and O/ chars 
+subsup.f16       4096   Block chars + hex code for non-ascii  
+super.f16        4096   Font with superscript characters
+swiss.f16        4096   Helevetica like font; anon-ascii    
+swiss-av.f16     4096   Helevetica like font; improved A and V 
+swissav2.f16     4096   Minor variations on swissav2.f16
+swissbox.f16     4096   Helevetica like font incl block chars  
+swissbx2.f16     4096   Minor variations on SwissBox.f16
+tex-math.f16     4096   La/TeX font: math, symbols, greek, etc.
+thin_ss.f16      4096   Lothar Bongartz: Thin sanserif font
+vga-rom.f16      4096   VGA builtin font at height 16      
+voynich.f16      4096   For the undeciphered medieval manuscipt
+wiggly.f16       4096   Curved letters font at height 16    
+cp111.f19        4864   Greek code page at height 19
+cp112.f19        4864   Turkish code page at height 19
+cp113.f19        4864   Yugoslavian code page at height 19
+cp437.f19        4864   United States code page at height 19
+cp850.f19        4864   Multilingual code page at height 19
+cp851.f19        4864   Greek code page at height 19
+cp852.f19        4864   Slavic/LATIN II code page at height 19
+cp853.f19        4864   Turkish/LATIN II code page at height 19
+cp860.f19        4864   Portuguese code page at height 19
+cp861.f19        4864   Icelandic code page at height 19
+cp863.f19        4864   French-Candadian code page at height 19
+cp865.f19        4864   Nordic code page at height 19
+pc.f24           6144   Bongartz's Very large (tall) font. 80x16
+yogiprog.inf     6884   List of PD & Other programs by Yossi Gil
+_desc.btm       22163   Create 4DOS desc. for FNTCOL16 distrib.
+================================================================
+Total:        1128275 bytes in 302 files

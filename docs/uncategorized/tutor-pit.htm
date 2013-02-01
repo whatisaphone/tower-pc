@@ -1,0 +1,227 @@
+<HTML>
+<HEAD>
+  <TITLE>PIT Programming</TITLE>
+  <META NAME="AUTHOR" CONTENT="Peter Quiring">
+  <META NAME="ROBOTS" CONTENT="NOINDEX">
+</HEAD>
+<body background="../images/piedra.jpg" bgcolor="#C0C0C0" text="#FFFF66"
+link="#CC9900" vlink="#996600" alink="#993300">
+<!-- following code added by server. PLEASE REMOVE -->
+<!-- preceding code added by server. PLEASE REMOVE -->
+<H2 ALIGN=CENTER>PIT Programming</H2>
+
+<CENTER>
+<P>Written by : Peter Quiring (Oct 27/97) </P>
+<P>Updated : Found exact PIT osc. speed (Nov 9/97)</P>
+<P>Updated : Osc. speed was wrong. (Jan 7/98) [It's 1,193,181 Hz]</P>
+</CENTER>
+
+<br>
+This tutorial will teach you how to use the PIT (programmable interrupt
+timers).  I must worn you though that using the following code will only
+work when it runs under DOS.  Windoze will not allow the PIT to
+be reprogrammed (although you can still use the PIT at it's
+default speed, you just can not change the speed under Win95).<br>
+<br>
+<h3>PIT?</h3>
+<br>
+What is the PIT?  The PIT is one device that offers 4 timers.
+But 3 of the 4 are already used by the system for one reason or another
+so the user (you) can only really use one of them.  The PIT has 4 channels
+as follows:<br>
+<ul>
+<li> #0 - IRQ Driven counter.
+<li> #1 - RAM Refresh counter.  (do not touch!)
+<li> #2 - Speaker counter.
+<li> #3 - NMI generator (PS/2 only)
+</ul>
+So the only channels you may use is #0 and #2.  You can redirect #2 to the
+PC speaker to generate digital sound reproduction but the quality is
+usually pretty bad and very irratable.<br>
+The main focus is on channel #0, which is connected to IRQ #0.  The speed
+of this timer can be precisely controlled which you can use to control
+the speed of events in your programs (unless you are under Win95 in which
+case you can not change the speed of the timer).<br>
+<br>
+<h3>Ports</h3>
+<br>
+The PIT has one data port for each channel and one control port for
+all the channels.  They are as follows:<br>
+<ul>
+<li> Port 40h : Channel #0
+<li> Port 41h : Channel #1
+<li> Port 42h : Channel #2
+<li> Port 43h : PIT Control port
+<li> Port 44h : Channel #3   (PS/2 only)
+</ul>
+Now remember, you can only write to these ports from DOS, if you are in Windoze
+(which includes a DOS-Box) all access to these ports is ignored.<br>
+Each timer is connected to a crystal speed of about 1,193,181 Hz (exactly).
+Each channel has two 16bit "counters".
+One counter is the "divisor" counter that you setup.  The second counter is
+incremented each time with the crystal osc.  When this counter reaches
+the "divisor" counter then the event associated with that counter happens
+(ie: the IRQ is triggered).<br>
+I am not going to go into how to use the PS/2 counter #3.
+<br>
+<h3>Control Port</h3>
+<br>
+The control port is as follows:<br>
+<pre>
+Bits 7-6 : counter select
+           00 = counter 0
+           01 = counter 1
+           10 = counter 2
+           11 = (do not use)
+Bits 5-4 : counter access
+           00 = (do not use)
+           01 = read/write "set" counter bits 0-7 only.
+           10 = read/write "set" counter bits 8-15 only.
+           11 = read/write "set" counter bits 0-7 first, then 8-15.
+Bits 3-1 : counter mode
+           000 mode 0 select = zero detection interrupt
+           001 mode 1 select = programmable one shot
+           x10 mode 2 select = rate generator
+           x11 mode 3 select = square wave generator
+                   divisor factor 3 not allowed!
+           100 mode 4 select = software triggered strobe
+           101 mode 5 select = hardware triggered strobe
+Bit 0    : counting style
+           0  = binary counter 16 bits
+           1  = BCD counter (4 decades)
+</pre>
+Notes:<br>
+By default the "divisor" counter for channel #0 is 65536, and since
+the divisor is a 16bit value you must use 0 to represent 65536.  So if you
+take 1,193,181 divided by 65536 you will get about 18.2.  This means
+that IRQ #0 occurs 18.2 times a second.<br>
+<br>
+To create a simple timer use Mode 5, Style 0.<br>
+<br>
+<h3>The DOS clock</h3>
+<br>
+One side effect of changing the speed of the system timer is that the
+DOS "time" will warp into the future.  So there are a few ways to overcome
+this.<br>
+<b>A)</b>Within your IRQ handler keep your own counter that will make sure
+to call DOS only 18.2 times a second.  So for example, if you change the
+timer to 36.4 times a second then you could have your IRQ handler call
+DOS every other time your IRQ handler is called.  But this limits how
+many frequencies you can use.<br>
+<b>B)</b>You can stop sending any IRQs to DOS so the system clock simply
+stops while running your program.<br>
+<b>C)</b>Or you use step B and then set the DOS time to the Real-Time circuit when
+you program exits.<br>
+Here's how:<br>
+<pre>
+mov ah,2
+int 1ah
+mov al,ch
+call _1
+mov ch,al
+mov al,cl
+call _1
+mov cl,al
+mov al,dh
+call _1
+mov dh,al
+mov dl,0
+mov ah,2dh
+int 21h
+; all done!
+
+_1:
+push ax
+shr al,4
+mov bl,10
+mul bl
+pop bx
+and bl,15
+add al,bl
+ret
+</pre>
+And that will update the DOS timer to the Real-Time clock.  Make sure you
+do this after returning the timer to it's normal state (65536).<br>
+<br>
+<h3>Complete Example</h3>
+<br>
+Let me quickly show how to set up this:<br>
+Speed = 60 Hz.<br>
+First hook the IRQ handler with your own, do not make your handler branch
+on to the old handler.  But you still must get the old handler so you
+can restore before terminating.<br>
+<pre>
+  mov eax,1191180 ;PIT osc speed
+  mov ebx,60
+  xor edx,edx     ;clear EDX
+  div ebx         ;Eax = divisor counter
+  mov ecx,eax     ;Save Eax for later use
+  mov al,000111010b   ;Channel=0  Mode=5  Style=0
+  out 43h,al      ;Prepare channel for new divisor
+  mov al,cl
+  out 40h,al
+  mov al,ch
+  out 40h,al
+</pre>
+Now IRQ #0 will be triggered 60 times a second.<br>
+Once you are finished using it use this code to clean-up.<br>
+<pre>
+  mov ecx,0       ;Default divisor for channel #0 == 65536
+  mov al,000111010b   ;Channel=0  Mode=5  Style=0
+  out 43h,al      ;Prepare channle for new divisor
+  mov al,cl
+  out 40h,al
+  mov al,ch
+  out 40h,al
+</pre>
+Then use the DOS Update code (above) to reset the DOS timer to the
+real-time timer.  And then finally restore the original DOS handler.<br>
+<br>
+<h3>Final Notes</h3>
+<br>
+Non of this will work under Windoze (or OS/2, or any other multi-tasking
+system that needs to use the timer for itself).<br>
+Using this can be lead to unstable programs since some system services
+require the timer IRQ to do certain tasks, I even think SMARTDRV needs it
+but is no threat to it if you mess with it, but there may others...so
+be warned.<br>
+The only place I would use the PIT is in an OS on in your own little
+demos.<br>
+I hope this information is accurate.<br><hr>
+<table border="0" cellpadding="3" cellspacing="0">
+    <tr>
+        <td width="148"><p align="right"><img src="../images/ingles.gif"
+        width="73" height="40"><img src="../images/atras.jpg" width="44"
+        height="45"></p>
+        </td>
+        <td><a href="../english/idoc_on.htm">Come back to on-line documentation</a></td>
+    </tr>
+    <tr>
+        <td><p align="right"><img src="../images/espanol.gif" width="80"
+        height="44"><img src="../images/atras.jpg" width="44" height="45"></p>
+        </td>
+        <td><a href="../spanish/doc_on.htm">Vuelve a Documentos on-line</a></td>
+    </tr>
+</table>
+<p align="center"><a href="mailto:zeusv2@geocities.com"><img
+src="../images/mail.gif" border="0" hspace="20" width="50" height="60"></a><a
+href="mailto:zeusv2@geocities.com"><br>
+zeusv2@geocities.com </a></p>
+
+<p align="center"><!---------comienzo icono del nedstat------------> <a
+href="http://es.nedstat.net/cgi-bin/viewstat?name=zeusv2"><img
+src="http://es.nedstat.net/cgi-bin/nedstat.gif?name=zeusv2"
+border="0" width="22" height="22"></a> <!---------fin icono del nedstat------------> </p>
+
+<hr>
+
+<p align="center"><b>Esta página está hospedada en </b><a
+href="/"><b><img src="/pictures/gc_icon.gif" align="middle"
+border="0"></b></a><b> &nbsp; Consigue tu </b><a href="/"><b>Página
+Web Gratis</b></a><b><br>
+</b></p>
+</body>
+</html>
+
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.js2.yimg.com/us.js.yimg.com/lib/smb/js/hosting/cp/js_source/geov2_001.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.yahoo.com/visit.gif?us1215081587" alt="setstats" border="0" width="1" height="1"></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001067&t=1215081587&f=us-w89" ALT=1 WIDTH=1 HEIGHT=1>

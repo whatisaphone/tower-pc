@@ -1,0 +1,251 @@
+<html>
+<head>
+<title>
+17.3.O  'O' Instructions 
+</title>
+<body>
+<a name="17-03-O"></a>
+Prev: <a href="chp17-n3.htm">17.3.N  'N' Instructions </a><br>
+Next: <a href="chp17-p3.htm">17.3.P  'P' Instructions </a>
+<hr>
+<h2>
+17.3.O  'O' Instructions 
+</h2>
+<p>
+<a name="17-03-OR"></a>
+<h3>OR -- Logical Inclusive OR</h3>
+<p>
+<pre>
+Opcode       Instruction       Clocks    Description
+
+0C  ib       OR AL,imm8        2         OR immediate byte to AL
+0D  iw       OR AX,imm16       2         OR immediate word to AX
+0D  id       OR EAX,imm32      2         OR immediate dword to EAX
+80  /1 ib    OR r/m8,imm8      2/7       OR immediate byte to r/m byte
+81  /1 iw    OR r/m16,imm16    2/7       OR immediate word to r/m word
+81  /1 id    OR r/m32,imm32    2/7       OR immediate dword to r/m dword
+83  /1 ib    OR r/m16,imm8     2/7       OR sign-extended immediate byte
+                                         with r/m word
+83  /1 ib    OR r/m32,imm8     2/7       OR sign-extended immediate byte
+                                         with r/m dword
+08  /r       OR r/m8,r8        2/6       OR byte register to r/m byte
+09  /r       OR r/m16,r16      2/6       OR word register to r/m word
+09  /r       OR r/m32,r32      2/6       OR dword register to r/m dword
+0A  /r       OR r8,r/m8        2/7       OR byte register to r/m byte
+0B  /r       OR r16,r/m16      2/7       OR word register to r/m word
+0B  /r       OR r32,r/m32      2/7       OR dword register to r/m dword
+</pre>
+<p>
+Operation
+<p>
+DEST <- DEST OR SRC;
+CF <- 0;
+OF <- 0
+<p>
+<b>Description</b>
+<p>
+OR computes the inclusive OR of its two operands and places the result
+in the first operand. Each bit of the result is 0 if both corresponding
+bits of the operands are 0; otherwise, each bit is 1.
+<p>
+<b>Flags Affected</b>
+<p>
+OF <- 0, CF <- 0; SF, ZF, and PF as described in Appendix C; AF is
+undefined
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS
+segments; #SS(0) for an illegal address in the SS segment; #PF(fault-code)
+for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in real-address mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-OUT"></a>
+<h3>OUT -- Output to Port</h3>
+<p>
+<pre>
+Opcode    Instruction     Clocks          Description
+
+E6  ib    OUT imm8,AL     10,pm=4*/24**   Output byte AL to immediate port
+                                          number
+E7  ib    OUT imm8,AX     10,pm=4*/24**   Output word AL to immediate port
+                                          number
+E7  ib    OUT imm8,EAX    10,pm=4*/24**   Output dword AL to immediate
+                                          port number
+EE        OUT DX,AL       11,pm=5*/25**   Output byte AL to port number in
+DX
+EF        OUT DX,AX       11,pm=5*/25**   Output word AL to port number in
+DX
+EF        OUT DX,EAX      11,pm=5*/25**   Output dword AL to port number
+                                          in DX
+</pre>
+<p>
+<pre>
+---------------------------------------------------------------------------
+NOTES:
+   *If CPL . IOPL
+  **If CPL > IOPL or if in virtual 8086 mode
+---------------------------------------------------------------------------
+</pre>
+Operation
+<p>
+IF (PE = 1) AND ((VM = 1) OR (CPL > IOPL))
+THEN (* Virtual 8086 mode, or protected mode with CPL > IOPL *)
+<pre>
+   IF NOT I-O-Permission (DEST, width(DEST))
+   THEN #GP(0);
+   FI;
+FI;
+[DEST] <- SRC; (* I/O address space used *)</pre>
+<p>
+<b>Description</b>
+<p>
+OUT transfers a data byte or data word from the register (AL, AX, or
+EAX) given as the second operand to the output port numbered by the
+first operand. Output to any port from 0 to 65535 is performed by placing
+the port number in the DX register and then using an OUT instruction
+with DX as the first operand. If the instruction contains an eight-bit port
+ID, that value is zero-extended to 16 bits.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the current privilege level is higher (has less privilege) than
+IOPL and any of the corresponding I/O permission bits in TSS equals 1
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+#GP(0) fault if any of the corresponding I/O permission bits in TSS
+equals 1
+<p>
+<p>
+<a name="17-03-OUTS"></a>
+<h3>OUTS/OUTSB/OUTSW/OUTSD -- Output String to Port</h3>
+<p>
+<pre>
+Opcode   Instruction     Clocks          Description
+
+6E       OUTS DX,r/m8    14,pm=8*/28**   Output byte [(E)SI] to port in DX
+6F       OUTS DX,r/m16   14,pm=8*/28**   Output word [(E)SI] to port in DX
+6F       OUTS DX,r/m32   14,pm=8*/28**   Output dword [(E)SI] to port in DX
+6E       OUTSB           14,pm=8*/28**   Output byte DS:[(E)SI] to port in
+                                         DX
+6F       OUTSW           14,pm=8*/28**   Output word DS:[(E)SI] to port in
+                                         DX
+6F       OUTSD           14,pm=8*/28**   Output dword DS:[(E)SI] to port in
+                                         DX
+</pre>
+<p>
+<pre>
+---------------------------------------------------------------------------
+NOTES:
+   *If CPL . IOPL
+  **If CPL > IOPL or if in virtual 8086 mode
+---------------------------------------------------------------------------
+</pre>
+Operation
+<p>
+IF AddressSize = 16
+THEN use SI for source-index;
+ELSE (* AddressSize = 32 *)
+<pre>
+   use ESI for source-index;
+FI;
+</pre>
+IF (PE = 1) AND ((VM = 1) OR (CPL > IOPL))
+THEN (* Virtual 8086 mode, or protected mode with CPL > IOPL *)
+<pre>
+   IF NOT I-O-Permission (DEST, width(DEST))
+   THEN #GP(0);
+   FI;
+FI;
+IF byte type of instruction
+THEN
+   [DX] <- [source-index]; (* Write byte at DX I/O address *)
+   IF DF = 0 THEN IncDec <- 1 ELSE IncDec <- -1; FI;
+FI;
+IF OperandSize = 16
+THEN
+   [DX] <- [source-index]; (* Write word at DX I/O address *)
+   IF DF = 0 THEN IncDec <- 2 ELSE IncDec <- -2; FI;
+FI;
+IF OperandSize = 32
+THEN
+   [DX] <- [source-index]; (* Write dword at DX I/O address *)
+   IF DF = 0 THEN IncDec <- 4 ELSE IncDec <- -4; FI;
+   FI;
+FI;
+source-index <- source-index + IncDec;</pre>
+<p>
+<b>Description</b>
+<p>
+OUTS transfers data from the memory byte, word, or doubleword at the
+source-index register to the output port addressed by the DX register. If
+the address-size attribute for this instruction is 16 bits, SI is used for
+the source-index register; otherwise, the address-size attribute is 32 bits,
+and ESI is used for the source-index register.
+<p>
+OUTS does not allow specification of the port number as an immediate value.
+The port must be addressed through the DX register value. Load the correct
+value into DX before executing the OUTS instruction.
+<p>
+The address of the source data is determined by the contents of
+source-index register. Load the correct index value into SI or ESI before
+executing the OUTS instruction.
+<p>
+After the transfer, source-index register is advanced automatically. If
+the direction flag is 0 (CLD was executed), the source-index register is
+incremented; if the direction flag is 1 (STD was executed), it is
+decremented. The amount of the increment or decrement is 1 if a byte is
+output, 2 if a word is output, or 4 if a doubleword is output.
+<p>
+OUTSB, OUTSW, and OUTSD are synonyms for the byte, word, and
+doubleword OUTS instructions. OUTS can be preceded by the REP
+prefix for block output of CX bytes or words. Refer to the REP
+instruction for details on this operation.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if CPL is greater than IOPL and any of the corresponding I/O
+permission bits in TSS equals 1; #GP(0) for an illegal memory operand
+effective address in the CS, DS, or ES segments; #SS(0) for an illegal
+address in the SS segment; #PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+#GP(0) fault if any of the corresponding I/O permission bits in TSS
+equals 1; #PF(fault-code) for a page fault
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-n3.htm">17.3.N  'N' Instructions </a><br>
+Next: <a href="chp17-p3.htm">17.3.P  'P' Instructions </a>
+</body>
+</html>

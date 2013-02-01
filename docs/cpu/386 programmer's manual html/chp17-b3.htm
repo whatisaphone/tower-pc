@@ -1,0 +1,500 @@
+<html>
+<head>
+<title>
+17.3.B  'B' Instructions 
+</title>
+<body>
+<a name="17-03-B"></a>
+Prev: <a href="chp17-a3.htm">17.3.A  'A' Instructions </a><br>
+Next: <a href="chp17-c3.htm">17.3.C  'C' Instructions </a>
+<hr>
+<h2>
+17.3.B  'B' Instructions 
+</h2>
+<p>
+<a name="17-03-BOUND"></a>
+<h3>BOUND -- Check Array Index Against Bounds</h3>
+<p>
+<pre>
+Opcode    Instruction          Clocks    Description
+
+62 /r     BOUND r16,m16&16     10        Check if r16 is within bounds
+                                         (passes test)
+62 /r     BOUND r32,m32&32     10        Check if r32 is within bounds
+                                         (passes test)
+</pre>
+<p>
+Operation
+<p>
+IF (LeftSRC < [RightSRC] OR LeftSRC > [RightSRC + OperandSize/8])
+<pre>
+   (* Under lower bound or over upper bound *)
+THEN Interrupt 5;
+FI;
+</pre>
+<b>Description</b>
+<p>
+BOUND ensures that a signed array index is within the limits specified by a
+block of memory consisting of an upper and a lower bound. Each bound uses
+one word for an operand-size attribute of 16 bits and a doubleword for an
+operand-size attribute of 32 bits. The first operand (a register) must be
+greater than or equal to the first bound in memory (lower bound), and less
+than or equal to the second bound in memory (upper bound). If the register
+is not within bounds, an Interrupt 5 occurs; the return EIP points to the
+BOUND instruction.
+<p>
+The bounds limit data structure is usually placed just before the array
+itself, making the limits addressable via a constant offset from the
+beginning of the array.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+Interrupt 5 if the bounds test fails, as described above; #GP(0) for an
+illegal memory operand effective address in the CS, DS, ES, FS, or GS
+segments; #SS(0) for an illegal address in the SS segment; #PF(fault-code)
+for a page fault
+<p>
+The second operand must be a memory operand, not a register. If BOUND is
+executed with a ModRM byte representing a register as the second operand,
+#UD occurs.
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 5 if the bounds test fails; Interrupt 13 if any part of the
+operand would lie outside of the effective address space from 0 to 0FFFFH;
+Interrupt 6 if the second operand is a register
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+<p>
+<a name="17-03-BSF"></a>
+<h3>BSF -- Bit Scan Forward</h3>
+<p>
+<pre>
+Opcode    Instruction          Clocks    Description
+
+0F  BC    BSF r16,r/m16        10+3n     Bit scan forward on r/m word
+0F  BC    BSF r32,r/m32        10+3n     Bit scan forward on r/m dword
+</pre>
+<p>
+Notes
+<p>
+<pre>
+ is the number of leading zero bits.
+</pre>
+Operation
+<p>
+IF r/m = 0
+THEN
+   ZF <- 1;
+   register <- UNDEFINED;
+ELSE
+   temp <- 0;
+   ZF <- 0;
+<pre>
+   WHILE BIT[r/m, temp = 0]
+   DO
+      temp <- temp + 1;
+      register <- temp;
+   OD;
+FI;
+</pre>
+<b>Description</b>
+<p>
+BSF scans the bits in the second word or doubleword operand starting with
+bit 0. The ZF flag is cleared if the bits are all 0; otherwise, the ZF flag
+is set and the destination register is loaded with the bit index of the
+first set bit.
+<p>
+<b>Flags Affected</b>
+<p>
+ZF as described above
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS, ES,
+FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+#PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+<p>
+<a name="17-03-BSR"></a>
+<h3>BSR -- Bit Scan Reverse</h3>
+<p>
+<pre>
+Opcode    Instruction          Clocks    Description
+
+0F  BD    BSR r16,r/m16        10+3n     Bit scan reverse on r/m word
+0F  BD    BSR r32,r/m32        10+3n     Bit scan reverse on r/m dword
+</pre>
+<p>
+Operation
+<p>
+IF r/m = 0
+THEN
+   ZF <- 1;
+   register <- UNDEFINED;
+ELSE
+   temp <- OperandSize - 1;
+   ZF <- 0;
+<pre>
+   WHILE BIT[r/m, temp] = 0
+   DO
+      temp <- temp - 1;
+      register <- temp;
+   OD;
+FI;
+</pre>
+<b>Description</b>
+<p>
+BSR scans the bits in the second word or doubleword operand from the most
+significant bit to the least significant bit. The ZF flag is cleared if the
+bits are all 0; otherwise, ZF is set and the destination register is loaded
+with the bit index of the first set bit found when scanning in the reverse
+direction.
+<p>
+<b>Flags Affected</b>
+<p>
+ZF as described above
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+<p>
+<a name="17-03-BT"></a>
+<h3>BT -- Bit Test</h3>
+<p>
+<pre>
+Opcode         Instruction     Clocks    Description
+
+0F  A3         BT r/m16,r16    3/12      Save bit in carry flag
+0F  A3         BT r/m32,r32    3/12      Save bit in carry flag
+0F  BA /4 ib   BT r/m16,imm8   3/6       Save bit in carry flag
+0F  BA /4 ib   BT r/m32,imm8   3/6       Save bit in carry flag
+</pre>
+<p>
+Operation
+<p>
+CF <- BIT[LeftSRC, RightSRC];
+<p>
+<b>Description</b>
+<p>
+BT saves the value of the bit indicated by the base (first operand) and the
+bit offset (second operand) into the carry flag.
+<p>
+<b>Flags Affected</b>
+<p>
+CF as described above
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS, ES,
+FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+#PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+Notes
+<p>
+The index of the selected bit can be given by the immediate constant in the
+instruction or by a value in a general register. Only an 8-bit immediate
+value is used in the instruction. This operand is taken modulo 32, so the
+range of immediate bit offsets is 0..31. This allows any bit within a
+register to be selected. For memory bit strings, this immediate field gives
+only the bit offset within a word or doubleword. Immediate bit offsets
+larger than 31 are supported by using the immediate bit offset field in
+combination with the displacement field of the memory operand. The low-order
+3 to 5 bits of the immediate bit offset are stored in the immediate bit
+offset field, and the high-order 27 to 29 bits are shifted and combined with
+the byte displacement in the addressing mode.
+<p>
+When accessing a bit in memory, the 80386 may access four bytes starting
+from the memory address given by:
+<p>
+<pre>
+   Effective Address + (4 * (BitOffset DIV 32))
+</pre>
+for a 32-bit operand size, or two bytes starting from the memory address
+given by:
+<p>
+<pre>
+   Effective Address + (2 * (BitOffset DIV 16))
+</pre>
+for a 16-bit operand size. It may do so even when only a single byte needs
+to be accessed in order to reach the given bit. You must therefore avoid
+referencing areas of memory close to address space holes. In particular,
+avoid references to memory-mapped I/O registers. Instead, use the MOV
+instructions to load from or store to these addresses, and use the register
+form of these instructions to manipulate the data.
+<p>
+<p>
+<a name="17-03-BTC"></a>
+<h3>BTC -- Bit Test and Complement</h3>
+<p>
+<pre>
+Opcode        Instruction     Clocks  Description
+
+0F  BB        BTC r/m16,r16   6/13    Save bit in carry flag and complement
+0F  BB        BTC r/m32,r32   6/13    Save bit in carry flag and complement
+0F  BA /7 ib  BTC r/m16,imm8  6/8     Save bit in carry flag and complement
+0F  BA /7 ib  BTC r/m32,imm8  6/8     Save bit in carry flag and complement
+</pre>
+<p>
+Operation
+<p>
+CF <- BIT[LeftSRC, RightSRC];
+BIT[LeftSRC, RightSRC] <- NOT BIT[LeftSRC, RightSRC];
+<p>
+<b>Description</b>
+<p>
+BTC saves the value of the bit indicated by the base (first operand) and the
+bit offset (second operand) into the carry flag and then complements the
+bit.
+<p>
+<b>Flags Affected</b>
+<p>
+CF as described above
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+Notes
+<p>
+The index of the selected bit can be given by the immediate constant in the
+instruction or by a value in a general register. Only an 8-bit immediate
+value is used in the instruction. This operand is taken modulo 32, so the
+range of immediate bit offsets is 0..31. This allows any bit within a
+register to be selected. For memory bit strings, this immediate field gives
+only the bit offset within a word or doubleword. Immediate bit offsets
+larger than 31 are supported by using the immediate bit offset field in
+combination with the displacement field of the memory operand. The low-order
+3 to 5 bits of the immediate bit offset are stored in the immediate bit
+offset field, and the high-order 27 to 29 bits are shifted and combined with
+the byte displacement in the addressing mode.
+<p>
+When accessing a bit in memory, the 80386 may access four bytes starting
+from the memory address given by:
+<p>
+<pre>
+   Effective Address + (4 * (BitOffset DIV 32))
+</pre>
+for a 32-bit operand size, or two bytes starting from the memory address
+given by:
+<p>
+<pre>
+   Effective Address + (2 * (BitOffset DIV 16))
+</pre>
+for a 16-bit operand size. It may do so even when only a single byte needs
+to be accessed in order to reach the given bit. You must therefore avoid
+referencing areas of memory close to address space holes. In particular,
+avoid references to memory-mapped I/O registers. Instead, use the MOV
+instructions to load from or store to these addresses, and use the register
+form of these instructions to manipulate the data.
+<p>
+<p>
+<a name="17-03-BTR"></a>
+<h3>BTR -- Bit Test and Reset</h3>
+<p>
+<pre>
+Opcode        Instruction     Clocks  Description
+
+0F  B3        BTR r/m16,r16   6/13    Save bit in carry flag and reset
+0F  B3        BTR r/m32,r32   6/13    Save bit in carry flag and reset
+0F  BA /6 ib  BTR r/m16,imm8  6/8     Save bit in carry flag and reset
+0F  BA /6 ib  BTR r/m32,imm8  6/8     Save bit in carry flag and reset
+</pre>
+<p>
+Operation
+<p>
+CF <- BIT[LeftSRC, RightSRC];
+BIT[LeftSRC, RightSRC] <- 0;
+<p>
+<b>Description</b>
+<p>
+BTR saves the value of the bit indicated by the base (first operand) and the
+bit offset (second operand) into the carry flag and then stores 0 in the
+bit.
+<p>
+<b>Flags Affected</b>
+<p>
+CF as described above
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+Notes
+<p>
+The index of the selected bit can be given by the immediate constant in the
+instruction or by a value in a general register. Only an 8-bit immediate
+value is used in the instruction. This operand is taken modulo 32, so the
+range of immediate bit offsets is 0..31. This allows any bit within a
+register to be selected. For memory bit strings, this immediate field gives
+only the bit offset within a word or doubleword. Immediate bit offsets
+larger than 31 (or 15) are supported by using the immediate bit offset field
+in combination with the displacement field of the memory operand. The
+low-order 3 to 5 bits of the immediate bit offset are stored in the
+immediate bit offset field, and the high-order 27 to 29 bits are shifted and
+combined with the byte displacement in the addressing mode.
+<p>
+When accessing a bit in memory, the 80386 may access four bytes starting
+from the memory address given by:
+<p>
+<pre>
+   Effective Address + 4 * (BitOffset DIV 32)
+</pre>
+for a 32-bit operand size, or two bytes starting from the memory address
+given by:
+<p>
+<pre>
+   Effective Address + 2 * (BitOffset DIV 16)
+</pre>
+for a 16-bit operand size. It may do so even when only a single byte needs
+to be accessed in order to reach the given bit. You must therefore avoid
+referencing areas of memory close to address space holes. In particular,
+avoid references to memory-mapped I/O registers. Instead, use the MOV
+instructions to load from or store to these addresses, and use the register
+form of these instructions to manipulate the data.
+<p>
+<p>
+<a name="17-03-BTS"></a>
+<h3>BTS -- Bit Test and Set</h3>
+<p>
+<pre>
+Opcode        Instruction     Clocks  Description
+
+0F  AB        BTS r/m16,r16   6/13    Save bit in carry flag and set
+0F  AB        BTS r/m32,r32   6/13    Save bit in carry flag and set
+0F  BA /5 ib  BTS r/m16,imm8  6/8     Save bit in carry flag and set
+0F  BA /5 ib  BTS r/m32,imm8  6/8     Save bit in carry flag and set
+</pre>
+<p>
+Operation
+<p>
+CF <- BIT[LeftSRC, RightSRC];
+BIT[LeftSRC, RightSRC] <- 1;
+<p>
+<b>Description</b>
+<p>
+BTS saves the value of the bit indicated by the base (first operand) and the
+bit offset (second operand) into the carry flag and then stores 1 in the
+bit.
+<p>
+<b>Flags Affected</b>
+<p>
+CF as described above
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+Notes
+<p>
+The index of the selected bit can be given by the immediate constant in the
+instruction or by a value in a general register. Only an 8-bit immediate
+value is used in the instruction. This operand is taken modulo 32, so the
+range of immediate bit offsets is 0..31. This allows any bit within a
+register to be selected. For memory bit strings, this immediate field gives
+only the bit offset within a word or doubleword. Immediate bit offsets
+larger than 31 are supported by using the immediate bit offset field in
+combination with the displacement field of the memory operand. The
+low-order 3 to 5 bits of the immediate bit offset are stored in the
+immediate bit offset field, and the high order 27 to 29 bits are shifted and
+combined with the byte displacement in the addressing mode.
+<p>
+When accessing a bit in memory, the processor may access four bytes starting
+from the memory address given by:
+<p>
+<pre>
+   Effective Address + (4 * (BitOffset DIV 32))
+</pre>
+for a 32-bit operand size, or two bytes starting from the memory address
+given by:
+<p>
+<pre>
+   Effective Address + (2 * (BitOffset DIV 16))
+</pre>
+for a 16-bit operand size. It may do this even when only a single byte needs
+to be accessed in order to get at the given bit. Thus the programmer must be
+careful to avoid referencing areas of memory close to address space holes.
+In particular, avoid references to memory-mapped I/O registers. Instead, use
+the MOV instructions to load from or store to these addresses, and use the
+register form of these instructions to manipulate the data.
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-a3.htm">17.3.A  'A' Instructions </a><br>
+Next: <a href="chp17-c3.htm">17.3.C  'C' Instructions </a>
+</body>
+</html>

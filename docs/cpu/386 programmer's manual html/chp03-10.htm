@@ -1,0 +1,139 @@
+<html>
+<head>
+<title>
+3.10  Segment Register Instructions
+</title>
+<body>
+<a name="03-10"></a>
+Prev: <a href="chp03-09.htm">3.9  Coprocessor Interface Instructions</a><br>
+Next: <a href="chp03-11.htm">3.11  Miscellaneous Instructions</a>
+<hr>
+<h2>
+3.10  Segment Register Instructions
+</h2>
+<p>
+This category actually includes several distinct types of instructions.
+These various types are grouped together here because, if systems designers
+choose an unsegmented model of memory organization, none of these
+instructions is used by applications programmers. The instructions that deal
+with segment registers are:
+<p>
+1.  Segment-register transfer instructions.
+<p>
+<pre>
+   MOV SegReg, ...
+   MOV ..., SegReg
+   PUSH SegReg
+   POP SegReg
+</pre>
+2.  Control transfers to another executable segment.
+<p>
+<pre>
+   JMP far    ; direct and indirect
+   CALL far
+   RET far
+</pre>
+3.  Data pointer instructions.
+<p>
+<pre>
+   LDS
+   LES
+   LFS
+   LGS
+   LSS
+</pre>
+Note that the following interrupt-related instructions are different; all
+are capable of transferring control to another segment, but the use of
+segmentation is not apparent to the applications programmer.
+<p>
+INT n
+INTO
+BOUND
+IRET
+<p>
+<p>
+<a name="03-10-01"></a>
+<h3>3.10.1  Segment-Register Transfer Instructions</h3>
+<p>
+The MOV, POP, and PUSH instructions also serve to load and store segment
+registers. These variants operate similarly to their general-register
+counterparts except that one operand can be a segment register. MOV cannot
+move segment register to a segment register. Neither POP nor MOV can place a
+value in the code-segment register CS; only the far control-transfer
+instructions can change CS.
+<p>
+<p>
+<a name="03-10-02"></a>
+<h3>3.10.2  Far Control Transfer Instructions</h3>
+<p>
+The far control-transfer instructions transfer control to a location in
+another segment by changing the content of the CS register.
+<p>
+Direct far JMP. Direct JMP instructions that specify a target location
+outside the current code segment contain a far pointer. This pointer
+consists of a selector for the new code segment and an offset within the new
+segment.
+<p>
+Indirect far JMP. Indirect JMP instructions that specify a target location
+outside the current code segment use a 48-bit variable to specify the far
+pointer.
+<p>
+Far CALL. An intersegment CALL places both the value of EIP and CS on the
+stack.
+<p>
+Far RET. An intersegment RET restores the values of both CS and EIP which
+were saved on the stack by the previous intersegment CALL instruction.
+<p>
+<p>
+<a name="03-10-03"></a>
+<h3>3.10.3  Data Pointer Instructions</h3>
+<p>
+The data pointer instructions load a pointer (consisting of a segment
+selector and an offset) to a segment register and a general register.
+<p>
+LDS (Load Pointer Using DS) transfers a pointer variable from the source
+operand to DS and the destination register. The source operand must be a
+memory operand, and the destination operand must be a general register. DS
+receives the segment-selector of the pointer. The destination register
+receives the offset part of the pointer, which points to a specific location
+within the segment.
+<p>
+Example: LDS ESI, STRING_X
+<p>
+Loads DS with the selector identifying the segment pointed to by a
+STRING_X, and loads the offset of STRING_X into ESI.  Specifying ESI as the
+destination operand is a convenient way to prepare for a string operation on
+a source string that is not in the current data segment.
+<p>
+LES (Load Pointer Using ES) operates identically to LDS except that ES
+receives the segment selector rather than DS.
+<p>
+Example: LES EDI, DESTINATION_X
+<p>
+Loads ES with the selector identifying the segment pointed to by
+DESTINATION_X, and loads the offset of DESTINATION_X into EDI. This
+instruction provides a convenient way to select a destination for a string
+operation if the desired location is not in the current extra segment.
+<p>
+LFS (Load Pointer Using FS) operates identically to LDS except that FS
+receives the segment selector rather than DS.
+<p>
+LGS (Load Pointer Using GS) operates identically to LDS except that GS
+receives the segment selector rather than DS.
+<p>
+LSS (Load Pointer Using SS) operates identically to LDS except that SS
+receives the segment selector rather than DS.  This instruction is
+especially important, because it allows the two registers that identify the
+stack (SS:ESP) to be changed in one uninterruptible operation.  Unlike the
+other instructions which load SS, interrupts are not inhibited at the end
+of the LSS instruction.  The other instructions (e.g., POP SS) inhibit
+interrupts to permit the following instruction to load ESP, thereby forming
+an indivisible load of SS:ESP.  Since both SS and ESP can be loaded by LSS,
+there is no need to inhibit interrupts.
+<p>
+<p>
+<hr>
+Prev: <a href="chp03-09.htm">3.9  Coprocessor Interface Instructions</a><br>
+Next: <a href="chp03-11.htm">3.11  Miscellaneous Instructions</a>
+</body>
+</html>

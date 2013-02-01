@@ -1,0 +1,1210 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>File Allocation Table</title>
+</head>
+
+<body bgcolor="#000000" text="#FFFFFF" link="#FFFF00">
+<div align="center"><center>
+
+<table border="0" cellpadding="0" width="80%">
+    <tr>
+        <td width="100%"><p align="center"><font color="#FFFF00"
+        size="6" face="Impact"><strong><b>File Allocation Table</b></strong></font></p>
+        <p align="center">How It Seems To Work</p>
+        <p align="right"><font size="2" face="Arial"><i>Thomas
+        Kjoernes,<br>
+        Wed, 6th of January 2000</i></font></p>
+        <p><font size="2" face="Arial"><b>Introduction</b></font></p>
+        <p><font size="2" face="Arial">In this article I will
+        talk about FAT. No, not the flabby stuff that sits around
+        your waist, but the MS-DOS file system with the same name.</font></p>
+        <p><font size="2" face="Arial">The reason for writing
+        this is of course to let everybody know that I know quite
+        a bit about the FAT file system. It cleanses my soul;
+        with all the devil worshipping I&#146;ve done in the past
+        I sure need it!</font></p>
+        <p><font size="2" face="Arial">Seriously, I find writing
+        technical articles about programming and related matters
+        very educational. I&#146;m using this as an excuse to
+        learn more about FAT for the purpose of writing a FAT
+        file system driver for my OS project. I hope somebody
+        will find this information useful.</font></p>
+        <p><font size="2" face="Arial">I will start out by
+        explaining a little bit about the various flavours of FAT
+        as used by MS-DOS, then I&#146;ll move on to explaining
+        the various parts that make up the FAT file system and
+        describe the structures </font></p>
+        <p><font size="2" face="Arial">Some FAT source code and
+        information:</font></p>
+        <blockquote>
+            <p><a href="http://home.c2i.net/tkjoernes/os.zip"><font
+            size="2" face="Arial">OS.ZIP</font></a><font size="2"
+            face="Arial"> - This is my OS package! It contains
+            three boot sector sources.</font></p>
+            <p><a href="fat32.htm"><font size="2" face="Arial">FAT32.HTM</font></a><font
+            size="2" face="Arial"> - This is an excerpt from the
+            FAT32API.HLP file from Microsoft.</font></p>
+            <p><a href="fat12.asm"><font size="2" face="Arial">FAT12.ASM</font></a><font
+            size="2" face="Arial"> - Example of a FAT12 boot
+            sector.</font></p>
+            <p><a href="fat16.asm"><font size="2" face="Arial">FAT16.ASM</font></a><font
+            size="2" face="Arial"> - Example of a FAT16 boot
+            sector.</font></p>
+            <p><a href="win95.asm"><font size="2" face="Arial">WIN95.ASM</font></a><font
+            size="2" face="Arial"> - A disassembly of Microsofts
+            Win95 FAT32 boot sector.<br>
+            </font></p>
+        </blockquote>
+        <p><font size="2" face="Arial">I will try to update this
+        document with sample code and descriptions of how to
+        interpret the FAT and perform common operations, such as
+        searching for and reading/writing files.<br>
+        </font></p>
+        <p><font size="2" face="Arial"><b>FAT Types</b></font></p>
+        <p><font size="2" face="Arial">Today FAT comes in three
+        different flavours &#150; FAT12, FAT16 and FAT32. The
+        names refer to the number of bits used by the entries in
+        table that gave the file system its name!</font></p>
+        <p><font size="2" face="Arial">The &quot;File Allocation
+        Table&quot; itself is actually one of the structures
+        inside the FAT file system as seen on-disk. The purpose
+        of this table is to keep track of which areas of the disk
+        are available and which areas are in use.</font></p>
+        <p><font size="2" face="Arial">Another important part
+        about FAT is the &quot;Long File Name&quot; extension to
+        FAT sometimes referred to as VFAT. The terms LFN and VFAT
+        are closely related, but VFAT really means just Virtual
+        FAT.</font></p>
+        <p><font size="2" face="Arial"><b>FAT Overview</b></font></p>
+        <p><font size="2" face="Arial">It&#146;s time to get
+        slightly technical. I&#146;ll first just mention all the
+        structures almost in the order in which they usually
+        appear inside the partition. When talking about the order
+        of things I&#146;m referring to order as seen through the
+        Logical Block Address of a particular structure.</font></p>
+        <p><font size="2" face="Arial"><u>Cluster</u></font></p>
+        <p><font size="2" face="Arial">This term is very
+        fundamental for FAT. A cluster is a group of sectors on
+        the FAT media. Only the part of the partition called the
+        &quot;data area&quot; is divided into clusters. The rest
+        of the partition is simply sectors.</font></p>
+        <p><font size="2" face="Arial">Files and directories
+        store their data in these clusters. The size of one
+        cluster is specified in a structure called the Boot
+        Record and can range from a single sector to 128 sector(s).</font></p>
+        <p><font size="2" face="Arial"><u>Boot Record</u></font></p>
+        <p><font size="2" face="Arial">All the three flavours of
+        FAT have a Boot Record, which is located within an area
+        of reserved sectors. The DOS format program reserves 1
+        sector for FAT12 and FAT16 and usually 32 sectors for FAT32.</font></p>
+        <dir>
+            <li><dir>
+                    <li><font size="2" face="Arial"><i>FAT
+                        overview from MS:</i></font><p><font
+                        size="2" face="Arial">Microsoft has
+                        recently made a document available that
+                        attempts to teach us about FAT. The
+                        document is good as a reference if you
+                        already know something about FAT, but it&#146;s
+                        not very good at describing how to
+                        actually use the information. The
+                        document can be found at - </font><a
+                        href="http://www.microsoft.com/hwdev"><font
+                        size="2">http://www.microsoft.com/hwdev</font></a><font
+                        size="2" face="Arial">.</font></p>
+                        <p><font size="2" face="Arial">I will not
+                        attempt to duplicate all the technical
+                        documentation presented in that document.
+                        I suggest you get it and read if you a
+                        very detailed explanation of every single
+                        field in the Boot Record for instance.</font></p>
+                    </li>
+                </dir>
+            </li>
+        </dir>
+        <p><font size="2" face="Arial"><u>File Allocate Table</u></font></p>
+        <p><font size="2" face="Arial">The actual &quot;File
+        Allocation Table&quot; structure is a relatively simple
+        structure, as are all of the FAT structures really. The
+        FAT is a simple array of 12-bit, 16-bit or 32-bit data
+        elements. Usually there will be two identical copies of
+        the FAT. </font></p>
+        <p><font size="2" face="Arial">There is a field in the
+        Boot Record that specifies the number of FAT copies. With
+        FAT12 and FAT16, MS-DOS uses only the first copy, but the
+        other copies are kept in sync. FAT32 was enhanced to
+        specify which FAT copy is the active one in a 4-bit value
+        part of a &quot;Flags&quot; field.</font></p>
+        <p><font size="2" face="Arial">It&#146;s quite common to
+        think of the FAT as a singly linked list. Each of the
+        chains in the FAT specify which parts of the disk belong
+        to a given file or directory.</font></p>
+        <p><font size="2" face="Arial"><u>Root Directory</u></font></p>
+        <p><font size="2" face="Arial">The Root Directory is
+        formatted like any other directory except it does not
+        contain the &quot;dot&quot; and &quot;dot-dot&quot;
+        entries. See the details section for more information.
+        The root directory can always be found immediately
+        following the file allocation table(s) for FAT12 and FAT16
+        volumes.</font></p>
+        <p><font size="2" face="Arial"><u>Data Area</u></font></p>
+        <p><font size="2" face="Arial">Time has come to describe
+        the user data area. What is there to say really? The user
+        data area (or just data area if you like) is where the
+        contents of files and directories are stored. Simple as
+        that&#133;</font></p>
+        <p><font size="2" face="Arial">See the formulas above for
+        how to calculate the size of the data area. And yes, the
+        data area is divided into sector groups called <u>clusters</u>.
+        All the clusters in a single FAT volume have the same
+        size.</font></p>
+        <p><font size="2" face="Arial">To further educate you,
+        the term <u>slack space</u> refers to any unused space at
+        the end of a cluster and cannot be used by any other file
+        or directory.</font></p>
+        <p><font size="2" face="Arial">Note that directories are
+        not known to suffer from slack space problems. This is
+        simply because the exact size in bytes of a directory is
+        not recorded as with files and generally no one seem to
+        care anyway.</font></p>
+        <p><font size="2" face="Arial">The data area section will
+        not be explained in detail. There is simply nothing more
+        to say about it. Information on how to access files and
+        directories is the closest we get to data area details.</font></p>
+        <p><font size="2" face="Arial"><u>Wasted Sectors</u></font></p>
+        <p><font size="2" face="Arial">If the number of data
+        sectors is not evenly divisible by the cluster size you
+        end up with a few wasted data sectors. Also if the
+        partition as declared in the <u>partition table</u> is
+        larger than what is claimed in the Boot Record the volume
+        can be said to have wasted sectors.</font></p>
+        <p><font size="2" face="Arial">If you are not familiar
+        with the term partition table, I suggest that you go to
+        Hale Landis&#146; web site and look for the How It Works
+        series of documents at - </font><a
+        href="http://www.ata-atapi.com/"><font size="2"
+        face="Arial">http://www.ata-atapi.com</font></a><font
+        size="2" face="Arial">.</font></p>
+        <p><font size="2" face="Arial"><b>Boot Record Details</b></font></p>
+        <p><font size="2" face="Arial">The Boot Record is located
+        at the very beginning of a FAT volume. FAT12 and FAT16
+        boot sectors occupy a single sector while FAT32 boot
+        sectors are generally said to consist of three sectors. </font></p>
+        <p><font size="2" face="Arial">The first sector of the
+        volume or the first few sectors are also known as the
+        &quot;reserved&quot; sectors or the reserved area. The
+        Reserved_Sectors field in the boot record tells us how
+        large this area is. Note that the first FAT follows
+        directly after the reserved area.</font></p>
+        <p><font size="2" face="Arial">As mentioned in the
+        overview section, the DOS format program reserves 1
+        sector for FAT12 and FAT16 and usually 32 sectors for FAT32.
+        The reserved area for FAT32 contains not only the boot
+        record but also a backup copy of the boot record.</font></p>
+        <p><font size="2" face="Arial">The boot record includes a
+        field describing the sector size for the media and it is
+        possible to have a boot record size different than the
+        512-byte commonly seen on harddisks and diskettes (usually
+        seen on RAM-disks).</font></p>
+        <p><font size="2" face="Arial">Inside the boot record
+        there is a structure called the BPB or BIOS Parameter
+        Block. This structure is what really makes up the boot
+        record. To further complicate things there are different
+        versions of the boot record as well. Basically, as
+        storage technology developed and disks got bigger, a few
+        new fields were added to the boot record to support
+        larger disk sizes.</font></p>
+        <p><font size="2" face="Arial">Of course being a lazy
+        person, I will completely ignore the older boot record
+        layouts and concentrate on the most current
+        implementation. The structure definitions that follows
+        come from one of the include files used by my OS &#150;
+        FAT.INC.</font></p>
+        <p><font size="2" face="Arial">I only attempt to show you
+        the layout of the BPB and remaining boot sector
+        structures. If you want details of the purpose of each
+        field and what they may and may not contain I urge you to
+        read the Microsoft FAT overview document, which describes
+        this quite well.</font></p>
+        <p><font size="2" face="Arial">Note that the BPB and Boot
+        Sector layouts for FAT12 and FAT16 are identical. For
+        this reason a show only the FAT12 and FAT32 structures.</font></p>
+        <p><font size="2" face="Courier New"><i>; BPB for FAT12
+        and FAT16 volumes</i></font></p>
+        <table border="0" cellpadding="0" width="405">
+            <tr>
+                <td width="250"><font size="2" face="Courier New"><strong>BPB_FAT12</strong></font></td>
+                <td width="105"><font size="2" face="Courier New"><strong>STRUC</strong></font></td>
+                <td align="center" width="85"><font size="2"
+                face="Courier New">(offset)</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbBytesPerSector</font></td>
+                <td width="105"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="85"><font size="2"
+                face="Courier New">0x0B</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbSectorsPerCluster</font></td>
+                <td width="105"><font size="2" face="Courier New">DB
+                ?</font></td>
+                <td align="center" width="85"><font size="2"
+                face="Courier New">0x0D</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbReservedSectors</font></td>
+                <td width="105"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="85"><font size="2"
+                face="Courier New">0x0E</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbNumberOfFATs</font></td>
+                <td width="105"><font size="2" face="Courier New">DB
+                ?</font></td>
+                <td align="center" width="85"><font size="2"
+                face="Courier New">0x10</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbRootEntries</font></td>
+                <td width="105"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="85"><font size="2"
+                face="Courier New">0x11</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbTotalSectors</font></td>
+                <td width="105"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="85"><font size="2"
+                face="Courier New">0x13</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbMedia</font></td>
+                <td width="105"><font size="2" face="Courier New">DB
+                ?</font></td>
+                <td align="center" width="85"><font size="2"
+                face="Courier New">0x15</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbSectorsPerFAT</font></td>
+                <td width="105"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="85"><font size="2"
+                face="Courier New">0x16</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbSectorsPerTrack</font></td>
+                <td width="105"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="85"><font size="2"
+                face="Courier New">0x18</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbHeadsPerCylinder</font></td>
+                <td width="105"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="85"><font size="2"
+                face="Courier New">0x1A</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbHiddenSectors</font></td>
+                <td width="105"><font size="2" face="Courier New">DD
+                ?</font></td>
+                <td align="center" width="85"><font size="2"
+                face="Courier New">0x1C</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbTotalSectorsBig</font></td>
+                <td width="105"><font size="2" face="Courier New">DD
+                ?</font></td>
+                <td align="center" width="85"><font size="2"
+                face="Courier New">0x20</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New"><strong>BPB_FAT12</strong></font></td>
+                <td width="105"><font size="2" face="Courier New"><strong>ENDS</strong></font></td>
+            </tr>
+        </table>
+        <p><font size="2" face="Courier New"><i>; BPB for FAT32
+        volumes</i></font></p>
+        <table border="0" cellpadding="0" width="405">
+            <tr>
+                <td width="250"><font size="2" face="Courier New"><strong>BPB_FAT32</strong></font></td>
+                <td width="110"><font size="2" face="Courier New"><strong>STRUC</strong></font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">(offset)</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbBytesPerSector</font></td>
+                <td width="110"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x0B</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbSectorsPerCluster</font></td>
+                <td width="110"><font size="2" face="Courier New">DB
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x0D</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbReservedSectors</font></td>
+                <td width="110"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x0E</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbNumberOfFATs</font></td>
+                <td width="110"><font size="2" face="Courier New">DB
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x10</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbRootEntries</font></td>
+                <td width="110"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x11</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbTotalSectors</font></td>
+                <td width="110"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x13</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbMedia</font></td>
+                <td width="110"><font size="2" face="Courier New">DB
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x15</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbSectorsPerFAT</font></td>
+                <td width="110"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x16</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbSectorsPerTrack</font></td>
+                <td width="110"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x18</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbHeadsPerCylinder</font></td>
+                <td width="110"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x1A</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbHiddenSectors</font></td>
+                <td width="110"><font size="2" face="Courier New">DD
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x1C</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpbTotalSectorsBig</font></td>
+                <td width="110"><font size="2" face="Courier New">DD
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x20</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpb32SectorsPerFAT</font></td>
+                <td width="110"><font size="2" face="Courier New">DD
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x24</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpb32Flags</font></td>
+                <td width="110"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x28</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpb32Version</font></td>
+                <td width="110"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x2A</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpb32RootCluster</font></td>
+                <td width="110"><font size="2" face="Courier New">DD
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x2C</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpb32InfoSector</font></td>
+                <td width="110"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x30</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpb32BootBackupStart</font></td>
+                <td width="110"><font size="2" face="Courier New">DW
+                ?</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x32</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bpb32Reserved</font></td>
+                <td width="110"><font size="2" face="Courier New">DB
+                12 DUP (?)</font></td>
+                <td align="center" width="82"><font size="2"
+                face="Courier New">0x34</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New"><strong>BPB_FAT32</strong></font></td>
+                <td width="110"><font size="2" face="Courier New"><strong>ENDS</strong></font></td>
+            </tr>
+        </table>
+        <p><font size="2" face="Courier New"><i>; Boot Sector
+        layout for FAT12 and FAT16</i></font></p>
+        <table border="0" cellpadding="0" width="484">
+            <tr>
+                <td width="250"><font size="2" face="Courier New"><strong>BS_FAT12</strong></font></td>
+                <td width="205"><font size="2" face="Courier New"><strong>STRUC</strong></font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">(offset)</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bsJmp</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                3 DUP (?)</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x00</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bsOemName</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                8 DUP (?)</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x03</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bsFAT12</font></td>
+                <td width="205"><font size="2" face="Courier New">BPB_FAT12
+                Structure</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x0B</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bsDriveNumber</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                ?</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x24</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bsUnused</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                ?</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x25</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bsExtBootSignature</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                ?</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x26</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bsSerialNumber</font></td>
+                <td width="205"><font size="2" face="Courier New">DD
+                ?</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x27</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bsVolumeLabel</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                &quot;NO NAME&nbsp;&nbsp;&nbsp; &quot;</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x2B</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bsFileSystem</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                &quot;FAT12&nbsp;&nbsp; &quot;</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x36</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bsBootCode</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                450 DUP (?)</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x3E</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New"><strong>BS_FAT12</strong></font></td>
+                <td width="205"><font size="2" face="Courier New"><strong>ENDS</strong></font></td>
+            </tr>
+        </table>
+        <p><font size="2" face="Courier New"><i>;Boot Sector
+        layout for FAT32</i></font></p>
+        <table border="0" cellpadding="0" width="482">
+            <tr>
+                <td width="250"><font size="2" face="Courier New"><strong>BS_FAT32</strong></font></td>
+                <td width="205"><font size="2" face="Courier New"><strong>STRUC</strong></font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">(offset)</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bsJmp</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                3 DUP (?)</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x00</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bsOemName</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                8 DUP (?)</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x03</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bsFAT32</font></td>
+                <td width="205"><font size="2" face="Courier New">BPB_FAT32
+                Structure</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x0B</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bs32DriveNumber</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                ?</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x40</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bs32Unused</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                ?</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x41</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bs32ExtBootSignature</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                ?</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x42</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bs32SerialNumber</font></td>
+                <td width="205"><font size="2" face="Courier New">DD
+                ?</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x43</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bs32VolumeLabel</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                &quot;NO NAME&nbsp;&nbsp;&nbsp; &quot;</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x47</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bs32FileSystem</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                &quot;FAT32&nbsp;&nbsp;&nbsp; &quot;</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x52</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New">bs32BootCode</font></td>
+                <td width="205"><font size="2" face="Courier New">DB
+                422 DUP (?)</font></td>
+                <td align="center" width="68"><font size="2"
+                face="Courier New">0x5A</font></td>
+            </tr>
+            <tr>
+                <td width="250"><font size="2" face="Courier New"><strong>BS_FAT32</strong></font></td>
+                <td width="205"><font size="2" face="Courier New"><strong>ENDS</strong></font></td>
+            </tr>
+        </table>
+        <p><font size="2" face="Arial"><b>File Allocation Table
+        Details</b></font></p>
+        <p><font size="2" face="Arial">It&#146;s time to mention
+        clusters again. The 0<sup>th</sup> and 1<sup>st</sup> FAT
+        entries are reserved and contain some special information.
+        The 2<sup>nd</sup> entry and up tells you the state of
+        the corresponding cluster in the data area. </font></p>
+        <p><font size="2" face="Arial">A value of zero indicates
+        that the cluster represented by that FAT entry is
+        available and can be used when allocating new space for a
+        file or directory.</font></p>
+        <p><font size="2" face="Arial">A hexadecimal </font></p>
+        <p><font size="2" face="Arial">value in the range FFF8-FFFF
+        indicates that the cluster is the last in that chain of
+        clusters. Yes, as you might have guessed, this example is
+        only valid for FAT16. Check out the table below for
+        cluster values for all FAT types:</font></p>
+        <p><font size="2" face="Arial"><i>Cluster Values<br>
+        </i></font></p>
+        <table border="1" cellpadding="7" cellspacing="1"
+        width="536">
+            <tr>
+                <td valign="top" width="21%">&nbsp;</td>
+                <td valign="top" width="25%"><font size="2"
+                face="Courier New"><b>FAT12</b></font></td>
+                <td valign="top" width="25%"><font size="2"
+                face="Courier New"><b>FAT16</b></font></td>
+                <td valign="top" width="30%"><font size="2"
+                face="Courier New"><b>FAT32</b></font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="21%"><font size="2"
+                face="Courier New">Available</font></td>
+                <td valign="top" width="25%"><font size="2"
+                face="Courier New">000</font></td>
+                <td valign="top" width="25%"><font size="2"
+                face="Courier New">0000</font></td>
+                <td valign="top" width="30%"><font size="2"
+                face="Courier New">00000000</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="21%"><font size="2"
+                face="Courier New">Reserved</font></td>
+                <td valign="top" width="25%"><font size="2"
+                face="Courier New">001</font></td>
+                <td valign="top" width="25%"><font size="2"
+                face="Courier New">0001</font></td>
+                <td valign="top" width="30%"><font size="2"
+                face="Courier New">00000001</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="21%"><font size="2"
+                face="Courier New">User Data</font></td>
+                <td valign="top" width="25%"><font size="2"
+                face="Courier New">002-FF6</font></td>
+                <td valign="top" width="25%"><font size="2"
+                face="Courier New">0002-FFF6</font></td>
+                <td valign="top" width="30%"><font size="2"
+                face="Courier New">00000002-0FFFFFF6</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="21%"><font size="2"
+                face="Courier New">Bad Cluster</font></td>
+                <td valign="top" width="25%"><font size="2"
+                face="Courier New">FF7</font></td>
+                <td valign="top" width="25%"><font size="2"
+                face="Courier New">FFF7</font></td>
+                <td valign="top" width="30%"><font size="2"
+                face="Courier New">0FFFFFF7</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="21%"><font size="2"
+                face="Courier New">End Marker</font></td>
+                <td valign="top" width="25%"><font size="2"
+                face="Courier New">FF8-FFF</font></td>
+                <td valign="top" width="25%"><font size="2"
+                face="Courier New">FFF8-FFFF</font></td>
+                <td valign="top" width="30%"><font size="2"
+                face="Courier New">0FFFFFF8-0FFFFFFF</font></td>
+            </tr>
+        </table>
+        <p><font size="2" face="Arial">If you have a closer look
+        at the FAT32 values, you&#146;ll see that only they are
+        actually 28-bits long. This is actually correct. The
+        upper nibble is stated by Microsoft as being reserved and
+        might have a special meaning in future FAT32
+        implementations.</font></p>
+        <p><font size="2" face="Arial">They also tell you that
+        you should mask the bits off when interpreting the FAT.
+        Also, care should be taken to preserve the upper bits
+        when changing the FAT. <br>
+        </font></p>
+        <dir>
+            <li><font size="2" face="Arial"><i>If I remember
+                correctly, the wonderful MS FAT overview document
+                states that a format utility should initialise
+                the reserved bits to zero. If the meaning of
+                those bits are changed dramatically the FAT32
+                version number in the Boot Record will most
+                likely also change. Currently the version number
+                is zero.</i></font></li>
+        </dir>
+        <p><font size="2" face="Arial">The MS document tells us
+        that the FAT type is determined by how many clusters
+        there is room for in the user data area. Have a look at
+        the table below:</font></p>
+        <p><font size="2" face="Arial"><i>FAT Type Determination<br>
+        </i></font></p>
+        <table border="1" cellpadding="7" cellspacing="1"
+        width="423">
+            <tr>
+                <td valign="top" width="31%">&nbsp;</td>
+                <td valign="top" width="25%"><p align="center"><font
+                size="2" face="Courier New"><b>FAT12</b></font></p>
+                </td>
+                <td valign="top" width="22%"><p align="center"><font
+                size="2" face="Courier New"><b>FAT16</b></font></p>
+                </td>
+                <td valign="top" width="22%"><p align="center"><font
+                size="2" face="Courier New"><b>FAT32</b></font></p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" width="31%"><p align="center"><font
+                size="2" face="Courier New"># of clusters</font></p>
+                </td>
+                <td valign="top" width="25%"><p align="center"><font
+                size="2" face="Courier New">n-4084</font></p>
+                </td>
+                <td valign="top" width="22%"><p align="center"><font
+                size="2" face="Courier New">4085-65524</font></p>
+                </td>
+                <td valign="top" width="22%"><p align="center"><font
+                size="2" face="Courier New">65525-n</font></p>
+                </td>
+            </tr>
+        </table>
+        <p><font size="2" face="Arial">As seen in the previous
+        table, 11 values were reserved for other purposes, which
+        tells us to simply subtract that number from the maximum
+        number of values represented by a 12-bit, 16-bit and 28-bit
+        number respectively (remember that the upper 4-bits are
+        reserved in FAT32).</font></p>
+        <p><font size="2" face="Arial">This does not match what
+        the MS document says unfortunately. The MS numbers are
+        one less that when just taking account for the reserved
+        values. Since the document explicitly states that THIS
+        INFORMATION IS CORRECT and the NUMBERS ARE CORRECT we
+        must obey and use those numbers instead of the ones I
+        really want to use.</font></p>
+        <p><font size="2" face="Arial">If you take a look at
+        another of &quot;my&quot; documents </font><a
+        href="fat32.htm"><font size="2" face="Arial">FAT32.HTM</font></a><font
+        size="2" face="Arial">, which was actually written by
+        Microsoft, they use &quot;my&quot; numbers. The actual
+        statement is:</font></p>
+        <blockquote>
+            <p><font size="2" face="Arial"><em>FAT12 Less than
+            4086 clusters<br>
+            FAT16 Between 4096 and 65526 clusters<br>
+            FAT32 Greater than 65526 clusters.<br>
+            </em></font></p>
+        </blockquote>
+        <p><font size="2" face="Arial">The size of the data area
+        is determined using the horrible pseudo-formulas shown
+        below. I split the formula into smaller logical parts,
+        simply because it looked horrible all in one go.<br>
+        </font></p>
+        <dir>
+            <li><font size="2" face="Arial"><i>Root_Sectors =
+                Root_Directory_Entries * 32 / Bytes_Per_Sector</i></font><p><font
+                size="2" face="Arial"><i>FAT_Sectors = Number_Of_FATs
+                * Sectors_Per_FAT</i></font></p>
+                <p><font size="2" face="Arial"><i>Data_Sectors =
+                Total_Sectors &#150; (Reserved_Sectors + FAT_Sectors
+                + Root_Sectors)</i></font></p>
+                <p><font size="2" face="Arial"><i>Total_Clusters
+                = Data_Sectors / Sectors_Per_Cluster<br>
+                </i></font></p>
+            </li>
+        </dir>
+        <p><font size="2" face="Arial">To locate the start sector
+        of the data area you can use the following formula:<br>
+        </font></p>
+        <dir>
+            <li><font size="2" face="Arial"><i>Data_Area_Start =
+                Reserved_Sectors + FAT_Sectors + Root_Sectors</i></font></li>
+        </dir>
+        <p><font size="2" face="Arial"><b>Root Directory Details</b></font></p>
+        <p><font size="2" face="Arial">As stated in the overview
+        section, the root directory is formatted just like any
+        other directory. See the directory and LFN details
+        section for information about the directory entry format.</font></p>
+        <p><font size="2" face="Arial">FAT12 and FAT16 volumes
+        have the root directory located immediately following the
+        file allocation table(s). The following formula gives you
+        the starting sector number for the root directory:<br>
+        </font></p>
+        <dir>
+            <li><font size="2" face="Arial"><i>Root_Starting_Sector
+                = Reserved_Sectors + FAT_Sectors</i></font></li>
+        </dir>
+        <p><font size="2" face="Arial"><i>See the formula in the
+        previous example for the </i><b><i>FAT_Sectors</i></b><i>
+        details.</i></font></p>
+        <p><font size="2" face="Arial">On FAT32 volumes the root
+        directory is made up of an ordinary cluster chain. A
+        field in the Boot Record will tell you the initial
+        cluster number. Once you&#146;ve got the initial cluster
+        number you can easily get the starting sector number for
+        FAT32 as well:<br>
+        </font></p>
+        <dir>
+            <li><font size="2" face="Arial"><i>Root_Starting_Sector
+                = ((Root_Cluster &#150; 2) * Sectors_Per_Cluser)
+                + Data_Area_Start</i></font></li>
+        </dir>
+        <p><font size="2" face="Arial">This is exactly the same
+        way you would find the starting sector number for a file
+        or a directory. The <i>Data_Area_Start</i> formula
+        includes <i>Root_Sectors</i>, but that does not apply to
+        this formula. The Boot Record for a FAT32 volume will
+        have the field holding number of entries in the root
+        directory set to zero anyway.<br>
+        </font></p>
+        <p><font size="2" face="Arial"><b>Directory and LFN
+        details</b></font></p>
+        <p><font size="2" face="Arial">I feel it is time to
+        describe how directories are implemented in the FAT file
+        system. All directories except the root directory for FAT12
+        and FAT16 drives are actually files. A file is a stream
+        of bytes located in the data area portion of the volume
+        made up by one or more clusters. The exact size of the
+        file is recorded in the directory structure.</font></p>
+        <p><font size="2" face="Arial">The size of directory
+        files is not recorded anywhere. Directories are always
+        treated as being a multiple of the cluster size.
+        Directories will be expanded when a new entry is added
+        and the directory is already full.</font></p>
+        <p><font size="2" face="Arial">Note that the root
+        directory for FAT12 and FAT16 drives cannot be expanded.
+        The size of the root directory for these FAT types was
+        determined when the volume was formatted.</font></p>
+        <p><font size="2" face="Arial">The directory is divided
+        into small structures called Directory Entries. Each
+        directory entry is always exactly 32 bytes long. The
+        entry holds the name, attribute, size, date, time and
+        initial cluster number for the file or directory.</font></p>
+        <p><font size="2" face="Arial">The Long File Names
+        supported with VFAT are stored in addition to the short/normal
+        name in entries preceding the short name. The LFN entry
+        is hidden from older utility software (basically older MS-DOS
+        versions) by using a traditionally illegal attribute
+        value.</font></p>
+        <p><font size="2" face="Arial">Long names are stored in
+        UNICODE, which is the 16-bit successor of ASCII. Each
+        UNICODE character normally appears as an ASCII character
+        followed by a null byte. </font></p>
+        <p><font size="2" face="Arial">Each LFN entry can hold up
+        to 13 UNCODE characters. If the long name is longer than
+        that additional entries are stored in the directory. Also
+        note that the LFN entries are stored in reverse order
+        with the first part of the long name appearing just
+        before the short name entry.</font></p>
+        <p><font size="2" face="Arial"><i>Normal/Short Entry
+        Format<br>
+        </i></font></p>
+        <table border="1" cellpadding="7" cellspacing="1"
+        width="100%">
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">8 BYTEs</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">Blank-padded name</font><p><font
+                size="2" face="Arial">- The first byte tells you
+                some special information:</font></p>
+                <p><font size="2" face="Arial">00h &#150; entry
+                is available and no entry beyond this one has
+                been used.</font></p>
+                <p><font size="2" face="Arial">05h &#150; first
+                character is actually E5h</font></p>
+                <p><font size="2" face="Arial">2Eh &#150; first
+                character is a dot; this is a special entry. It
+                can either be the &quot;dot&quot; or &quot;dot-dot&quot;
+                entry, which is present in all directories except
+                the root directory. The &quot;dot&quot; entry has
+                a cluster number that points to the directory
+                itself. The &quot;dot-dot&quot; entry has a
+                cluster number that points to the parent
+                directory (or null if the parent is the root
+                directory)/</font></p>
+                <p><font size="2" face="Arial">E5h &#150; entry
+                has been erased and is available.</font></p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">3 BYTEs</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">Blank-padded extension</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 BYTE</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">Attribute</font><p><font size="2"
+                face="Arial">- This field is bit-mapped. Only
+                bits 0-4 should be used, bits 5-7 are said to be
+                reserved. Note that the special value of 0Fh
+                indicates an LFN entry. The value 0Fh is an
+                otherwise illegal attribute value. </font></p>
+                <p><font size="2" face="Arial">- Older software
+                might think that LFN entries are &quot;Read-Only
+                System Hidden Volume Directories&quot;, even a
+                fool will realise that means &quot;CAN&#146;T
+                TOUCH THIS, do, do-do-do, da, do-do, da-da&quot;&#133;</font></p>
+                <p><font size="2" face="Arial">00001b &#150; Read-Only</font></p>
+                <p><font size="2" face="Arial">00010b &#150;
+                System</font></p>
+                <p><font size="2" face="Arial">00100b &#150;
+                Hidden</font></p>
+                <p><font size="2" face="Arial">01000b &#150;
+                Volume</font></p>
+                <p><font size="2" face="Arial">10000b &#150;
+                Directory</font></p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 BYTE</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">Reserved, used by Windows NT, Novell
+                DELWATCH apparently uses this to store the
+                original first character for erased entries.</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 BYTE</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">10-ms unit&#146;s &quot;Create Time&quot;
+                refinement (added with VFAT).</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 WORD</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">Creation time (added with VFAT).</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 WORD</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">Creation date (added with VFAT).</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 WORD</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">Access date (added with VFAT).</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 WORD</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">High 16-bits of Cluster # (added
+                with and used for FAT32).</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 WORD</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">Update time (set on creation as well)</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 WORD</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">Update date (set on creation as well)</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 WORD</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">16-bit Cluster #</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 DWORD</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">File size in bytes (always zero for
+                directories).</font></td>
+            </tr>
+        </table>
+        <p><font size="2" face="Arial">The time and date fields
+        use the following &quot;packed&quot; storage format:</font></p>
+        <p><font size="2" face="Arial"><i>Packed Time:</i></font></p>
+        <table border="1" cellpadding="7" cellspacing="1"
+        width="319">
+            <tr>
+                <td valign="top" width="33%"><p align="center"><font
+                size="2" face="Courier New"><b>15:11</b></font></p>
+                </td>
+                <td valign="top" width="33%"><p align="center"><font
+                size="2" face="Courier New"><b>10:5</b></font></p>
+                </td>
+                <td valign="top" width="33%"><p align="center"><font
+                size="2" face="Courier New"><b>4:0</b></font></p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" width="33%"><p align="center"><font
+                size="2" face="Courier New">Hour</font></p>
+                </td>
+                <td valign="top" width="33%"><p align="center"><font
+                size="2" face="Courier New">Minute</font></p>
+                </td>
+                <td valign="top" width="33%"><p align="center"><font
+                size="2" face="Courier New">Second / 2</font></p>
+                </td>
+            </tr>
+        </table>
+        <p><font size="2" face="Arial"><i>Packed Date:</i></font></p>
+        <table border="1" cellpadding="7" cellspacing="1"
+        width="319">
+            <tr>
+                <td valign="top" width="33%"><p align="center"><font
+                size="2" face="Arial"><b>15:9</b></font></p>
+                </td>
+                <td valign="top" width="33%"><p align="center"><font
+                size="2" face="Arial"><b>8:5</b></font></p>
+                </td>
+                <td valign="top" width="33%"><p align="center"><font
+                size="2" face="Arial"><b>4:0</b></font></p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" width="33%"><p align="center"><font
+                size="2" face="Arial">Year &#150; 1980</font></p>
+                </td>
+                <td valign="top" width="33%"><p align="center"><font
+                size="2" face="Arial">Month</font></p>
+                </td>
+                <td valign="top" width="33%"><p align="center"><font
+                size="2" face="Arial">Day</font></p>
+                </td>
+            </tr>
+        </table>
+        <p><font size="2" face="Arial">I haven&#146;t seen any
+        official MS documentation on LFN entries, but after
+        studying directory sectors and reading lots about it from
+        various sources, including Ralf Brown&#146;s Interrupt
+        List, which you BTW, should get from this location &#150;
+        &lt;insert WWW page here&gt;, I&#146;ve come to the
+        conclusion that this information is very accurate.</font></p>
+        <p><font size="2" face="Arial">Also note that it&#146;s
+        merely a guess that the new file access/creation time/date
+        fields added with VFAT are stored in the same format as
+        the standard time/date fields.<br>
+        </font></p>
+        <p><font size="2" face="Arial"><i>Long File Name Entry
+        Format<br>
+        </i></font></p>
+        <table border="1" cellpadding="7" cellspacing="1"
+        width="100%">
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 BYTE</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">LFN Record Sequence Number</font><p><font
+                size="2" face="Arial">- Bits 5:0 hold a 6-bit LFN
+                sequence number (1..63). Note that this number is
+                one-based. This limits the number of LFN entries
+                per long name to 63 entries or 63 * 13 = 819
+                characters per name. </font></p>
+                <p><font size="2" face="Arial">- The longest
+                filename I was able to create using Windows 95
+                Explorer was 250 characters. I managed to use a
+                251-character name when saving a file in
+                Microsoft Word. I don&#146;t know if this is the
+                limitation of the FS driver or if it is limited
+                at the application level.</font></p>
+                <p><font size="2" face="Arial">- Bit 6 is set for
+                the last LFN record in the sequence.</font></p>
+                <p><font size="2" face="Arial">- Bit 7 is set if
+                the LFN record is an erased long name entry or
+                maybe if it is part of an erased long name?</font></p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">10 BYTEs</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">5 UNICODE characters, LFN first part.</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 BYTE</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">Attribute</font><p><font size="2"
+                face="Arial">- This field contains the special
+                value of 0Fh, which indicates an LFN entry.</font></p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 BYTE</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">Reserved (probably just set to zero).</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 BYTE</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">Checksum of short name entry, used
+                to validate that the LFN entry belongs to the
+                short name entry following.</font><p><font
+                size="2" face="Arial">According to Ralf Brown&#146;s
+                interrupt list, the checksum is computed by
+                adding up all the short name characters and
+                rotating the intermediate value right by one bit
+                position before adding each character.</font></p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">12 BYTEs</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">6 UNICODE characters, LFN second
+                part.</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">1 WORD</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">Initial cluster number, which is
+                always zero for LFN entries.</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="2"
+                face="Arial">4 BYTEs</font></td>
+                <td valign="top" width="85%"><font size="2"
+                face="Arial">2 UNICODE characters, LFN third part.</font></td>
+            </tr>
+        </table>
+        <p><font size="2" face="Arial">The Long File Name entries
+        include every single character in the long name including
+        the &quot;dot&quot; which is implied by short names.</font></p>
+        <p><font size="2" face="Arial">The very last LFN entry
+        will have a null-terminator if less than 13 characters
+        are stored in that long name entry. If only 12 characters
+        or less are stored the remainder of the long name parts
+        are filled with FFFFs.</font></p>
+        <p><font size="2" face="Arial">TK.</font></p>
+        </td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+</center></div>
+</body>
+</html>

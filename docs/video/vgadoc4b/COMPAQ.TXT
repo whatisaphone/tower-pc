@@ -1,0 +1,555 @@
+    Compaq Super VGA chips.
+
+There are 3 "Families" of Compaq VGA chips:
+
+Integrated Video Graphics System (IVGS aka Starlight):
+Supports 640x480x16c. BitBLT functions
+
+Advanced VGA System (AVGA aka Stardust):
+Supports 800x600x16c and 640x480x256c. BitBLT functions.
+
+QVision:
+Supports 1024x768x256c. Newer versions support 1280x1024 and/or TrueColor.
+Hardware Cursor, BitBLT.
+
+  QVision        (128084)   Max 1MB (Victory)
+  QVision 1024              Max 2MB (V32 ?)
+  QVision 1280   (139148)   Max 2MB (V32)
+
+The QVision 2000 is actually a Matrox MGA-II (Ultima) clone.
+
+
+3C2h (W):  Miscellaneous
+bit 2-4  (QVision) Clock select. In AVGA mode the two lower bits selects
+          one of 4 clocks, in QVision mode (3CEh index 0Fh <> A5h) these
+          3 bits selects 1 of 8 other clocks, thus there are 12 clocks
+          available on the QVision.
+Note: This is a standard VGA register, all other bits follow VGA standard.
+      This register can be read at 3CCh.
+
+3CEh index 0Bh (R/W):
+bit    0  ??
+       1  If set the ROM is 16bit wide, 8 if clear
+       2  If set video memory is 16bit wide, 8 if clear
+       3  Blanks screen if set ??
+       4  ??
+
+3CEh index 0Ch (R):  Controller Version
+bit  3-7  Version.
+            03h: IVGS
+            05h: AVGA
+            06h: Original QVision
+            0Eh: QVision 1024 or 1280
+            10h: Advanced VGA Port (What is this?)
+
+3CEh index 0Dh (R/W):  Extended Controller Version
+
+3CEh index 0Eh (R/W):  Extended Controller Capabilities
+
+3CEh index 0Fh (R/W):  Environment Register
+bit  0-3  writing 5 to this register unlocks the extended registers.
+     4-7  (QVision) 0Ah if in AVGA mode, 0 if in QVision mode
+Note: The QVision has a specific mode for AVGA support (Mode 29h and 2Eh),
+      where the AVGA accelerator function and registers are used.
+
+3CEh index 10h (R/W):  BLTConf
+bit  0-1  ??
+       2  (QVision) If set the 2xxxh-3xxxh register block is mapped at 4xxxh
+            -5xxxh
+     3-4  (chip ?) Video interrupt. 0= Active Low, 1,3=Active High, 2=Disabled.
+       3  (QVision) If set enables access to some of the extended registers ?
+       5  Tri-state if set
+       6  ??
+       7  (AVGA) If set the screen goes all white or black ?
+
+3CEh index 11h (R/W):
+bit    0  ??
+
+3CEh index 40h (R/W):  Control Register 0
+bit    0  If set accesses to the upper bank (0A8000h-0AFFFFh) are calculated
+          from 0A8000h (I.e.. to create a 64K unified window index 46h should
+          be programmed with a value 8 larger than index 45h). If clear
+          accesses are relative to 0A0000h (I.e.. use same value in index 45h
+          and 46h).
+       1  If set the memory layout is different ?
+     2-7  ??
+
+3CEh index 41h (R/W):
+bit  0-2  ??
+
+3CEh index 42h (R/W):  CRTC Overflow
+bit  0-1  Bit 8-9 of the Display Offset. Bits 0-7 are in 3d4h index 13h.
+     2-4  Display start Address bits 16-18. Bits 0-15 are in 3d4h index
+          0Ch,0Dh
+       5  ??
+       6  If set moves the display ~50 lines ??
+       7  ??
+
+3CEh index 43h (R/W):
+bit  0-7  ??
+
+3CEh index 44h (R/W):
+bit  0-7  ??
+
+3CEh index 45h (R/W):  Page Register 0
+bit  0-7  Bank number in 4KB blocks for accesses to A000h-A7FFh.
+          (AVGA) In 16c planar modes the bank is in units of 1Kb
+          (QVision 1280) If 23C7h bit 4 is set the bank is in units of 16Kb
+
+3CEh index 46h (R/W):  Page Register 1
+bit  0-7  Bank number in 4KB units for accesses to A800h-AFFFh
+          If index 40h bit 0 is set this value must be 8 larger than the value
+          in index 45h (8*4k = 32k) to provide a 64k unified window. If index
+          40h bit 0 is clear this value should be the same as in index 45h.
+
+3CEh index 48h (R/W):
+bit  0-3  High Area Memory (0=disabled, 1-0Eh = the 1MB boundary the HMA
+          starts at). The HMA is a 1MB continuos mapping of the video buffer.
+     0-7  (QVision) Lower 8 bits of the HMA start address
+
+3CEh index 49h (R/W):
+bit  0-7  (QVision) Upper 8 bits of the HMA start address
+
+3CEh index 50h (R/W):                                                (QVision)
+bit  0-2  ??
+     3-6  Monitor (0,2,6??)
+             00h  Compaq Internal Monitor
+             02h  Compaq 16" Advanced Graphics Color Monitor
+             03h  Compaq 1024 Color Monitor
+             04h  QVision 200 (20") Color Monitor
+             05h  Compaq SVGA Color Monitor
+             06h  QVision 150 (15") Color Monitor or
+                  Compaq 151 FS Color Monitor
+             0Eh  Compaq 14" VGA Monitor (31.5 kHz)
+       7  ??
+
+3CEh index 51h (R/W):                                                (QVision)
+bit    0  Divides clock by ~3.5 if set ???
+     1-2  ??
+       3  If clear blanks the left half of the display ??
+       4  Clock ??
+       5  Horizontal Retrace End bit 5. Bits 0-4 are in 3d4h index 5 bits 0-4.
+       6  Vertical Total bit 10. Bits 0-7 are in 3d4h index 6, bits 8&9 are
+          in 3d4h index 7.
+       7  Vertical Retrace Start bit 10. Bits 0-7 are in 3d4h index 10h.
+
+3CEh index 52h (R/W):
+bit    0
+
+3CEh index 54h (R/W):  Available Memory                              (QVision)
+bit  0-7  Video Memory. 2: 512k, 4: 1024k, 8: 2048k
+Note: For the QVision 1024, 0 apparently means 1024KB.
+
+3CEh index 55h (R/W):  PLL Clock
+bit  0-7  ??
+
+3CEh index 56h (R/W):  Controller Capabilities                       (QVision)
+bit  0-1  ??
+       2  Set for QVision 1280, clear for QVision 1024
+     3-7  ??
+
+3CEh index 57h (R/W):  Controller Capabilities II                    (QVision)
+bit  0-7  ??
+
+3CEh index 5Ah (R/W):                                                (QVision)
+bit  0-5  1 for copy, 2 for fill
+     6-7  Set to 3 or 0 ??
+
+3CEh index 80h (R/W):                                                      (?)
+bit  2-3  2=Plasma system.
+     4-6  Palette option: 1=Standard palette, 2=Option B, 5=option A,
+            6=option C.
+
+3CEh index 81h (R/W):                                                      (?)
+bit   2  Set for Palette option A-C and Standard palette, clear for option D.
+
+13C6h - 13C9h are implemented as DAC regs REG0A,REG0B,REG08 and REG09 for the
+ QVision (DAC has RS2 = 0 and RS3 = 1).
+
+23C0h W(R/W): Source Address                                 (IVGS, AVGA only)
+bit  0-15  Address of source in DWORDs (256colors) or bytes (16colors).
+           (AVGA) Bit 16-17 are in 23C4h.
+           The exact address and size of the BitBLT can be adjusted by
+           33C0h,33C1h,33C8h and 33C9h
+
+23C2h (R/W):  Width of area                                  (IVGS, AVGA only)
+bit   0-7  Width in DWORDs of the Blit area.
+
+23C2h W(R/W): Width of BitBLT operation                         (QVision only)
+bit   0-9  Width of the BitBLT area in pixels
+
+23C4h W(R/W): Height of the BitBLT area
+bit   0-9  Number of lines in Blit area.
+    10-11  (AVGA) Bit 8-9 of the Scanline Width. Bit 0-15 are in
+    12-13  (AVGA) Bit 16-17 of the distance. Bit 0-15 are in 23CCh.
+    14-15  (AVGA) Bit 16-17 of Source address. Bit 0-15 are in 23C0h.
+
+23C6h (R/W):
+
+23C7h (R/W):
+bit     2  Set to enable Linear Frame Buffer.
+        4  Set to use 16K banks, clear to use original 4K banks
+
+23CAh W(R/W):  Scanline width.                               (IVGS, AVGA only)
+bit  0-15  Width of destination in DWORDs (256color) or bytes (16color).
+           Negative if moving backwards.
+
+23CCh W(R/W): Destination Address                            (IVGS, AVGA only)
+bit  0-15  Distance between the Destination and the Source Address in DWORDs
+           (256colors) or bytes (16colors).
+           (AVGA) Bit 16-17 are in 23C4h bit 12-13.
+
+23CCh W(R/W):  Scanline Width                                        (QVision)
+bit   0-  Bytes per scanline in the destination in units of 4 (DWORDs).
+
+23CEh W(R/W):  Scanline width.                               (IVGS, AVGA only)
+bit  0-15  Width of destination in DWORDs. Negative if moving backwards.
+Note: one must be source and the other destination width
+
+33C0h (R/W):                                                 (IVGS, AVGA only)
+bit  0-7  Start pixel of BitBLT source
+
+33C1h (R/W):                                                 (IVGS, AVGA only)
+bit  0-7  Ending pixel of BitBLT destination
+
+33C7h (R/W):                                                 (IVGS, AVGA only)
+
+
+33C8h (R/W):                                                 (IVGS, AVGA only)
+bit  0-1
+Note: this is the same register as 3CEh index 3  ??
+
+33C9h (R/W):                                                 (IVGS, AVGA only)
+
+33CAh W(R/W):  Fore/Back ground color ?
+
+33CCh W(R/W):  Fore/Background color
+Note: Apparently the Fore/Background color registers must be written twice to
+      work properly.
+
+33CEh (R/W):  COP Status/Command
+bit    0  (R) If set the CoProcessor is busy.
+     0-5  (W) 11h = Copy. 9 = Fill.
+       6  (W) Copy/Fill backwards if set
+
+33CFh (R/W):
+
+63C0h W(R/W): Source Bitmap X-address                           (QVision only)
+bit   0-9  The X co-ordinate of the start of the Source Data.
+
+63C2h W(R/W): Source Bitmap Y-address                           (QVision only)
+bit   0-9  The Y co-ordinate of the start of the Source Data.
+
+63C4h (R/W):
+
+63C5h (R/W):
+
+63CAh (R/W):
+bit   0-2  1=4bit packed, 3=8bit packed, 5= 15bit, 7=24 bit (packed as RGBa)
+        6  After loading the BitMap Address and Size registers, wait for this
+           bit to be 0 before setting final registers and starting the
+           command.
+        7  Wait for this bit to be 0, before loading the Source/Destination
+           address and BitMap size registers.
+
+63CBh (R/W):
+bit     0  Set for 2Mb?
+      2-3  Scanline Width. 0: 512 pixels/line, 1: 1024 pixels/line, 2: 2048
+           pixels/line
+      4-6  Set to 7 ?
+
+63CCh W(R/W): Destination Bitmap X-address                      (QVision only)
+bit   0-9  The X co-ordinate of the start of the Destination Data
+
+63CEh W(R/W): Destination Bitmap Y-address                      (QVision only)
+bit   0-9  The Y co-ordinate of the start of the Destination Data
+
+83C4h ():  Virtual Controller Select                            (QVision only)
+
+83C6h-83C9h  Extra DAC registers (RS2 = 1) on the AVGA and QVision boards
+
+93C6h-93C9h  Extra DAC registers (RS2 = 1, RS3 = 1) on QVision boards
+
+93C6h W(R/W): Hardware Cursor Y-position
+bit   0-9  The X-position of the right pixel of the hardware cursor.
+
+93C8h W(R/W): Hardware Cursor X-position
+bit   0-9  The Y-position of the lower scanline of the hardware cursor.
+
+Note: Registers 3C6h-3C9h, 13C6h-13C9h, 83C6h-83C9h and 93C6h-93C9h are
+      physically in the Brooktree DAC.
+
+
+The AVGA connects A15 to RS2 on the DAC so 4 extra DAC registers are
+accessible at 83C6h-83C9h (if supported by the DAC), and the QVision
+connects A15 to RS2 and A12 to RS3 so 12 extra DAC registers are available
+at 83C6h-83C9h, 13C6h-13C9h and 93C6h-93C9h (if supported by the DAC).
+
+  ID Compaq super VGA:
+
+  old:=rdinx($3CE,$F);
+  wrinx($3CE,$F,0);
+  if not testinx($3CE,$45) then
+  begin
+    wrinx($3CE,$F,5);
+    if testinx($3CE,$45) then
+    begin
+      SubVers:=rdinx($3CE,$C) shr 3;
+      case SubVers of
+        3:name:='Compaq IVGS';
+        5:name:='Compaq AVGA';
+        6:name:='Compaq QVision 1024';
+       $E:if (rdinx(GRC,$56) and 4)>0 then name:='Compaq QVision 1280'
+                                      else name:='Compaq QVision 1024';
+      $10:name:='Compaq AVPort';
+      else UNK(Compaq)
+      end;
+    end;
+  end;
+  wrinx($3CE,$F,old);
+
+
+
+    Video Modes:
+  18h  T   132   43  (AVGA) Mono
+  19h  T   132   25  (AVGA) Mono
+  1Ah  T   132   28  (AVGA) Mono
+  1Bh  T   132   50  (AVGA) Mono
+  1Ch  T   132   60  (AVGA) Mono
+  22h  T   132   43
+  23h  T   132   25
+  24h  T   132   28
+  27h  T   132   50
+  28h  T   132   60
+  29h  G   800  600   16c  PL4
+  2Eh  G   640  480  256c  P8.  Each scan line is 1024 bytes wide.
+      Remaining modes only supported by QVision boards:
+  32h  G   640  480  256c  P8   Each scan line is 1024 bytes wide
+  33h  G   640  400  256c  P8   Each scan line is 1024 bytes wide
+  34h  G   800  600  256c  P8   Each scan line is 1024 bytes wide
+  37h  G  1024  768   16c  PK4
+  38h  G  1024  768  256c  P8
+  39h  G  1280 1024   16c  PK4
+  3Ah  G  1280 1024  256c  P8   Each scan line is 2048 bytes wide
+  3Eh  G   640  480   32k  P15
+  40h  G   640  400     2       Compaq Portable only
+  4Dh  G   512  480   16m  P32  Four bytes per pixel
+  4Eh  G   640  400   16m  P32  Four bytes per pixel
+
+
+BitBLTs:
+
+There appear to be two different systems: mode 2Eh uses a system based on the
+memory address of the bitmaps involved, and with some fields packed.
+Is this to keep compatibility with something ??
+Mode 32h, 37h and 38h use a system based on the pixel addresses of the bitmaps
+Also some of the registers appear to be mapped to more than one address ??
+I.e.. drivers some times adds a value to the register address.
+
+
+  Compaq BIOS extensions:
+
+----------10BF00-----------------------------
+INT 10 - VIDEO - Compaq Portable Extensions - SELECT EXTERNAL MONITOR
+        AX = BF00h
+Note: all registers preserved and the internal monitor is blanked
+      the external monitor becomes the active monitor
+----------10BF01-----------------------------
+INT 10 - VIDEO - Compaq Portable Extensions - SELECT INTERNAL MONITOR
+        AX = BF01h
+Note: all registers preserved and the external monitor is blanked
+      the internal monitor becomes the active monitor
+----------10BF02-----------------------------
+INT 10 - VIDEO - Compaq Portable Extensions - SET MASTER MODE OF CURRENT CTRLR
+        AX = BF02h
+        BH = master mode
+            04h CGA
+            05h EGA
+            07h MDA
+----------10BF03BX0000-----------------------
+INT 10 - VIDEO - Compaq Extensions - Get Environment
+        AX = BF03h
+        BX = 0000h
+Return: BH = active monitor
+            00h = external
+            01h = internal
+            03h = both
+            04h = neither
+        BL = master mode
+            00h = switchable VDU not present
+            04h = CGA
+            05h = EGA
+            07h = MDA
+            08h = switchable LCD controller present
+            09h = plasma VGA
+            0Ah = TFT (active matrix) VGA
+        CH = 00h (reserved)
+             (QVision) Bits 3-7: Chip ID (from 3CEh index 0Ch):
+                         06h  QVision 1024
+                         0Eh  QVision 1024 or 1280
+        CL = switchable VDU mode supported
+            bit    0 = CGA supported
+            bits 1,2 = reserved (1)
+            bit    3 = MDA supported
+            bits 4-7 = reserved (1)
+            (QVision)
+            Bit    0  Set if extended modes are enabled
+                   4  BitBLT engine available if set
+                   5  132-coloumn support available if set
+                   6  640x480x256 mode available if set
+                   7  8-bit DAC mode (256c of 16m) available if set
+        DH = internal monitor type (see below)
+        DL = external monitor type
+            00h = none
+            01h = dual-mode monitor
+            02h = 5153 RGB monitor (RGBI 16-color)
+            03h = Compaq Color monitor
+            04h = 640x400 flat panel (Plasma CGA)
+            05h = VGC monochrome
+            06h = VGC color
+            07h = 8-level mono LCD VGA (internal)
+                  1024x768 mono VGA (external)
+            08h = 16-level mono plasma VGA (internal)
+                  1024x768 color VGA (external)
+            09h = 4-level mono LCD CGA
+            0Ah = 16-level mono LCD VGA
+            0Bh = active-matrix color VGA
+            0Ch = active-matrix mono VGA
+            0Dh = STN color VGA
+----------10BF04-----------------------------
+INT 10 - VIDEO - Compaq Portable Extensions - Set Mode Switch Delay
+        AX = BF04h
+        BH = new state of delay
+             00h enabled
+             01h disabled
+----------10BF05-----------------------------
+INT 10 - VIDEO - Compaq Systempro Extensions - Enable/Disable Display
+        AX = BF05h
+        BH = new state of video
+             00h off
+             01h on
+----------10BF06-----------------------------
+INT 10 - VIDEO - Compaq SLT/286 - Read Gray Scale Table
+        AX = BF06h
+        CL = address to be read from grey scale table
+Return: AL = bit 3-0 - Value read from grey scale table
+        CL = address to be read from grey scale table
+----------10BF07-----------------------------
+INT 10 - VIDEO - Compaq SLT/286 - Write Gray Scale Table
+        AX = BF07h
+        CH = value to write to grey scale table
+        CL = address to be written to grey scale table
+----------10BF08-----------------------------
+INT 10 - VIDEO - Compaq SLT/286 - Write Color Mix Registers
+        AX = BF08h
+        CH = bits 7-4 - Green weight
+             bits 3-0 - Blue weight
+        CL = bits 7-4 - unused
+             bits 3-0 - Red weight
+----------10BF09-----------------------------
+INT 10 - VIDEO - Compaq Extensions - Turn On Reverse Video
+        AX = BF09h
+Return: CF clear
+Note: sets bit 6 of port 03CEh index 81h; in some cases also sets index 84h
+      to 6Fh and index 83h to 04h
+Note: supported by at least the QVision board and the LTE Lite ROM BIOS
+----------10BF0A-----------------------------
+INT 10 - VIDEO - Compaq Extensions - Turn Off Reverse Video
+        AX = BF0Ah
+Return: CF clear
+Note: clears bit 6 of port 03CEh index 81h; in some cases also sets index 84h
+      to 80h and index 83h to FBh
+Note: supported by at least the QVision board and the LTE Lite ROM BIOS
+--------b-10BF0B-----------------------------
+INT 10 - VIDEO - Compaq Extensions - Check Whether Video Reversed
+        AX = BF0Bh
+Return: CF clear
+        AX = state (0000h normal video, 0001h reversed video)
+Note: supported by at least the QVision board and the LTE Lite ROM BIOS
+----------10BF0C------------------------------------
+INT 10 - VIDEO - Compaq Extensions - Set 6bit DAC Mode
+        AX = BF0Ch
+Return: CF clear
+Desc: specify that video DAC registers use only six bits of color info
+Note: supported by AVGA, QVision boards and the SystemPro XL ROM BIOS
+----------10BF0D------------------------------------
+INT 10 - VIDEO - Compaq Extensions - Set 8bit DAC Mode
+        AX = BF0Dh
+Return: CF clear
+Desc: specify that video DAC registers use all eight bits of color info
+Note: supported by AVGA, QVision boards and the SystemPro XL ROM BIOS
+----------10BF0E------------------------------------
+INT 10 - VIDEO - Compaq Extensions - Get DAC Resolution
+        AX = BF0Eh
+Return: AL = 00h  if DAC in 6bit mode
+             01h  if DAC in 8bit mode
+        CF clear
+Note: supported by AVGA, QVision boards and the SystemPro XL ROM BIOS
+----------10BF0F------------------------------------
+INT 10 - VIDEO - Compaq Extensions - Set Linear Video Buffer Address
+        AX = BF0Fh
+        BX = Linear Video Buffer Address in megabytes, or
+             0FFFFh to let ROM configure Linear Video Buffer Address
+Return: AX = previous Linear Video Buffer Address
+        CF clear
+Note: supported by AVGA, QVisions board and the SystemPro XL & LTE Lite ROM
+      BIOSes
+----------10BF10------------------------------------
+INT 10 - VIDEO - Compaq QVision - Get Linear Video Buffer Address
+        AX = BF10h
+Return: AX = Linear Video Buffer Address in megabytes
+        CF clear
+Note: supported by AVGA, QVision boards and the SystemPro XL & LTE Lite ROM
+      BIOSes
+----------10BF11------------------------------------
+INT 10 - VIDEO - Compaq Extensions - Get Extended Environment
+        AX = BF11h
+Return: AL = BFh
+        CF clear
+     ES:SI -> Advanced Functionality Table (4 bytes):
+              Bit   1  132-column modes supported if set
+                    2  Set for QVision 1280's
+                    4  Standard VGA modes supported if set
+                    5  Accelerated VGA modes supported if set
+                    6  Advanced VGA modes supported if set
+                    7  QVision modes supported if set
+                    8  Set for QVision 1280 and 1024's, clear for original
+                       QVision
+                12-15  Video memory in 256K units, 0=256K, 1=512K...
+              Typical values are:
+               000030F2h   Original QVision w/1MB??
+               000010F2h   Original QVision w/512K??
+               000031F2h   QVision 1024 w/1MB
+               000031F6h   QVision 1280 w/1MB
+               000071F2h   QVision 1024 w/2MB
+               000071F6h   QVision 1280 w/2MB
+     ES:DI -> COMPAQ text and date
+Note: supported by at least the QVision board and the LTE Lite and ProSignia
+      ROM BIOSes
+Note: Some sources have the table at ES:DI and the text&date at ES:BX
+----------10BF12------------------------------------
+INT 10 - VIDEO - Compaq Extensions - New Active Monitor
+        AX = BF12h
+        BH reserved
+        BL = function mask
+             bit 0  External monitor
+                 1  Internal monitor
+                 7  If set bits 0 and 1 activate the monitor when set,
+                    if clear they toggle the state when set
+Return: CF clear
+Note: this function is a NOP if the VGA subsystem is inactive or the current
+      Display Combination Code is 10h or higher
+      Supported by at least the QVision board and the LTE Lite and ProSignia
+      ROM BIOSes
+----------10BF13------------------------------------
+INT 10 - VIDEO - Compaq QVision - Gamma Correction
+        AX = BF13h
+        BH = 00h
+        BL = 00h  Loads Gamma Correction table for true color mode
+                  DS = BIOS data segment
+             01h  Select Palette RAM bypass (direct DAC Mode)
+Note: Only effective for Hi/TrueColor modes. Must be called after the mode has
+      been set and only have effect until the next mode switch
+----------10BFE0------------------------------------
+INT 10 - VIDEO - Compaq QVision  (later models ??)
+        AX = BFE0h

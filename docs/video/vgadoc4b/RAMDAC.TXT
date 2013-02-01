@@ -1,0 +1,2052 @@
+RAMDACs
+
+AcuMos:
+ADAC1        15/16/24 bit.
+
+Analog Devices:
+ADV471       6bit DAC       15 overlay registers
+ADV475       6bit DAC       15 overlay registers
+ADV476       6bit DAC
+ADV477       8bit DAC       15 overlay registers
+ADV478       6/8bit DAC     15 overlay registers
+
+ADV7129      True-Color 192bit pixel bus
+ADV7160      True color 96bit pixel bus. 10bit DACs. HW cursor. PLL
+ADV7162
+
+ATI:
+ATI68830     15/16/24bit    Up to 80 MHz    !
+ATI68860     15/16/24bit    "Spectra" DAC for Mach64
+ATI68875     15/16/24bit    Up to 135 MHz   ! Used in ATI Graphics Ultra +
+                             and Pro.  Similar to TI34075
+ATI68880                    Very similar to 68860
+
+AT&T:
+ATT20c40x   ??
+ATT20c490    15/16/24 bit.  6/8 bit DAC.
+ATT20c491    15/16/24 bit.  6/8 bit DAC w/gamma correction
+ATT20c492    15/16/18 bit   6bit DACs. w/gamma correction
+ATT20c493    15/16/18 bit   6bit DACs
+ATT20c497    24bit          ?
+ATT20c498    24bit          16bit pixel databus  !
+ATT21c498    24bit          16bit pixel databus  ! What's the diff?
+ATT22c498    24bit          16bit pixel databus  !
+
+
+Avance Logic:
+ALG1101      16-bit.        Appears to be different from the other HiColor
+                            DACs.
+ALG1201      24bit
+ALG1301      24bit
+
+Avasem:
+AV3676       6bit DAC
+
+Brooktree:
+Bt458        8bit DAC       upto 135MHz. Not VGA compatible
+Bt476        6bit DAC.
+Bt477        6/8bit DAC
+Bt478        6/8bit DAC.
+Bt481        15/16bit
+Bt482        15/16bit
+Bt484        15/16/24bit    6/8bit DAC. Has hardware cursor.
+Bt485        15/16/24bit    6/8bit DAC. Has hardware cursor.
+
+Chrontel
+CH8391
+CH8398       15/16/24bit and Clock chip
+
+Cirrus Logic
+CL-GD5200    15/16/24 bit   Same as Acumos ADAC1
+
+Diamond:
+SS2410       15/24 bit.     OEM version of MUSIC MU9c1880
+
+IBM:
+RGB514       24bit.  144pin. HW cursor, 64bit pixel bus. Clock generator.
+                             packed 24bit pixels
+RGB524       24bit.  144pin. HW cursor, 64bit pixel bus. Dual clock generator
+                             packed 24bit pixels
+RGB525       24bit.  208pin. HW cursor, 64bit pixel bus. Clock generator
+                             packed 24bit pixels
+RGB526       24bit.  144pin. HW cursor, 64bit pixel bus. Dual clock generator
+                             packed 24bit pixels
+RGB528       24bit.  208pin. HW cursor, 128bit pixel bus. Dual clock generator
+                             supports 24bit packed pixels
+RGB530       24bit.  208pin. HW cursor. 96bit pixel bus. Clock generator,
+                             10bit DACs and LUTs, window attribute table
+RGB561       24bit.  304pin. HW cursor. 200bit pixel bus. Clock generator.
+                             10bit DACs and LUTs
+RGB624       24bit.  144pin. HW cursor, 64bit pixel bus, Dual clock generator
+                             packed 24bit pixels, YUV to RGB conversion
+
+
+ICS:
+ICS5300      24bit          Combined RAMDAC & Clock chip
+ICS5301
+ICS5342      24bit          Combined RAMDAC & Clock chip
+
+IC Works:
+W30c498                     Similar to AT&T 20c498
+W30c516      44pin          "ZoomDAC"
+
+Inmos:
+IMSG171
+IMSG173
+IMSG174
+IMSG176      6bit DAC
+IMSG178
+
+MUSIC:
+MU9C1710     6 bit DAC
+MU9C4870     15/16 bit      Similar to Sierra "Mark 3".
+MU9C1880     15/16/24bit    Same as SS24
+MU9C4910     15/16/24bit
+MU9C9910     15/16/24bit    As 4910, but with dual clock generator onchip
+MU9C9750     6bit DAC       with onchip clock generator w/powerdown
+MU9C9760     6bit DAC       with onchip clock generator
+MU9C4160     15/16/24bit    16bit wide pixelbus
+MU9C9160     15/16/24bit    As 4160, but with onchip clock generator
+
+OAK:
+OTI66        6bit DAC
+OTI66HC      15/16bit       Similar to Sierra "Mark 3"
+
+S3:
+86c716 (SDAC)       Combined RAMDAC & Clockchip. Same as ICS 5300
+86c708 (GenDAC)     Combined RAMDAC & Clockchip. Same as ICS 5342
+
+Samsung:
+KDA476       6bit DAC       Standard '476
+
+
+SGS-Thompson:
+STG1700      24bit          16bit pixel path.
+STG1702      24bit  44pin   As 1700 + Supports "2 24bit pixels/3 VCLKs"
+STG1703      24bit  68pin   As 1702 + onchip Clock Generator
+
+Sierra Semiconductors:
+Sierra  "Mark1":       Only works if the VGA controller can send a byte on
+                       both the rising AND falling edge of the dot clock.
+SC11481      15-bit.        6-bit DAC.   Overlay.
+SC11486      15-bit.        6-bit DAC.
+SC11488      15 bit.        6/8 bit DAC. Overlay.
+
+Sierra  "Mark2":
+SC11482      15-bit.        6-bit DAC.   Overlay.
+SC11483      15-bit.        6-bit DAC.
+SC11484      15-bit.        6/8 bit DAC. Overlay.
+
+Sierra  "Mark3":
+SC11485      15/16 bit.     6-bit DAC.   Overlay.
+SC11487      15/16 bit.     6-bit DAC.
+SC11489      15/16 bit.     6/8 bit DAC. Overlay.
+
+SC15020      24bit          16bit pixel path
+SC15021      24bit          16bit pixel path
+SC15025      24 bit.
+SC15026      24 bit.
+
+
+TI:
+TLC34058     8bit           upto 135MHz. Not VGA compatible
+TLC34075     24bit          upto 135MHz
+TVP3010      24bit          As 302x, but 32bit pixel path
+TVP3020      24bit          64bit pixel path
+TVP3025      24bit          As 3020 + Programmable Clock
+
+Trident:
+TKD8001      24bit
+
+UMC:
+UM70c171     Standard 6bit DAC
+UM70c178     15/16 bit      Similar to Sierra "Mark 3"
+UM70c188     24bit
+
+Winbond:
+W82c476      6bit DAC       Standard '476
+W82c478      6/8bit DAC     Standard '478
+W82c490      15/16/24bit    Very close to the AT&T20c492
+
+
+15-bit modes have 5 bits of each basic color:
+bit  0- 4 blue.
+     5- 9 green.
+    10-14 red.
+The pixel is stored in two bytes in Intel style (little endian).
+
+16-bit modes have 5 bits of red and blue, and 6 bits of green:
+bits 0- 4  blue.
+     5-10  green.
+    11-15  red.
+The pixel is stored in two bytes in Intel style (little endian).
+
+24-bit modes have 8 bits of each basic color:
+bits 0- 7  blue.
+     8-15  green
+    16=23  red.
+The pixel is stored in three bytes in Intel style (little endian).
+
+
+
+The DACs are addressed on port 3C6h-3C9h. Advanced DACs have 1 or 2 extra
+address lines (RS2 and RS3). These may be controlled from high address bits
+(A10-A15) (Compaq or Weitek cards) or from registers (S3, ATI....).
+In the following the DAC registers are named REGxx as follows:
+
+            I/O:     RS2:     RS3:
+REG00       3C8h      0        0
+REG01       3C9h      0        0
+REG02       3C6h      0        0
+REG03       3C7h      0        0
+REG04       3C8h      1        0
+REG05       3C9h      1        0
+REG06       3C6h      1        0
+REG07       3C7h      1        0
+REG08       3C8h      0        1
+REG09       3C9h      0        1
+REG0A       3C6h      0        1
+REG0B       3C7h      0        1
+REG0C       3C8h      1        1
+REG0D       3C9h      1        1
+REG0E       3C6h      1        1
+REG0F       3C7h      1        1
+
+
+
+Many of these DACs can access REG06 using only the 4 standard DAC addresses
+(3C6h-3C9h) by reading 3C6h 4 or 5 times, then REG06 can be accessed at 3C6h.
+
+  Type:
+
+  "1r/w"   Read 3C6h 4 times, then the next read or write of 3C6h will access
+           the command register.
+
+
+Forcing HiColor DACs into command mode:
+Note: This works on the Sierra, ATT, Winbond DACs and clones, not on the
+ Brooktree or TI DACs, also the MUSIC DACs will require an extra read of 3C6h.
+
+procedure dactocomm;   {switches DAC to command register}
+var x:word;
+begin
+  x:=inp($3C8);    {clear old state}
+  x:=inp($3C6);
+  x:=inp($3C6);
+  x:=inp($3C6);    {Read $3C6 4 times.}
+  x:=inp($3C6);
+end;
+
+Now reads and writes to $3C6 will access the command register. Depending on
+the DAC type you may have multiple read/writes, one write/multiple reads or
+one read/write of the command register before it switches back to the PEL
+register. Any access to $3C7-$3C9 will switch back to the PEL mask register.
+
+
+Forcing HiColor DACs into normal mode:
+
+procedure dactopel;  {switches DAC back to normal mode}
+var x:word;
+begin
+  x:=inp($3C8);
+end;
+
+
+
+
+HiColor DACs:     (Sierra SC1148x, MUSIC MU9C4870, OAK OTI66HC, UMC UM70C178)
+
+REG04 (R/W):  Overlay RAM Write Address               (SC11481/2/4/5/8/9 only)
+bit 0-3  Write index for the Overlay registers.
+
+REG05 (R/W):  Overlay RAM                             (SC11481/2/4/5/8/9 only)
+bit 0-5  Data port for the overlay registers. Works like the PEL data register
+         (3C9h) except that the overlay registers are accessed and the Overlay
+         Address registers are used for indexes.
+Note: on the SC11484/8/9 the Color Look-up Table and the overlay registers are
+      24bits wide (rather than 18bits) if the 8/6 pin is high.
+
+REG06 (R/W):  Command Register
+bit   0  (SC11487) (R) Set if bits 5-7 is 1 or 3, clear otherwise
+    3-4  (SC11487) Accesses bits 3-4 of the PEL Mask registers (REG02)
+      5  (not SC11481/6/8)
+         If set two pixel clocks are used to latch the two bytes
+         needed for each pixel. Low byte is latched first.
+         If clear the low byte is latched on the rising edge of the
+         pixel clock and the high byte is latched on the falling edge.
+         Only some VGA chips (ET4000 and C&T655x0) can handle this.
+      6  (SC11485/7/9, OTI66HC, UM70C178) Set in 16bit (64k) modes (Only valid
+           if bit 7 set). On the SC11482/3/4 this bit is read/writable, but
+           has no function. On the SC11481/6/8 this bit does not exist.
+      7  Set in HiColor (32k/64k) modes, clear in palette modes.
+Note:  This register can also be accessed at 3C6h by reading 3C6h four times,
+       then all accesses to 3C6h will go the this register until one of the
+       registers 3C7h, 3C8h or 3C9h is accessed.
+
+REG07 (R/W):  Overlay RAM Read Address              (SC11481/2/4/5/8/9 only)
+bit 0-3  Read index for the Overlay registers.
+
+
+
+Analog Devices ADV7160,ADV7162 True-Color Video RAM-DAC:
+The ADV716x DACs are not really VGA compatible, but with proper initialisation
+palette writing and the PEL register can be simulated.
+REG00 W(R/W):  Address Register
+bit 0-10  Controls the index read or written at REG01 or REG02.
+          Regardless of the bus width this register is accessed by two 8bit
+          reads or writes at this address, low byte first.
+
+REG01
+
+
+REG02 Control Registers
+REG02 index 3 (R):  ID Register
+bit  0-7  76h for the ADV7160, 79h for the ADV7162
+
+REG02 index 4 (R/W):  Pixel Mask Register
+bit  0-7  The pixel inputs (R, G and B) are anded with this value. Set to FFh
+          for normal operation.
+
+REG02 index 5 (R/W):  Command Register 1
+bit    0  Calibration Control. If set the LOADIN/LOADOUT synchronization
+          circuit is calibrated on every vertical sync (REG03 bit 5 must be 0)
+       1  Test Mode Control. Enable test mode if set
+       2  Should be set to 0
+       3  Hi-Byte Control. If set the high byte of the Address Register
+          (REG00) is accessible, if clear it is not (ADV7150 compatible).
+     4-5  PS Function Control. Controls how the PS0/1 inputs are used.
+           0: Palette Select Mode. The PS0/1 inputs selects between 4 devices
+          by comparing with REG03 bits 6-7 on a pixel by pixel base,
+           1: (ADV7160) Bypass Mode. PS1 switches between Palette Mode and
+          Bypass Mode on a pixel by pixel basis. Bits 6-7 controls the Bypass
+          Mode. Bypass mode should not be selected in Command Register 2
+          (REG02 index 6) and by this field at the same time, 2: Overlay Mode.
+          PS0/1 select one of the three overlay colors (PS0/1 = 0 for pixel
+          data), 3: Ignore PS Inputs. The PS0/1 inputs are completely ignored.
+     6-7  Bypass Color Mode Control. Controls the bypass mode switching.
+           0: 15bit bypass, 1: 16bit bypass, 2: 24bit bypass
+
+REG02 index 6 (R/W):  Command Register 2
+bit  0-1  Should be set to 0
+       2  /SYNC Recognition on Green. If set the /SYNC input is encoded on the
+          IOG output.
+       3  Pedestal Enable Control. Set for a 7.5 IRE blanking pedestal, clear
+          for a 0 IRE pedestal.
+     4-7  True-Color/Bypass/Pseudo-Color Mode Control. 0: 8bit Pseudo Color
+          on R0-7, 4: 8bit Pseudo Color on G0-7, 8: 8bit Pseudo Color on B0-7,
+           9: 16bit Bypass Mode on G0-7 + R0-7, 10: 15bit Bypass Mode on G0-7
+           + R0-6, 11: 16bit True Color Mode on G0-7 + R0-7, 12: 15bit True
+          Color Mode on B3-7 + G3-7 + R3-7, 13: 15bit True Color Mode on G0-7
+           + R0-6, 14: 24bit True Color Mode, 15: 16bit Bypass Mode
+
+REG02 index 7 (R/W):  Command Register 3
+bit  0-1  PROGCKOUT Frequency Control. Determines the PROGCKOUT output clock
+          frequency relative to the pixel clock (CLOCK). 0: CLOCK/4,
+           1: CLOCK/8, 2: CLOCK/16, 3: CLOCK/32
+     2-4  /BLANK Pipeline Delay Control. Controls the delay of the /BLANK
+          signal (in addition to the overall device pipeline delay Tpd).
+          Adds N * LOADOUT to the /BLANK delay.
+       5  Should be set to 0
+     6-7  Pixel Multiplex Control. 0: 1:1 MUXING - LOADOUT = CLOCK, 1: 2:1
+          MUXING - LOADOUT = CLOCK/2, 2: 8:1 MUXING - LOADOUT = CLOCK/8
+          (Pseudo Color Mode only), 3: 4:1 MUXING - LOADOUT = CLOCK/4,
+
+REG02 index 8 (R/W):  Command Register 4
+bit    0  HDTV Sync Control. If set the /TRISYNC input is encoded enabling a
+          Tri-Level Sync output.
+       1  /SYNC Recognition Control on Red. If set the /SYNC input is encoded
+          on the IOR output.
+       2  /SYNC Recognition Control on Blue. If set the /SYNC input is encoded
+          on the IOB output.
+     3-4  Gain Control. Selects the Video Standard used.
+          Value: DAC Gain: Video Standard            Black to White current:
+            0      3996    RS343A, Sync & Pedestal       660mV  17.62mA
+            1      4224    RS343A, Sync, No Pedestal     699mV  18.63mA
+            2      4311    RS343A, No Sync, No Pedestal  714mV  19.05mA
+            3      5592    RS170,  Sync & Pedestal       925mV  24.67mA
+       5  Signature Clock Control. Enables the Signature Analyser if set
+       6  Signature Reset. To reset the Signature Analyser write 0, then 1
+          to this field.
+       7  Signature Acquire. Enables Signature Acquisition if set
+
+REG02 index 9 (R/W):  PLL Command Register
+bit    0  PLL Control. Enables the PLL if set
+       1  RSEL Bit Control. When set the PLL Reference Divider is in units of
+           2, if clear in units of 1. See REG02 index 0Ch for details.
+       2  VSEL Bit Control. When set the PLL Feedback Divider is in units of
+           2, if clear in units of 1. See REG02 index 0Fh for details.
+       3  Should be set to 0
+     4-5  Output Divide Control. Selects the Post divider for the VCO
+           0: VCO/1, 1: VCO/2, 2: VCO/4, 3: VCO/8
+     6-7  PLL S Control. The lower two bits of the PLL Feedback value.
+          See REG02 index 0Fh for details.
+
+REG02 index 0Ah (R):  Status Register
+bit    0  Set if either of the IOR,IOG or IOB outputs exceeds the internal
+          voltage of the /SENSE comparator circuit
+
+REG02 index 0Bh (R):  Revision Register
+bit  0-?  Silicon Revision Code.
+
+REG02 index 0Ch (R/W):  PLL R Register
+bit  0-6  Controls the PLL Reference Divider value together with the RSEL bit
+          (index 9 bit 1). If this field is set to 0 the PLL stops.
+          The effective value is: (1+RSEL)*(This_Field+2).
+          This allows all values from 3-129 and all even values from 130-258.
+
+REG02 index 0Dh (R/W):  Command Register 5
+bit  0-5  Should be set to 0
+       6  Set to enable the internal PLL, clear to disable it
+       7  Should be set to 0
+
+REG02 index 0Fh (R/W):  PLL V Register
+bit  0-6  Controls the PLL Feedback Divider value together with the VSEL bit
+          (index 9 bit 2). If this field is set to 0 the PLL stops.
+          The effective value is: (1+VSEL)*(4*(This_Field+2)+ S)
+          where S is the value from REG02 index 0Ch bits 6-7.
+          This allows all values from 12-519 and all even values from 520-1038
+
+REG02 index 10h (R):  Signature Red Register
+REG02 index 11h (R):  Signature Blue Register
+REG02 index 12h (R):  Signature Green Register
+REG02 index 13h (R):  Signature Misc Register
+
+REG02 index 200h W(R/W):  Cursor X Register
+bit 0-15  The X coordinate of the cursor as a 2's complement (-4096 to 4095).
+Note: Low byte in index 200h, High byte in index 201h
+Note: When accessing the cursor X/Y registers (index 200h to 203h) the index
+      register autoincrements with each access. These registers must be
+      updated in the order 200h,201h,202h and then 203h
+
+REG02 index 202h W(R/W):  Cursor Y Register
+bit 0-15  The Y coordinate of the cursor as a 2's complement (-4096 to 4095).
+Note: Low byte in index 202h, High byte in index 203h
+Note: When accessing the cursor X/Y registers (index 200h to 203h) the index
+      register autoincrements with each access. These registers must be
+      updated in the order 200h,201h,202h and then 203h
+
+REG02 index 204h (R/W):  Cursor Control Register
+bit  0-1  Cursor Mode Control. 1: X11 cursor, 2: XGA cursor
+          Pattern:    X11 cursor:        XGA cursor:
+             0        Transparent        Color 1
+             1        Transparent        Color 2
+             2        Color 1            Transparent
+             3        Color 2            Bit-Wise Complement (XOR cursor)
+       2  Cursor Enable. Enables the cursor if set
+       3  Interlace Control. Set for interlaced modes.
+     4-7  Should be set to 0
+
+REG02 index 303h (R/W):  Color 2
+
+
+REG02 index 304h (R/W):  Color 1
+
+REG02 index 400h-7FFh (R/W):  Cursor Image
+bit  0-7  The 64x64 cursor image is stored in these 1024 bytes with 4 2bit
+          "pixels" per index. Index 400h holds the 4 leftmost pixels of the
+          first (topmost) line, index 40Fh the 4 rightmost and index 7FFh the
+          4 rightmost pixels of the last line.
+
+REG02 index 0-2, 0Eh, 14h and 15h are labeled as "Test Registers"
+
+REG03 (R/W):  Mode Register
+bit    0  Reset Control. To reset the pixel port sampling sequence to start
+          with port A, write 1, then 0 and finally 1 to this bit.
+       1  RAM-DAC Resolution Control. If set the LUT and DACs are 10bits, if
+          clear LUT and DACs are 8bits (lower 2 inputs to the 10bit DACs are
+          forced to 0).
+       2  MPU Data Bus Width. If set the MPU interface is 10 bits wide
+     3-4  Operational Mode Control. 0 for normal operation
+       5  Calibrate LOADIN. To calibrate the LOADIN/LOADOUT synchronization
+          circuit write 0, then 1 to this bit. Should be 0 for normal
+          operation.
+     6-7  Palette Select Match Bits Control. If Command Register 1 (REG02
+          index 5) bits 4-5 is 0 the PS0-1 bits are compared with these two
+          bits on a pixel per pixel base allowing realtime switching between
+          up to 4 devices
+
+
+
+
+ATI 68860/68880 Truecolor DACs:
+REG08 (R/W):
+bit 0-?  Always 2 ??
+
+REG0A (R/W):
+bit 0-?  Always 1Dh ??
+
+REG0B (R/W):  (GMR ?)
+bit 0-7  Mode. 82h: 4bpp, 83h: 8bpp, A0h: 15bpp, A1h: 16bpp, C0h: 24bpp,
+          E3h: 32bpp  (80h for VGA modes ?)
+
+REG0C (R/W):  Device Setup Register A
+bit   0  Controls 6/8bit DAC. 0: 8bit DAC/LUT, 1: 6bit DAC/LUT
+    2-3  Depends on Video memory (= VRAM width ?) . 1: Less than 1Mb, 2: 1Mb,
+           3: > 1Mb
+    5-6  Always set ?
+      7  If set can remove "snow" in some cases (A860_Delay_L ?) ??
+
+
+
+
+AT&T 20c49x,Winbond W82c490 Truecolor DACs:
+
+REG06 (R/W):  Command Register
+bit   0  (W82c490, some ATTs) Power Down Enable. If set the DACs and video
+          multiplexers are powered down. The CPU interface is still working.
+      1  (490,491) In mode 0 this bit when set selects 8bit DACs, when clear
+            6bit DACs.
+    2-4  Exists, but appears to have no function ?
+    5-7  Mode:  0-3: Palette, 4: 15bit (32k) the two bytes are latched on
+         opposite edges of the dotclock (similar to SC11486), 5: 15bit (32k),
+           6: 16bit (64k), 7: 24bit (16m)
+Note: This register can also be accessed by reading REG02 4 times, then the
+      next read or write of REG02 will access this register. Any access of
+      REG00, REG01 or REG03 will terminate the access to this register. The
+      register can only be read or written once before the DAC is returned to
+      normal mode (DAC type 4-1r1w).
+
+
+
+
+AT&T 20c498,21c498,22c498 Truecolor DACs (Also IC Works?):
+REG06 (R/W):  Command Register
+bit 0,2  (22c498) Clockmode for Mode 2 (2 8bit pixels/VCLK). 0: Clock < 22.5
+            MHz, 1: Clock < 45 MHz, 2: Clock >= 45 MHz
+      1  In palette modes this bit when set selects 8bit DACs, when clear 6bit
+         DACs.
+    4-7  Mode: 0: 8bit 1VCLK/pixel, 1: 15bit 1VCLK/pixel, 2: 8bit (2 pixels/
+          VCLK), 3: 16bit 1VCLK/pixel, 5: 24/32bit 2VCLKs/pixel, 6: 16bit
+          2VCLKs/pixel
+Note:  This register can also be accessed at REG02 by reading REG02 four times,
+       The fifth read will access of 3C6h will access this register. Only one
+       read or write will be allowed (DAC type 4-1r1w2i), the 6th read returns
+       84h and the 7th returns 98h (don't know about the 20c498).
+
+
+
+
+Avance Logic ALG1201 Truecolor DAC:
+REG06 (R/W):  "Hidden Command register"
+bit 5-7  Mode. 5: 15bit, 6: 16bit, 7: 24bit
+Note: This register can also be accessed by reading REG02 4 times, then the
+      next read or write of REG02 will access this register. Any access of
+      REG00, REG01 or REG03 will terminate the access to this register. The
+      register can only be read or written once before the DAC is returned to
+      normal mode (DAC type 4-1r1w).
+
+
+
+
+BrookTree Bt477:
+REG06 (R/W):
+bit   0  DAC powerdown. If set the DAC powers down
+      1  DAC Width. If set the DAC and palette registers are 8bit wide, if
+          clear only 6bit wide (as std VGA).
+      5  IRE control ?? seems to affect the output intensity ?
+
+
+
+
+BrookTree Bt481/482:
+
+REG00 index 0 (R/W):  Ind Pixel Mask
+
+REG00 index 1 (R/W):  Overlay Mask
+
+REG00 index 2 (R/W):  Command Register B
+bit    0  Set to power down the DAC (Sleep mode).
+       1  DAC Width. If set the DAC and palette registers are 8bit wide, if
+          clear only 6bit wide (as std VGA).
+       2  Sync on Red if set
+       3  Sync on Green if set
+       4  Sync on Blue if set
+       5  Set for 7.5 IRE, clear for 0.0 IRE pedestal (affects DAC range).
+       6  Enables the Overlay registers if set
+
+REG00 index 3 (R/W):  Cursor Register                                    (482)
+bit  0-1  Cursor type. 0: disabled, 1: 3-color, 2: Windows, 3: X11 style
+       2  Cursor Op disabled if set?
+       3  If clear reads/writes to REG04,REG05,REG07 will access the cursor
+          palette, if set the cursor pattern data will be accessed instead.
+       4  Set in interlaced modes
+       5  Selects External cursor if set
+
+REG00 index 4 W(R/W):  Cursor X                                          (482)
+bit 0-11  Cursor X position
+
+REG00 index 6 W(R/W):  Cursor Y                                          (482)
+bit 0-11  Cursor Y position
+Note: the indexed DAC registers are accessed by setting bit 0 of REG06. Then
+      REG00 is the index register and REG02 is the data register.
+
+REG04 (R/W):  Cursor Write Address                                       (482)
+bit 0-1?  Selects the palette register which will be written at REG05
+            0: Overscan, 1: Cursor Background, 2: Cursor Foreground
+
+REG05 (R/W):  Cursor RAM Data                                            (482)
+bit  0-7  Cursor palette data
+Note: If REG00 index 3 bit 3 is clear this works like the palette address&data
+      registers at REG00,REG01&REG03 except that a separate palette is
+      accessed. Each read/write of this register will increment first through
+      the red,green,blue sequence and then the Address register (REG04/REG07).
+      If REG00 index 3 bit 3 is set REG04/REG07 are the lower 8 bits of the
+      index into the 1024 byte palette pattern RAM, which will increment for
+      each access to this register.
+
+REG06 (R/W):  Command Register A
+bit    0  If set the Bt481/2 indexed DAC registers can be accessed by setting
+          REG00 to the index and reading or writing the data at REG02.
+     4-7  Mode. 0: Palette, 8: 15bit (Dual edge), 9: 24bit (Dual edge),
+            Ah: 15bit (32K), Ch: 16bit (Dual edge), Eh: 16bit (64K),
+            Fh: 24bit (16m). The Dual edge modes transfers data on both the
+          rising and falling edges of the pixel clock.
+Note:  This register can also be accessed at REG02 by reading REG02 four
+       times. Then the command register can be read or written at REG02.
+       This access will be terminated by any access to REG00, REG01 or REG03
+       or after a write to the command register (DAC type 4-Nr1w).
+
+REG07 (R/W):  Cursor Read Address                                        (482)
+bit 0-1?  Selects the palette register which will be read at REG05
+
+
+
+
+BrookTree Bt484, Bt485, AT&T 20c504/5 Truecolor DACs:
+The 485 and 505 has the extra register at REG0A and supports 64x64 cursor
+The 484 & 504 appears to be limited to 110MHz, the 485/505 to 135MHz
+
+REG04 (R/W):  Cursor/Overscan Write Address
+bit 0-7  The PEL data register (0..255) to be written to REG05.
+Note: After writing the 3 bytes at REG05 this register will increment, pointing
+      to the next data register.
+
+REG05 (R/W):  Cursor/Overscan Data
+bit 0-5  Color value
+Note:  Each read or write of this register will cycle through first the
+       registers for Red, Blue and Green, then increment the appropriate
+       address register.
+Note: the registers REG04,REG05,REG07 works like the normal REG00,REG01,REG03
+      registers, except that a separate set of palette registers (16 overlay
+      registers ?) are being accessed.
+      Index 00h  Overscan color
+            01h  Cursor Color 1 (Background)
+            02h  Cursor Color 2 (Foreground)
+            03h  Cursor Color 3
+Note: if the DAC is in 6bit mode (REG06 bit 1 is 0) the 2 upper bits of the
+      cursor colors are ignored.
+
+REG06 (R/W):  Command Reg 0
+bit   0  Power Down. If set the DACs and RAM power is turned off, but the RAM
+         still retains data, if clear the RAMDAC is operating normally
+      1  Set if DAC and palette registers are 8bit DACs, clear if 6bit.
+      2  Sync on Red if set
+      3  Sync on Green if set
+      4  Sync on Blue if set
+      5  Set for 7.5 IRE pedestal, clear for 0.0 IRE.
+      6  Disables internal clocking if set
+      7  (485,505) Enable CR3. If clear the Status register is present at
+          REG0A, if set 3C8h determines which register is present at REG0A:
+            00h    Status Register
+            01h    Command Register 3
+
+REG07 (R/W):  Cursor/Overscan Read Address
+bit 0-7  The PEL data register (0..255) to be read from REG05.
+Note: After reading the 3 bytes at REG05 this register will increment,
+      pointing to the next data register.
+
+REG08 (R/W):  Command Reg 1
+bit    0  In 15/16bit 1:1 mode selects the pixel port (A-B or C-D) to take
+          pixel data from. Clear for A-B, set for C-D. See bit 1.
+       1  PORTSEL. In 15bit 1:1 mode (bit 2 set & bit 3 clear), this bit if
+          set causes pin P7D (most significant bit of the C-D port) to select
+          whether the 15bit pixel data is taken from port A-B or port C-D,
+          thus allowing real-time switching between video sources.
+       2  SPARSE. Set if 16bit data is 1:1, clear if it is muxed 2:1
+       3  Set in 5/6/5 mode, clear in all other modes
+       4  If set decodes True-color pixel data (5/5/5, 5/6/5 or 8/8/8 mode),
+          directly, if clear each component (R-G-B) of the pixel data is used
+          is used as a separate index to the palette RAM for the specific RGB
+          component, allowing non-linear scales (gamma correction) for each
+          color-component. REG09 bit 2 controls the indexing.
+     5-6  Bits per pixel. 0: 24, 1: 15/16, 2: 8, 3: 4
+
+REG09 (R/W):  Command Reg 2
+bit  0-1  Cursor mode. 0: Disabled, 1: 3-Color, 2: Windows, 3: X11 Style
+       2  Sparse or Contigous Indexing. In Look-up True-color modes (REG08 bit
+          4 clear) selects whether each color component is shifted right or
+          left before being used as an index to the palette. If set the pixel
+          data is treated as the least significant bits of the index
+          (Contigous index), if clear as the most significanty bits (Sparse
+          index).
+       3  Set in interlaced modes (used for the cursor).
+       4  Selects input clock. 0: PCLK0, 1: PCLK1
+       5  If clear the dac takes data from the VGA port and each byte is a one
+          byte palette index regardless of the state in Command Register 1, if
+          set pixel data is taken from pixel ports A-D and data format is
+          controlled by Command Register 1
+       6  Test Path enabled if set.
+       7  SCLK (Video shift clock) disabled if set.
+
+REG0A (R):  Status Reg
+bit 4-7  Product ID ?
+           4: AT&T20c504, 0Dh: AT&T20c505, 8-Bh: Bt484/5
+Note: The two registers at REG0A are selected by bit 7 of REG06.
+
+REG0A (R/W):  Command Reg 3                                   (485,505 only)
+Bit  0-1  Bits 8-9 of the Palette Write Address (3C8h)
+       2  Set if using 64x64 cursor, clear if 32x32 cursor.
+       3  If set the Clock Doubler is enabled and the input clock is doubled.
+Note: The two registers at REG0A are selected by bit 7 of REG06.
+      This register does not exist on the Bt484
+
+REG0B (R/W):  Cursor Ram Data
+bit  0-7  Data port for the Hardware Cursor Map.
+          There are either 2 128byte (32x32bit) or 2 512 byte (64x64bit) maps
+          depending on REG0A bit 2. The first is the cursor image and the
+          second is the cursor shape.
+          To update the cursor map, write the start address to REG00and start
+          writing to this register. The index will increment for each byte.
+
+REG0C W(R/W):  Hardware Cursor X-position
+bit 0-11  The X-position of the rightmost pixel of the hardware cursor
+
+REG0E  W(R/W):  Hardware Cursor Y-position
+bit 0-11  The Y-position of the lower scanline of the hardware cursor
+
+
+
+
+Chrontel CH8391 and CH8398:
+REG04 (R/W):  Clock RAM Write Address
+bit  0-?  Selects the register that is writable at REG05. The first write
+          accesses the low byte of the register and the second the high byte.
+Note: Reading this register 4 times will cause the next access of this
+      register to go to the "Hidden Clock" register.
+
+REG04 (R/W):  Clock Select Register
+bit  0-3  Selects the Video Clock.
+     4-6  Selects the Memory Clock
+       7  Frequency hold. If set the video and memory clock selects in bits
+           0-6 are ORed with the actual inputs from the clock select pins
+Note: This register is accessed6 by reading REG04 4 timers first.
+
+REG05 (R/W):  Clock RAM Data Register
+Note: each indexed register addressed here is 16bit wide and thus must be
+      read/written as two bytes, low byte first.
+
+REG05 index 00h-0Fh W(R/W):  Video Clock Select 0-15
+bit  0-7  N. Numerator. Effective value (n) is N+8. The following N values
+           may give unstable output: 0-7, 10-15, 19-23, 28-31, 37-39, 46-47
+           and 55.
+    8-13  M. Denominator. Effective value (m) is M+2. It is recommended to
+           use N<11 for best clock performance
+   14-15  K. Clock Divider. Effective divider (k) is: 0: 1, 1: 2, 2: 4, 3: 8
+The resulting clock is: ref*n/(m*k) where ref is the reference clock, usually
+ 14.31818MHz and n,m and k are the effective (as opposed to coded) factors
+Note: The CH8398 apparently has Video Clock 0 hardcoded as 25.175MHz and
+      Video Clock 1 hardcoded as 28.322. The CH8391 does not.
+
+REG05 index 10h-17h W(R/W):  Memory Clock Select 0-7
+Probably same coding as the Video Clocks.
+
+REG06 (R/W):  Control Register (CH8391)
+bit    0  Power Down if set
+       1  If set the DAC and palette registers are 8bit wide (256 colors of
+           16Mcolors), if clear 6bit (256 colors of 256K colors)
+     5-7  Color mode. 0: Palette, 5: 15bit, 6: 16bit, 7: 24bit
+Note: This register can also be accessed by reading 3C6h 4 times in a row.
+      The 4th read will return the chip ID (B3h for the CH8391) and the 5th
+      read or write will access this register ("1r/w" type Cmd register).
+
+REG06 (R/W):  Control Register (CH8398)
+bit    0  Power Down if set
+       2  Always set ??
+     4-7  Color mode. 0: Palette, 1: 15bit, 3: 16bit, 5: 24bit, 6: 16bit,
+           7: 24bit, 11: 24bit, 12: 15bit
+Note: This register can also be accessed by reading 3C6h 4 times in a row.
+      The 4th read will return the chip ID (C0h for the CH8398) and the 5th
+      read or write will access this register ("1r/w" type Cmd register).
+
+REG07 (R/W):  Clock RAM Read Address
+bit  0-?  Selects the register that is readable at REG05. The first read
+          accesses the low byte of the register and the second the high byte.
+
+
+
+
+Cirrus Logic 542x/3x internal DAC.
+ - How close is this to the Cirrus Logic CL-GD5200 & Acumos ADAC1 ?
+REG02 (R/W):  Hidden DAC Register
+bit  0-3  Extended Mode Select. If bit 6 and 7 are both set this field
+          selects the DAC mode:
+              0:  5-5-5 15bit Sierra HiColor
+              1:  5-6-5 16bit "XGA" HiColor
+              5:  (5422+) 8-8-8 24bit TrueColor. This mode also exists on the
+                    5420 rev1, but is not documented.
+            6/7:  (5428+) DAC Power-down
+              8:  (5428+) 8bit Greyscale.
+              9:  (5428+) 3-3-2 8bit RGB
+       4  32K Color Control. If set bit 15 (MSB) of a 15bit pixel selects
+          whether the pixel is HiColor(bit 15 = 0) or palette data(bit 15 = 1,
+          bit 0-7 is the palette index). This bit only has effect in 5-5-5
+          15bit modes.
+       5  Clocking Mode. If set Clocking Mode 2 will be selected and data will
+          only be latched on the rising edge of DCLK, if clear Clocking Mode 1
+          will be selected and data will be latched on both the rising edge
+          (low byte) and falling edge (high byte) of DCLK. This bit only has
+          effect in 15/16 bit modes as all other modes will use Clocking Mode
+          2. Clocking Mode 1 should only be used for externally supplied DCLK
+          and pixel data.
+       6  Enable ALL Extended Modes. If bit 7 is set and this bit is clear the
+          DAC is in 5-5-5 15bit Sierra HiColor mode, if both bit 7 and this
+          bit are set bits 0-3 determines the DAC mode.
+       7  Enable 5-5-5 Mode. If set the DAC is in an advanced mode, depending
+          on the other bits in this register, if clear the DAC is in VGA
+          compatible palette mode.
+Note: This register is accessed by reading REG02 four times to unlock this
+      register, then the next read or write of REG02 will access this register.
+      After reading or writing this register the register is locked and this
+      register can only be accessed be redoing the 4 reads of REG02 etc. Any
+      access to REG00,REG01,REG03 will also lock this register. The 5428 is the
+      exception where reads of this register will NOT lock it.
+Note: When REG02 is 0FFh the access to this register described above does
+x      not always work.
+Note: This register does not exist on the 5401/5402 and the 5420 rev A.
+
+
+
+
+IBM RGB514, RGB524, RGB525, RGB528 Truecolor DAC w/PLL:
+REG04 W(R/W):  Index
+bit  0-?  Selects the indexed register that will be accessed by the next read
+          or write of REG06. If REG07 bit 0 is set this index is
+          autoincremented by each access of REG06.
+
+REG06 index 00h (R):  Rev
+bit  0-7  Revision. F0h for the RGB524, ? for the RGB514, RGB525,RGB528
+
+REG06 index 01h (R):  Id
+bit  0-7  Chip ID. 2 for the RGB524, ? for the RGB514,RGB525,RGB528
+
+REG06 index 02h (R/W):  Misc Clock
+bit    0  Set for internal (PLL) clock ??
+       1  Set for double clock
+
+REG06 index 03h (R/W):  Sync
+REG06 index 04h (R/W):  Hsync Pos
+bit  0-3  Hsync Position ?
+
+REG06 index 05h (R/W):  Power Management
+REG06 index 06h (R/W):  DAC Options
+bit    1  Fast slew if set ?
+       3  Sync on Green if set
+
+REG06 index 07h (R/W):  Palette Control
+REG06 index 08h (R/W):  System Clock                             (Not RGB525?)
+REG06 index 0Ah (R/W):  Pixel Format
+bit  0-2  Pixel format. 3: 8bpp, 4: 15/16bpp, 6: 32bpp
+
+REG06 index 0Bh (R/W):  8bpp
+REG06 index 0Ch (R/W):  16bpp
+bit    1  Set for 16bpp (5:6:5), clear for 15bpp (5:5:5)
+
+REG06 index 0Dh (R/W):  24bpp
+REG06 index 0Eh (R/W):  32bpp
+REG06 index 10h (R/W):  PLL Control 1
+bit    0  Set to use 8 internal clocks with separate numerators, clear to
+          use 16 internal clocks with a common numerator (index 14h).
+     1-2  Set to 1 ??
+
+REG06 index 11h (R/W):  PLL Control 2
+bit  0-3  Selects the PLL clock used (0-7 if index 10h bit 0 set, 0-15 if it
+          is clear).
+
+REG06 index 14h (R/W):  PLL Ref Div Fix
+bit  0-4  N. Numerator. Guess 0 not valid. Used for f0-f15 if index 10h bit 0
+          is clear.
+
+REG06 index 15h W(R/W):  Sysclk Ref/VCO Div                       (Not RGB525)
+bit  0-4  N. Numerator. Guess 0 not valid
+
+REG06 index 16h (R/W):  Sysclk VCO Div                            (Not RGB525)
+bit  0-5  M. Multiplier. 65-128, Stored as 0-63.
+     6-7  DF. Divider. 0: /8, 1: /4, 2: /2, 1: /1. (Div=1,2,4,8).
+Note: Memory Clock. The effective clock is: Ref*(M+65)/(N*Div), where Ref is
+      the reference clock, typ 14.31828MHz and N the numerator from index 15h
+
+REG06 index 20h-2Fh (R/W):  PLL Clock 0-15 (f0-f15)
+bit  0-5  M. Multiplier. 65-128, Stored as 0-63.
+     6-7  DF. Divider. 0: /8, 1: /4, 2: /2, 1: /1. (Div=1,2,4,8).
+Note: Only active if index 10h bit 0 is clear. The effective clock is:
+      Ref*(M+65)/(N*Div), where Ref is the reference clock, typ 14.31828MHz
+      and N is the Numerator from index 14h.
+
+REG06 index 20h-2Eh W(R/W):  PLL Clock 0-7 (m0/n0..)
+bit  0-5  M. Multiplier. 65-128, Stored as 0-63.
+     6-7  DF. Divider. 0: /8, 1: /4, 2: /2, 1: /1. (Div=1,2,4,8).
+    8-12  N. Numerator. Guess 0 not valid
+Note: Only active if index 10h bit 0 is set. The effective clock is:
+      Ref*(M+65)/(N*Div), where Ref is the reference clock, typ 14.31828MHz
+
+REG06 index 30h (R/W):  "Cursor Control"
+bit  0-1  Cursor type. 0: Disabled, 2: Windows?, 3: X11 cursor
+       2  Set for 64x64 cursor, clear for 32x32 cursor
+       3
+       5  Set for ??
+
+REG06 index 31h W(R/W):  "Cursor X position"
+bit  0-?  The horizontal position of the hardware cursor
+
+REG06 index 33h W(R/W):  "Cursor Y position"
+bit  0-?  The vertical position of the hardware cursor
+
+REG06 index 35h (R/W):  Cursor Hot-Spot X
+
+REG06 index 36h (R/W):  Cursor Hot-Spot Y
+
+REG06 index 40h (R/W):  Cursor Color1 Red
+bit  0-7  Red component of the Cursor Color1.
+
+REG06 index 41h (R/W):  Cursor Color1 Green
+bit  0-7  Green component of the Cursor Color1.
+
+REG06 index 42h (R/W):  Cursor Color1 Blue
+bit  0-7  Blue component of the Cursor Color1.
+
+REG06 index 43h (R/W):  Cursor Color2 Red
+bit  0-7  Red component of the Cursor Color2.
+
+REG06 index 44h (R/W):  Cursor Color2 Green
+bit  0-7  Green component of the Cursor Color2.
+
+REG06 index 45h (R/W):  Cursor Color2 Blue
+bit  0-7  Blue component of the Cursor Color2.
+
+REG06 index 46h (R/W):  Cursor Color3 Red
+bit  0-7  Red component of the Cursor Color3.
+
+REG06 index 47h (R/W):  Cursor Color3 Green
+bit  0-7  Green component of the Cursor Color3.
+
+REG06 index 48h (R/W):  Cursor Color3 Blue
+bit  0-7  Blue component of the Cursor Color3.
+
+REG06 index 60h (R/W):  Border Color Red
+bit  0-7  Red component of the Border Color.
+
+REG06 index 61h (R/W):  Border Color Green
+bit  0-7  Green component of the Border Color.
+
+REG06 index 62h (R/W):  Border Color Blue
+bit  0-7  Blue component of the Border Color.
+
+REG06 index 70h (R/W):  Miscellaneous 1
+bit    6
+
+REG06 index 71h (R/W):  Miscellaneous 2
+bit    0
+       2  If set DACs & LUTs are 8bit wide, if clear only 6bits wide
+
+REG06 index 72h (R/W):  Miscellaneous 3
+REG06 index 73h (R/W):  Miscellaneous 4                           (Not RGB525)
+REG06 index 82h (R/W):  DAC Sense
+REG06 index 84h (R/W):  Misc Red
+REG06 index 86h (R/W):  Misc Green
+REG06 index 88h (R/W):  Misc Blue
+REG06 index 8Eh (R/W):  PLL VCO Div In
+REG06 index 8Fh (R/W):  PLL Ref Div In
+REG06 index 90h (R/W):  VRAM Mask 0
+REG06 index 91h (R/W):  VRAM Mask 1
+REG06 index 92h (R/W):  VRAM Mask 2
+REG06 index 93h (R/W):  VRAM Mask 3
+
+REG06 index 100h-4FFh (R/W):  "Cursor Data"
+Note: The cursor map is either a 64x64x2 (1024 bytes) or 32x32x2 (256bytes).
+      The map data is stored with upper lines first, left pixels first. Each
+      byte holds 4 pixels, with lowest pixel in bits 0-1 and highest on 6-7.
+         High bit:  Low bit:    Resulting Screen data:
+             0         0
+             0         1
+             1         0        Screen data
+             1         1
+
+REG07 (R/W):  Index Control
+bit   0  If set the index at REG04 is autoincremented by each access of REG06
+
+
+
+
+ICS 5301:
+REG06 (R/W):  "Hidden DAC register"
+bit 0-1  Power down if set ??
+    2-4  Always 0
+    5-7  Mode. 1,4,5: 15bit, 3,6: 16bit, 2,7: 24bit
+Note: This register can be accessed by reading REG02 4 times, then the next
+      read or write of REG02 will access this register. Any access of REG00,
+      REG01 or REG03 will terminate the access to this register. The register
+      can only be read or written once before the DAC is returned to normal
+      mode (DAC type 4-1r1w).
+
+
+
+
+IC Works W30c498, W30c516 Truecolor DACs:
+REG06 (R/W):  Command Register
+bit 0,2  (?) Clockmode for Mode 2 (2 8bit pixels/VCLK). 0: Clock < 22.5
+            MHz, 1: Clock < 45 MHz, 2: Clock >= 45 MHz
+      1  In palette modes this bit when set selects 8bit DACs, when clear 6bit
+         DACs.
+    4-7  Mode: 0: 8bit 1VCLK/pixel, 1: 15bit 1VCLK/pixel, 2: 8bit (2 pixels/
+          VCLK), 3: 16bit 1VCLK/pixel, 5: 32bit 2VCLKs/pixel, 6: 16bit
+          2VCLKs/pixel, 10: 15bit 2VCLKs/pixel
+Note:  This register can also be accessed at REG02 by reading REG02 four times
+       The fifth read will access of 3C6h will access this register. Only one
+       read or write will be allowed (DAC type 4-1r1w3i), the 6th read returns
+       84h, the 7th returns 98h and the 8th read returns 4Fh (at least for the
+       w30c516).
+
+
+
+
+MUSIC MU9c1880 and Diamond SS24 Truecolor DACs:
+REG06 (R/W):  Command Register
+bit 0,6  Red  Byte Position Shift. In 24bit mode delays the fetching of the
+         first pixel of each scanline by 1 or 2 bytes to synchronize with the
+         start of the first pixel.
+           0: no delay, 1: delay 1 byte, 2: delay 2 bytes
+  1-3,5  Selects the Hi- or Truecolor mode. 8: 15bit (5-5-5) HiColor,
+           0Bh: 16bit (5-6-5) HiColor, 7: 24bit Truecolor (Red byte first).
+      4  Pixel Mode Switch. In 15bit mode when this bit is set, the most
+         significant bit of each 16bit pixel whether that pixel should be
+         displayed as HiColor (bit 15=0) or Pseudo Color (bit 15=1).
+         If this bit clear all pixels are displayed as HiColor
+         This bit should be clear in 16bit mode and set in 24bit mode.
+      7  If clear the DAC is in Pseudo Color mode, all other bits in this
+         register are ignored, if set it is in a Hi- or Truecolor mode (15,16
+         or 24 bits/pixel).
+Note:  This register can also be accessed at REG02 by reading REG02 four times,
+       The fifth read will return 8Eh (the ID for the MU9c1880/SS24) and then
+       the next read or write of 3C6h will access this register. Only one read
+       or write will be allowed (DAC type 5i-1r1w).
+
+
+
+
+MUSIC MU9c4870 High Color(?) DAC
+MUSIC MU9c4910 True Color DAC.
+MUSIC MU9c9910 True Color DAC & Clock Generator.
+REG04 (R/W):  PLL Write Index Register                             (9910 only)
+bit 0-3  Selects the index register which will be accessed by the next write
+         to REG05.
+
+REG05 (R/W):  PLL Data Register                                    (9910 only)
+The PLL registers accessed at this register are indexed via REG04 (writes) and
+REG07 (reads). All (?) are two byte registers which are accessed via two reads
+or writes (low byte first) each of the indexes have an internal flip-flop to
+track low/high byte. Each read of REG05 will increment the read index (with
+the flip-flop incremented first). Writes increment the write index (REG04)
+similarly.
+
+REG05 index 00h - 07h W(R/W):  f0-f7 PLL Parameters
+bit  0-6  M. Numerator.
+    8-11  N1. Quotient. Prescales REF for the PLL.
+   12-13  N2. Clock divider. Divides the output clock by: 0: /1, 1: /2,
+            2: /4, 3: /8
+Resultant clock is: REF*(M+1)/((N1+1)*(2^N2)), where REF is the reference
+clock, typically 14.31818MHz.
+
+REG06 (R/W):  Command Register
+bit   0  Powers down the DAC if set
+    5-7  Mode. 5: 15bit, 6: 16bit, 7: 24bit
+Note: This register can be accessed by reading REG02 3 times, then the fourth
+      read will return the device ID and then the next read or write of REG02
+      will access this register. Any access of REG00, REG01 or REG03 or writes
+      to REG02 will terminate the access to this register, however reading of
+      REG02 will not (DAC type 4i-1wNr).
+      The MU9c9910 has ID 44h, the MU9c4910 has ID 82h, the MU9c4870 ??
+
+REG07 (R/W):  PLL Read Index Register                              (9910 only)
+bit 0-3  Selects the index register which will be accessed by the next read
+         to REG05.
+
+
+
+
+MUSIC MU9c9750 Low Power SYNDAC:
+REG04 (R/W):  PLL Write Address Register
+bit 0-3  Selects the index register which will be accessed by the next write
+         to REG05.
+
+REG05 (R/W):  PLL Parameters
+The PLL registers accessed at this register are indexed via REG04 (writes) and
+REG07 (reads). As all but index 0Eh are two byte registers which are accessed
+via two reads or writes (low byte first) each of the indexes have an internal
+flip-flop to track low/high byte. Each read of REG05 will increment the read
+index (with the flip-flop incremented first). Writes increment the write
+index (REG04) similarly.
+
+REG05 index 00h - 07h W(R/W):  CLK0 f0-f7 PLL Parameters
+bit  0-6  M. Numerator.
+    8-11  N1. Quotient. Prescales REF for the PLL.
+   12-13  N2. Clock divider. Divides the output clock by: 0: /1, 1: /2,
+            2: /4, 3: /8
+   14-15  PLL Mode Select. 0: Normal PLL mode - the output frequency is
+          calculated as: f=REF*(M+1)/((N1+1)*(2^N2)), 1: High-resolution
+          Low-frequency mode - same as PLL mode, but the output clock is
+          divided by 1024, 2: OFF - The output is set HIGH, 3: Low-resolution
+          Low-frequency mode - Output clock is: f=REF/((M+1)*(2^N2))
+REF is the reference clock, typically 14.31818MHz. For best results the
+following constraints should be observed: REF should be in the 5MHz - 32Mhz
+range. REF/(N1+1) should be in the 2MHz - 16MHz range (for REF=14.31818MHz
+ N1 should be in the range 1-6) and REF*(M+1)/(N1+1) should be in the 40MHz
+ to 80MHz range.
+
+REG05 index 08h W(R/W):  CLK0 fL0 PLL Parameters
+Defines the CLK0 output when in LCD mode. Same format as index 0-7
+
+REG05 index 09h W(R/W):  CLK0 fD0 PLL Parameters
+Defines the CLK0 output when in Dormant mode. Same format as index 0-7
+
+REG05 index 0Ah W(R/W):  CLK1 fA PLL Parameters
+Defines the CLK1 output when in CRT mode and bit 4 of the PLL Control Register
+ (index 0Eh) is clear. Same format as index 0-7
+
+REG05 index 0Bh W(R/W):  CLK1 fB PLL Parameters
+Defines the CLK1 output when in CRT mode and bit 4 of the PLL Control Register
+ (index 0Eh) is set. Same format as index 0-7
+
+REG05 index 0Ch W(R/W):  CLK1 fL1 PLL Parameters
+Defines the CLK1 output when in LCD mode. Same format as index 0-7
+
+REG05 index 0Dh W(R/W):  CLK1 fD1 PLL Parameters
+Defines the CLK1 output when in Dormant mode. Same format as index 0-7
+
+REG05 index 0Eh (R/W):  PLL Control Register
+bit  0-2  CLK0 Select. Selects the CLK0 output in CRT mode (f0 - f7).
+       4  CLK1 Select. Selects the CLK1 output in CRT mode. 0: fA, 1: fB
+       5  CLK0 External Select Enable. If clear the CLK0 definition (f0-f7)
+          is selected by the CS0-CS2 inputs, if set it is selected by bits
+           0-2 of this register
+       6  CLK0 Master Powerdown. If set the CLK0 PLL is powered down and the
+          output is set HIGH.
+       7  CLK1 Master Powerdown. If set the CLK1 PLL is powered down and the
+          output is set HIGH.
+
+REG06 (R/W):  Command Register
+bit   0  LCD mode enable. If set the DAC goes into LCD mode where video flow
+         through the DACs is stopped and the palette RAM is only accessed
+         to service uP read/writes. The clocks CLK0,CLK1 are forced to the
+         state defined in fL0/fL1 regardless of the state of the PLL Control
+         register. The internal state of registers and palette RAM is
+         maintained. See note
+      6  Dormant Mode enable. If set the DAC goes into Dormant mode where
+         the video flow though the DACs and the uP interface is stopped.
+         The clocks CLK0,CLK1 are forced to the state defined in fD0/fD1
+         regardless of the state of the PLL Control register. The internal
+         state of registers and palette RAM is maintained. See note
+Note: The CRT, LCD and Dormant modes are selected by a combination of the
+      bits in this register and the PD0,PD1 input pins (x is don't care):
+ PD1:  PD0:  Bit 6:  Bit 0:   Mode:  DAC:  RAM Access:   CLK0:    CLK1:
+  1     0      0       0       CRT    On    Video&uP     f0-f7    fA,fB
+  x     1      0       0       LCD    Off      uP         fL0      fL1
+  1     0      0       1       LCD    Off      uP         fL0      fL1
+  0     0      x       x     Dormant  Off     None        fD0      fD1
+  x     x      1       x     Dormant  Off     None        fD0      fD1
+Setting PD1=1 and PD0=0 allows full control from this register
+
+REG07 (R/W):  PLL Read Address Register
+bit  0-3  Selects the index register which will be accessed by the next read
+          to REG05.
+
+
+
+
+Oak OTI-66HC HiColor DAC:
+REG06 (R/W):  "Hidden" Command Register
+bit   0  If set the DAC powers down
+    5-7  DAC mode. 5: 15bit, 6: 16bit
+Note: This register can be accessed by reading REG02 4 times, then the next
+      read or write of REG02 will access this register. Any access of REG00,
+      REG01 or REG03 or writes to REG02 will terminate the access to this
+      register, however reading of REG02 will not (DAC type 4-1wNr).
+
+
+
+
+S3 86c708 (GenDac aka ICS5342) and 86c716 (SDAC aka ICS5300).
+
+REG02 (R):  "Hidden DAC" register                                     (86c716)
+Bit  4-7  7 for the 86c716.
+Note: This is a special register overlaying the PEL register activated by an
+      internal counter. Each access to 3C7h-3C9h resets the counter and each
+      access to 3C6h increments it. When the counter reaches 4 this register
+      is returned. The fifth read returns another register
+
+REG04 (R/W):  PLL Write Register
+bit  0-7  Controls the indexed register written at REG05. Each indexed
+          register holds two bytes at the same index. Autoincremented after
+          every two writes of REG05.
+
+REG05 index 00h W(R/W):  f0 PLL M & N1/M2 divider
+bit  0-6  M.  Quotient. Stored as 1-127, actual value 3-129
+    8-12  N1. Frequency divider. Stored as 1-31, actual value 3-33
+   13-15  N2. Divides the frequency. 0: /1, 1: /2, 2: /4, 3: /8
+Note: Defines the frequency generate when clock 0 is selected
+Note: See index 02h for details
+      Possibly hardwired to 25.175MHz
+
+REG05 index 01h W(R/W):  f1 PLL M & N1/M2 divider
+bit  0-6  M.  Quotient. Stored as 1-127, actual value 3-129
+    8-12  N1. Frequency divider. Stored as 1-31, actual value 3-33
+   13-15  N2. Divides the frequency. 0: /1, 1: /2, 2: /4, 3: /8
+Note: Defines the frequency generate when clock 1 is selected
+Note: See index 02h for details
+      Possibly hardwired to 28.322MHz
+
+REG05 index 02h W(R/W):  f2 PLL M & N1/M2 divider
+bit  0-6  M.  Quotient. Stored as 1-127, actual value 3-129
+    8-12  N1. Frequency divider. Stored as 1-31, actual value 3-33
+   13-15  N2. Divides the frequency. 0: /1, 1: /2, 2: /4, 3: /8
+Note: Defines the frequency generate when clock 2 is selected
+Note: Frequency is (M/N1)/(1 << N2) *base frequency.M and N1 are the actual
+      values, not the stored ones. Typically the base frequency is 14.318 MHz.
+
+REG05 index 03h W(R/W):  f3 PLL M & N1/M2 divider
+bit  0-6  M.  Quotient. Stored as 1-127, actual value 3-129
+    8-12  N1. Frequency divider. Stored as 1-31, actual value 3-33
+   13-15  N2. Divides the frequency. 0: /1, 1: /2, 2: /4, 3: /8
+Note: Defines the frequency generate when clock 3 is selected
+Note: See index 02h for details
+
+REG05 index 0Ah W(R/W):  Memory Clock
+bit  0-6  M.  Quotient. Stored as 1-127, actual value 3-129
+    8-12  N1. Frequency divider. Stored as 1-31, actual value 3-33
+   13-15  N2. Divides the frequency. 0: /1, 1: /2, 2: /4, 3: /8
+Note: Defines the frequency generate for the memory clock
+Note: See index 02h for details
+
+REG05 index 0Eh W(R/W):  PLL Control
+
+
+REG06 (R/W):  Enhanced Command Register
+bit 4-7  Mode: 0: Palette (1 pixel/VCLK), 1: Palette (2 pixels/VCLK), 2: 15bit
+          (2 VCLKs/pixel), 3: 15bit (1 VCLK/pixel), 4: 24bit (3 VCLKs/pixel)
+          - GenDAC only?, 5: 16bit (1 VCLK/pixel), 6: 16bit (2 VCLKs/pixel),
+          7: 32bit (2 VCLKs/pixel), 0Eh: 24bit (3 VCLKs/pixel)
+
+REG07 (R/W):  PLL Read Register
+bit  0-7  Controls the indexed register read from REG05. Each indexed
+          register holds two bytes at the same index. Autoincremented after
+          every two reads of REG05.
+
+
+
+
+
+SGS-Thompson STG1700/2/3 Truecolor DACs:
+All the STG DACs have 16bit pixel data path, but the 1700 can not use the
+packed 24bit mode where 2 pixels are transferred in 3 pixel clocks.
+The 1703 has built-in clock generator.
+
+REG04 (R/W):  Index Low
+bit  0-7  Index for the register accessible via REG05. The high byte (always
+           0) is in REG07.
+
+REG05 (R/W):  Indexed Register
+There are a series of indexed registers in the STG DACs. If REG06 bit 4 is set
+they are accessed by the two index bytes to REG02 and then reading or writing
+the indexed registers at REG02 (index will autoincrement). If REG06 bit 4 is
+clear the index is written to REG04 & REG07 and the indexed register are read
+or written at REG05.
+
+REG05 index 00h (R):  Company ID
+bit 0-7  44h for SGS-Thompson, 97h for ??
+
+REG05 index 01h (R):  Device ID
+bit 0-7  00h for STG1700, 02h for STG1702, 03h for STG1703
+
+REG05 index 02h (R/W?):
+bit 0-7  A1h ??
+
+REG05 index 03h (R/W?):  Primary Pixel Mode
+bit 0-7  Mode (this register only active if REG06 bit 3 set):
+          2: 15bit 1VCLK per pixel
+          3: 16bit 1VCLK per pixel
+          4: 24bit 2VCLKs per pixel (2x 16bit -> 1x 24bit)
+          5:  8bit 1/2 VCLKs per pixel (ie. 16bit -> 2x 8bit)
+          9: (not 1700) 24bit 3/2 VCLKs per pixel (3x 16bit -> 2x 24bit)
+
+REG05 index 04h (R/W?):  Secondary Pixel Mode
+bit 0-7  same as index 3 ??
+
+REG05 index 05h (R/W?):  PLL Control
+bit 0-7  02h - for double clocking (16bit) ???
+
+REG05 index 06h (R/W?):
+bit 0-7  00h ??
+
+REG05 index 07h (R/W?):
+bit 0-7  88h ??
+
+REG05 index 20h W(R/W):
+bit  0-7  B. Quotient
+    8-12  N1. Frequency divider.
+   13-15  Divider (D). 0: /1, 1: /2, 2: /4, 3: /8
+The effective clock is: Ref*D*(B+2)/(N1+2). Ref is the reference clock,
+typically 14.31818MHz
+
+REG06 (R/W):  Pixel Command Register
+bit   0  Power down the DAC if set
+      1  Set to get 8bit DACs in 256color mode, clear to get normal 6bit DACs
+      2  Controls intensity ??
+      3  If set the DAC is controlled by the indexed registers below.
+      4  When set puts the dac into indexed mode, now write the index (2
+         bytes) to this register, then each access to this register will read
+         or write the particular indexed register and increment the index.
+         This is the same index as in REG04/REG07.
+    5-7  Selects the Hi/True color mode:  0: Standard (16/256color),
+           5: 15bit(32K), 6: 16bit(64K), 7: 24bit(16m)
+Note: This register can be accessed by reading REG02 4 times, then the next
+      read or write of REG02 will access this register. Any access of REG00,
+      REG01 or REG03 will terminate the access to this register, The register
+      can only be read or written once per unlock sequence (DAC type 4-1w1r).
+
+REG07 (R/W):  Index High
+bit  0-?  High byte of the index in REG04. 0 for all current registers.
+
+
+
+Sierra SC15021,25/6 Truecolor DACs:
+The SC15021 supports 16bit pixel data path.
+
+REG04 (R/W):  Overlay Write Address
+
+REG05 (R/W):  Overlay Data
+
+REG06 (R/W):  Command Register
+bit 1-2  EXT mode select ?
+      3  Gamma Correction enabled if set?
+      4  If set 3C7h is the index port and 3C8h the data port for an extra
+         register, also this register is then accessible directly at 3C6h.
+  0,5-7  Mode:
+           00h  Palette modes
+           04h  32bit RGBx (red first) "double clocked" -  pixel data on both
+                rising and falling edge of the dotclock
+           05h  32bit BGRx (blue first) "double clocked"
+           06h  24bit RGB/32bit RGBx (red first)
+           07h  24bit BGR/32bit BGRx (blue first)
+           08h  15bit (32K colors) "double clocked"
+           09h  15bit (32K colors) "EXT" "double clocked"
+           0Ah  15bit (32K colors)
+           0Bh  15bit (32K colors) "EXT"
+           0Ch  16bit (64K colors) "double clocked"
+           0Eh  16bit (64K colors)
+Note: This register can be accessed by reading REG02 4 times, then the next
+      read or write of REG02 will access this register. Any access of REG00,
+      REG01 or REG03 or writes to REG02 will terminate the access to this
+      register, however reading of REG02 will not (DAC type 4-1wNr).
+
+REG06 index 8 (R/W):  Auxiliary Control
+bit    0  DAC and palette register width in palette modes.
+          Set for 8bit and clear for 6 bit
+       1  PED 75 IRE.
+       2  Power Down.
+
+REG06 index 9 (R):  ID1
+bit  0-7  53h ('S')
+
+REG06 index 0Ah (R):  ID2
+bit  0-7  Version code. 0/36h/3Ah
+
+REG06 index 0Bh (R):  ID3
+bit  0-7  B1h for the SC15025/26, ACh for the SC15021
+
+REG06 index 0Ch (R):  ID4
+bit  0-7  41h
+
+REG06 index 0Dh (R/W):  Pixel Mask Low
+bit  0-7  ANDed with the pixel data, Low byte. Should normally be FFh.
+
+REG06 index 0Eh (R/W):  Pixel Mask Middle
+bit  0-7  ANDed with the pixel data, Middle byte. Should normally be FFh.
+
+REG06 index 0Fh (R/W):  Pixel Mask High
+bit  0-7  ANDed with the pixel data, High byte. Should normally be FFh.
+
+REG06 index 10h (R/W):  Pixel Repack
+bit    0  (15025/6) Set for 4x 8bit -> 1x 24bit, clear for 1x 8bit -> 8bit,
+            2x 8bit -> 1x 16bit or 3x 8biot -> 1x 24bit
+     0-3  (15021) Packaging: 2: 8bit -> 2x4bit, 4: 16bit -> 2x8bit,
+             5: 3x16bit -> 2x24bit (2/3 clock), 6: 2x16bit -> 24bit (1/2
+              clock), 8: 16bit -> 16bit (alternate?), 0: all others
+
+REG06 index 11h (R/W):  Cursor                                         (15021)
+bit  0-2  Cursor Delay. 0: None, 4: +1, 5: +2, 6: -1, 7: -2
+     3-4  Cursor type. 0: disabled, 1: 3 colors, 2: 2 color MS-Windows style,
+             3: 2 color X11 style
+       7  Cursor Polarity
+
+REG06 index 12h (R/W):  Secondary Control                              (15021)
+bit  0-1  Mix control: 1: 8 -> 16 MixA or 8 -> 15 MixB, 2: 8 -> 16 MixB or
+           8 -> 15 MixA, 0 for all others.
+
+REG07 (R/W):  Overlay Read Address
+
+
+
+
+
+Trident TKD8001 24bit DAC (also 9200CXr,9400CXi,9420DGi internal DAC):
+
+REG06 (R/W):  Command Register
+      0  (not 9200) Power down DAC if set ?
+      1  (not 9400) In mode 0 this bit when set selects 8bit DACs, when clear
+          6bit DACs. Should be set in 24bit mode, clear in 15/16 bit modes ?
+    5-7  Mode:  0: Palette (16/256), 5: 15bit (32k), 7: 16bit (64k),
+          6: 24bit (16m colors) bit 2 should be set in this mode
+Note:  This register can also be accessed at REG02 by reading REG02 four
+       times. Then the command register can be read or written at REG02.
+       This access will be terminated by any access to REG00, REG01 or REG03
+       or after a write to the command register (DAC type 4-Nr1w).
+
+
+
+
+Trident 9440AGi internal 24bit DAC:
+
+REG06 (R/W):  Command Register
+      2  If set in the 15/16/24 bit modes pixels with the most significant
+         bit set appears to be displayed as if in palette mode ?
+    4-7  Mode:  1: 15bit (32k), 3: 16bit (64k), 0Dh: 24bit (16m colors)
+         All other values appears to default to palette mode
+Note:  This register can also be accessed at REG02 by reading REG02 four
+       times. Then the command register can be read or written at REG02.
+       This access will be terminated by any access to REG00, REG01 or REG03
+       or after a write to the command register (DAC type 4-Nr1w).
+
+
+
+
+TI TLC34058, Brooktree Bt458 DACs
+These DACs are intended for high bandwidth systems and are not VGA compatible.
+They use 4 or 5 separate pixel ports in parallel for higher bandwidth
+
+REG04 (R/W)  Index Register.
+bit  0-7  Index for accesses through 3C6h, 3C7h and 3C9h. For 3C7h and 3C9h
+          there is also an internal counter for the (Red, Green and Blue)
+          cycle. This counter is reset when this register is written.
+          Each access to 3C7h or 3C9h will increment first the RGB counter and
+          then this register.
+
+REG05 (R/W)  Palette Data
+bit  0-7  Palette data port. 3C8h selects the entry in the palette RAM. Each
+          read or write of this register increments index, first through the
+          Red, Green & Blue and then increments register 3C8h
+
+REG06 (R/W)  Control Data.
+bit  0-7  Data port for the Control registers. 3C8h is the index. Unlike 3C7h
+          and 3C9h the index in 3C8h is not increased by reads and writes of
+          this register
+
+REG06 index 4 (R/W):  Read Mask Register
+bit  0-7  The pixel data is ANDed with this byte before being passed to the
+          palette RAM. This is similar to 3C6h in standard VGA systems.
+
+REG06 index 5 (R/W):  Blink Mask Register
+bit  0-7  In the blink off period the pixel data is ANDed with the inverse of
+          this register, Ie. the '0' bits in this register will protect the
+          corresponding bits of the pixel data from blinking, while '1' bits
+          will force the corresponding pixel data bits low during the blink
+          off period.
+
+REG06 index 6 (R/W):  Command Register
+bit    0  OL0 Display Enable. If clear the overlay pin 0 (OL0) is forced to 0
+       1  OL1 Display Enable. If clear the overlay pin 1 (OL1) is forced to 0
+       2  OL0 Blink Enable. If set (and bit 0 set) the overlay pin 0 toggles
+          between 0 and the actual value at the blink rate
+       3  OL1 Blink Enable. If set (and bit 1 set) the overlay pin 1 toggles
+          between 0 and the actual value at the blink rate
+     4-5  Blink Rate Select. Selects the blink rate in vertical periods:
+            0: 16on/48off, 1: 16on/16off, 2: 32on/32off, 3: 64on/64off
+       6  RAM Enable. If the overlay select pins (OL0-1) are 0 this bit
+          selects the output. Set for palette RAM data, clear for overlay
+          register 0.
+       7  Multiplex Select. Set for 5:1 multiplexing, clear for 4:1
+          multiplexing - pixel port E is ignored and should be tied low
+
+REG06 index 7 (R/W):  Test Register
+bit  0-3  Selects the data to be returned in bit 4-7 when reading this
+          register. Selects upper or lower 4 bits of one of the 3 DAC inputs:
+              1: return 4MSB of Red         9: return 4LSB of Red
+              2: return 4MSB of Green      10: return 4LSB of Green
+              4: return 4MSB of Blue       12: return 4LSB of Blue
+     4-7  (R) Data selected by bits 0-3
+
+REG07 (R/W)  Overlay Data
+bit  0-7  Overlay data port. 3C8h selects the entry in the overlay RAM (0-3).
+          Each read or write of this register increments index, first through
+          the Red, Green & Blue and then increments register 3C8h
+
+
+
+
+TI TLC34075, ATI68875 True color DACs
+This DAC has an 8bit VGA port and a 32bit pixelport (P). The 32bit pixelport
+P can be multiplexed for greater bandwidth. 6 or 8 bit DACs can be controlled
+via the 8/6 pin (low=6bit, high=8bit).
+
+REG08 (R/W):  General Control Register
+bit    0  If set HSYNCOUT is active high, active low if clear
+       1  If set VSYNCOUT is active high, active low if clear
+       2  Enables split shift register transfer (VRAM) if set
+       3  Enables special nibble mode if set
+       4  Pedestal Enable Control. Set for a 7.5 IRE pedestal, clear for a 0
+          IRE pedestal
+       5  Sync Enable Control. If set enables sync on green.
+       7  MUXOUT. If set the MUXOUT output pin is high, low if clear
+Note: bits 2 and 3 can not both be set.
+
+REG09 (R/W):  Input Clock Selection Register
+bit  0-3  Selects the clock source (DOTCLK):
+            0: CLK0, 1: CLK1, 2: CLK2, 3: CLK3 (TTL), 4: /CLK3 (TTL)
+            8: CLK3 and /CLK3 are selected as an ECL clock source
+
+REG0A (R/W):  Output Clock Selection Register
+bit  0-2  Selects SCLK from DOTCLK.
+            0: SCLK=DOTCLK, 1: SCLK=DOTCLK/2, 2: SCLK=DOTCLK/4
+            3: SCLK=DOTCLK/8, 4: SCLK=DOTCLK/16, 5: SCLK=DOTCLK/32
+            6,7: SCLK held at logic low
+     3-5  Selects VCLK from DOTCLK.
+            0: VCLK=DOTCLK, 1: VCLK=DOTCLK/2, 2: VCLK=DOTCLK/4
+            3: VCLK=DOTCLK/8, 4: VCLK=DOTCLK/16, 5: VCLK=DOTCLK/32
+            6,7: VCLK held at logic high
+
+REG0B (R/W):  MUX Control Register
+bit  0-5  Selects bits/pixel, pixel port and multiplexing:
+            0Dh  24bpp from P. Red=P8-15, Green=P16-23, Blue=P24-31
+            10h  1bpp. 4 pixels/DOTCLK from P0-3
+            11h  1bpp. 8 pixels/DOTCLK from P0-7
+            12h  1bpp. 16 pixels/DOTCLK from P0-15
+            13h  1bpp. 32 pixels/DOTCLK from P0-31
+            14h  2bpp. 2 pixels/DOTCLK from P0-3
+            15h  2bpp. 4 pixels/DOTCLK from P0-7
+            16h  2bpp. 8 pixels/DOTCLK from P0-15
+            17h  2bpp. 16 pixels/DOTCLK from P0-31
+            18h  4bpp. 1 pixel/DOTCLK from P0-3
+            19h  4bpp. 2 pixels/DOTCLK from P0-7
+            1Ah  4bpp. 4 pixels/DOTCLK from P0-15
+            1Bh  4bpp. 8 pixels/DOTCLK from P0-31
+            1Ch  8bpp. 1 pixels/DOTCLK from P0-7
+            1Dh  8bpp. 2 pixels/DOTCLK from P0-15
+            1Eh  8bpp. 4 pixels/DOTCLK from P0-31
+            1Fh  4bpp. 4 pixels/DOTCLK from P0-31   (Special Nibble mode)
+                 If the NFLAG input is low the 4 pixels are from P0-3, P8-11,
+                 P16-19, P24-27 if high from P4-7, P12-15, P20-23, P28-31
+            2Dh  8bpp from VGA port
+
+REG0C (R/W):  Palette Page Register
+bit  0-7  For 1,2 and 4 bits/pixel modes the upper bits of this register are
+          used to select 1 of 128, 64 and 16 pages respectively in the
+          palette RAM. The pixel data selects the entry within the page.
+
+REG0E (R/W):  Test Register
+bit  0-2  (W) Test mode. Selects the current test mode. Reading this register
+              will step to the next test (see Next below).
+              Val:  Next:    Description:
+               0      1      Read Color Palette Red value
+               1      2      Read Color Palette Green value
+               2      0      Read Color Palette Blue value
+               3      0      Read Identification code.
+                             Returns 75h for 34075
+               4      5      Read Ones Accumulation Red value
+               5      6      Read Ones Accumulation Green value
+               6      4      Read Ones Accumulation Blue value
+               7      7      Analog Test. Result specified below.
+       3  (R) Analog Test result. Set if the voltage selected by bit 6 (Green)
+               or bit 7 (Red) is larger than the one selected by bit 4 (145mV
+               reference) or bit 5 (Blue), clear if not.
+       4  Select 145mV reference if set. Only applies to Analog test (bit 0-2
+           = 7)
+       5  Select Blue DAC if set. Only applies to Analog test (bit 0-2 = 7)
+       6  Select Green DAC if set. Only applies to Analog test (bit 0-2 = 7)
+       7  Select Red DAC if set. Only applies to Analog test (bit 0-2 = 7)
+
+REG0F (W):  Reset State
+Note: Writing to this register will cause a hardware reset of the DAC.
+
+
+
+
+TI Viewpoint TVP3010,TVP3020,TVP3025,TVP3026 DACs
+Note: The TVP3010, TVP3020 and TVP3025 use 3 address lines to select 8 direct
+      registers (REG00-REG07) while the TVP3026 uses 4 lines to select 16
+      direct registers (REG00-REG0F). The indexed registers (called REG06
+      index XXh) are also handled differently
+
+REG06 (R/W):  Index Register
+bit  0-7  Index port to the indexed registers. First set this register, then
+          read or write REG07
+Note: On the TVP3026 the index is written to REG00 and data is read or written
+      to/from REG0A
+
+REG06 index 00h W(R/W):  Cursor X Position
+bit 0-11  Horizontal position of the cursor
+
+REG06 index 02h W(R/W):  Cursor Y Position
+bit 0-11  Vertical position of the cursor
+
+REG06 index 04h (R/W):  Sprite Origin X
+
+REG06 index 05h (R/W):  Sprite Origin Y
+
+REG06 index 06h (R/W):  Cursor Control
+bit    4  X Window Mode if set
+       6  Sprite Enable if set
+       7  (3025) Planar Access. Set for Bt485 mode, clear for 3020 mode
+
+REG06 index 08h W(R/W):  Cursor RAM Address
+bit 0-15  Index into the cursor RAM on the DAC. Data is read or written at
+          index 0Ah. Each access to index 0Ah will autoincrement this register
+
+REG06 index 0Ah (R/W):  Cursor RAM Data
+bit  0-7  Cursor data. Reading or writing this register will access the
+          location in Cursor RAM specified in index 8 and will increment that
+          index to allow consecutive reads or writes.
+          The cursor is stored as a 64x64x2 bitmap with 4 2bit pixels per byte
+          The two bits are interpreted as:
+          High (odd)  Low (even)    ix 6 bit 4=1   ix 6 bit 4=0
+            bit         bit          X11 mode        "normal"
+             0           0         Transparent     Color 0
+             0           1         Transparent     Color 1
+             1           0           Color 0       Transparent
+             1           1           Color 1       Inverse screen (XOR)
+          Color 0 is the color in index 23h-25h, Color 1 is the color in index
+           26h-28h
+
+REG06 index 0Eh (R/W):  True Color Control                              (3025)
+bit    0  8bit mode?. 0: 16/32bit, 1: 4/8bit
+       1  Non-VGA mode. Set for non-VGA mode, clear for VGA mode
+       2  BTmode. Set for Bt485 mode, clear for TI3020 mode
+
+REG06 index 0Fh (R/W):  VGA Switch Control                              (3025)
+
+REG06 index 10h W(R/W):  Window Start X
+
+REG06 index 12h W(R/A):  Window Stop X
+
+REG06 index 14h W(R/W):  Window Start Y
+
+REG06 index 16h W(R/W):  Window Stop Y
+
+REG06 index 18h (R/W):  MUX Control 1
+bit  0-2  (3020) Direct Color mode.
+            3: Selects 6-6-4 16bit mode (6red-6green-4blue).
+            4: Selects 5-5-5 15bit mode (5red-5green-5blue).
+            5: Selects 5-6-5 16bit mode (5red-6green-5blue).
+            6: Selects 8-8-8 24bit mode (8red-8green-8blue).
+     0-3  (3025) Direct Color mode
+             0Ch: Selects 5-5-5 mode (5red-5green-5blue).
+             0Dh: Selects 5-6-5 mode (5red-6green-5blue).
+             0Eh: Selects 8-8-8 mode (8red-8green-8blue).
+       6  (3025) D/T mode. 0: Selects "D" mode, 1: selects "T" mode.
+       7  Pseudo Color, set for palette modes
+
+REG06 index 19h (R/W):  MUX Control 2
+
+
+REG06 index 1Ah (R/W):  Input Clock Select
+bit    0  (3020) If set selects ICLK1, if clear ICLK0
+     0-2  (3025) Selects the input clock.
+            0: ICLK0, 1: ICLK2, 2: ICLK2, 3: ICLK2_I ?, 4: ICLK2_E ?
+            5: PLL as input clock.
+       4  If set doubles the selected input clock.
+
+REG06 index 1Bh (R/W):  Output Clock Select
+bit  0-1  Multiplex. 0: (R1), 1: 1:2 Mux (1x64 -> 2x 24/32bit) R2, 2: 1:4 Mux
+           (1x64 -> 4x 15/16bit) R4, 3: 1:8 Mux (1x64 -> 8x 8bit) R8
+     3-4  Clock range. 0: <=60MHz (V1), 1: >60MHz & <=120MHz (V2), 2: >120MHz
+           (V4), 3: V8
+       6  S ?
+       7  (3025) NS ?
+Note: Set to 3Eh in VGA passthrough mode
+
+REG06 index 1Ch (R/W):  Palette Page
+
+REG06 index 1Dh (R/W):  General Control
+bit    0  Vertical Sync Polarity. 0: Negative, 1: Positive
+       1  Horizontal Sync Polarity. 0: Negative, 1: Positive
+       5  Sync on Green if set
+
+REG06 index 1Eh (R/W):  Misc Control                                    (3025)
+bit    0  Powerdown
+       1  Dotclock disable
+       2  Internal 6/8 Control. If set selection of 6 or 8 bits DAC mode in
+          palette modes is done by bit 3, if clear from the 6/8 input pin.
+       3  8Bpp. If set selects 8bit DAC and palette registers in palette
+          modes, if clear selects 6bit DAC & registers.
+          This bit only active if bit 2 is set.
+       5  VCLK Polarity.
+       6  LCLK Latch. 0: VCLK
+       7  Loop PLL RCLK.
+
+REG06 index 20h (R/W):  Overscan Color Red
+
+REG06 index 21h (R/W):  Overscan Color Green
+
+REG06 index 22h (R/W):  Overscan Color Blue
+
+REG06 index 23h (R/W):  Cursor Color 0 Red
+bit  0-7  The red component of the cursor background color.
+
+REG06 index 24h (R/W):  Cursor Color 0 Green
+bit  0-7  The green component of the cursor background color.
+
+REG06 index 25h (R/W):  Cursor Color 0 Blue
+bit  0-7  The blue component of the cursor background color.
+
+REG06 index 26h (R/W):  Cursor Color 1 Red
+bit  0-7  The red component of the cursor foreground color.
+
+REG06 index 27h (R/W):  Cursor Color 1 Green
+bit  0-7  The green component of the cursor foreground color.
+
+REG06 index 28h (R/W):  Cursor Color 1 Blue
+bit  0-7  The blue component of the cursor foreground color.
+
+REG06 index 29h (R/W):  Auxillary Control
+bit    0  Window Complement if set
+       3  (3020) Self Clock mode if set
+
+REG06 index 2Ah (R/W):  General IO Control
+bit  0-4
+
+REG06 index 2Bh (R/W):  General IO Data
+
+REG06 index 2Ch (R/W):  PLL Control                                     (3025)
+bit  0-1  Write 0 to reset the internal counter for the PLL data registers
+          Each write to index 2Dh/2Eh/2Fh will increment this field.
+
+REG06 index 2Dh (R/W):  Pixel Clock PLL Data                            (3025)
+bit  0-?  N. Divider (3-28). Stored as 1-26. Could probably be larger ??
+    8-14  M. Divident (3-129). Stored as 1-127
+   16-17  P. Clock multiplier. 0: *8, 1: *3, 2: *2, 3: *1
+      19  PLL Enable. Enables the PLL clock if set
+Note: This register consists of 3 bytes at the same index. Writing 00h to
+      index 2Ch resets the internal counter so that the next access to this
+      index accesses the first byte. Each access autoincrements the internal
+      counter. The clock is calculated as: Ref * P * (M+2)/(N+2)
+
+REG06 index 2Eh (R/W):  MCLK PLL Data                                   (3025)
+bit  0-?  N. Divider (3-28). Stored as 1-26. Could probably be larger ??
+    8-14  M. Divident (3-129). Stored as 1-127
+   16-17  P. Clock multiplier. 0: *8, 1: *3, 2: *2, 3: *1
+      19  PLL Enable. Enables the PLL clock if set
+      23  Set when writing new PLL data ?
+
+REG06 index 2Fh (R/W):  Loop Clock PLL Data                             (3025)
+bit  0-?  N. Divider (3-28). Stored as 1-26. Could probably be larger ??
+    8-14  M. Divident (3-129). Stored as 1-127
+   16-17  P. Clock multiplier. 0: *8, 1: *3, 2: *2, 3: *1
+      19  PLL Enable. Enables the PLL clock if set
+
+REG06 index 30h W(R/W):  Color Key OLVGA
+
+REG06 index 32h W(R/W):  Color Key Red
+
+REG06 index 34h W(R/W):  Color Key Green
+
+REG06 index 36h W(R/W):  Color Key Blue
+
+REG06 index 38h (R/W):  Color Key Control
+
+REG06 index 39h (R/W):  MCLK/DCLK Control                               (3025)
+
+REG06 index 3Ah (R/W):  Sense Test
+
+REG06 index 3Bh (R/W):  Test Data
+
+REG06 index 3Ch W(R/W):  CRC
+
+REG06 index 3Eh (R/W):  CRC Control
+
+REG06 index 3Fh (R):  ID
+bit  0-7  Chip ID. 20h for TVP3020, 25h for TVP3025, 26h for TVP3026
+          Guess: 10h for TVP3010
+
+REG06 index D5h (R/W):  Mode 85 Control                                 (3025)
+
+REG0A (R/W): Data Register (3025)
+
+
+UMC UM70c178 Hi-Color DACs:
+
+REG06 (R/W):  Command Register
+bit 0-4  (R) Always 0
+    5-7  Mode: 5: 15bit, 7: 16bit.
+Note:  This register can also be accessed at REG02 by reading REG02 four
+       times. Then the command register can be read or written at REG02.
+       This access will be terminated by any access to REG00, REG01 or REG03
+       or after write of the command register.  (DAC type 4-Nr1w).
+
+
+
+
+UMC UM70c188 TrueColor DACs:
+
+REG06 (R/W):  Command Register
+bit 0-3  (R) Always 0
+      4  Set in 24bit mode, clear in all other modes
+    5-7  Mode: 5: 15bit, 7: 16bit. Don't care for 24bit
+Note:  This register can also be accessed at REG02 by reading REG02 four
+       times. Then the command register can be read or written at REG02.
+       This access will be terminated by any access to REG00, REG01 or REG03
+       or after a read or write of the command register.  (DAC type 4-1r1w).
+
+
+
+
+
+Forcing HiColor DACs into command mode:
+Note: This works on the Sierra, ATT, Winbond DACs and clones, not on the
+ Brooktree or TI DACs, also the MUSIC DACs will require an extra read of 3C6h.
+
+procedure dactocomm;   {switches DAC to command register}
+var x:word;
+begin
+  x:=inp($3C8);    {clear old state}
+  x:=inp($3C6);
+  x:=inp($3C6);
+  x:=inp($3C6);    {Read $3C6 4 times.}
+  x:=inp($3C6);
+end;
+
+Now reads and writes to $3C6 will access the command register. Depending on
+the DAC type you may have multiple read/writes, one write/multiple reads or
+one read/write of the command register before it switches back to the PEL
+register. Any access to $3C7-$3C9 will switch back to the PEL mask register.
+
+
+Forcing HiColor DACs into normal mode:
+
+procedure dactopel;  {switches DAC back to normal mode}
+var x:word;
+begin
+  x:=inp($3C8);
+end;
+
+
+
+function testdac:string;
+var
+  x,y,z,v,oldcommreg,oldpelreg:word;
+
+type
+  pel=record
+        index,red,green,blue:byte;
+      end;
+
+procedure readpelreg(index:word;var p:pel);
+begin
+  p.index:=index;
+  disable;
+  outp($3C7,index);
+  p.red  :=inp($3C9);
+  p.blue :=inp($3C9);
+  p.green:=inp($3C9);
+  enable;
+end;
+
+procedure writepelreg(var p:pel);
+begin
+  disable;
+  outp($3C8,p.index);
+  outp($3C9,p.red);
+  outp($3C9,p.blue);
+  outp($3C9,p.green);
+  enable;
+end;
+
+function setcomm(cmd:word):word;
+begin
+  dac2comm;
+  outp($3c6,cmd);
+  dac2comm;
+  setcomm:=inp($3c6);
+end;
+
+procedure waitforretrace;
+begin
+  repeat until (inp(CRTC+6) and 8)=0;
+  repeat until (inp(CRTC+6) and 8)>0;    {Wait until we're in retrace}
+end;
+
+function dacis8bit:boolean;
+var
+  pel2,x,v:word;
+  pel1:pel;
+begin
+  pel2:=inp($3C8);
+  readpelreg(255,pel1);
+  v:=pel1.red;
+  pel1.red:=255;
+  writepelreg(pel1);
+  readpelreg(255,pel1);
+  x:=pel1.red;
+  pel1.red:=v;
+  writepelreg(pel1);
+  outp($3C8,pel2);
+  dacis8bit:=(x=255);
+end;
+
+function testdacbit(bit:word):boolean;
+begin
+  dac2pel;
+  outp($3C6,oldpel and (bit xor $FF));
+  dac2comm;
+  disable;
+  outp($3C6,oldcomm or bit);
+  v:=inp($3C6);
+  outp($3C6,v and (bit xor $FF));
+  enable;
+  testdacbit:=(v and bit)<>0;
+end;
+
+begin
+
+  setDAC(_dac8,'Normal');
+  dac2comm;
+  oldcomm:=inp($3C6);
+  dactopel;
+  oldpel:=inp($3c6);
+
+  dac2comm;
+  outp($3c6,0);
+  dac8:=dacis8bit;
+  dac2pel;
+
+  notcomm:=oldcomm xor 255;
+  outp($3c6,notcomm);
+  dac2comm;
+  v:=inp($3c6);
+  if v<>notcomm then
+    if (setcomm($E0) and $e0)<>$e0 then
+    begin           {Bits 5-7 of command register NOT writable.}
+      dac2pel;
+      x:=inp($3C6);
+      repeat
+        y:=x;         {wait for the same value twice}
+        x:=inp($3C6);
+      until (x=y);
+      z:=x;
+      dac2comm;
+      if daccomm<>$8E then
+      begin                 {If command register=$8e, we've got an SS24}
+        y:=8;
+        repeat
+          x:=inp($3C6);
+          dec(y);
+        until (x=$8E) or (y=0);
+      end
+      else x:=daccomm;
+      if x=$8e then setDAC(_dacss24,'SS24')
+               else setDAC(_dac15,'Sierra SC11486');
+      dac2pel;
+    end
+    else begin
+      if (setcomm($60) and $E0)=0 then
+      begin
+        if (setcomm(2) and 2)>0 then setDAC(_dacatt,'ATT 20c490')
+                                else setDAC(_dacatt,'ATT 20c490');
+      end
+      else begin
+        x:=setcomm(oldcomm);
+        if inp($3c6)=notcomm then
+        begin
+          if setcomm($FF)<>$ff then setDAC(_dacadac1,'Acumos ADAC1')
+          else begin
+            dac8now:=dacis8bit;
+            dac2comm;
+            outp($3C6,(oldcomm or 2) and $FE);
+            dac8now:=dacis8bit;
+            if dac8now then
+              if dacis8bit then setDAC(_dacatt,'ATT 20c491')
+                           else setDAC(_dacCL24,'Cirrus 24bit DAC')
+            else setDAC(_dacatt,'ATT 20c492');
+          end;
+        end
+        else begin
+          if trigdac=notcomm then setDAC(_dacCL24,'Cirrus 24bit DAC')
+          else begin
+            dac2pel;
+            outp($3c6,$FF);
+            case trigdac of
+              $44:setDAC(_dacmus,'MUSIC ??');
+              $82:setDAC(_dacmus,'MUSIC MU9C4910');
+              $8e:setDAC(_dacss24,'Diamond SS2410');
+            else
+              if testdacbit($10) then setDAC(_dacsc24,'Sierra 16m')
+              else if testdacbit(4) then setDAC(_dacUnk9,'Unknown DAC #9')
+                                else setDAC(_dac16,'Sierra 32k/64k');
+            end;
+          end;
+        end;
+      end;
+    end;
+
+    dac2comm;
+    outp($3c6,oldcomm);
+  end;
+  dac2pel;
+  outp($3c6,oldpel);
+
+  if (dactype=_dac8) and (DAC_RS2<>0) and (DAC_RS3<>0) then
+  begin
+    oldpel :=inp($3C6);
+    oldcomm:=inp($3C6+DAC_RS2);
+    outp($3C6+DAC_RS2,oldpel xor $FF);
+    if (inp($3C6)=oldpel) and (inp($3C6+DAC_RS2)=(oldpel xor $FF)) then
+      SetDAC(_dacBt484,'Brooktree Bt484');
+
+    outp($3C6+DAC_RS2,oldcomm);
+    outp($3C6,oldpel);
+  end;
+
+
+
+  if dactype=_dac8 then
+  begin
+    WaitforRetrace;
+    outp($3C8,222);
+    outp($3C9,$43);
+    outp($3C9,$45);
+    outp($3C9,$47);    {Write 'CEGEDSUN' + mode to DAC index 222}
+    outp($3C8,222);
+    outp($3C9,$45);
+    outp($3C9,$44);
+    outp($3C9,$53);
+    outp($3C8,222);
+    outp($3C9,$55);
+    outp($3C9,$4E);
+    outp($3C9,13);     {Should be in CEG mode now}
+    outp($3C6,255);
+    x:=(inp($3c6) shr 4) and 7;
+    if x<7 then
+    begin
+      setDAC(_dacCEG,'Edsun CEG rev. '+chr(x+48));
+      WaitforRetrace;
+      outp($3C8,223);
+      outp($3C9,0);    {Back in normal dac mode}
+    end;
+  end;
+end;
+
+
+This ID's all known DAC types, except:
+ - Sierra "mark2" and "Mark3" are all ID'd as Mark 3.
+
+ - Avance Logic ALG1101 DAC can not be ID'd.
+
+ - TI 34075, ATI 68830, 68860 and 68875 can not be ID'd
+
+ - The Edsun CEG test has not been verified.

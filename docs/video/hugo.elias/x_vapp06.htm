@@ -1,0 +1,73 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>Vesa BIOS Example. Page 6: Plotting Pixels in SVGA</title>
+
+<h1>VESA BIOS Example</h1>
+<h4>Page 6: Plotting Pixels in SVGA</h4>
+<p><tr><td colspan=2><hr></td></tr><p>
+
+Right, this can be tricky. There's lots of horrid Bank Switching and stuff, and moving these
+windows around. I'll assume for the moment that we're plotting 256 colour pixels.<p>
+
+If you just want to plot a single pixel, the process requires several steps:<br>
+1. Calculate the Memory location of the pixel<br>
+2. Calculate the Required Window position<br>
+3. Switch to the Bank<br>
+4. Calculate the memory offset of the pixel from the start of the bank.<br>
+5. write the pixel to the screen.<p>
+
+This is much easier in a flat memory mode.<p>
+
+There are a few Global variables that this procedure will need when calculating things. If you
+don't like global variables, then you can figure out the cute little message passing stuff
+yourself.<p>
+
+<pre>
+   BytesPerScanline	; the number of bytes used per scanline. see page 5
+   WinGranularity	; the accuracy to which a memory window can be positioned see page 0
+   CurrentWindowPos	; the current position of the Write Window (in granularity units). 
+			  If it's already in the right position, we won't bother to move it.
+</pre>   
+
+OK, i'll explain how to perform each step in turn to plot a pixel at (x, y):<p>
+
+<h4>Step 1: Calculate the Memory location of the pixel</h4>
+
+If you are writing this in assembler, then you will need to use the extended registers (eax, ebx etc) to calculate
+the memory position, because it may well be higher than 65535. If you are writing it in a high
+level language, then the variable type will probably be called LONG or DOUBLE or something.<p>
+
+<pre>	MemoryPosition = (BytesPerScanLine * y) + x</pre>
+
+That's simple enough.<p>
+
+<h4>Step 2: Calculate the Required Window position</h4>
+
+
+
+<pre>	WindowPosition = MemoryPosition / WinGranularity</pre>
+<p>
+
+<h4>Step 3: Move the Window into that position</h4>
+
+<pre>
+	SetWindowPosition(WindowPosition)
+	CurrentWindowPos = WindowPosition
+</pre>
+<p>
+
+<h4>Step 4: Calculate address of pixel within window</h4>
+<pre>
+	PixelOffset = MemoryPosition - (WinGranularity * WindowPosition)
+</pre>
+<p>
+
+<h4>Step 5: Write The pixel</h4>
+<pre>	Write a byte at [PixelOffset]</pre>
+
+
+
+</body>
+</html>

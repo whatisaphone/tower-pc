@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>
+6.4  Page-Level Protection
+</title>
+<body>
+<a name="06-04"></a>
+Prev: <a href="chp06-03.htm">6.3  Segment-Level Protection</a><br>
+Next: <a href="chp06-05.htm">6.5  Combining Page and Segment Protection</a>
+<hr>
+<h2>
+6.4  Page-Level Protection
+</h2>
+<p>
+Two kinds of protection are related to pages:
+<p>
+<pre>
+  1.  Restriction of addressable domain.
+  2.  Type checking.
+</pre>
+<p>
+<a name="06-04-01"></a>
+<h3>6.4.1  Page-Table Entries Hold Protection Parameters</h3>
+<p>
+Figure 6-10 highlights the fields of PDEs and PTEs that control access to
+pages.
+<p>
+<p>
+<a name="F-06-10"></a>
+<h3>Figure 6-10.  Protection Fields of Page Table Entries</h3>
+<p>
+<pre>
+      31                                  12 11          7           0
+     +--------------------------------------+-------+---+-+-+---+-+-+-+
+     |######################################|#######|###|#|#|###|U|R|#|
+     |######PAGE FRAME ADDRESS 31..12#######|#AVAIL#|0#0|D|A|0#0|/|/|P|
+     |######################################|#######|###|#|#|###|S|W|#|
+     +--------------------------------------+-------+---+-+-+---+-+-+-+
+      R/W     - READ/WRITE
+      U/S     - USER/SUPERVISOR
+</pre>
+<p>
+<a name="06-04-01-01"></a>
+<h3>6.4.1.1  Restricting Addressable Domain</h3>
+<p>
+The concept of privilege for pages is implemented by assigning each page to
+one of two levels:
+<p>
+<pre>
+  1.  Supervisor level (U/S=0) -- for the operating system and other systems
+      software and related data.
+
+  2.  User level (U/S=1) -- for applications procedures and data.
+</pre>
+The current level (U or S) is related to CPL.  If CPL is 0, 1, or 2, the
+processor is executing at supervisor level. If CPL is 3, the processor is
+executing at user level.
+<p>
+When the processor is executing at supervisor level, all pages are
+addressable, but, when the processor is executing at user level, only pages
+that belong to the user level are addressable.
+<p>
+<p>
+<a name="06-04-01-02"></a>
+<h3>6.4.1.2  Type Checking</h3>
+<p>
+At the level of page addressing, two types are defined:
+<p>
+<pre>
+  1.  Read-only access (R/W=0)
+  2.  Read/write access (R/W=1)
+</pre>
+When the processor is executing at supervisor level, all pages are both
+readable and writable. When the processor is executing at user level, only
+pages that belong to user level and are marked for read/write access are
+writable; pages that belong to supervisor level are neither readable nor
+writable from user level.
+<p>
+<p>
+<a name="06-04-02"></a>
+<h3>6.4.2  Combining Protection of Both Levels of Page Tables</h3>
+<p>
+For any one page, the protection attributes of its page directory entry may
+differ from those of its page table entry. The 80386 computes the effective
+protection attributes for a page by examining the protection attributes in
+both the directory and the page table.  Table 6-5 shows the effective
+protection provided by the possible combinations of protection attributes.
+<p>
+<p>
+<a name="06-04-03"></a>
+<h3>6.4.3  Overrides to Page Protection</h3>
+<p>
+Certain accesses are checked as if they are privilege-level 0 references,
+even if CPL = 3:
+<p>
+<pre>
+  -  LDT, GDT, TSS, IDT references.
+  -  Access to inner stack during ring-crossing CALL/INT.
+</pre>
+<p>
+<hr>
+Prev: <a href="chp06-03.htm">6.3  Segment-Level Protection</a><br>
+Next: <a href="chp06-05.htm">6.5  Combining Page and Segment Protection</a>
+</body>
+</html>

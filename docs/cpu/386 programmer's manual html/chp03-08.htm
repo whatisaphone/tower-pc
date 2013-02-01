@@ -1,0 +1,100 @@
+<html>
+<head>
+<title>
+3.8  Flag Control Instructions
+</title>
+<body>
+<a name="03-08"></a>
+Prev: <a href="chp03-07.htm">3.7  Instructions for Block-Structured Languages</a><br>
+Next: <a href="chp03-09.htm">3.9  Coprocessor Interface Instructions</a>
+<hr>
+<h2>
+3.8  Flag Control Instructions
+</h2>
+<p>
+The flag control instructions provide a method for directly changing the
+state of bits in the flag register.
+<p>
+<p>
+<a name="03-08-01"></a>
+<h3>3.8.1  Carry and Direction Flag Control Instructions</h3>
+<p>
+The carry flag instructions are useful in conjunction with
+rotate-with-carry instructions RCL and RCR. They can initialize the carry
+flag, CF, to a known state before execution of a rotate that moves the carry
+bit into one end of the rotated operand.
+<p>
+The direction flag control instructions are specifically included to set or
+clear the direction flag, DF, which controls the left-to-right or
+right-to-left direction of string processing. If DF=0, the processor
+automatically increments the string index registers, ESI and EDI, after each
+execution of a string primitive. If DF=1, the processor decrements these
+index registers. Programmers should use one of these instructions before any
+procedure that uses string instructions to insure that DF is set properly.
+<p>
+<pre>
+Flag Control Instruction                  Effect
+</pre>
+STC (Set Carry Flag)                      CF <- 1
+CLC (Clear Carry Flag)                    CF <- 0
+CMC (Complement Carry Flag)               CF <- NOT (CF)
+CLD (Clear Direction Flag)                DF <- 0
+STD (Set Direction Flag)                  DF <- 1
+<p>
+<p>
+<a name="03-08-02"></a>
+<h3>3.8.2  Flag Transfer Instructions</h3>
+<p>
+Though specific instructions exist to alter CF and DF, there is no direct
+method of altering the other applications-oriented flags. The flag transfer
+instructions allow a program to alter the other flag bits with the bit
+manipulation instructions after transferring these flags to the stack or the
+AH register.
+<p>
+The instructions LAHF and SAHF deal with five of the status flags, which
+are used primarily by the arithmetic and logical instructions.
+<p>
+LAHF (Load AH from Flags) copies SF, ZF, AF, PF, and CF to AH bits 7, 6, 4,
+2, and 0, respectively (see Figure 3-22). The contents of the remaining bits
+(5, 3, and 1) are undefined. The flags remain unaffected.
+<p>
+SAHF (Store AH into Flags) transfers bits 7, 6, 4, 2, and 0 from AH into
+SF, ZF, AF, PF, and CF, respectively (see Figure 3-22).
+<p>
+The PUSHF and POPF instructions are not only useful for storing the flags
+in memory where they can be examined and modified but are also useful for
+preserving the state of the flags register while executing a procedure.
+<p>
+PUSHF (Push Flags) decrements ESP by two and then transfers the low-order
+word of the flags register to the word at the top of stack pointed to by ESP
+(see Figure 3-23). The variant PUSHFD decrements ESP by four, then
+transfers both words of the extended flags register to the top of the stack
+pointed to by ESP (the VM and RF flags are not moved, however).
+<p>
+POPF (Pop Flags) transfers specific bits from the word at the top of stack
+into the low-order byte of the flag register (see Figure 3-23), then
+increments ESP by two. The variant POPFD transfers specific bits from the
+doubleword at the top of the stack into the extended flags register (the RF
+and VM flags are not changed, however), then increments ESP by four.
+<p>
+<p>
+<a name="F-03-22"></a>
+<h3>Figure 3-22.  LAHF and SAHF</h3>
+<p>
+<pre>
+                     7    6    5    4    3    2    1    0
+                   +----+----+----+----+----+----+----+----+
+                   | SF | ZF | UU | AF | UU | PF | UU | CF |
+                   +----+----+----+----+----+----+----+----+
+
+     LAHF LOADS FIVE FLAGS FROM THE FLAG REGISTER INTO REGISTER AH. SAHF
+     STORES THESE SAME FIVE FLAGS FROM AH INTO THE FLAG REGISTER. THE BIT
+     POSITION OF EACH FLAG IS THE SAME IN AH AS IT IS IN THE FLAG REGISTER.
+     THE REMAINING BITS (MARKED UU) ARE RESERVED; DO NOT DEFINE.
+</pre>
+<p>
+<hr>
+Prev: <a href="chp03-07.htm">3.7  Instructions for Block-Structured Languages</a><br>
+Next: <a href="chp03-09.htm">3.9  Coprocessor Interface Instructions</a>
+</body>
+</html>

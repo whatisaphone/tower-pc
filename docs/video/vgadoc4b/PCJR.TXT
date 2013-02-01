@@ -1,0 +1,140 @@
+IBM PC Jr graphics system:
+
+
+
+3D4h (W): Index register.
+          The value written to this register selects which of the data
+          registers will be accessed at 3D5h.
+
+3D4h index 00h (W): Horizontal Total Register
+Bit 0-7  Number of characters (-1) in a scan line incl. retrace.
+
+3D4h index 01h (W): Horizontal Displayed Register
+Bit 0-7  Number of characters (-1) displayed during a scan line.
+
+3D4h index 02h (W): Horizontal Sync Position Register
+Bit 0-7  Number of characters displayed before Horizontal Sync pulse starts.
+
+3D4h index 03h (W): Horizontal Sync Width Register
+Bit 0-7  Number of character clocks during a Horizontal Sync pulse.
+
+3D4h index 04h (W): Vertical Total Register
+Bit 0-6  Number of character rows in a frame. This is adjusted by the number
+         of scanlines in a character (index 9) and the Vertical Adjust (index
+         5).
+
+3D4h index 05h (W): Vertical Total Adjust Register
+Bit 0-3  Number of scanlines added to the Vertical Total time.
+
+3D4h index 06h (W): Vertical Displayed Register
+Bit 0-6  Number of character rows displayed per frame.
+
+3D4h index 07h (W): Vertical SyncPosition Register
+Bit 0-6  Number of character rows displayed before the Vertical Sync pulse
+         starts.
+
+3D4h index 08h (W): Interlace Mode Register
+
+3D4h index 09h (W): Maximum Scan Line Register
+Bit 0-3  Number of scanlines (-1) in a character row.
+
+3D4h index 0Ah (W): Cursor Start Register
+Bit 0-4  The scanline (starting from 0) within the character where the
+         cursor starts.
+    5-6  Cursor Attributes:
+           0,2: Cursor is blinking at the blink rate.
+             1: Cursor is turned off.
+             3: Cursor is blinking at half the blink rate.
+         The default blink rate is 1/16 of the frame rate (8 frames on, 8
+         off).
+
+3D4h index 0Bh (W): Cursor End Register
+Bit 0-4  The scanline (starting from 0) within the character where the
+         cursor ends. If the start position (index 0Ah) is larger than this
+         value, no cursor is shown.
+
+3D4h index 0Ch (W): Start Address High Register
+Bit 0-5  The upper 6 bits of the address of the start of the display.
+         The lower 8 bits are in index 0Dh.
+
+3D4h index 0Dh (W): Start Address Low Register
+Bit 0-7  The lower 8 bits of the address of the start of the display.
+         The upper 6 bits are in index 0Ch.
+
+3D4h index 0Eh (W): Cursor Location High Register
+Bit 0-5  The upper 6 bits of the address of the start of the cursor.
+         The lower 8 bits are in index 0Fh.
+
+3D4h index 0Fh (W): Cursor Location Low Register
+Bit 0-7  The lower 8 bits of the address of the start of the cursor.
+         The upper 6 bits are in index 0Eh.
+
+3DAh (R):
+bit   0  Display Active.
+      1  Light Pen Trigger.
+      2  Light Pen Switch.
+      3  Vertical Retrace active if set
+      4  Video Dots.
+
+3DAh (W):  VGA registers
+The indexed VGA (Video Gate Array) registers are accessed by reading 3DAh,
+then writing the index to 3DAh and finally writing the data to 3DAh
+
+3DAh index 00h (W):  Mode Control 1 Register
+bit   0  ?
+      1  ?
+      2  ?
+      3  ?
+      4  ?
+
+3DAh index 01h (W):  Palette Mask Register
+bit 0-3  Palette mask. Guess: 1 in 2color modes, 3 in 4 color modes and 15
+         in 16color & text modes ?  (ANDed with the pixel?)
+
+3DAh index 02h (W):  Border Color Register
+bit 0-3  Border color in IRGB format (bit0 is Blue)
+
+3DAh index 03h (W):  Mode Control 2 Register
+bit   1  Enable Blink if set, disable if clear
+      3  Set in 640x200 2color mode, clear in all other modes
+
+3DAh index 04h (W):  Reset Register
+bit   0  ?
+      1  ?
+
+3DAh index 10h-1Fh (W):  Palette Array Entry 0-15
+bit 0-3  Palette entry in IRGB format. Bit 0 is blue and bit 3 is intensity.
+         The text & 16color modes use all 16 entries, the 4 color modes use
+         entries 0-3 and the 2 color modes only use entries 0-1.
+
+3DFh (R/W):
+bit 0-2  Identifies the page of main memory being displayed in units of 16K.
+          0: 0K, 1: 16K...7: 112K. In 32K modes (bits 6-7 = 2) only 0,2,4 and
+            6 are valid, as the next page will also be used.
+    3-5  Identifies the page of main memory that can be read/written at B8000h
+         in units of 16K. 0: 0K, 1: 16K...7: 112K. In 32K modes (bits 6-7 = 2)
+         only 0,2,4 and 6 are valid, as the next page will also be used.
+    6-7  Display mode. 0: Text, 1: 16K graphics mode (4,5,6,8)
+          2: 32K graphics mode (9,Ah)
+
+Video modes (set via INT 10h with AX=mode#):
+
+ 00h  T   40   25  mono
+ 01h  T   40   25  color
+ 02h  T   80   25  mono
+ 03h  T   80   25  color
+ 04h  G  320  200  4 color
+ 05h  G  320  200  4 mono
+ 06h  G  640  200  2 color
+ 08h  G  160  200 16 color
+ 09h  G  320  200 16 color
+ 0Ah  G  640  200  4 color
+
+The text modes are similar to MDA/Hercules/CGA/EGA/VGA text modes.
+
+The graphics modes resemble CGA modes. The pixels are packed 2/4/8 in each
+byte with the lowest pixel in the highest bits. The display memory is split 2
+or 4 ways, with modes 5-8 having even scanlines in the first 8K and odd lines
+in the next 8K, and modes 9,0Ah split into 4 banks based on the two lowest
+bits of the scanline number (Scanline 0,4,8.. are in the first 8K, line 1,5,9
+.. in the 2nd 8K, line 2,6,10 in the 3rd and line 3,7,11 in the last 8K bank).

@@ -1,0 +1,406 @@
+<html>
+<head>
+<title>
+5.2  Page Translation
+</title>
+<body>
+<a name="05-02"></a>
+Prev: <a href="chp05-01.htm">5.1  Segment Translation</a><br>
+Next: <a href="chp06-00.htm">Chapter 6  Protection</a>
+<hr>
+<h2>
+5.2  Page Translation
+</h2>
+<p>
+In the second phase of address transformation, the 80386 transforms a
+linear address into a physical address. This phase of address transformation
+implements the basic features needed for page-oriented virtual-memory
+systems and page-level protection.
+<p>
+The page-translation step is optional. Page translation is in effect only
+when the PG bit of CR0 is set. This bit is typically set by the operating
+system during software initialization. The PG bit must be set if the
+operating system is to implement multiple virtual 8086 tasks, page-oriented
+protection, or page-oriented virtual memory.
+<p>
+<p>
+<a name="05-02-01"></a>
+<h3>5.2.1  Page Frame</h3>
+<p>
+A page frame is a 4K-byte unit of contiguous addresses of physical memory.
+Pages begin onbyte boundaries and are fixed in size.
+<p>
+<p>
+<a name="05-02-02"></a>
+<h3>5.2.2  Linear Address</h3>
+<p>
+A linear address refers indirectly to a physical address by specifying a
+page table, a page within that table, and an offset within that page. Figure
+5-8 shows the format of a linear address.
+<p>
+Figure 5-9 shows how the processor converts the DIR, PAGE, and OFFSET
+fields of a linear address into the physical address by consulting two
+levels of page tables. The addressing mechanism uses the DIR field as an
+index into a page directory, uses the PAGE field as an index into the page
+table determined by the page directory, and uses the OFFSET field to address
+a byte within the page determined by the page table.
+<p>
+<p>
+<a name="F-05-08"></a>
+<h3>Figure 5-8.  Format of a Linear Address</h3>
+<p>
+<pre>
+      31                 22 21                 12 11                 0
+     +---------------------+---------------------+--------------------+
+     |                     |                     |                    |
+     |         DIR         |        PAGE         |       OFFSET       |
+     |                     |                     |                    |
+     +---------------------+---------------------+--------------------+
+</pre>
+<p>
+<a name="F-05-09"></a>
+<h3>Figure 5-9.  Page Translation</h3>
+<p>
+<pre>
+                                                              PAGE FRAME
+              +-----------+-----------+----------+         +---------------+
+              |    DIR    |   PAGE    |  OFFSET  |         |               |
+              +-----+-----+-----+-----+-----+----+         |               |
+                    |           |           |              |               |
+      +-------------+           |           +------------->|    PHYSICAL   |
+      |                         |                          |    ADDRESS    |
+      |   PAGE DIRECTORY        |      PAGE TABLE          |               |
+      |  +---------------+      |   +---------------+      |               |
+      |  |               |      |   |               |      +---------------+
+      |  |               |      |   |---------------|              ^
+      |  |               |      +-->| PG TBL ENTRY  |--------------+
+      |  |---------------|          |---------------|
+      +->|   DIR ENTRY   |--+       |               |
+         |---------------|  |       |               |
+         |               |  |       |               |
+         +---------------+  |       +---------------+
+                 ^          |               ^
++-------+        |          +---------------+
+|  CR3  |--------+
++-------+
+</pre>
+<p>
+<a name="05-02-03"></a>
+<h3>5.2.3  Page Tables</h3>
+<p>
+A page table is simply an array of 32-bit page specifiers. A page table is
+itself a page, and therefore contains 4 Kilobytes of memory or at most 1K
+32-bit entries.
+<p>
+Two levels of tables are used to address a page of memory. At the higher
+level is a page directory. The page directory addresses up to 1K page tables
+of the second level. A page table of the second level addresses up to 1K
+pages. All the tables addressed by one page directory, therefore, can
+address 1M pages (2^(20)). Because each page contains 4K bytes 2^(12)
+bytes), the tables of one page directory can span the entire physical
+address space of the 80386 (2^(20) times 2^(12) = 2^(32)).
+<p>
+The physical address of the current page directory is stored in the CPU
+register CR3, also called the page directory base register (PDBR). Memory
+management software has the option of using one page directory for all
+tasks, one page directory for each task, or some combination of the two.
+Refer to Chapter 10 for information on initialization of CR3. Refer to
+Chapter 7 to see how CR3 can change for each task.
+<p>
+<p>
+<a name="05-02-04"></a>
+<h3>5.2.4  Page-Table Entries</h3>
+<p>
+Entries in either level of page tables have the same format. Figure 5-10
+illustrates this format.
+<p>
+<p>
+<a name="05-02-04-01"></a>
+<h3>5.2.4.1  Page Frame Address</h3>
+<p>
+The page frame address specifies the physical starting address of a page.
+Because pages are located on 4K boundaries, the low-order 12 bits are always
+zero. In a page directory, the page frame address is the address of a page
+table. In a second-level page table, the page frame address is the address
+of the page frame that contains the desired memory operand.
+<p>
+<p>
+<a name="05-02-04-02"></a>
+<h3>5.2.4.2  Present Bit</h3>
+<p>
+The Present bit indicates whether a page table entry can be used in address
+translation. P=1 indicates that the entry can be used.
+<p>
+When P=0 in either level of page tables, the entry is not valid for address
+translation, and the rest of the entry is available for software use; none
+of the other bits in the entry is tested by the hardware. Figure 5-11
+illustrates the format of a page-table entry when P=0.
+<p>
+If P=0 in either level of page tables when an attempt is made to use a
+page-table entry for address translation, the processor signals a page
+exception. In software systems that support paged virtual memory, the
+page-not-present exception handler can bring the required page into physical
+memory. The instruction that caused the exception can then be reexecuted.
+Refer to Chapter 9 for more information on exception handlers.
+<p>
+Note that there is no present bit for the page directory itself. The page
+directory may be not-present while the associated task is suspended, but the
+operating system must ensure that the page directory indicated by the CR3
+image in the TSS is present in physical memory before the task is
+dispatched. Refer to Chapter 7 for an explanation of the TSS and task
+dispatching.
+<p>
+<p>
+<a name="F-05-10"></a>
+<h3>Figure 5-10.  Format of a Page Table Entry</h3>
+<p>
+<pre>
+       31                                  12 11                      0
+      +--------------------------------------+-------+---+-+-+---+-+-+-+
+      |                                      |       |   | | |   |U|R| |
+      |      PAGE FRAME ADDRESS 31..12       | AVAIL |0 0|D|A|0 0|/|/|P|
+      |                                      |       |   | | |   |S|W| |
+      +--------------------------------------+-------+---+-+-+---+-+-+-+
+
+                P      - PRESENT
+                R/W    - READ/WRITE
+                U/S    - USER/SUPERVISOR
+                D      - DIRTY
+                AVAIL  - AVAILABLE FOR SYSTEMS PROGRAMMER USE
+
+                NOTE: 0 INDICATES INTEL RESERVED. DO NOT DEFINE.
+</pre>
+<p>
+<a name="F-05-11"></a>
+<h3>Figure 5-11.  Invalid Page Table Entry</h3>
+<p>
+<pre>
+       31                                                           1 0
+      +--------------------------------------------------------------+-+
+      |                                                              | |
+      |                            AVAILABLE                         |0|
+      |                                                              | |
+      +--------------------------------------------------------------+-+
+</pre>
+<p>
+<a name="05-02-04-03"></a>
+<h3>5.2.4.3  Accessed and Dirty Bits</h3>
+<p>
+These bits provide data about page usage in both levels of the page tables.
+With the exception of the dirty bit in a page directory entry, these bits
+are set by the hardware; however, the processor does not clear any of these
+bits.
+<p>
+The processor sets the corresponding accessed bits in both levels of page
+tables to one before a read or write operation to a page.
+<p>
+The processor sets the dirty bit in the second-level page table to one
+before a write to an address covered by that page table entry. The dirty bit
+in directory entries is undefined.
+<p>
+An operating system that supports paged virtual memory can use these bits
+to determine what pages to eliminate from physical memory when the demand
+for memory exceeds the physical memory available. The operating system is
+responsible for testing and clearing these bits.
+<p>
+Refer to Chapter 11 for how the 80386 coordinates updates to the accessed
+and dirty bits in multiprocessor systems.
+<p>
+<p>
+<a name="05-02-04-04"></a>
+<h3>5.2.4.4  Read/Write and User/Supervisor Bits</h3>
+<p>
+These bits are not used for address translation, but are used for
+page-level protection, which the processor performs at the same time as
+address translation. Refer to Chapter 6 where protection is discussed in
+detail.
+<p>
+<p>
+<a name="05-02-05"></a>
+<h3>5.2.5  Page Translation Cache</h3>
+<p>
+For greatest efficiency in address translation, the processor stores the
+most recently used page-table data in an on-chip cache. Only if the
+necessary paging information is not in the cache must both levels of page
+tables be referenced.
+<p>
+The existence of the page-translation cache is invisible to applications
+programmers but not to systems programmers; operating-system programmers
+must flush the cache whenever the page tables are changed. The
+page-translation cache can be flushed by either of two methods:
+<p>
+<pre>
+  1.  By reloading CR3 with a MOV instruction; for example:
+
+      MOV CR3, EAX
+
+  2.  By performing a task switch to a TSS that has a different CR3 image
+      than the current TSS. (Refer to Chapter 7 for more information on
+      task switching.)
+</pre>
+<p>
+<a name="05-03"></a>
+<h3>5.3  Combining Segment and Page Translation</h3>
+<p>
+Figure 5-12 combines Figure 5-2 and Figure 5-9 to summarize both phases
+of the transformation from a logical address to a physical address when
+paging is enabled. By appropriate choice of options and parameters to both
+phases, memory-management software can implement several different styles of
+memory management.
+<p>
+<p>
+<a name="05-03-01"></a>
+<h3>5.3.1  "Flat" Architecture</h3>
+<p>
+When the 80386 is used to execute software designed for architectures that
+don't have segments, it may be expedient to effectively "turn off" the
+segmentation features of the 80386. The 80386 does not have a mode that
+disables segmentation, but the same effect can be achieved by initially
+loading the segment registers with selectors for descriptors that encompass
+the entire 32-bit linear address space. Once loaded, the segment registers
+don't need to be changed. The 32-bit offsets used by 80386 instructions are
+adequate to address the entire linear-address space.
+<p>
+<p>
+<a name="05-03-02"></a>
+<h3>5.3.2  Segments Spanning Several Pages</h3>
+<p>
+The architecture of the 80386 permits segments to be larger or smaller than
+the size of a page (4 Kilobytes). For example, suppose a segment is used to
+address and protect a large data structure that spans 132 Kilobytes. In a
+software system that supports paged virtual memory, it is not necessary for
+the entire structure to be in physical memory at once. The structure is
+divided into 33 pages, any number of which may not be present. The
+applications programmer does not need to be aware that the virtual memory
+subsystem is paging the structure in this manner.
+<p>
+<p>
+<a name="F-05-12"></a>
+<h3>Figure 5-12.  80306 Addressing Machanism</h3>
+<p>
+<pre>
+      16                0 32                                  0
+    +--------------------+-------------------------------------+ LOGICAL
+    |      SELECTOR      |                 OFFSET              | ADDRESS
+    +----+----------+----+--------------------+----------------+
+ +-------+          !                         |
+ |   DESCRIPTOR TABLE                         |
+ |  +---------------+                         |
+ |  |               |                         |
+ |  |               |                         |
+ |  |               |                         |
+ |  |               |                         |
+ |  |---------------|                         |
+ |  |   SEGMENT     |         +---+           |
+ +->|  DESCRIPTOR   |-------->| + |<----------+
+    |---------------|         +-+-+
+    |               |           |
+    +---------------+           |
+                                !                              PAGE FRAME
+      LINEAR  +-----------+-----------+----------+         +---------------+
+      ADDRESS |    DIR    |   PAGE    |  OFFSET  |         |               |
+              +-----+-----+-----+-----+-----+----+         |               |
+                    |           |           |              |               |
+      +-------------+           |           +------------->|    PHYSICAL   |
+      |                         |                          |    ADDRESS    |
+      |   PAGE DIRECTORY        |      PAGE TABLE          |               |
+      |  +---------------+      |   +---------------+      |               |
+      |  |               |      |   |               |      |               |
+      |  |               |      |   |               |      +---------------+
+      |  |               |      |   |---------------|              ^
+      |  |               |      +-->| PG TBL ENTRY  |--------------+
+      |  |---------------|          |---------------|
+      +->|   DIR ENTRY   |--+       |               |
+         |---------------|  |       |               |
+         |               |  |       |               |
+         +---------------+  |       +---------------+
+                 ^          |               ^
++-------+        |          +---------------+
+|  CR3  |--------+
++-------+
+</pre>
+<p>
+<a name="05-03-03"></a>
+<h3>5.3.3  Pages Spanning Several Segments</h3>
+<p>
+On the other hand, segments may be smaller than the size of a page. For
+example, consider a small data structure such as a semaphore. Because of the
+protection and sharing provided by segments (refer to Chapter 6), it may be
+useful to create a separate segment for each semaphore. But, because a
+system may need many semaphores, it is not efficient to allocate a page for
+each. Therefore, it may be useful to cluster many related segments within a
+page.
+<p>
+<p>
+<a name="05-03-04"></a>
+<h3>5.3.4  Non-Aligned Page and Segment Boundaries</h3>
+<p>
+The architecture of the 80386 does not enforce any correspondence between
+the boundaries of pages and segments. It is perfectly permissible for a page
+to contain the end of one segment and the beginning of another. Likewise, a
+segment may contain the end of one page and the beginning of another.
+<p>
+<p>
+<a name="05-03-05"></a>
+<h3>5.3.5  Aligned Page and Segment Boundaries</h3>
+<p>
+Memory-management software may be simpler, however, if it enforces some
+correspondence between page and segment boundaries. For example, if segments
+are allocated only in units of one page, the logic for segment and page
+allocation can be combined. There is no need for logic to account for
+partially used pages.
+<p>
+<p>
+<a name="05-03-06"></a>
+<h3>5.3.6  Page-Table per Segment</h3>
+<p>
+An approach to space management that provides even further simplification
+of space-management software is to maintain a one-to-one correspondence
+between segment descriptors and page-directory entries, as Figure 5-13
+illustrates. Each descriptor has a base address in which the low-order 22
+bits are zero; in other words, the base address is mapped by the first entry
+of a page table. A segment may have any limit from 1 to 4 megabytes.
+Depending on the limit, the segment is contained in from 1 to 1K page
+frames. A task is thus limited to 1K segments (a sufficient number for many
+applications), each containing up to 4 Mbytes. The descriptor, the
+corresponding page-directory entry, and the corresponding page table can be
+allocated and deallocated simultaneously.
+<p>
+<p>
+<a name="F-05-13"></a>
+<h3>Figure 5-13.  Descriptor per Page Table</h3>
+<p>
+<pre>
+                                                              PAGE FRAMES
+                                                             +-----------+
+         LDT          PAGE DIRECTORY       PAGE TABLES       |           |
+    +----------+       +----------+        +----------+      |           |
+    |          |       |          |        |          |   +->+-----------+
+    |----------|       |----------|        |----------|   |
+    |          |       |          |        |   PTE    |---+  +-----------+
+    |----------|       |----------|        |----------|      |           |
+    |          |       |          |        |   PTE    |---+  |           |
+    |----------|       |----------|        |----------|   +->+-----------+
+    |          |       |          |        |   PTE    |---+
+    |----------|       |----------|   +--->+----------+   |  +-----------+
+    |DESCRIPTOR|------>|   PDE    |---+                   |  |           |
+    |----------|       |----------|                       |  |           |
+    |DESCRIPTOR|------>|   PDE    |---+                   +->+-----------+
+    |----------|       |----------|   |    +----------+
+    |          |       |          |   |    |          |      +-----------+
+    |----------|       |----------|   |    |----------|      |           |
+    |          |       |          |   |    |          |      |           |
+    |----------|       |----------|   |    |----------|   +->+-----------+
+    |          |       |          |   |    |   PTE    |---+
+    |----------|       |----------|   |    |----------|      +-----------+
+    |          |       |          |   |    |   PTE    |---+  |           |
+    +----------+       +----------+   +--->+----------+   |  |           |
+        LDT           PAGE DIRECTORY       PAGE TABLES    +->+-----------+
+                                                              PAGE FRAMES
+</pre>
+<p>
+<hr>
+Prev: <a href="chp05-01.htm">5.1  Segment Translation</a><br>
+Next: <a href="chp06-00.htm">Chapter 6  Protection</a>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<html>
+<head>
+<title>
+10.2  Software Initialization for Real-Address Mode
+</title>
+<body>
+<a name="10-02"></a>
+Prev: <a href="chp10-01.htm">10.1  Processor State After Reset</a><br>
+Next: <a href="chp10-03.htm">10.3  Switching to Protected Mode</a>
+<hr>
+<h2>
+10.2  Software Initialization for Real-Address Mode
+</h2>
+<p>
+In real-address mode a few structures must be initialized before a program
+can take advantage of all the features available in this mode.
+<p>
+<p>
+<a name="10-02-01"></a>
+<h3>10.2.1  Stack</h3>
+<p>
+No instructions that use the stack can be used until the stack-segment
+register (SS) has been loaded. SS must point to an area in RAM.
+<p>
+<p>
+<a name="10-02-02"></a>
+<h3>10.2.2  Interrupt Table</h3>
+<p>
+The initial state of the 80386 leaves interrupts disabled; however, the
+processor will still attempt to access the interrupt table if an exception
+or nonmaskable interrupt (NMI) occurs. Initialization software should take
+one of the following actions:
+<p>
+<ul>
+<li> Change the limit value in the IDTR to zero. This will cause a shutdown
+     if an exception or nonmaskable interrupt occurs. (Refer to the 80386
+     Hardware Reference Manual to see how shutdown is signalled externally.)
+
+<li> Put pointers to valid interrupt handlers in all positions of the
+     interrupt table that might be used by exceptions or interrupts.
+
+<li> Change the IDTR to point to a valid interrupt table.
+</ol>
+<p>
+<a name="10-02-03"></a>
+<h3>10.2.3  First Instructions</h3>
+<p>
+After RESET, address lines A{31-20} are automatically asserted for
+instruction fetches. This fact, together with the initial values of CS:IP,
+causes instruction execution to begin at physical address FFFFFFF0H. Near
+(intrasegment) forms of control transfer instructions may be used to pass
+control to other addresses in the upper 64K bytes of the address space. The
+first far (intersegment) JMP or CALL instruction causes A{31-20} to drop
+low, and the 80386 continues executing instructions in the lower one
+megabyte of physical memory. This automatic assertion of address lines
+A{31-20} allows systems designers to use a ROM at the high end of
+the address space to initialize the system.
+<p>
+<p>
+<hr>
+Prev: <a href="chp10-01.htm">10.1  Processor State After Reset</a><br>
+Next: <a href="chp10-03.htm">10.3  Switching to Protected Mode</a>
+</body>
+</html>

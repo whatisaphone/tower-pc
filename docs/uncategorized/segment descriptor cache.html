@@ -1,0 +1,676 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage 2.0">
+<title>The Segment Descriptor Cache</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<table border="0" cellpadding="8" cellspacing="0" width="800">
+    <tr>
+        <td><h1 align="center"><font color="#0000FF" face="Arial">The
+        Segment Descriptor Cache</font></h1>
+        <h2 align="center"><font color="#0000FF" face="Arial">By
+        Robert R. Collins</font></h2>
+        <hr>
+        <p><font face="Arial">It is easy to underestimate the
+        importance of something when you don&#146;t know what it
+        is or how it works. As early as the 80286, all Intel x86
+        processors have included an entity called the
+        &quot;segment-descriptor cache&quot; which works behind
+        the scenes, hidden from you. It is updated each time a
+        segment register is loaded. It is used for all memory
+        accesses by all Intel x86 processors since the 80286. If
+        you&#146;re an end user, you&#146;ve probably used
+        programs that depend upon the functions of the
+        segment-descriptor cache. If you&#146;re an engineer,
+        there is a high probability that you&#146;ve relied upon
+        the functions of the segment-descriptor cache &#150; and
+        you might not have realized it. If you&#146;re an
+        engineer who writes any low-level code, programs
+        hardware, or programs in protected mode, then you should
+        be aware of the segment-descriptor cache and how it
+        works. </font></p>
+        <p><font face="Arial">From the 80286 to 80486, the
+        meaning of &quot;segment-descriptor cache&quot; was
+        unambiguous, referring to an internal microprocessor
+        structure that stores the internal representation of the
+        segment registers. This representation includes the
+        segment base address, limit, and access rights. With the
+        Pentium, Intel introduced a 94-entry, two-way set
+        associative cache of segment-descriptor cache entries.
+        Therefore, the phrase &quot;segment-descriptor
+        cache&quot; is now ambiguous, with two possible meanings.
+        Making matters worse, the new segment-descriptor cache
+        was removed from the Pentium Pro design, but reintroduced
+        in the Pentium II. (The lack of the new
+        segment-descriptor cache in the Pentium Pro largely
+        accounted for its poor 16-bit performance.) In this
+        column, I&#146;ll discuss the original segment-descriptor
+        cache that has existed since the 80286 (and remains in
+        all modern Intel x86 processors) and the role of the
+        segment-descriptor cache in microprocessor memory
+        management. </font></p>
+        <h3><font color="#FF0000" face="Arial">Loading Descriptor
+        Cache Registers </font></h3>
+        <p><font face="Arial">Whether in real, protected,
+        virtual-8086, or system-management mode, the
+        microprocessor stores the base address of each segment in
+        a hidden descriptor-cache registers. Each time a segment
+        register is loaded, the segment-base address,
+        segment-size limit, and segment-access attributes (access
+        rights) are loaded (cached) into these hidden registers.
+        To enhance performance, subsequent memory references are
+        made via the descriptor-cache registers. Without this
+        optimization, each memory access would require the
+        microprocessor to perform many time-consuming tasks. In
+        real mode, the microprocessor would need to calculate the
+        physical address from the segment register value. The
+        access rights would always indicate a read/write data
+        segment (even for the code segment). The limit would
+        always be 64 KB of memory. In protected mode, the segment
+        base must be looked up in the appropriate descriptor
+        table. The segment base is composed of a combination of
+        fields in the descriptor table. The segment access rights
+        and segment limit are also contained in the descriptor
+        table. The microprocessor would need to access those
+        structures for each memory access. These descriptor-table
+        values reside in memory, where accesses tend to be slow
+        when compared to accesses within the microprocessor.
+        Therefore, without an internal segment-descriptor cache
+        to cache these values, each memory access would
+        implicitly require many other accesses to memory. </font></p>
+        <p><font face="Arial">Now consider the differences
+        between real mode and protected mode. If the segment
+        descriptor cache didn&#146;t exist, determining segment
+        base, limit, and access rights would require more than
+        one CPU cycle to complete. Therefore, the
+        segment-descriptor cache exists to eliminate these
+        potential deficiencies. It exists to allow all of these
+        differences to be resolved at the time each segment is
+        loaded. The performance penalty is incurred only once.
+        Thereafter, all memory management is performed according
+        to the values in the segment descriptor caches for each
+        respective segment register. </font></p>
+        <p><font face="Arial">At power-up, the descriptor-cache
+        registers are loaded with fixed, default values &#150;
+        the CPU is in real mode, and all segments are marked as
+        read/write data segments, including the code segment
+        (CS). According to Intel, each time any segment register
+        is loaded in real mode, the base address is calculated as
+        16 times the segment value, while the access rights and
+        size limit attributes are given fixed, &quot;real-mode
+        compatible&quot; values. This is not true. In fact, only
+        the CS descriptor caches for the 286, 386, and 486 get
+        loaded with fixed values each time the segment register
+        is loaded. Loading CS, or any other segment register in
+        real mode, on later Intel processors doesn&#146;t change
+        the access rights or the segment size limit attributes
+        stored in the descriptor cache registers. For these
+        segments, the access rights and segment size limit
+        attributes from any previous setting are honored. Thus,
+        it is possible to have a four-GB read-only data segment
+        in real mode on the 80386 &#150; but Intel won&#146;t
+        acknowledge this mode of operation, though it is
+        implicitly supported. Furthermore, Intel can&#146;t
+        remove it without rendering many software programs
+        ineffective. </font></p>
+        <p><font face="Arial">Protected mode differs from real
+        mode in this respect: As each time a segment register is
+        loaded, the descriptor cache register gets fully loaded;
+        no values are honored. The descriptor cache is loaded
+        directly from the descriptor table. The CPU checks the
+        validity of the segment by testing the access rights in
+        the descriptor table. Complete checks are made, and
+        illegal values will generate exceptions. Any attempt to
+        load CS with a read/write data segment will generate a
+        protection error. Likewise, any attempt to load a data
+        segment register as an executable segment will also
+        generate an exception. The CPU strictly enforces these
+        protection rules. If the descriptor-table entry passes
+        all the tests, then the descriptor-cache register gets
+        loaded. </font></p>
+        <h3><font color="#FF0000" face="Arial">Format of
+        Descriptor Cache Registers </font></h3>
+        <p><font face="Arial">The layout of the
+        segment-descriptor cache registers change with almost
+        every processor generation, though their functions do
+        not. These differences are known as &quot;implementation
+        specific&quot; because their exact layout and contents
+        depend on the design and implementation of the
+        microprocessor. For the most part, the fields of the
+        segment-descriptor cache mirror the fields in the
+        protected mode descriptor table. For 32-bit
+        descriptor-table entries, the segment-base address,
+        segment-access rights, and segment-limit fields are not
+        contiguous. These related fields are combined before
+        being put in the segment-descriptor cache. </font><a
+        href="#Figure 1"><font face="Arial">Figure 1</font></a><font
+        face="Arial"> shows the relationship between fields in
+        the descriptor table and segment-descriptor cache. </font></p>
+        <p align="center"><a name="Figure 1"><font size="2"
+        face="Arial"><strong>Figure 1</strong></font></a><font
+        size="2" face="Arial"><strong>: Combining fields from the
+        descriptor table into the segment-descriptor cache.</strong></font></p>
+        <div align="center"><center><table border="1"
+        cellpadding="7" cellspacing="0" width="535">
+            <tr>
+                <td valign="top" width="10%"><font size="1"
+                face="Arial">Offset</font></td>
+                <td valign="top" width="11%"><p align="center"><font
+                size="1" face="Arial">63..56</font></p>
+                </td>
+                <td valign="top" width="4%"><p align="center"><font
+                size="1" face="Arial">55</font></p>
+                </td>
+                <td valign="top" width="6%"><p align="center"><font
+                size="1" face="Arial">54</font></p>
+                </td>
+                <td valign="top" width="4%"><p align="center"><font
+                size="1" face="Arial">53</font></p>
+                </td>
+                <td valign="top" width="6%"><p align="center"><font
+                size="1" face="Arial">52</font></p>
+                </td>
+                <td valign="top" width="11%"><p align="center"><font
+                size="1" face="Arial">51..48</font></p>
+                </td>
+                <td valign="top" width="4%"><p align="center"><font
+                size="1" face="Arial">47</font></p>
+                </td>
+                <td valign="top" width="8%"><p align="center"><font
+                size="1" face="Arial">46..45</font></p>
+                </td>
+                <td valign="top" width="4%"><p align="center"><font
+                size="1" face="Arial">44</font></p>
+                </td>
+                <td valign="top" width="8%"><p align="center"><font
+                size="1" face="Arial">43..40</font></p>
+                </td>
+                <td valign="top" width="11%"><p align="center"><font
+                size="1" face="Arial">39..16</font></p>
+                </td>
+                <td valign="top" width="11%"><p align="center"><font
+                size="1" face="Arial">15..00</font></p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" width="10%"><font size="1"
+                face="Arial">Description</font></td>
+                <td valign="top" width="11%" bgcolor="#00FFFF"><p
+                align="center"><font size="1" face="Arial">Base[31:24]</font></p>
+                </td>
+                <td valign="top" width="4%" bgcolor="#FFFF00"><p
+                align="center"><font size="1" face="Arial">G</font></p>
+                </td>
+                <td valign="top" width="6%" bgcolor="#FFFF00"><p
+                align="center"><font size="1" face="Arial">D/B</font></p>
+                </td>
+                <td valign="top" width="4%"><p align="center"><font
+                size="1" face="Arial">0</font></p>
+                </td>
+                <td valign="top" width="6%"><p align="center"><font
+                size="1" face="Arial">AVL</font></p>
+                </td>
+                <td valign="top" width="11%" bgcolor="#00FF00"><p
+                align="center"><font size="1" face="Arial">Limit[19:16]</font></p>
+                </td>
+                <td valign="top" width="4%" bgcolor="#FFFF00"><p
+                align="center"><font size="1" face="Arial">P</font></p>
+                </td>
+                <td valign="top" width="8%" bgcolor="#FFFF00"><p
+                align="center"><font size="1" face="Arial">DPL</font></p>
+                </td>
+                <td valign="top" width="4%" bgcolor="#FFFF00"><p
+                align="center"><font size="1" face="Arial">S</font></p>
+                </td>
+                <td valign="top" width="8%" bgcolor="#FFFF00"><p
+                align="center"><font size="1" face="Arial">Type</font></p>
+                </td>
+                <td valign="top" width="11%" bgcolor="#00FFFF"><p
+                align="center"><font size="1" face="Arial">Base[23:00]</font></p>
+                </td>
+                <td valign="top" width="11%" bgcolor="#00FF00"><p
+                align="center"><font size="1" face="Arial">Limit[15:00]</font></p>
+                </td>
+            </tr>
+        </table>
+        </center></div><p><font face="Arial"></font>&nbsp;</p>
+        <div align="center"><center><table border="0"
+        cellpadding="8" cellspacing="0">
+            <tr>
+                <td bgcolor="#80FFFF" bordercolor="#000000"><font
+                face="Arial"></font>&nbsp;</td>
+                <td><font face="Arial">Segment Base</font></td>
+                <td><font face="Arial"></font>&nbsp;</td>
+                <td bgcolor="#FFFF00"><font face="Arial"></font>&nbsp;</td>
+                <td><font face="Arial">Segment Access Rights</font></td>
+                <td><font face="Arial"></font>&nbsp;</td>
+                <td bgcolor="#00FF00"><font face="Arial"></font>&nbsp;</td>
+                <td><font face="Arial">Segment Limit</font></td>
+            </tr>
+        </table>
+        </center></div><p><font face="Arial"></font>&nbsp;</p>
+        <h3><font color="#FF0000" face="Arial">Segment-Descriptor
+        Cache </font></h3>
+        <p><font face="Arial">It is useful to know the layout of
+        the fields inside the segment-descriptor cache. The
+        segment base and segment limit are always combined from
+        the descriptor table to form a complete base address and
+        segment limit inside the segment-descriptor cache. The
+        format of the access rights within the segment-descriptor
+        cache changes from implementation to implementation.
+        Likewise, the order of the fields within the cache can
+        change. Regardless, knowing the format of the
+        segment-descriptor cache can make you more productive,
+        reducing both development and debugging time. </font><a
+        href="#Table 1"><font face="Arial">Tables 1 through 4</font></a><font
+        face="Arial"> show the descriptor cache entry format for
+        all Intel x86 processors from the 80286 through Pentium
+        Pro. </font></p>
+        <p align="center"><a name="Table 1"><font size="2"
+        face="Arial"><b>Table 1</b></font></a><font size="2"
+        face="Arial"><b> - 80286 Descriptor Cache Entry</b></font></p>
+        <div align="center"><center><table border="1"
+        cellpadding="7" cellspacing="0" width="400">
+            <tr>
+                <td valign="top" width="21%"><font size="1"
+                face="Arial">Bit Position</font></td>
+                <td align="center" valign="top" width="21%"><font
+                size="1" face="Arial">47..32</font></td>
+                <td align="center" valign="top" width="8%"><font
+                size="1" face="Arial">31</font></td>
+                <td align="center" valign="top" width="12%"><font
+                size="1" face="Arial">30..29</font></td>
+                <td align="center" valign="top" width="7%"><font
+                size="1" face="Arial">28</font></td>
+                <td align="center" valign="top" width="12%"><font
+                size="1" face="Arial">27..24</font></td>
+                <td align="center" valign="top" width="21%"><font
+                size="1" face="Arial">23..00</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="21%"><font size="1"
+                face="Arial">Description</font></td>
+                <td align="center" valign="top" width="21%"><font
+                size="1" face="Arial">16-bit Limit</font></td>
+                <td align="center" valign="top" width="8%"><font
+                size="1" face="Arial">P</font></td>
+                <td align="center" valign="top" width="12%"><font
+                size="1" face="Arial">DPL</font></td>
+                <td align="center" valign="top" width="7%"><font
+                size="1" face="Arial">S</font></td>
+                <td align="center" valign="top" width="12%"><font
+                size="1" face="Arial">Type</font></td>
+                <td align="center" valign="top" width="21%"><font
+                size="1" face="Arial">24-bit Base</font></td>
+            </tr>
+        </table>
+        </center></div><p align="center"><font size="2"><b></b></font>&nbsp;</p>
+        <p align="center"><font size="2" face="Arial"><b>Table 2
+        - 80386 and 80486 Descriptor Cache Entry</b></font></p>
+        <div align="center"><center><table border="1"
+        cellpadding="7" cellspacing="0" width="600">
+            <tr>
+                <td valign="top" width="14%"><font size="1"
+                face="Arial">Bit Position</font></td>
+                <td align="center" valign="top" width="12%"><font
+                size="1" face="Arial">95..64</font></td>
+                <td align="center" valign="top" width="14%"><font
+                size="1" face="Arial">63..32</font></td>
+                <td align="center" valign="top" width="9%"><font
+                size="1" face="Arial">31..24</font></td>
+                <td align="center" valign="top" width="5%"><font
+                size="1" face="Arial">23</font></td>
+                <td align="center" valign="top" width="9%"><font
+                size="1" face="Arial">22..21</font></td>
+                <td align="center" valign="top" width="5%"><font
+                size="1" face="Arial">20</font></td>
+                <td align="center" valign="top" width="9%"><font
+                size="1" face="Arial">19..16</font></td>
+                <td align="center" valign="top" width="5%"><font
+                size="1" face="Arial">15</font></td>
+                <td align="center" valign="top" width="8%"><font
+                size="1" face="Arial">14</font></td>
+                <td align="center" valign="top" width="8%"><font
+                size="1" face="Arial">13..0</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="14%"><font size="1"
+                face="Arial">Description</font></td>
+                <td align="center" valign="top" width="12%"><font
+                size="1" face="Arial">32-bit Limit</font></td>
+                <td align="center" valign="top" width="14%"><font
+                size="1" face="Arial">32-bit Base</font></td>
+                <td align="center" valign="top" width="9%"><font
+                size="1" face="Arial">0</font></td>
+                <td align="center" valign="top" width="5%"><font
+                size="1" face="Arial">P</font></td>
+                <td align="center" valign="top" width="9%"><font
+                size="1" face="Arial">DPL</font></td>
+                <td align="center" valign="top" width="5%"><font
+                size="1" face="Arial">S</font></td>
+                <td align="center" valign="top" width="9%"><font
+                size="1" face="Arial">Type</font></td>
+                <td align="center" valign="top" width="5%"><font
+                size="1" face="Arial">0</font></td>
+                <td align="center" valign="top" width="8%"><font
+                size="1" face="Arial">D / B</font></td>
+                <td align="center" valign="top" width="8%"><font
+                size="1" face="Arial">0</font></td>
+            </tr>
+        </table>
+        </center></div><p>&nbsp;</p>
+        <p align="center"><font size="2" face="Arial"><b>Table 3
+        - Pentium Descriptor Cache Entry</b></font></p>
+        <div align="center"><center><table border="1"
+        cellpadding="7" cellspacing="0" width="600">
+            <tr>
+                <td valign="top" width="15%"><font size="1"
+                face="Arial">Bit Position</font></td>
+                <td align="center" valign="top" width="10%"><font
+                size="1" face="Arial">95..79</font></td>
+                <td align="center" valign="top" width="7%"><font
+                size="1" face="Arial">78</font></td>
+                <td align="center" valign="top" width="10%"><font
+                size="1" face="Arial">77..72</font></td>
+                <td align="center" valign="top" width="6%"><font
+                size="1" face="Arial">71</font></td>
+                <td align="center" valign="top" width="10%"><font
+                size="1" face="Arial">70..69</font></td>
+                <td align="center" valign="top" width="6%"><font
+                size="1" face="Arial">68</font></td>
+                <td align="center" valign="top" width="10%"><font
+                size="1" face="Arial">67..64</font></td>
+                <td align="center" valign="top" width="14%"><font
+                size="1" face="Arial">63..32</font></td>
+                <td align="center" valign="top" width="13%"><font
+                size="1" face="Arial">31..00</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="15%"><font size="1"
+                face="Arial">Description</font></td>
+                <td align="center" valign="top" width="10%"><font
+                size="1" face="Arial">0</font></td>
+                <td align="center" valign="top" width="7%"><font
+                size="1" face="Arial">D/B</font></td>
+                <td align="center" valign="top" width="10%"><font
+                size="1" face="Arial">0</font></td>
+                <td align="center" valign="top" width="6%"><font
+                size="1" face="Arial">P</font></td>
+                <td align="center" valign="top" width="10%"><font
+                size="1" face="Arial">DPL</font></td>
+                <td align="center" valign="top" width="6%"><font
+                size="1" face="Arial">S</font></td>
+                <td align="center" valign="top" width="10%"><font
+                size="1" face="Arial">Type</font></td>
+                <td align="center" valign="top" width="14%"><font
+                size="1" face="Arial">32-bit Base</font></td>
+                <td align="center" valign="top" width="13%"><font
+                size="1" face="Arial">32-bit Limit</font></td>
+            </tr>
+        </table>
+        </center></div><p>&nbsp;</p>
+        <p align="center"><font size="2" face="Arial"><b>Table 4
+        - Pentium Pro Descriptor Cache Entry</b></font></p>
+        <div align="center"><center><table border="1"
+        cellpadding="7" cellspacing="0" width="600">
+            <tr>
+                <td valign="top" width="13%"><font size="1"
+                face="Arial">Bit Position</font></td>
+                <td align="center" valign="top" width="12%"><font
+                size="1" face="Arial">95..64</font></td>
+                <td align="center" valign="top" width="11%"><font
+                size="1" face="Arial">63..32</font></td>
+                <td align="center" valign="top" width="5%"><font
+                size="1" face="Arial">31</font></td>
+                <td align="center" valign="top" width="6%"><font
+                size="1" face="Arial">30</font></td>
+                <td align="center" valign="top" width="9%"><font
+                size="1" face="Arial">29..24</font></td>
+                <td align="center" valign="top" width="5%"><font
+                size="1" face="Arial">23</font></td>
+                <td align="center" valign="top" width="9%"><font
+                size="1" face="Arial">22..21</font></td>
+                <td align="center" valign="top" width="5%"><font
+                size="1" face="Arial">20</font></td>
+                <td align="center" valign="top" width="9%"><font
+                size="1" face="Arial">19..16</font></td>
+                <td align="center" valign="top" width="16%"><font
+                size="1" face="Arial">15..00</font></td>
+            </tr>
+            <tr>
+                <td valign="top" width="13%"><font size="1"
+                face="Arial">Description</font></td>
+                <td align="center" valign="top" width="12%"><font
+                size="1" face="Arial">32-bit Base</font></td>
+                <td align="center" valign="top" width="11%"><font
+                size="1" face="Arial">32-bit Limit</font></td>
+                <td align="center" valign="top" width="5%"><font
+                size="1" face="Arial">0</font></td>
+                <td align="center" valign="top" width="6%"><font
+                size="1" face="Arial">D/B</font></td>
+                <td align="center" valign="top" width="9%"><font
+                size="1" face="Arial">0</font></td>
+                <td align="center" valign="top" width="5%"><font
+                size="1" face="Arial">P</font></td>
+                <td align="center" valign="top" width="9%"><font
+                size="1" face="Arial">DPL</font></td>
+                <td align="center" valign="top" width="5%"><font
+                size="1" face="Arial">S</font></td>
+                <td align="center" valign="top" width="9%"><font
+                size="1" face="Arial">Type</font></td>
+                <td align="center" valign="top" width="16%"><font
+                size="1" face="Arial">Segment Selector</font></td>
+            </tr>
+        </table>
+        </center></div><h3><font color="#FF0000" face="Arial">Descriptor-Cache
+        Registers In Real Life </font></h3>
+        <p><font face="Arial">There are different ways to take
+        advantage of the segment-descriptor cache registers.
+        System-management mode (SMM) gives you direct control
+        over each field in the segment-descriptor cache. (See my<i>
+        DDJ</i> </font><a href="../Jan97/Jan97.html"><font
+        face="Arial">January</font></a><font face="Arial">/</font><a
+        href="../Mar97/Mar97.html"><font face="Arial">March</font></a><font
+        face="Arial">/</font><a href="../May97/May97.html"><font
+        face="Arial">May 1997</font></a><font face="Arial">
+        columns for an in-depth look at System Management Mode.)
+        In-circuit emulators (ICEs) also allow direct control
+        over each field in the segment descriptor cache. (Refer
+        to my<i> DDJ</i> </font><a href="../Jul97/Jul97.html"><font
+        face="Arial">July</font></a><font face="Arial">/</font><a
+        href="../Sep97/Sep97.html"><font face="Arial">September</font></a><font
+        face="Arial">/</font><a href="../Nov97/Nov97.html"><font
+        face="Arial">November 1997</font></a><font face="Arial">
+        columns for information on in-circuit emulation.)</font></p>
+        <p><font face="Arial">For instance, when writing any
+        low-level assembly-language programs (such as OS kernels,
+        device drivers, BIOS, or protected-mode programming), I
+        make common, simple mistakes. I sometimes make a mistake
+        when creating my segment descriptor table, usually the
+        Global Descriptor Table (GDT). I may have created the GDT
+        using an incorrect base address, segment limit, or access
+        rights. Ultimately, my program fails, and I must use the
+        ICE as a debugging tool. I&#146;ll then insert the
+        undocumented ICEBP instruction into my code to instruct
+        the ICE to breakpoint at the suspected point of failure
+        (see </font><a href="../../secrets/opcodes/ICEBP.html"><font
+        color="#000000" face="Arial">http://www.x86.org/secrets/opcodes/ICEBP.html</font></a><font
+        face="Arial">). Within moments, I discover that I used
+        incorrect values in building the descriptor table. Using
+        the ICE, I can load each field of the segment-descriptor
+        cache. If I used an incorrect segment base address, I can
+        correct it and continue. Likewise, I can make the same
+        corrections for the segment limit and segment access
+        rights. I know that these values are &quot;sticky,&quot;
+        meaning that they don&#146;t get changed until a new
+        segment register value is loaded. Therefore, I can make
+        these changes, and continue debugging my program. Using
+        this technique, I can usually discover six or more bugs
+        in my program before recompiling. Because I don&#146;t
+        need to recompile my program after discovering each and
+        every mistake, I save valuable development and debugging
+        time. </font></p>
+        <p><font face="Arial">Programming in SMM implicitly takes
+        advantage of the segment-descriptor cache registers. The
+        segment-descriptor cache registers are saved and restored
+        along with the remaining microprocessor state in the SMM
+        state save map. These values are saved and restored upon
+        entry and exit to system-management mode. In my </font><a
+        href="../Mar97/Mar97.html"><font face="Arial">March 1997<i>
+        DDJ</i> column</font></a><font face="Arial">, I disclosed
+        all of the undocumented fields (known as
+        &quot;reserved&quot; fields in Intel parlance) in the
+        Pentium SMM state save map. As I discussed, the
+        segment-descriptor cache registers are stored in these
+        reserved fields. </font></p>
+        <p><font face="Arial">It is possible to manipulate these
+        segment-descriptor cache values from within the SMM
+        handler. The segment base may be changed to a value that
+        is inconsistent with its associated segment register
+        value. The segment access rights may be manipulated to
+        give current-privilege-level-3 (CPL-3) tasks CPL-0 access
+        (an obvious breach of security). The segment limit may be
+        changed to create a segment with a four-GB limit while in
+        real mode. Using SMM, it is possible to change the
+        segment attributes to values that are programmatically
+        impossible; for example, a real-mode segment at two MB, a
+        segment limit size of 4-gigabytes minus 16, or a
+        read/write code segment in protected mode (not to mention
+        CPL-0 access within a CPL-3 task). </font></p>
+        <h3><font color="#FF0000" face="Arial">Descriptor Cache
+        Anomalies and creating &quot;Unreal Mode&quot;</font></h3>
+        <p><font face="Arial">Using either of these methods to
+        manipulate segment-descriptor caches can be challenging.
+        However, there&#146;s another programatic way of putting
+        segment-descriptor caches to work &#150; creating a CPU
+        operating mode known as &quot;unreal&quot; mode. </font></p>
+        <p><font face="Arial">Unreal mode is created when a
+        real-mode segment has a four-GB segment limit. Unreal
+        mode can be created without any hardware debuggers or SMM
+        programming with a simple assembly-language program.
+        Imagine a program that begins in real mode then
+        transitions into protected mode. Once in protected mode,
+        the program loads all of the segment registers with
+        descriptors containing four-GB segment limits. After
+        setting the segment limits, return immediately to real
+        mode without restoring the segment registers to segments
+        containing 64-KB segments (real-mode-compatible
+        segments). Once in real mode, the segment limits will
+        always retain their four-GB limits. Thereafter, DOS
+        programs can take advantage of the entire 32-bit address
+        space without resorting to protected-mode programming. </font></p>
+        <p><font face="Arial">Unreal mode has been used commonly
+        since it was discovered on the 80386. Unreal mode is so
+        commonly used, in fact, that Intel has been forced to
+        support this mode as part of legacy 80x86 behavior,
+        though it&#146;s never been documented. Memory managers
+        and games often take advantage of unreal mode. Source
+        code that demonstrates how you can create unreal mode is
+        available electronically from<i> DDJ</i> (see
+        &quot;Resource Center,&quot;) or at </font><a
+        href="ftp://ftp.x86.org/dloads/UNREAL.ZIP"><font
+        face="Arial">ftp://ftp.x86.org/dloads/UNREAL.ZIP</font></a><font
+        face="Arial">. </font></p>
+        <p><font face="Arial">The real-mode code segment (CS)
+        descriptor cache behavior has changed between generations
+        of Intel processors. The role of the code
+        segment-descriptor cache in real mode differs between the
+        80286, 80386, and 80486 and all later Intel
+        microprocessors: The earlier microprocessors honor the
+        real-mode segment access rights in real mode until a far
+        control transfer occurs; later processors ignore any
+        access rights in the CS descriptor cache irrespective of
+        far control transfers. On the earlier processors, any far
+        control transfer set the CS descriptor cache access
+        rights to its real-mode compatible value as a readI-write
+        data segment (value=0x93). Later processors leave the
+        original value intact, but ignore its contents.
+        Therefore, transitions from real to protected mode on the
+        later processors immediately causes the behavior to
+        revert to its stagnant CS descriptor-cache access rights
+        value. On earlier processors, the CS limit is also
+        restored to its real-mode compatible value (64 KB). Later
+        processors leave the CS segment limit alone, making its
+        behavior consistent with the other data segment
+        registers. </font></p>
+        <p><font face="Arial">From the 80286 to the Pentium, all
+        Intel processors derive their current privilege level
+        (CPL) from the SS access rights. The CPL is loaded from
+        the SS descriptor table entry when the SS register is
+        loaded. The undocumented LOADALL instruction (or
+        system-management mode RSM instruction) can be used to
+        manipulate the SS descriptor-cache access rights, thereby
+        directly manipulating the CPL of the microprocessors.
+        (See </font><a
+        href="../../articles/loadall/tspec_a3_doc.html"><font
+        face="Arial">http://www.x86.org/articles/loadall/</font></a><font
+        face="Arial"> for a description of LOADALL.) The Pentium
+        Pro behaves differently: Once the CPL is loaded into the
+        Pentium Pro, it is not internally derived from the SS
+        access rights. The Pentium Pro retains a separate CPL
+        register. Through the system-management mode RSM
+        instruction, you can directly manipulate the CPL of the
+        Pentium Pro, though not by manipulating the SS access
+        rights value. (I will discuss the Pentium Pro SMM state
+        save map and all of the secrets contained therein in a
+        future column.) </font></p>
+        <h3><font color="#FF0000" face="Arial">Conclusion </font></h3>
+        <p><font face="Arial">I use the segment-descriptor cache
+        registers every day &#150; when I&#146;m debugging on my
+        ICE to help correct common protected-mode programming
+        errors, programming in system-management mode to create
+        events, or creating real-mode segments that can address
+        the entire four-GB address space. The use of the
+        segment-descriptor cache is highly implementation
+        specific, meaning the behavior and layout of the
+        segment-descriptor cache is dependant upon the
+        implementation of the specific microprocessor. Intel
+        doesn&#146;t guarantee that the behavior of the
+        descriptor cache will remain the same from microprocessor
+        to microprocessor. Therefore, it would be foolhardy to
+        write any production-quality source code which depends
+        upon this behavior (except unreal mode). </font></p>
+        </td>
+    </tr>
+</table>
+
+<hr>
+
+<p><a href="../ddj.html"><font size="4" face="Arial">Back to Dr.
+Dobb's Undocumented Corner home page</font></a></p>
+
+<p><P><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/bighand_left.gif" ALT="Return to the" VSPACE=14 BORDER=0 HEIGHT=48 WIDTH=64></A><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/gohome.gif" ALT="Intel
+Secrets home page" BORDER=0></A>
+<img src="http://www.x86.org/Count.cgi?ft=0|frgb=69;139;50;tr=0|trgb=0;0;0|wxh=15;20|md=6|dd=C|st=1532481|sh=0|df=Total.html.dat" border=0  align=abscenter width=0 height=0>
+
+<HR><BR>
+<ADDRESS>&copy; 1991-1999 <b><font color="#FF0000">Intel Secrets Web Site</font></b> and Robert Collins. <A HREF="http://pgp5.ai.mit.edu/pks-commands.html#extract">PGP
+key available</A>.<BR>
+<BR>
+<FONT SIZE=-2>Make no mistake!<BR>
+</FONT>This web site is proud to provide superior information and service
+without any affiliation to Intel Corporation.<BR>
+<BR>
+&quot;<B><FONT COLOR="#FF0000">Intel Secrets</FONT></B>&quot;, &quot;<B><FONT COLOR="#FF0000">What
+Intel doesn't want you to know</FONT></B>&quot; <B><FONT COLOR="#FF0000">and
+anything with a dropped e in it</FONT></B>, are phrases that infuriate
+Intel Corporation.</ADDRESS>
+
+<ADDRESS><BR>
+Pentium, Intel, and the letter "I" are registered trademarks of Intel Corporation. 386, 486, 586, P6,
+all other letters, and all other numbers <B><FONT COLOR="#FF0000">are not!<BR>
+</FONT></B>All other trademarks are those of their respective companies.
+See <A HREF="http://www.x86.org/Trademarks.html">Trademarks and Disclaimers</A>
+for more info.<BR>
+<BR>
+Robert Collins works somewhere in the United States of America. Robert
+may be <A HREF="http://www.x86.org/Contact.html">reached via email or telephone</A>.</ADDRESS>
+</p>
+</body>
+</html>

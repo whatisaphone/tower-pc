@@ -1,0 +1,646 @@
+   NCR 77C21
+   NCR 77C22
+   NCR 77C22E    160pin 4MB, 1280x1024 256 col
+   NCR 77C22E+   160pin
+   NCR 77C32BLT  208pin BitBLT support
+
+
+3C4h index  5  (R/W):  Extended Function Enable Register
+bit    0  Enables extended registers if set (3C4h index >=8, 3d4h index >=30h)
+       1  Reserved (always 0).
+       2  If set the Hardware Configuration registers (3C4h index 23h bit 0-3,
+          index 27h bit 1, index 1Fh bit 5 and index 1Eh bits 0-1) can be
+          modified. On the 77c32BLT this bit causes the memory to wrap at 512K
+          when set.
+     3-7  Reserved
+
+3C4h index  8  (R):  Version Number Register
+bit  0-3  Chip revision
+     4-7  Product Code: 0=77C22, 1=77C21, 2=77C22E (bits 0-3 <8) or 77C22E+
+           (bits 0-3 >=8), 3=77c32BLT.
+
+3C4h index 0Ah (R/W):  Cursor Color One Register
+bit  0-7  Foreground color of the Bit Mapped Cursor.
+          Selected if plane 0=0 and plane 1=1.
+
+3C4h index 0Bh (R/W):  Cursor Color Zero Register
+bit  0-7  Background color of the Bit Mapped Cursor.
+          Selected if plane 0=0 and plane 1=0.
+
+3C4h index 0Ch (R/W):  Cursor Control Register
+bit    0  Cursor Enable. When set enables the Bit Mapped cursor.
+     1-2  Cursor Height select.
+          0=16 lines, 1=32 lines, 2=64 lines and 3=128 lines.
+       3  Blink Frequency Select. If set the Bit Mapped Cursor is on for 16
+          frames and off for another 16 frames. If clear it is on for 8 frames
+          and off for another 8 frames.
+       4  Blink Enable. If set the Bit Mapped Cursor blinks.
+     5-6  (77c22E+,32 only) Cursor Repeat Count. Number of bytes per pixel the
+          cursor passes over: 0: 1byte/pixel, 1: 2b/p, 2: 3b/p, 3: 4b/p
+       7  (32 only) Cursor Width Select. If set selects a 64pixel wide cursor,
+          32pixel if clear
+
+3C4h index 0Dh (R/W):  Cursor X Location High register
+bit  0-2  Bits 8-10 of the horizontal position of the Bitmapped Cursor.
+          The lower 8 bits are in 3C4h index 0Eh.
+     3-7  Reserved
+
+3C4h index 0Eh (R/W):  Cursor X Location Low register
+bit  0-7  Lower 8 bits of the horizontal position of the Bitmapped Cursor.
+          The upper 3 bits are in 3C4h index 0Dh.
+
+3C4h index 0Fh (R/W):  Cursor Y Location High register
+bit  0-1  (22,22E) Bits 8-9 of the vertical position of the Bitmapped Cursor.
+          The lower 8 bits are in 3C4h index 10h.
+       2  (22E+,32) Bit 10 of the Cursor Vertical position
+
+3C4h index 10h (R/W):  Cursor Y Location Low register
+bit  0-7  Lower 8 bits of the vertical position of the Bitmapped Cursor.
+          The upper 2 bits are in 3C4h index 0Fh.
+
+3C4h index 11h (R/W):  Cursor X Index Register.
+bit  0-4  (22,22E,22E+) Horizontal location of the Hot Spot from the left of
+          the cursor.
+     0-5  (32) Bit 5 of the Cursor X Index
+
+3C4h index 12h (R/W):  Cursor Y Index Register.
+bit  0-6  Vertical location of the Hot Spot from the top of the cursor.
+       7  Reserved.
+
+3C4h index 13h (R/W):  Cursor Storage Register High.
+bit  0-7  Bits 8-15 of the address of the cursor bitmap. The lower 8 bits are
+          in 3C4h index 14h.
+
+3C4h index 14h (R/W):  Cursor Storage Register Low.
+bit  0-7  Bits 0-7 of the address of the cursor bitmap. The upper 8 bits are
+          in 3C4h index 13h. Must be an even address
+Note: The 22E+ and 32 only documents the lower 4 bits of index 14h and doesn't
+      document index 13h ??
+
+3C4h index 15h (R/W):  Cursor Storage Offset Register High.
+bit  0-7  Bits 8-15 of the Cursor Storage Offset. The lower 8 bits are in 3C4h
+          index 16h.
+
+3C4h index 16h (R/W):  Cursor Storage Offset Register Low.
+bit  0-7  Bits 0-7 of the Cursor Storage Offset. The upper 8 bits are in 3C4h
+          index 15h. If extended memory is enabled (3C4h index 1Eh bit4 set)
+          the Cursor Storage Offset is multiplied with 16 and added to the
+          Cursor Storage Address to form a 20 bit address.
+Note: The cursor map is stored as a #lines*(32+32bit) bitmap
+      The behavior of the cursor in each pixel is defined by the combination
+      of the pixels from the two 32bit maps (The first pixel of the cursor is
+      stored in the last byte):
+       1st   2nd    Description
+        0     0     Background color (index 0Bh)
+        0     1     Foreground color (index 0Ah)
+        1     0     screen data (transparent cursor)
+        1     1     Inverted screen data (XOR cursor)
+Note: It is possible that for the 77c22e revision 2 the pixel order in the map
+      should be reversed.
+
+3C4h index 17h (R/W):  Cursor Pixel Mask Register.
+bit  0-7  Each bit set allows the corresponding bit in a pixel to be
+          affected by the Bitmapped Cursor.
+
+3C4h index 18h (R/W):  Primary Host Offset Register High.
+bit  0-7  Bits 8-15 of the Primary Host Offset.
+          The lower 8 bits are in 3C4h index 19h.
+
+3C4h index 19h (R/W):  Primary Host Offset Register Low.
+bit  0-7  Bits 0-7 of the Primary Host Offset. The upper 8 bits are in 3C4h
+          index 18h. If extended memory is enabled (3C4h index 1Eh bit4 is
+          set) all Host addresses are modified by multiplying either the
+          Primary or the Secondary Host Offset with 16 and adding the result
+          to the Host address.3C4h index 1Eh controls which operations use
+          which Host Offset.
+
+3C4h index 1Ah (R/W):  Display Offset Register High.                  (22,22E)
+bit  0-7  Bits 8-15 of the Display Offset.
+          The lower 8 bits are in 3C4h index 1Bh.
+
+3C4h index 1Ah (R/W):  Linear Address Register 0                     (32 only)
+bit  0-1  Aperture Size Select. Selects the size of the linear Aperture
+               Size:  Selected by:
+           0:   1M    Aperture Location 20-31
+           1:   2M    Aperture Location 21-31
+           2:   4M    Aperture Location 22-31
+     4-7  Aperture Location Bits 20-23. Bits 20-23 of the Address of the
+          linear Aperture. Bits 24-31 are in index 1Bh. Depending on the
+          Aperture Size (bits 0-1) bits 20-21 of the address may not be used.
+
+3C4h index 1Bh (R/W):  Display Offset Register Low.                   (22,22E)
+bit  0-7  Bits 0-7 of the Display Offset. The upper 8 bits are in 3C4h index
+          1Ah. If extended memory and Display Offset are enabled (3C4h index
+          1Eh bit 4 and 3 are both set) the Display Offset is multiplied with
+          16 and added to the normal display address.
+
+3C4h index 1Bh (R/W):  Linear Address Register 1                     (32 only)
+bit  0-7  Aperture Location Bits 24-31. The upper 8 bits of the Address of the
+          linear Aperture. Bits 20-23 are in index 1Ah
+
+3C4h index 1Ch (R/W):  Secondary Host Offset Register High.
+bit  0-7  Bits 8-15 of the Secondary Host Offset. The lower 8 bits are in 3C4h
+          index 1Dh.
+
+3C4h index 1Dh (R/W):  Secondary Host Offset Register Low.
+bit  0-7  Bits 0-7 of the Secondary Host Offset. The upper 8 bits are in 3C4h
+          index 1Ch. 3C4h index 1Eh controls which operations use this
+          register
+
+3C4h index 1Eh (R/W):  Extended Memory Enable Register.
+bit  0-1  DRAM Address Configuration. These bits can only be modified
+          if 3C4h index 5 bit 2 is set.  0: 64Kx, 1: 256Kx, 3: 1Mx
+       2  Secondary Offset Enable. If this bit and bit 4 are set all read
+          operations are modified by multiplying the Secondary Host Offset by
+          16 and adding the result to the host address.
+       3  (22,22E only) If this bit and bit 4 are set all display addresses
+          are modified by multiplying the Display Offset by 16 and adding the
+          result to the normal display address.
+       4  Extended Memory Enable. If set extended memory is enabled.
+     5-7  (22E+,32 only) Primary/Secondary Read/Write Select.
+            0:  Write to Primary, Read from Secondary
+            1:  Write to Primary, Read toggles from Secondary to Primary ?
+            2:  Primary at A0000h-AFFFFh, Secondary at B0000h-BFFFFh.
+                Both Read/Write
+            3:  Read and Write to Secondary only
+            6:  (22E+ only?) Primary at A0000h-A7FFFh, Secondary at A8000h
+                 -AFFFFh. Both Read/Write
+
+3C4h index 1Fh (R/W):  Extended Clocking Mode.
+bit  0-3  If bit 4 set this determines the font width:
+            0   4 bit wide font
+            1   7 bit wide font
+            2   8 bit wide font
+            3   9 bit wide font
+            4  10 bit wide font
+            5  11 bit wide font
+            6  12 bit wide font
+            7  13 bit wide font
+            8  14 bit wide font
+            9  15 bit wide font
+           0Bh 16 bit wide font
+       4  If set enables extended font width.
+       5  (22E,22E+) Clock Output enable if set.
+          (32 only) Clock Select Bit 2
+       6  (22E,22E+) Clock Select Bit 2
+          (32 only) Clock Select Bit 3
+       7  Reserved
+
+3C4h index 20h (R/W):  Extended Video Memory Addressing Register
+bit    0  Addition of host address bit 16. If set (and 3CEh index 6 bits 2-3 =
+          0) the range A0000h-BFFFFh can be used as one 128K window
+       1  Extended chain-4 enable if set.
+     2-7  Reserved.
+
+3C4h index 21h (R/W):  Extended Pixel Control Register
+bit    0  Enable graphics byte path if set. Set in extended 256color modes
+       1  Enable packed/nibble pixel format (2 pixels of 4 bits per byte)
+          if set.
+       2  (32 only) Packed Nibble to Targa Convert Enable. If set 16bit pixel
+           data stored as (Bits 0-3 Red, 4-7 Green, 8-11 Blue) (I.e. NeXT) is
+           displayed as (Bits 0-4 Red, 5-9 Green, 10-14 Red) (I.e. Targa).
+     4-5  Pixel Depth. The number of bytes per pixel. 0: 1-8 bits/pixel
+            (1 byte), 1: 9-16b/p (2 bytes), 2: 17-24b/p (3 bytes).
+     2-7  Reserved.
+
+3C4h index 22h (R/W):  Bus Width Feed Back Register.
+bit    0  (not 32) Enables 16 bit memory access if set.
+       1  (not 32) Enables 16 bit I/O access if set
+       2  (22E+) Select AT/MCA/CPU Interface. If bit 4 is clear, this bit is
+           set for AT busses and clear for MCA busses. If bit 4 set and bit 5
+           clear, this bit is set for 386DX systems, clear for 386SX systems.
+          (32) AT/MCA Style Operation. If set the Video Subsystem Enable (VSE)
+           register is at 46E8h (AT style), if clear at 3C3h (MCA style).
+       3  (22E+) Disable CHRDY High. If set CHRDY is driven low and then
+           tri-stated, if clear CHRDY is driver low and upon assertion of
+           CHRDY momentarily drives it high and then tri-states it to provide
+           maximum system performance.
+          (32 only) Enable Palette Shadowing. If set writes to the Palette RAM
+           are executed, but the LDEV/ and LRDY/ signals are not asserted,
+           allowing other devices to respond to the operation
+       4  (22E+) Enable CPU Bus. Set for Local Bus, clear for AT and MCA bus
+          (32 only) Shadow All Writes. If set all write operations are
+           executed, but the LDEV/ and LRDY/ signals are not asserted,
+           allowing other devices to respond tp the operation
+       5  (22E+) Select 486 Processor Interface. If bit 4 set, this bit is set
+           for 486 Local bus systems with 1x clocking, clear for 386 Local Bus
+           systems with 2x clocking
+          (32 only) Disable All Reads. If set all register reads are ignored,
+           except for port 94h, 102h, 3C3h and 46E8h
+       6  (22E+) Enable 16bit BIOS if set
+          (32 only) VSE Disable. If set accesses to the VSE register (46E8h
+           or 3C3h) are ignored
+       7  (22E+) Enable BIOS Zero Wait State. If set the ZWS signal is
+           asserted during accesses to C0000h-C7FFFh, resulting in zero wait
+           states
+          (32 only) VSE Read Disable. If set the VSE register (46E8h or 3C3h)
+           is write only
+
+3C4h index 23h (R/W):  Performance Select Register
+bit    0  (not 32) Video Memory Width Select. Set if the video memory is 32
+           bit wide, clear if it is 16bit wide.
+       1  (not 32) Selects 3 clock RAS cycles if set. Should not be set!!
+       2  (not 22E+,32) Enables Fast Page Mode if set. Set by external
+           resistor.
+          (32 only) 4 Clock RAS# Precharge. If set the RAS precharge time is 4
+           clocks, 3 if clear.
+       3  (22E+,32) Select AT or PS/2 Style BIOS. If clear AT style operation
+           is selected and mode switches between monochrome and color modes
+           require the BIOS equipment flag to be updated, if clear PS/2 mode
+           operation is selected and mode switches are unrestricted.
+       4  (22E,22E+) Wait State Select. In ATbus systems zero wait states is
+           enabled if clear. In Local Bus mode one wait state if clear, no
+           wait states if set
+          (32 only) Zero Wait State Select. If set RDY will be asserted in the
+           first T2 of a write operation (assuming the write FIFO is not full)
+           and RDY will be asserted in the second T2 cycle of a read operation
+           assuming the data is not ready
+       5  (22E+ only) RAS/CAS Swap. If set the RAS and CAS lines are swapped.
+          Allows higher performance on Local Bus systems.
+       6  (not 22E+,32) Unlatched Memory Writes (Only in 256 color modes with
+          OSC3). If set limits the duration of CHRDY assertion time by
+          limiting FIFO fill lengths.
+       7  Latched Memory Reads. If set the assertion of CHRDY can be
+          eliminated during read cycles.
+
+3C4h index 24h (R/W):  Color Expanded Write Foreground Register.
+bit  0-7  When in expanded write mode (3C4h index 26h bit 0 set) a monochrome
+          bitmap can be expanded to 256 or 16 colors 8 or 16 pixels at a time.
+          '1' bits in the bitmap are expanded to this color. For 16 color
+          modes only bit 0-3 are used.
+
+3C4h index 25h (R/W):  Color Expanded Write Background Register.
+bit  0-7  When in expanded write mode (3C4h index 26h bit 0 set) a monochrome
+          bitmap can be expanded to 256 or 16 colors 8 or 16 pixels at a time.
+          '0' bits in the bitmap are expanded to this color. For 16 color
+          modes only bit 0-3 are used.
+
+3C4h index 26h (R/W):  Extended Read/Write Control Register.
+bit    0  FG/BG Color Expansion Enable. When set enables expansion from
+          monochrome bitmaps to full color using 3C4h index 24h and 25h as
+          fore- and background colors.
+       1  256Color Expansion Enable Mode 1. If set enables 256 color
+          expansion. If clear 8bit pixel values can be written to the
+          framebuffer as in standard mode 13h. If clear and bit 0 is set then
+          16 color expansion is enabled. If set the upper 4 bits of the host
+          data will be expanded to four separate pixels, each is the
+          foreground color (index 24h) if the corresponding bit is set, the
+          background color (index 25h) if it is clear
+       2  (not 22E+,32 ?) Color Expansion Enable Mode 2. If set accesses to
+           even addresses will work on the upper 4 bits of the data at the
+           even address and the lower 4 bits of the data at the following odd
+           address. This mode should only be used when the chip is configured
+           as a 16 bit device and only with even addresses.
+       3  Planar to Packed Pixel Conversion Enable. Enables 16/256 color pixel
+          expansion when set. This bit should always be set when bit 1 is.
+       4  Packed Pixel Mask Enable. When in packed pixel modes, this bit is
+          set to enable pixel masking operations. This bit should be set when
+          bit 1 is set.
+       5  Packed Pixel Color Compare. When set configures the color compare
+          logic to operate on packed pixel data. This bit should be set when
+          bit 1 is set.
+       6  Quad Word Read Latch for Writes. If set 64 bits are written when 16
+          bit latched write operations occurs in write mode 1. Allows fast
+          copy of data within the framebuffer.
+       7  (22,22E) Address Toggle. When bit 6 is set this bit specifies
+            how address information is maintained with the latched data.
+          (22E+,32) Color Transparency Enable. If set the upper 4 bits of
+            rotated CPU data is the Transparency mask
+
+3C4h index 27h (R/W):  Miscellaneous Feature Select Register.
+bit    0  Extended Palette addressing enable. If set I/O address bit 15 is
+          passed to the RS2 pin of the palette DAC chip, so that I/O address
+          03C6h - 03C9h address the first 4 registers of the DAC chip and
+          83C6h - 83C9h address four other registers.
+          Useful for advanced DACs with overlay and command registers.
+       1  64K/256Kx16 Dual WE DRAMs. If set the 77C22E outputs DRAM interface
+          signals for direct interfacing with 64K x 16 DRAMs (22E+:
+          64K/256Kx16).
+       2  Disable ROM BIOS CS. If set this bit disables the address decoding
+          for the BIOS ROM at C000h-C7FFFh thus allowing this area to be used
+          for  other adapters.
+       3  User Defined Output (I/O Control pin 2). This bit is output on pin 2
+          On the 32BLT this is output on pin 126
+       4  (22E+,32) IRQ Drive Low. If set (or in MCA mode) the IRQ signal will
+           drive low and release, if clear and in AT or Local Bus mode the IRQ
+           signal will drive high and release to tristate.
+       5  (22E+) Enable Output of Pixel Data. If set disables tristating of
+           pixel data when EVID/ is active
+          (32 only) 3C0h-3DFh Full Range Addressing. If set LRDY/ is asserted
+           for any I/O access in the range 3C0h-3DFh.
+       6  (22E+) Enable Output of PCLK. If set disables tristating of PCLK
+           when EVID/ is active
+          (32 only) Zero Wait State Read Enable. If set a zero wait read cycle
+           results if the data is available from the read caches.
+       7  (22E+) Enable Output of BLANK/. If set disables tristating of the
+           BLANK/ signal when EVID/ is active, if clear BLANK/ is tristated
+           when EVID/ is active
+          (32 only) Remapped BIOS Write. If set writes to A0000h-AFFFFh are
+           written to the BIOS allowing BIOS RAM updates without disabling
+           BIOS shadowing and reallocation of C0000h-C7FFFh
+
+3C4h index 28h (R/W):  Color Key Control                        (22E+,32 only)
+bit    0  Enable Color Key if set
+       1  Color Key Output Control. If set the Color Key Output signal goes
+          active on the rising edge of PCLK, if clear on the falling edge.
+     2-3  Color Key Sample Interval. Determines the sample interval of the
+          pixel byte stream. The sampling begins with the first byte after
+          display has been enabled. 0: Every byte, 1: Every second byte,
+            2: Every third byte, 3: Every fourth byte.
+     4-5  Video Delay. Controls the delay of the tristate control signal after
+          a color match in number of sample intervals to delay assertion of
+          the tristate control signal. 0: 0 sample intervals, 1: 1, 2: 2, 3: 3
+       6  Disable Tristate Output. If set disables the tristating of PCLK and
+          PIX during the color match interval, if clear PCLK and PIX will
+          tristate during the color match interval
+       7  (32 only) Tristate Delay Mode. If set the tristate delay specified
+           in bits 4-5 are in bytes, if clear in pixels.
+
+3C4h index 29h (R/W):  Color Key Match Value                    (22E+,32 only)
+bit  0-7  The color the Color Key circuitry looks for. When a match is found
+          the Color Key Match signal is asserted
+
+3C4h index 2Ah W(R/W):  Color Key Match Value High                   (32 only)
+bit 0-15  Bits 8-23 of the Color Kay Match value in index 29h
+
+3C4h index 2Dh (R/W):  CRC Control                                 (22E+ only)
+bit    0  Arm CRC Circuit. If set causes the CRC circuit to operate on video
+          data for one frame (VSYNC to VSYNC). For interlaced modes two frames
+          are used.
+       1  If set forces the CRC value to 1. Must be reset prior to CRC testing
+       2  Self Test Enable. If set no external data is used for the CRC
+          generation. Intended for testing.
+
+3C4h index 2Eh W(R):  CRC Data                                     (22E+ only)
+bit 0-15  The generated CRC value.
+
+3C4h index 30h (R/W):  Memory Mapped Register Control                (32 only)
+bit    0  Enable Accelerator Control Menu (ACM). If set the ACM is enabled at
+          the address specified in index 31h-33h.
+       1  Enable Cursor Register Access. If set the Cursor Position registers
+          (3C4h index 0Dh-10h) can be accessed at index 0Ch in the ACM.
+       2  Enable Primary/Secondary Offset Register Access. If set the Primary
+          and Secondary Offset registers (3C4h index 18h,19h,1Ch and 1Dh) can
+          be accessed in the ACM
+
+3C4h index 31h 3(R/W):  ACM Aperture Register 1-3                    (32 only)
+bit 0-23  Bits 8-31 of the ACM Aperture address. The lower 8 bits are 0.
+
+3C4h index 3Eh (R/W):  BIOS Utility Register 0                       (32 only)
+bit  0-7  Scratch Pad
+       0  Set for other HiColor DACs
+       1  Set for DACs with fourth read of 3C6h = 44h (MUSIC MU9c9910)
+       2  Set for DACs with fourth read of 3C6h = B3h (which ??)
+       4  Appears to be the inverse of 3C4h index 22h bit 0
+
+3C4h index 3Fh (R/W):  BIOS Utility Register 1                       (32 only)
+bit  0-7  Scratch Pad
+
+3d4h index 30h (R/W):  Extended Horizontal Timings Register.
+bit    0  Horizontal Total bit 8. Bit 8 of the Horizontal Total register.
+          (3d4h index 0). Bit 9 is in index 32h bit 0.
+       1  Horizontal Display Enable End bit 8. Bit 8 of the Horizontal Display
+          Enable End register (3d4h index 1). Bit 8 is in index 32h bit 1.
+       2  Start Horizontal Blanking bit 8. Bit 8 of the Start Horizontal
+          Blanking register (3d4h index 2). Bit 9 is in index 32h bit 2.
+       3  Start Horizontal Retrace bit 8. Bit 8 of the Start Horizontal
+          Retrace register (3d4 index 4). Bit 9 is in index 32h bit 4
+       4  (22E, 22E+,32) Interlace Enable. Enables interlace video for high
+           resolution graphics modes. Note in interlaced modes the line
+           doubling from index 9 bits 0-4&7 is ignored. Also Line Compare
+           should not be used with interlaced modes
+       5  (22E+,32) Enable Extended End Bits. If set enables the extended end
+           bits (index 32h bits 4-7 and index 33h bits 5-7)
+       6  (22E+) CRT Clock Divide by Two. If set the video clock is divided
+           by 2.
+Note: The extended Function Enable Register (3C4h index 5) bit 0 must be 1 to
+      access this register.
+
+3d4h index 31h (R/W):  Extended Start Address Register
+bit  0-3  Display Start Address bit 16-19. (bit 0-15 are in 3d4h index Ch and
+          Dh).
+       4  Bit 8 of Address Row Offset. Bit 8 of the CRTC Offset (3d4h index
+          13h).
+
+3d4h index 32h (R/W):  Extended Horizontal Timings Two Register     (22E+, 32)
+bit    0  Horizontal Total Bit 9. Bit 9 of the Horizontal Total register (3d4h
+          index 0). Bit 8 is in index 30h bit 0
+       1  Horizontal Display Enable End bit 9. Bit 9 of the Horizontal Display
+          End register (3d4h index 1). Bit 8 is in index 30h bit 1
+       2  Horizontal Blank Start bit 9. Bit 9 of the Start Horizontal Blanking
+          register (3d4h index 2). Bit 8 is in index 30h bit 2.
+       3  Horizontal Retrace Start bit 9. Bit 9 of the Start Horizontal
+          Retrace register (3d4h index 0). Bit 8 is in index 30h bit 3.
+     4-5  Horizontal Blank End bits 6-7. Bits 6-7 of the Horizontal Blanking
+          End register (3d4h index 3).
+     6-7  Horizontal Retrace End bits 5-6. Bits 5-6 of the Horizontal Retrace
+          register (3d4h index 5).
+
+3d4h index 33h (R/W):  Extended Vertical Timings                   (22E+ only)
+bit    0  Vertical Total bit 10.  Bit 10 of the Vertical Total register (3d4h
+          index 6). Bits 8 and 9 are in 3d4h index 7 bits 0 and 5.
+       1  Vertical Display Enable End bit 10. Bit 10 of the Vertical Display
+          End register (3d4h index 12h). Bits 8 and 9 are in 3d4h index 7 bits
+          1 and 6
+       2  Vertical Blank Start bit 10. Bit 10 of the Vertical Blank Start
+          register (3d4h index 15h). Bit 8 is in 3d4h index 7 bit 3 and bit 9
+          in 3d4h index 9 bit 5
+       3  Vertical Retrace Start bit 10. Bit 10 of the Vertical Retrace Start
+          register (3d4h index 10h). Bits 8 and 9 are in 3d4h index 7 bits 2
+          and 7
+       4  Line Compare bit 10. Bit 10 of the Line Compare register (3d4h index
+          18h). Bit 8 is in 3d4h index 7 bit 4 and bit 9 in 3d4h index 9 bit 6
+     5-6  Vertical Blank End bits 8-9. Bits 8-9 of the Vertical Blank End
+          register (3d4h index 16h).
+       7  Vertical Retrace End bit 4. Bit 4 of the Vertical Retrace End
+          register. Bits 0-3 are in 3d4h index 11h bits 0-3.
+
+3d4h index 34h (R/W):  Monitor Power Management                      (32 only)
+bit    0  Set HSync low
+       1  Set HSync high
+       2  Set VSync low
+       3  Set VSync high
+
+
+The Memory Mapped Registers (Accelerator Control Menu - ACM) can only be
+accessed when 3C4h index 30h bit 0 is set. The base address of the ACM
+registers are defined in 3C4h index 31h-33h.
+
+Memory 00h W(R/W):  Primary Offset                                   (32 only)
+bit 0-15  If 3C4h index 30h bit 2 is set this is the Primary Host Offset
+          register (3C4h index 18h-19h)
+
+Memory 04h W(R/W):  Secondary Offset                                 (32 only)
+bit 0-15  If 3C4h index 30h bit 2 is set this is the Primary Host Offset
+          register (3C4h index 1Ch-1Dh)
+
+Memory 09h (R/W):  Mode Control Register                             (32 only)
+bit  0-1  DRAM Address Configuration. These bits can only be modified
+          if 3C4h index 5 bit 2 is set.  0: 64Kx, 1: 256Kx, 3: 1Mx
+       2  Secondary Offset Enable. If this bit and bit 4 are set all read
+          operations are modified by multiplying the Secondary Host Offset by
+          16 and adding the result to the host address.
+       4  Extended Memory Enable. If set extended memory is enabled.
+     5-7  Primary/Secondary Read/Write Select.
+            0:  Write to Primary, Read from Secondary
+            1:  Write to Primary, Read toggles from Secondary to Primary ?
+            2:  Primary at A0000h-AFFFFh, Secondary at B0000h-BFFFFh.
+                Both Read/Write
+            3:  Read and Write to Secondary only
+Note: This is the Extended Memory Enable register (3C4h index 1Eh).
+
+Memory 0Ch W(R/W):  Cursor X Position Register                       (32 only)
+bit 0-10  If 3C4h index 30h bit 1 is set this is the Cursor X Position
+          registers (3C4h index 0Dh and 0Eh)
+
+Memory 0Eh W(R/W):  Cursor Y Position Register                       (32 only)
+bit 0-11  If 3C4h index 30h bit 1 is set this is the Cursor Y Position
+          registers (3C4h index 0Fh and 10h)
+
+Memory 30h (R/W):  BLT Start Register                                (32 only)
+bit    0  Start/Stop. Set to start a BLT operation, clear to stop the
+          current operation
+       1  Text BLT. Set for Text Mode BLTs, clear for standard BLTs
+       2  BLT Completed Interrupt. If set causes an interrupt when the
+          Accelerator engine has completed an operation. The interrupt is
+          cleared when a 0 is written to this bit.
+       3  Write FIFO Empty Interrupt. If set enables an interrupt when the
+          Write FIFO goes empty
+
+Memory 32h (R):  BLT Status Register                                 (32 only)
+bit    0  Ready. If clear the engine is busy, if set the operation has
+          finished and the parameters can be updated.
+       1  Error. If set indicates that an illegal BLT operation was entered.
+          This bit is cleared when a new operation is started.
+       2  BLT Done Interrupt Status. Set when an interrupt has been generated
+          due to a BLT Done condition.
+       3  Write FIFO Near Empty Interrupt. Set if an interrupt has been
+          generated due to a Write FIFO Near Empty condition.
+       4  Write FIFO Full. Set when the Write FIFO is full
+
+Memory 34h W(R/W):  BLT Control Register                             (32 only)
+bit    1  Color Compare Invert. If clear color match operations return 1 for
+          the pixels which match the reference color and 0 for those that
+          don't, if set this is reversed.
+       3  Map Width. If set the data transferred when either the Source or
+          Destination data is in system memory is padded or truncated to
+          achieve word aligned data.
+       4  Large Pattern Enable. If clear 8x8 pixel patterns are used, if set
+          16x16 patterns are used for 256 color modes.
+       5  Transparency Enable. If set enables background transparency for
+          color expand operations.
+       6  Vertical Direction. The Blit direction is "down" (increasing Y) if
+          set, "up" (decreasing Y) if clear
+       7  Horizontal Direction. The Blit direction is "left" (increasing X) if
+          set, "right" (decreasing X) if clear.
+       9  Color Fill Enable. If set the operation is a solid fill and only one
+          pixel of the pattern data need be read.
+      10  Color Compare Enabled if set
+      11  Color Expand Enable. If set the source data is monochrome and is
+          replaced with fore/background data in the full color depth
+      12  Destination Address Mode. If set the source data is stored in
+          linear format, if clear it is stored in rectangular format.
+      13  Source Address Mode. If set the destination data is stored in
+          linear format, if clear it is stored in rectangular format.
+      14  Destination Location. If set the Destination is in the frame
+          buffer, if clear the destination data is transferred to the system
+          memory via the ?read? FIFO.
+      15  Source Location. If set the Source data comes from the frame buffer,
+          if clear the system supplies the Source data
+
+Memory 38h (R/W):  Pattern X Rotation                                (32 only)
+bit  0-3  The Horizontal Pixel alignment of the pattern
+
+Memory 39h (R/W):  Pattern Y Rotation                                (32 only)
+bit  0-3  The Vertical Pixel alignment of the pattern
+
+Memory 3Ah (R/W):  Raster Opcode                                     (32 only)
+bit  0-7  The raster opcode. See MS-Windows trinary raster codes for the full
+          list. CCh is copy source -> Destination
+
+Memory 3Ch W(R/W):  Bitmap Dimension Width                           (32 only)
+bit 0-11  Bitmap Width. The width of the Source and Destination bitmaps in
+          pixels
+
+Memory 3Eh W(R/W):  Bitmap Dimension Height                          (32 only)
+bit 0-11  Bitmap Height. The height of the Source and Destination bitmaps in
+          pixels. For Text BLTs this is the character cell height
+
+Memory 40h D(R/W):  Destination Register                             (32 only)
+bit  0-2  Bit position for monochome bitmaps. For Color Compare to Memory BLTs
+          this field specifies the initial bit alignment of the Destination
+          bitmap
+    3-24  Destination Address. This is the address of the starting corner of
+          the Destination Bitmap
+
+Memory 44 D(R/W):  Source Register                                   (32 only)
+bit  0-2  Bit position for monochome bitmaps. For Color Expand BLTs this field
+          specifies the initial bit alignment of the Source bitmap
+    3-24  Source Address. This is the address of the starting corner of the
+          Destination Bitmap
+
+Memory 48h D(R/W):  Pattern Register                                 (32 only)
+bit  0-2  Bit offset, must be 0
+    3-24  Pattern Address. This is the address of the starting corner of
+          the Pattern. The address must be DWORD aligned.
+
+Memory 4Ch D(R/W):  Foreground Color Register                        (32 only)
+bit 0-23  The foreground color
+
+Memory 50h D(R/W):  Background Color Register                        (32 only)
+bit 0-23  The Background Color.
+
+
+  ID NCR VGA:
+
+  if testinx2($3C4,5,5) then
+  begin
+    wrinx($3C4,5,0);   {Lock extensions}
+    if not testinx($3C4,$10) then
+    begin
+      wrinx($3C4,5,1);
+      if testinx($3C4,$10) then
+        case rdinx($3C4,8) div 16 of
+          0:NCR 77C22;
+          1:NCR 77C21;
+          2:if (rdinx($3C4,8) and 15)<8 then NCR 77C22E
+                                        else NCR 77C22E+;
+          3:NCR 77c32BLT;
+        end;
+    end;
+  end;
+
+
+  Video Modes:
+
+  40h G 1600 1200  16  PL4                    32BLT
+  41h G 1600 1200 256  P8                     32BLT
+  50h G  640  480 16m  P24                    32BLT
+  51h G  800  600 16m  P24                    32BLT
+  54h T  132   50  16  (8x8)
+  55h T  132   25  16  (8x16)
+  56h T  132   50   4  (8x8)
+  57h T  132   25   4  (8x16)
+  58h G  800  600  16  PL4
+  59h G  800  600   2
+  5Ah G 1024  768   2
+  5Bh G 1024  768  16  PL4    (Interlaced)
+  5Ch G  800  600 256  P8
+  5Dh G 1024  768  16  PL4
+  5Eh G  640  400 256  P8
+  5Fh G  640  480 256  P8
+  61h G 1024  768 256  P8     (Interlaced)    22E !!
+  62h G 1024  768 256  P8                     22E !!
+  67h G 1280 1024  16  PL4    (Interlaced)    22E !!
+  6Ah G 1280 1024 256  P8     (Interlaced)    22E !!
+  6Bh G 1280  960 256  P8                     22E !!
+  6Ch G 1280 1024  16  PL4                    32BLT
+  70h G  640  480 32k  P15                    22E !!
+  71h G  800  600 32k  P15                    22E
+  72h G 1024  768 32k  P15                    32BLT
+  78h G  640  480 64k  P16                    22E
+  79h G  800  600 64k  P16                    22E
+  7Ah G 1024  768 64k  P16                    32BLT
+
+Note: Modes above 57h may require a driver (setmode.sys) to be loaded
+      depending on BIOS version.

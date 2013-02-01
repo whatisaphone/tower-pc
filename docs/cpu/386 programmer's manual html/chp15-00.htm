@@ -1,0 +1,64 @@
+<html>
+<head>
+<title>
+Chapter 15  Virtual 8086 Mode
+</title>
+<body>
+Prev: <a href="chp14-08.htm">14.8  Differences From 80286 Real-Address Mode</a><br><br>
+Next: <a href="chp15-01.htm">15.1  Executing 8086 Code</a>
+<hr>
+<h2>
+Chapter 15  Virtual 8086 Mode
+</h2>
+<hr>
+The 80386 supports execution of one or more 8086, 8088, 80186, or 80188
+programs in an 80386 protected-mode environment. An 8086 program runs in
+this environment as part of a V86 (virtual 8086) task. V86 tasks take
+advantage of the hardware support of multitasking offered by the protected
+mode. Not only can there be multiple V86 tasks, each one executing an 8086
+program, but V86 tasks can be multiprogrammed with other 80386 tasks.
+<p>
+The purpose of a V86 task is to form a "virtual machine" with which to
+execute an 8086 program. A complete virtual machine consists not only of
+80386 hardware but also of systems software. Thus, the emulation of an 8086
+is the result of cooperation between hardware and software:
+<p><ul>
+<li> The hardware provides a virtual set of registers (via the TSS), a
+     virtual memory space (the first megabyte of the linear address space of
+     the task), and directly executes all instructions that deal with these
+     registers and with this address space.
+<li> The software controls the external interfaces of the virtual machine
+     (I/O, interrupts, and exceptions) in a manner consistent with the
+     larger environment in which it executes. In the case of I/O, software
+     can choose either to emulate I/O instructions or to let the hardware
+     execute them directly without software intervention.
+</ul>
+Software that helps implement virtual 8086 machines is called a V86
+monitor.
+<ul>
+<li><a href="chp15-01.htm#15-01">15.1  Executing 8086 Code</a>
+<li>    <a href="chp15-01.htm#15-01-01">15.1.1  Registers and Instructions</a>
+<li>    <a href="chp15-01.htm#15-01-02">15.1.2  Linear Address Formation</a>
+<li><a href="chp15-02.htm#15-02">15.2  Structure of a V86 Task</a>
+<li>    <a href="chp15-02.htm#15-02-01">15.2.1  Using Paging for V86 Tasks</a>
+<li>    <a href="chp15-02.htm#15-02-02">15.2.2  Protection within a V86 Task</a>
+<li><a href="chp15-03.htm#15-03">15.3  Entering and Leaving V86 Mode</a>
+<li>    <a href="chp15-03.htm#15-03-01">15.3.1  Transitions Through Task Switches</a>
+<li>    <a href="chp15-03.htm#15-03-02">15.3.2  Transitions Through Trap Gates and Interrupt Gates</a>
+<li><a href="chp15-04.htm#15-04">15.4  Additional Sensitive Instructions</a>
+<li>    <a href="chp15-04.htm#15-04-01">15.4.1  Emulating 8086 Operating System Calls</a>
+<li>    <a href="chp15-04.htm#15-04-02">15.4.2  Virtualizing the Interrupt-Enable Flag</a>
+<li><a href="chp15-05.htm#15-05">15.5  Virtual I/O</a>
+<li>    <a href="chp15-05.htm#15-05-01">15.5.1  I/O-Mapped I/O</a>
+<li>    <a href="chp15-05.htm#15-05-02">15.5.2  Memory-Mapped I/O</a>
+<li>    <a href="chp15-05.htm#15-05-03">15.5.3  Special I/O Buffers</a>
+<li><a href="chp15-06.htm#15-06">15.6  Differences From 8086</a>
+<li><a href="chp15-07.htm#15-07">15.7  Differences From 80286 Real-Address Mode</a>
+<p>
+<li><a href="chp15-01.htm#F-15-01">Figure 15-1.   V86 Mode Address Formation</a>
+<li><a href="chp15-03.htm#F-15-02">Figure 15-2.   Entering and Leaving the 8086 Program</a>
+</ul><hr>
+Prev: <a href="chp14-08.htm">14.8  Differences From 80286 Real-Address Mode</a><br><br>
+Next: <a href="chp15-01.htm">15.1  Executing 8086 Code</a>
+</body>
+</html>

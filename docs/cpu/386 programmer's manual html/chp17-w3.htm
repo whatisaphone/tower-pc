@@ -1,0 +1,53 @@
+<html>
+<head>
+<title>
+17.3.W  'W' Instructions 
+</title>
+<body>
+<a name="17-03-W"></a>
+Prev: <a href="chp17-v3.htm">17.3.V  'V' Instructions </a><br>
+Next: <a href="chp17-x3.htm">17.3.X  'X' Instructions </a>
+<hr>
+<h2>
+17.3.W  'W' Instructions 
+</h2>
+<p>
+<a name="17-03-WAIT"></a>
+<h3>WAIT -- Wait until BUSY# Pin is Inactive (HIGH)</h3>
+<p>
+<pre>
+Opcode   Instruction   Clocks     Description
+
+9B       WAIT          6 min.     Wait until BUSY pin is inactive (HIGH)
+</pre>
+<p>
+<b>Description</b>
+<p>
+WAIT suspends execution of 80386 instructions until the BUSY# pin is
+inactive (high). The BUSY# pin is driven by the 80287 numeric processor
+extension.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#NM if the task-switched flag in the machine status word (the lower 16 bits
+of register CR0) is set; #MF if the ERROR# input pin is asserted (i.e., the
+80287 has detected an unmasked numeric error)
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Same exceptions as in Protected Mode
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Protected Mode
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-v3.htm">17.3.V  'V' Instructions </a><br>
+Next: <a href="chp17-x3.htm">17.3.X  'X' Instructions </a>
+</body>
+</html>

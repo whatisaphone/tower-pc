@@ -1,0 +1,1228 @@
+The Adapter Interface (AI) was introduced as the programming interface for the
+IBM 8514/A before the register interface was publicly available.
+AI interfaces have also been implemented for the XGA, IBM Image Adapter/A and
+8514/A clones like the ATI Mach8/32
+Also pure software versions exists like Tseng's RIXAI.
+
+INT 7F - AI - Check for Adapter Interface
+         AX = 0105h
+         CX = 0000h
+         DX = 0000h
+Return: Carry clear if successful
+        CX:DX -> Function table. One DWORD pointer for each function (0..60)
+                 Most functions have one parameter (Shown as X below), a
+                 pointer to a parameter table where the first WORD holds the
+                 number of bytes following, thus if there are 10 bytes in all
+                 the first WORD will be 8. It is the callers responsibility to
+                 set this.
+
+function 00h HLINE(X) - Line at Given Point
+ Draws a polyline starting in the first position listed.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4*Number_of_points)
+   02h   WORD    X-coordinate of 1st point
+   04h   WORD    Y-coordinate of 1st point
+      ...
+  4*n+2  WORD    X-coordinate of Nth point
+  4*n+4  WORD    Y-coordinate of Nth point
+
+function 01h HCLINE(X) - Line at Current Position
+ Draws a polyline from the current position to the last point
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4*Number_of_points)
+   02h   WORD    X-coordinate of 1st point
+   04h   WORD    Y-coordinate of 1st point
+      ...
+  4*n+2  WORD    X-coordinate of Nth point
+  4*n+4  WORD    Y-coordinate of Nth point
+
+function 02h HRLINE(X) - Relative Line at Given Position
+ Draws a series of polylines, starting at the given point, with each endpoint
+ given as an offset from the last point.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4 + 2*Number_of_points)
+   02h   WORD    X-coordinate of starting point
+   04h   WORD    Y-coordinate of starting point
+      .....
+  2*N+4  BYTE    X-coordinate of Nth relative point
+  2*N+5  BYTE    Y-coordinate of Nth relative point
+
+
+function 03h HCRLINE(X) - Relative Line at Current Position
+ Draws a series of linesegments, each specified relative to the end of the
+ previous segment (the current position for the first segment).
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(2*Number of segments)
+
+  2*N+2  BYTE    X-coordinate offset (-128 to +127)
+  2*N+3  BYTE    Y-coordinate offset (-128 to +127)
+
+function 04h HSCP(X) - Set Current Position
+ Sets the current drawing position
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4)
+   02h   WORD    New X-coordinate
+   04h   WORD    New Y-coordinate
+
+function 05h HBAR(X) - Begin Area
+ Marks the start of a series of commands that defines the boundary for a
+ fill area. The sequence is terminated by a HEAR() command.
+ The following commands are not allowed between the HBAR and HEAR:
+   HOPEN, HCLOSE, HSMODE, HSHS, HSCMP, HSBP, HCHST and HCCHST.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(0)
+Note: HBAR/HEAR commands can not be nested.
+
+function 06h HEAR(X) - End Area
+ Ends the area definition started by a HBAR command.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(0 or 1)
+   02h   BYTE    Flag (only if length is 1):
+                  00h  Fill the defined area
+                  40h  Suspend the area definition. until the next HBAR
+                  80h  Abort definition.
+                 Note: bits 0-5 are probably ignored
+
+function 07h HSCOL(X) - Set Color
+ Sets the foreground color
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4)
+   02h   DWORD   Foreground color index. Only the number of least significant
+                 bits (depending on the current mode) are used.
+                 0FFFFFFFFh is reserved for multiplane character sets
+
+function 08h HOPEN(X) - Open Adapter
+ Enables the adapter.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(3)
+   02h   BYTE    Initialisation flags
+                 Bit 0-5  Don't care
+                       6  Clear to load default palette
+                       7  Clear to clear video memory
+   03h   BYTE    Mode. See HSMODE for (implementation specific) modelist.
+   04h   BYTE    Return status. In the original 8514/A a non-zero return value
+                 indicated failure, later version have assigned bits to
+                 specific events:
+                 Bit 7  Set if a driver/hardware mismatch occours
+                     6  Set if a control program reject occours
+
+function 09h HSMX(X) - Set Mix
+ Sets the fore- and background mixes
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(2)
+   02h   BYTE    Foreground mix (SRC is Source, DST is Destination):
+                  00h:  Keep previous mix
+                  01h:  SRC or DST
+                  02h:  SRC
+                  03h:  Reserved
+                  04h:  SRC xor DST
+                  05h:  DST          (I.e. do nothing)
+                  06h:  Max(DST,SRC)
+                  07h:  Min(DST,SRC)
+                  08h:  SRC+DST  (overflow is clipped to maximum)
+                  09h:  DST-SRC  (underflow is clipped to zero)
+                  0Ah:  SRC-DST  (underflow is clipped to zero)
+                  0Bh:  (SRC+DST)/2  (Average)
+              0Ch-0Fh:  Reserved
+                  10h:  Zero, all bits cleared
+                  11h:  SRC and DST
+                  12h:  SRC and (not DST)
+                  13h:  SRC
+                  14h:  (not SRC) and DST
+                  15h:  DST
+                  16h:  SRC xor DST
+                  17h:  SRC or DST
+                  18h:  (not SRC) and (not DST)
+                  19h:  not (SRC xor DST)
+                  1Ah:  not DST
+                  1Bh:  SRC or (not DST)
+                  1Ch:  not SRC
+                  1Dh:  (not SRC) or DST
+                  1Eh:  (not SRC) or (not DST)
+                  1Fh:  One, all bits set
+   03h   BYTE    Background mix (same as above)
+
+function 0Ah HSBCOL(X) - Set Background Color
+ Sets the background color
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4)
+   02h   DWORD   Background color index. Only the number of least significant
+                 bits (depending on the current mode) are used.
+                 0xFFFFFFFF is reserved for color fonts.
+
+function 0Bh HSLT(X) - Set Line Type
+ Sets the current line type
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(1 or 6)
+   02h   BYTE    Line pattern type
+                   0: User defined pattern (see byte 4-7)
+                   1: Dotted line (1 on, 2off)
+                   2: Short dashed line (5 on, 3 off)
+                   3: Dash-dot line (6 on, 4off, 2on, 4off)
+                   4: Double doted line (2 on, 4 off, 2 on, 8 off)
+                   5: Long dashed line (9 on, 3 off)
+                   6: Dash-double-dot line (8 on, 4 off, 2 on, 4 off, 2 on,
+                       4 off)
+                   7: Solid line
+                   8: Invisible line.
+       Following fields only present if length =6
+   03h   BYTE    Reserved
+   04h   DWORD   Address of user defined pattern
+                 Offset: Type:
+                   00h   WORD   Number of on/off byte pairs(N)
+                      ...
+                  2*N    BYTE   On count
+                  2*N+1  BYTE   Off count
+                 Maximum pattern length is 48 pixels.
+
+function 0Ch HSLW(X) - Set Line Width
+ Sets the line drawing width
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(1)
+   02h   BYTE    Line width in pixels. Original AI, ATI (Mach32) and XGA
+                 versions only supports widths of 1 and 3.
+
+function 0Dh HEGS(X) - Erase Graphics Screen
+ Clears the screen and sets the current position to the top left corner
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(0)
+
+function 0Eh HSGQ(X) - Set Graphics Quality
+ Sets the graphics quality options
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(2)
+   02h   WORD    Quality flags
+                 Bit  0-9  Reserved
+                       10  (XGA and ImageAdapter/A) If clear areas to be
+                            filled are closed by connection the first point
+                            to the last with a line
+                           Reserved in the original AI.
+                    11-12  0: Last pixel in a line is not drawn
+                           1: Last pixel in a line is drawn
+                           2: Last pixel in a line is drawn dependent on the
+                              mix mode.
+                       13  Reserved, set to 0
+                       14  0: High precision, 1: low precision
+                           Ignored in the XGA and ATI (Mach32) AI versions.
+                       15  Reserved, set to 0
+
+function 0Fh HSCMP(X) - Set Color Comparison Register
+ Sets the color comparison information.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(5)
+   02h   DWORD   Comparison Color (CC)
+   06h   BYTE    Logic function:
+                   0:  TRUE
+                   1:  Destination >  CC
+                   2:  Destination == CC
+                   3:  Destination <  CC
+                   4:  FALSE
+                   5:  Destination >= CC
+                   6:  Destination != CC
+                   7:  Destination <= CC
+                 If the color comparison is true the pixel is left unmodified
+
+function 10h HINT(X) - Interrupt
+ Waits until the event(s) specified by set bit(s) in the Event word happens
+ before it returns. Used to synchronize with an event.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4)
+   02h   DWORD   Event/Interrupt bits:
+                   0-29  Reserved
+                     30  Wait for hardware to be free (I.e. not busy
+                         drawing). Only in the XGA version
+                     31  Wait for vertical blank.
+
+function 11h HSPATTO(X) - Set Pattern Reference Point
+ Sets the pattern reference point for functions that use the pattern.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4)
+   02h   WORD    X-coordinate
+   04h   WORD    X-coordinate
+
+function 12h HSPATT(X) - Set Symbol Shape
+ Defines an area pattern
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(10 or 14)
+   02h   BYTE    Cell width in pixels
+   03h   BYTE    Cell height in lines
+   04h   BYTE    Flags
+                 Bit 0-5  Reserved
+                       6  (XGA and ImageAdapter/A only) Set if pattern color
+                            data is in packed pixel format, clear if it always
+                            uses one byte per pixel
+                             0: 1pixel/byte, 1: packed pixel format
+                       7  0: Monochrome: Marker is drawn with current
+                             foreground color&mix on the background color&mix,
+                          1: Color: Marker is drawn in the color from the
+                             color data (Byte 0Ch) on the current background
+                             color&mix
+   05h   BYTE    Reserved
+   06h   WORD    Size of pattern in bytes
+   08h   DWORD   Ptr to pattern definition data. A packed monochrome bitmap
+       Following field only present if length = 14
+   0Ch   DWORD   Address of pattern color data
+Note: for the original AI (I.e. 8514/A hardware) the pattern is limited to
+      32x32, for the XGA and ImageAdapter/A versions there is no limit
+
+function 13h HLDPAL(X) -Load Palette
+ Loads the color look-up table with either the default palette or a user
+ specified palette.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(1 or 10)
+   02h   BYTE    Palette type
+                   00h  User defined palette as specified in the remaining
+                        parameters
+                   01h  Adapter default palette. Ignore remaining parameters
+   03h   BYTE    Reserved
+   04h   WORD    Index of first palette entry
+   06h   WORD    Number of entries
+   08h   DWORD   Address of palette data. This consists of 4 bytes per entry,
+                 with the first byte (0) reserved, byte 1 is Green, byte 2 is
+                 Blue and byte 3 is Red.
+                 Note: one source has bytes 0 and 3 swapped ??
+
+function 14h HSHS(X) - Set Scissors
+ Sets the scissors rectangle, if rectangle not specified (length=0) the HOPEN
+ default is used. Only pixels within the rectangle can be updated.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(0 or 8 (or 13 for XGA and
+                 ImageAdapter/A versions))
+       Following fields only present if length >=8
+   02h   WORD    Left limit (low X)
+   04h   WORD    Right limit (high X)
+   06h   WORD    Bottom limit (high Y)
+   08h   WORD    Top limit (low Y)
+       Following fields only present if length =13 (XGA and ImageAdapter/A)
+   0Ah   DWORD   Address of monochrome mask map. Only pixels with 1 in the
+                 mask map can be updated.
+   0Eh   BYTE    Reserved, must be 80h
+
+function 15h HBBW(X) - BitBlt Write Image Data
+ Defines the screen area to be written by the HBBCBN command(s) following
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(10 or 18)
+   02h   WORD    Type of BitBlt:
+                   0:  Writes a single plane. The source pattern is packed 8
+                       bits to a byte.
+                   1:  Writes all planes, the source data is packed.
+                       Only supported in XGA versions of the AI.
+                   8:  Writes all planes, source data has one pixel per byte
+   04h   WORD    Width of block in pixels
+   06h   WORD    Height of block in lines
+   08h   WORD    Source X coordinate - left
+   0Ah   WORD    Source Y coordinate - top
+
+       The following fields are only present if the length is set to 18:
+       If set the destination buffer is defined as a rectangle and the data
+       is transferred to a rectangle within the buffer rectangle.
+
+   0Ch   WORD    Offset of the destination rectangle from the left edge of
+                 the larger data buffer rectangle.
+   0Eh   WORD    Starting line in the data buffer
+   10h   WORD    Width of the data buffer in bytes
+   12h   WORD    Height of the data buffer in lines
+
+function 16h HCBBW(X) - BitBlt Write Image Data at Current Position
+ Defines the screen area to be written by the HBBCBN command(s) following
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(6 or 14)
+   02h   WORD    Type of BitBlt:
+                   0:  Writes a single plane. The source pattern is packed 8
+                       bits to a byte.
+                   1:  Writes all planes, the source data is packed.
+                       Only supported in XGA versions of the AI.
+                   8:  Writes all planes, source data has one pixel per byte
+   04h   WORD    Width of block in pixels
+   06h   WORD    Height of block in lines
+
+       The following fields are only present if the length is set to 14:
+       If set the destination buffer is defined as a rectangle and the data
+       is transferred to a rectangle within the buffer rectangle.
+
+   08h   WORD    Offset of the destination rectangle from the left edge of
+                 the larger data buffer rectangle.
+   0Ah   WORD    Starting line in the data buffer
+   0Ch   WORD    Width of the data buffer in bytes
+   0Eh   WORD    Height of the data buffer in lines
+
+function 17h HBBR(X) - BitBlt Read image Data
+ Defines the screen area to be read by the HBBCBN command(s) following
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(12 or 20)
+   02h   WORD    Type of BitBlt:
+                   0:  Reads a single plane. The plane is selected by byte 8
+                       The resulting bits are packed 8 to a byte.
+                   1:  Reads all planes, pack pixels as much as possible
+                       Only supported in XGA versions of the AI.
+                   8:  Reads all planes, one pixel per byte.
+   04h   WORD    Width of block in pixels
+   06h   WORD    Height of block in lines
+   08h   BYTE    Selects the source plane for single plane reads
+   09h   BYTE    Reserved
+   0Ah   WORD    Source X coordinate - left
+   0Ch   WORD    Source Y coordinate - top
+
+       The following fields are only present if the length is set to 20:
+       If set the destination buffer is defined as a rectangle and the data
+       is transferred to a rectangle within the buffer rectangle.
+
+   0Eh   WORD    Offset of the destination rectangle from the left edge of
+                 the larger data buffer rectangle.
+   10h   WORD    Starting line in the data buffer
+   12h   WORD    Width of the data buffer in bytes
+   14h   WORD    Height of the data buffer in lines
+
+function 18h HBBCHN(X) - BitBlt Chained Data
+ Defines the data buffer used by a preceding HBBR, HBBW or HCBBW command
+ Parameter Block:
+ Offset:  Type:  Description:
+   00h    WORD   Length of data following(6)
+   02h    DWORD  Address of data buffer
+   06h    WORD   Number of bytes in buffer
+Note: Multiple buffers can be used to transfer a full image.
+
+function 19h HBBC(X) - Bitblt Copy
+ Copies the source area to the destination area. Overlapping areas are
+ handled correctly.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(16)
+   02h   WORD    Type of Bitblt:
+                   0: Across-the-plane copying (color expansion).
+                      One plane (bit of each pixel - selected by Byte 8 of
+                      this record) holds the monochrome map which is
+                      expanded. Each 1 bit in the mono map causes the
+                      corresponding pixel in the destination to be written
+                      in the foreground color & mix, 0 bits causes writes
+                      in the background color & mix.
+                   8: Through-the-plane copying. The source is copied to
+                      the destination with the foreground mix.
+                 Note: one source claims 1 will also cause Through-the-plane
+                       copying like 8.
+   04h   WORD    Width of area
+   06h   WORD    Height of area
+   08h   BYTE    Source plane for bit expansion. For color expansions this
+                 selects the plane which holds the monochrome map.
+   09h   BYTE    Reserved
+   0Ah   WORD    Source X coordinate - left edge
+   0Ch   WORD    Source Y coordinate - top
+   0Eh   WORD    Source X coordinate - left edge
+   10h   WORD    Source Y coordinate - top
+
+function 1Ah HSCOORD(X) - Set Coordinate Types
+ Sets the coordinate formats used.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(3)
+   02h   BYTE    Absolute coordinate format
+                 bit 0-3  Number of fractional bytes. Default = 0
+                     4-7  Number of bytes per coordinate. Default = 2
+   03h   BYTE    Relative coordinate format
+                 bit 0-3  Number of fractional bytes. Default = 0
+                     4-7  Number of bytes per coordinate. Default = 1
+   04h   BYTE    Number of dimensions: 2, 3 or 4
+
+function 1Bh HQCOORD(X) - Query Coordinate Types
+ Informs whether specific coordinate formats are supported
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4)
+   02h   BYTE    Absolute coordinate format
+                 bit 0-3  Number of fractional bytes. Default = 0
+                     4-7  Number of bytes per coordinate. Default = 2
+   03h   BYTE    Relative coordinate format
+                 bit 0-3  Number of fractional bytes. Default = 0
+                     4-7  Number of bytes per coordinate. Default = 1
+   04h   BYTE    Number of dimensions. Only 2 supported
+   05h   BYTE    Returned test results
+                 bit 5  Set if specified dimension not supported
+                     6  Set if specified dimension not supported
+                     7  Set if specified dimension not supported
+
+function 1Ch HSMODE(X) - Set Mode
+ Sets a new mode
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(1, 2 for XGA or ImageAdapter/A)
+   02h   BYTE    Adapter mode number
+                   0:  1024x 768  with 12x20 char cell
+                   1:   640x 480  with  8x14 char cell
+                   2:  1024x 768  with  8x14 char cell
+                   3:  1024x 768  with  7x15 char cell
+                      Remaining in ATI versions only:
+                   8:   800x 600  with  8x14 char cell
+                  10:  1280x1024  with  7x15 char cell
+       Remaining field only present if length = 2:
+   03h   BYTE    Clear memory flag. 0: clear all memory, 80h don't clear
+
+function 1Dh HQMODE(X) - Query Current Mode
+ Returns the current mode and configuration
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(18, 20 for XGA or ImageAdapter/A)
+   02h   BYTE    Mode number.
+                  0: 1024x768, 12x20 char cell
+                  1:  640x480,  8x14 char cell
+                  2: 1024x768,  8x14 char cell
+                  3: 1024x768,  7x15 char cell
+   03h   WORD    Driver code level
+                 Bit 0-4  Release number (starts from 0)
+                       5  0: 4plane board, 1: 8plane board
+                       6  (8514/A) Minimum CPU level
+                            8086 or 80286 ?
+                     6-7  (XGA/Image Adapter) Minimum CPU level
+                            0: 80286, 1: 8086, 2: 80386
+                    8-11  (XGA/Image Adapter) Specification level
+                            0: level 1.0, 1: level 1.2, 2: level 2.0
+                   12-15  (XGA/Image Adapter) Operation system
+                            0: MS/PC-DOS
+
+   05h   BYTE    Adapter Type.
+                  3: 8514/A, 4: XGA, 5: Image Adapter/A
+   06h   BYTE    Reserved
+   07h   BYTE    Text cell width in pixels
+   08h   BYTE    Text cell height in pixels
+   09h   BYTE    Number of planes
+   0Ah   WORD    Screen width in pixels
+   0Ch   WORD    Screen height in lines
+   0Eh   WORD    Pixels/inch - horizontally
+   10h   WORD    Pixels/inch - vertically
+                   59  for 640x480 on IBM 8514 monitor
+                   79  for 640x480 on IBM 8512 or 8513 monitor
+                   92  for 1024x768 on IBM 8514 monitor
+   12h   BYTE    00h for monochrome, 0FFh for color display
+   13h   BYTE    Intensity levels, I.e the number of bits the DAC can handle
+                 for each of the 3 basic colors.
+                   0: non-loadable palette
+                   6: original 8514/A and XGA
+                   8: XGA-NI
+
+      Remaining fields only in XGA and Image Adapter/A version
+   14h   BYTE    Software area fill plane required (set to 1)
+   15h   BYTE    VGA mode support. 1 if a VGA compatible mode exists, 0 if not
+
+function 1Eh HQMODES(X) - Query Adapter Modes
+ Returns a list of the supported modes, considering video memory and monitor
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(33)
+   02h   BYTE    Adapter type
+   03h 32BYTEs   Mode list. Terminated by 0FFh.
+
+function 1Fh HQDPS(X) - Query Drawing Process State Size
+ Returns the size of various structures
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(6, 14 for XGA version)
+   02h   WORD    Task buffer size in bytes
+   04h   WORD    Stack usage in bytes
+   06h   WORD    Palette save buffer in bytes
+
+      Remaining fields only in the XGA version
+   08h   DWORD   Amount of VRAM in bytes
+   0Ch   DWORD   Amount of VRAM (in bytes) required for area fill plane
+
+function 20h HRECT(X) - Fill Rectangle
+ Fills a rectangle with the current area pattern
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(8, 8*Number_of_rects for the
+                                         XGA and ImageAdapter/A versions)
+   02h   WORD    X-coordinate of top-left corner (top row)
+   04h   WORD    Y-coordinate of top-left corner (left edge)
+   06h   WORD    Width of the rectangle in pixels
+   08h   WORD    Height of the rectangle in lines
+Note: For the XGA and ImageAdapter/A versions the rectangle data (byte 2-9) is
+      repeated as many times as required by the length field.
+
+function 21h HSBP(X) - Set Bit Plane Controls
+ Enables or disables specific planes. Each set bit enables the plane, each
+ clear bit disables it. Only the number of loworder bits from each field
+ relevant to the current mode are used, I.e 4 in 16color modes and 8 in
+ 256color modes
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(12, 26 for XGA and ImageAdapter/A)
+   02h   DWORD   Plane enable for graphics. Controls all writes to video
+                 memory for drawing and regular text operations
+   06h   DWORD   Plane enable for alphanumerics. Controls all writes to video
+                 memory for alphanumeric operations.
+   0Ah   DWORD   Plane enable for display. Controls which planes are displayed
+       Remaining fields only available in XGA and ImageAdapter/A versions
+   0Eh   BYTE    Flags, must be 0
+   0Fh   BYTE    Reserved(0)
+   10h   DWORD   Green bits mask
+   14h   DWORD   Red bits mask
+   18h   DWORD   Blue bits mask
+
+function 22h HCLOSE(X) - Close Adapter
+ Closes down the AI and switches to VGA
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(1)
+   02h   BYTE    Reserved, must be 0
+Note: one source claims the length is 0 rather than 1.
+
+function 23h HESC(X) - Escape, Terminate Processing
+ Terminates any current drawing operation
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(0)
+Note: this has no effect in the XGA version
+
+function 24h HXLATE(X) - Assign Multi-Plane Text Color Index Table
+ Sets the color translation table for multiplane fonts.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(32)
+   02h  8 DWORDs Color translation table for multiplane fonts, which can have
+                  8 colors which are found by combining 1 bit from of 3 planes
+
+function 25h HSCS(X) - Set Character Set
+ Sets the current character set
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4)
+   02h   DWORD   Ptr to font definition.
+                 This area should not be changed until HSCS is called again
+
+function 26h HCHST(X) - Text Character String at Given Position
+ Writes a text string at the given (X,Y) position in the current font.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4 + textlen)
+   02h   WORD    X-coordinate to plot text at
+   04h   WORD    Y-coordinate to plot text at
+   06h   TEXT    The text string. The number of characters is determined by
+                 the length in the WORD at 00h (-4).
+
+function 27h HCCHST(X) - Text Character String at Current Position
+ Writes a text string at the current position in the current font.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(0 + textlen)
+   02h   TEXT    The text string. The number of characters is determined by
+                 the length in the WORD at 00h.
+
+function 28h ABLOCKMFI(X) - Write Character Block
+ Writes a block of characters to the display
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(9)
+   02h   BYTE    Start X position (column)
+   03h   BYTE    Start Y position (row)
+   04h   BYTE    Width of block in characters
+   05h   BYTE    Height of block in characters
+   06h   DWORD  Pointer to character block
+                 Each character occupies one DWORD:
+                 Bit   8-9  Font number
+                        12  Background transparent if set, opaque if clear
+                        13  Overstrike
+                        14  Reverse Video
+                        15  Underscore
+                     16-19  Foreground color
+                     20-23  Background color
+                     24-31  Character code
+   0Ah   BYTE    Number of characters in block
+
+function 29h ABLOCKCGA(X) - Write Character Block (CGA)
+ Writes a block of characters to the display
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(10)
+   02h   BYTE    Start X position (column)
+   03h   BYTE    Start Y position (row)
+   04h   BYTE    Width of block in characters
+   05h   BYTE    Height of block in characters
+   06h   DWORD   Pointer to character block
+                 Each character occupies one WORD:
+                 Bit 0-3  Foreground color
+                     4-7  Background color
+                    8-15  Character code
+   0Ah   BYTE    Number of characters in block
+   0Bh   BYTE    Attribute of the text
+                 Bit 0-1  Font selection
+                       4  Set for transparent background, clear for opaque
+                          background (use characters background color)
+                       5  Overstrike
+                       6  Reverse Video
+                       7  Underline
+
+function 2Ah AERASE(X) - Erase Rectangle
+ Clears a rectangle to the specified background color
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(5)
+   02h   BYTE    Starting column
+   03h   BYTE    Starting Row
+   04h   BYTE    Number of Columns
+   05h   BYTE    Number of Rows
+   06h   BYTE    Bits 0-3  Reserved, should be 0
+                      4-7  Background color
+
+function 2Bh ASCROLL(X) - Scroll Rectangle
+ Scrolls a rectangle of character cells
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(6)
+   02h   BYTE    Starting character column of source
+   03h   BYTE    Starting character row of source
+   04h   BYTE    Number of character columns of area
+   05h   BYTE    Number of character rows of area
+   06h   BYTE    Starting character column of destination
+   07h   BYTE    Starting character row of destination
+Note: both source and destination must be entirely on screen
+
+function 2Ch ACURSOR(X) - Set Cursor Position
+ Moves the text-cursor
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(2)
+   02h   BYTE    New X position in character Columns
+   03h   BYTE    New Y position in character Rows
+
+function 2Dh ASCUR(X) - Set Cursor Shape
+ Sets the shape of the text cursor
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(3)
+   02h   BYTE    Cursor start line. 0=top
+   03h   BYTE    Cursor stop line
+   04h   BYTE    Cursor Attributes
+                  00h  Normal cursor
+                  01h  Hidden cursor
+                  02h  Left arrow cursor
+                  03h  Right arrow cursor
+
+function 2Eh ASFONT(X) - Set Character Set
+ Defines the character set
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(6)
+   02h   BYTE    Font number
+   03h   BYTE    Reserved
+   04h   DWORD   Address of the character set definition block:
+                 Offset: Type:  Description:
+                   00h   BYTE   Reserved
+                   01h   BYTE   Type of character set
+                                 00h  Bitmapped
+                                 03h  Short stroke vector
+                   02h   BYTE   Reserved
+                   03h   DWORD  Reserved
+                   07h   BYTE   Cell width in pixels
+                   08h   BYTE   Cell height in pixels
+                   09h   BYTE   Reserved
+                   0Ah   WORD   Cell size (height*width/8 rounded up to
+                                nearest number of bytes).
+                   0Ch   WORD   Flags
+                                Bit 13  Set for proportionally spaced font
+                                    14  Set for color bitmapped fonts,
+                                        clear for mono bitmapped fonts
+                                Other bits must be 0.
+                   0Eh   DWORD  Address of index table. One WORD for each
+                                character code (see Initial and Final
+                                codes in bytes 16h and 17h). Marks the
+                                start of each character definition
+                                (bitmap/stroked line) relative to the
+                                start of the character definition table.
+                   12h   DWORD  Address of character width table
+                                Two bytes per character code. The first is
+                                the indention in pixels from the left, the
+                                second the indention in pixels from the
+                                right, thus non-zero values makes the
+                                character thinner.
+                                Only used for proportionally spaced fonts
+                   16h   BYTE   Initial code point. First character code
+                                in the font tables.
+                   17h   BYTE   Final code point. Last character code in the
+                                font tables.
+                   18h   DWORD  Address of character definition table. For
+                                bitmapped fonts each character is defined
+                                as a two-dimensional array of bits
+                                occupying the minimum number of bytes per
+                                character, I.e. an 11x9 font occupies 13
+                                bytes. For Short Stroke vector fonts each
+                                character is defined by a series of
+                                draw/move commands each occupying one
+                                byte, terminated by a null (00h) byte.
+                                Each command byte is defined as:
+                                Bit 0-3  Length in pixels projected onto the
+                                         X or Y axis
+                                      4  Clear for move, set for draw
+                                    5-7  Direction
+                                          0:   0 degrees (increasing X)
+                                          1:  45 degrees
+                                          2:  90 degrees (increasing Y)
+                                          3: 135 degrees
+                                          4: 180 degrees (decreasing X)
+                                          5: 225 degrees
+                                          6: 270 degrees (decreasing Y)
+                                          7: 315 degrees
+                   1Ch   WORD   Reserved
+                   1Eh   DWORD  Address of 2nd character table
+                                For Color Bitmapped Fonts where the
+                                foreground color is NOT FFFFFFFFh this table
+                                and the 3rd character table are ORed with the
+                                primary character definition table to
+                                produce one table. The image is drawn with
+                                the current foreground color and mix on the
+                                current background color and mix.
+                   22h   WORD   Reserved
+                   24h   DWORD  Address of 3rd character table. See the
+                                description under the 2nd char table.
+
+function 2Fh AXLATE(X) - Assign Alpha Attribute Color Index Table
+ Defines character attribute to color translations.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(128)
+   02h 16DWORDs  Foreground Character Attribute (bits 4-7) translation
+                 table. One DWORD for each of 16 attribute combinations
+   42h 16DWORDs  Background Character Attribute (bits 0-3) translation
+                 table. One DWORD for each of 16 attribute combinations
+
+function 30h HINIT(X) - Initialize State
+ Sets the Task State buffer to the adapter dependent initial state
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(2)
+   02h   WORD    Segment address of the Task State buffer, offset is 0.
+
+function 31h HSYNC(X) - Synchronize Adapter
+ Sets the adapter state to the state store in the specified task buffer.
+ Used to implement task switching in a multi-tasking environment
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(2)
+   02h   WORD    Segment of the Task state buffer
+
+function 32h HMRK(X) - Marker at Given Position
+ Places a marker symbol at each position given.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4*Number_of_points)
+       ...
+  4*N+2  WORD    X-coordinate of Nth point
+  4*N+4  WORD    Y-coordinate of Nth point
+
+function 33h HCMRK(X) - Marker at Current Position
+ Draws a marker (defined by HSMARK) at the current position and each point in
+ the data block. The marker is drawn around the point.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4*Number_of_points)
+       ...
+  4*N+2  WORD    X-coordinate of Nth point
+  4*N+4  WORD    Y-coordinate of Nth point
+
+function 34h HSMARK(X) - Set Marker Shape
+ Sets the shape of the marker symbol
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(10 or 14)
+   02h   BYTE    Mark width in pixels
+   03h   BYTE    Mark height in lines
+   04h   BYTE    Flags
+                 Bit 0-5  Reserved, set to 0
+                       6  (XGA and ImageAdapter/A only) For color data:
+                             0: 1pixel/byte, 1: packed pixel format
+                       7  0: Monochrome: Marker is drawn with current
+                             foreground color&mix on the background color&mix,
+                          1: Color: Marker is drawn in the color from the
+                             color data (Byte 0Ch) on the current background
+                             color&mix
+   05h   BYTE    Reserved
+   06h   WORD    Size of mark definition data
+   08h   DWORD   Address of mark definition. A packed monochrome bitmap
+       This field only present if length = 14
+   0Ch   DWORD   Address of mark color data. Either one pixel/byte or packed
+                 pixel data if byte 4 bit 6 set.
+
+function 35h HSLPC(X) - Save Line Pattern Count
+ Saves the line pattern count.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(0, 2 for XGA and ImageAdapter/A)
+       The following field only present if length=2 (XGA and ImageAdapter/A)
+   02h   WORD    Line pattern count stored in this word.
+
+function 36h HRLPC(X) - Restore Line Pattern Count
+ Restores a previously saved line pattern count.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(0, 2 for XGA and ImageAdapter/A)
+   02h   WORD    Optional line pattern count to use for restore
+                 Only present for XGA and ImageAdapter/A versions
+
+function 37h HQCP(X) - Query Current Position
+ Returns the current position
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4)
+   02h   WORD    Current X coordinate
+   04h   WORD    Current Y coordinate
+
+function 38h HQDFPAL(X) - Query Default Palette
+ Returns the default palette RGB values
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(64)
+   02h  16DWORDs One DWORD for each of the 16 primary color indices with the
+                 RGB value currently in use for that index.
+                 Primary colors:
+                  0: Black    1: Blue          2: Green,      3: Cyan
+                  4: Red      5: Magenta       6: Brown       7: White
+                  8: Grey     9: Lt Blue      10: Lt Green   11: Lt Cyan
+                 12: Lt Red  13: Lt Magenta   14: Yellow     15: Bright White
+
+function 39h HSPAL(X) - Save Palette
+ Saves the palette in a format ready for loading with HRPAL
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(get from HQDPS)
+   02h   BYTEs   Palette buffer, get size from HQDPS
+
+function 3Ah HRPAL(X) - Restore Palette
+ Restores a previously saved palette
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(up to 768)
+   02h 768BYTEs  Palette data, up to 256 * 3BYTEs, see HQDPS for exact size
+
+function 3Bh HSAFP(X) -
+ Sets the area fill plane for areafill, raster text and marker operation.
+ Only needed if the default bitmap has been changed with HSBMAP.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(5)
+   02h   DWORD   Address of area fill plane. Linear offset into the video
+                 memory, must be a multiple of 4.
+   06h   BYTE    Reserved, must be 80h
+Note: this function only implemented in the XGA and Image Adapter/A versions
+
+function 3Ch ASCELL(X)
+ Resizes the alphanumeric cell size. A new font should be loaded before text
+ is output again.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(2)
+   02h   BYTE    New cell width
+   03h   BYTE    New cell height
+
+function 3Dh ASGO(X)
+ Sets the origin for text output.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4)
+   02h   WORD    New X-position of grid origin
+   04h   WORD    New Y-position of grid origin
+Note: this function only implemented in the XGA and Image Adapter/A versions
+
+function 3Eh HDLINE(X) -
+ Draws a series of lines, from point 1 to 2, then from point 3 to 4 etc.
+ The current position is set to the last point in the list, which may either
+ be the endpoint of a line (even number of points) or a separate point.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4*Number_of_points)
+       ...
+  4*N+2  WORD    X-coordinate of the Nth point
+  4*N+4  WORD    Y-coordinate of the Nth point
+Note: this function only implemented in the XGA and Image Adapter/A versions
+
+function 40h HPEL(X) -
+ Draws horizontal strings of pixels using the current color and mix
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(6*Number_of_strings)
+        ...
+  6*N+2  WORD    X-coordinate (leftmost) of the Nth string
+  6*N+4  WORD    Y-coordinate of the Nth string
+  6*N+6  WORD    Number of pixels in the Nth string
+Note: this function only implemented in the XGA and Image Adapter/A versions
+
+function 41h HRPEL(X) -
+ Reads the requested number of pixels from (X,Y) leftwards and places the
+ read pixels in the data buffer in packed format.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(10)
+   02h   DWORD   Ptr to pixel buffer
+   06h   WORD    X-coordinate
+   08h   WORD    Y-coordinate
+   0Ah   WORD    Pixel count
+Note: this function only implemented in the XGA and Image Adapter/A versions
+
+function 42h HPSTEP(X) -
+ Draws  a series of short stroke commands at the given position
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(8 or 12)
+   02h   WORD    X-coordinate of start point
+   04h   WORD    Y-coordinate of start point
+   08h   DWORD   Address of Short Stroke-style data.
+                 Each byte is a 8514 style Short-Stroke vector:
+                 Bit 0-3  Length of linesegment in pixels
+                       4  1 for draw, 0 for move
+                     5-7  Direction in degrees counter-clockwise from X-axis
+                            0:  0 deg, 1: 45 deg, 2: 90 deg, 3: 135deg
+                            4: 180deg, 5: 225deg, 6: 270deg, 7: 315deg
+                 A null byte terminates the data block.
+   0Ch   DWORD   Address of source pixel buffer (only present if the length
+                 field is 12). If present each pixel drawn (or skipped) gets
+                 its colorinfo from this buffer, rather than the foreground
+                 color & mix.
+Note: this function only implemented in the XGA and Image Adapter/A versions
+
+function 43h HCPSTEP(X)
+ Draws a series of shortstroke linesegments.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4 or 8)
+   02h   DWORD   Address of Short Stroke-style data.
+                 Each byte is a 8514 style Short-Stroke vector:
+                 Bit 0-3  Length of linesegment in pixels
+                       4  1 for draw, 0 for move
+                     5-7  Direction in degrees counter-clockwise from X-axis
+                            0:  0 deg, 1: 45 deg, 2: 90 deg, 3: 135deg
+                            4: 180deg, 5: 225deg, 6: 270deg, 7: 315deg
+                 A null byte terminates the data block.
+   06h   DWORD   Address of source pixel buffer (only present if the length
+                 field is 8). If present each pixel drawn (or skipped) gets
+                 its colorinfo from this buffer, rather than the foreground
+                 color & mix.
+Note: this function only implemented in the XGA and Image Adapter/A versions
+
+function 44h HRSTEP(X) -
+ Reads pixel data along a series of short stroke vectors from the given point
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(12)
+   02h   WORD    Starting X-coordinate
+   04h   WORD    Starting Y-coordinate
+   06h   DWORD   Address of Short Stroke-style data.
+                 Each byte is a 8514 style Short-Stroke vector:
+                 Bit 0-3  Length of linesegment in pixels
+                       4  1 for draw, 0 for move
+                     5-7  Direction in degrees counter-clockwise from X-axis
+                            0:  0 deg, 1: 45 deg, 2: 90 deg, 3: 135deg
+                            4: 180deg, 5: 225deg, 6: 270deg, 7: 315deg
+                 A null byte terminates the data block.
+   0Ah   DWORD   Ptr to buffer where read pixels are placed in packed format
+Note: this function only implemented in the XGA and Image Adapter/A versions
+
+function 45h HSBMAP(X) -
+ Sets current bitmap and attributes.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(10)
+   02h   BYTE    Flags
+                 Bit 0-5  Reserved, must be 0
+                       6  1 for screen bitmaps, 0 for non-screen bitmaps
+                       7  Reserved, must be 1
+   03h   BYTE    Bitmap depth: 1, 2, 4 or 8
+   04h   DWORD   Address of bitmap, as a linear offset from the start of the
+                 display memory of the device. Must be a multiple of 8 bytes
+                 for screen bitmaps and of 4 bytes for non-screen bitmaps.
+   08h   WORD    Width of bitmap in pixels. Max 2048 pixels
+                 Must be a multiple of 8 bytes for screen bitmaps and of 4
+                 bytes for non-screen bitmaps.
+   0Ah   WORD    Height of bitmap in lines. Max 2048 lines
+
+function 46h HQBMAP(X) -
+ Queries current bitmap attributes
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(10 or 18)
+   02h   BYTE    Flags
+                 Bit 0-5  Reserved, must be 0
+                       6  Set for Screen bitmap, clear for non-screen
+                       7  Reserved, must be 1
+   03h   BYTE    Bitmap depth (1,2,4 or 8)
+   04h   DWORD   Address of bitmap as linear offset from the start of the
+                 frame buffer.
+   08h   WORD    Width of bitmap in pixels
+   0Ah   WORD    Height of bitmap in lines
+
+      Remaining fields only present if the length field is 18
+   0Ch   WORD    Display window X origin
+   0Eh   WORD    Display window Y origin
+   10h   WORD    Display window width in pixels
+   12h   WORD    Display window height in lines
+Note: this function only implemented in the XGA and Image Adapter/A versions
+
+function 47h HBMC(X) -
+ Copies bitmap block data, either within a bitmap or between bitmaps
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(48)
+   02h   WORD    Flags
+                 Bit    9  If set the source bitmap starts (logically) at
+                           the bottom-left corner rather than the top-left
+                    10-11  Location of pattern bitmap
+                             0: pattern not present
+                             2: Video RAM
+                    12-13  Location of source bitmap
+                             0: Source not present (use pattern instead).
+                             2: Video RAM
+                    14-15  Location of destination bitmap
+                             2: Video RAM
+   04h   WORD    Width of block in pixels
+   06h   WORD    Height of block in lines
+   08h   BYTE    Destination bitmap depth
+   09h   BYTE    Reserved
+   0Ah   DWORD   Address of destination bitmap
+   0Eh   WORD    Pitch of destination in pixels
+   10h   WORD    Height of destination map in lines
+   12h   WORD    Destination X-coordinate
+   14h   WORD    Destination Y-coordinate
+   16h   BYTE    Source bitmap depth. 1,2 or 8
+   17h   BYTE    Reserved
+   18h   DWORD   Address of source bitmap
+   1Ch   WORD    Pitch of source bitmap
+   1Eh   WORD    Height of source bitmap
+   20h   WORD    Source X-coordinate
+   22h   WORD    Source Y-coordinate
+   24h   BYTE    Pattern bitmap depth. 1
+   25h   BYTE    Reserved
+   26h   DWORD   Address of pattern bitmap
+   2Ah   WORD    Pitch of pattern bitmap
+   2Ch   WORD    Height of pattern bitmap
+   2Eh   WORD    X-position of pattern within pattern bitmap
+   30h   WORD    Y-position of pattern within pattern bitmap
+Note: this function only implemented in the XGA and Image Adapter/A versions
+
+function 48h HSDW(X) -
+ Sets the display window
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(8)
+   02h   WORD    New X-origin for display window
+   04h   WORD    New Y-origin for display window
+   06h   WORD    Window width in pixels
+   08h   WORD    Window height in lines
+Note: this function only implemented in the XGA and Image Adapter/A versions
+
+function 49h HSPRITE(X) -
+ Positions the Hardware Sprite
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(4)
+   02h   WORD    New sprite hot-spot X-coordinate
+   04h   WORD    New sprite hot-spot Y-coordinate
+Note: this function only implemented in the XGA version
+
+function 4Ah HSSPRITE(X)
+ Defines and enables/disables the hardware sprite.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(1 or 24)
+   02h   BYTE    Flags
+                 Bit 0-6  Reserved
+                       7  0: Disabled, 1: Enabled and visible
+      Remaining fields only present if length=24
+   03h   BYTE    Reserved, set to 0
+   04h   BYTE    X hot-spot offset
+   05h   BYTE    Y hot-spot offset
+   06h   DWORD   Ptr to sprite definition data.
+                 A 2bits per pixel packed bitmap, where each pixels indicates:
+                   0:  Sprite Color 0
+                   1:  Sprite Color 1
+                   2:  Transparent (Screen data)
+                   3:  Inverse screen data (XOR cursor)
+   0Ah   WORD    Sprite width in pixels. Must be a multipla of 4. Max 64.
+   0Ch   WORD    Sprite height in lines. Max 64.
+   0Eh   WORD    Color 0, red component
+   10h   WORD    Color 0, green component
+   12h   WORD    Color 0, blue component
+   14h   WORD    Color 1, red component
+   16h   WORD    Color 1, green component
+   18h   WORD    Color 1, blue component
+Note: this function only implemented in the XGA version
+
+function 4Bh HRWVEC(X) -
+ Either draws a polyline from the data in the pixel buffer, or copies the
+ pixels under the polyline into the pixel buffer. The polyline starts with the
+ coordinates in WORDs 8 and 0Ah and continues to each coordinate set in turn.
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(10+4*Number_of_points)
+   02h   BYTE    Flags
+                 Bit 0-6  Reserved(0)
+                       7  Set to write data, clear to read
+   03h   BYTE    Reserved(0)
+   04h   DWORD   Address of data buffer. For reads the data under the polyline
+                 is stored in this buffer in packed format, for writes each
+                 pixel in the buffer decides the mix to use for drawing the
+                 corresponding pixel of the polyline. 0 causes the pixel to be
+                 drawn with the background, all other values causes the pixel
+                 to be drawn with the foreground mix.
+                 The buffer is max 4095 bytes
+   08h   WORD    Starting X-coordinate
+   0Ah   WORD    Starting Y-coordinate
+
+ 4*N+8   WORD    X-coordinate of Nth point
+ 4*N+10  WORD    Y-coordinate of Nth point
+
+Note: this function only implemented in the XGA and Image Adapter/A versions
+
+function 4Eh HSFPAL(X) -
+ Saves full palette
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(Get size from HQDPS)
+   02h   WORD    Format, always 8
+     Palette data follows. Call HQDPS for size of palette data.
+
+function 4Fh HRFPAL(X) -
+ Restores full palette. The size of the data area should be taken from HQDPS
+ Parameter Block:
+ Offset: Type:   Description:
+   00h   WORD    Length of data following(size of palette data +1)
+   02h   WORD    Format (8)
+  04h-   BYTEs   Palette data. See HQDPS for size
+Note: this function only implemented in the XGA and Image Adapter/A versions
+
+function 50h HQDEVICE(X)
+ Returns device specific information
+Note: this function only implemented in the Image Adapter/A version
+
+
+Check for AI installed:
+
+  if MEML[0:$1FC]<>0 then     {Int Vector 7Fh not NULL}
+  begin
+    rp.cx:=0;
+    rp.dx:=0;
+    rp.ax:=$105;
+    intr($7F,rp);
+    if ((rp.flags and 1)=0)                 {Carry not set}
+      and ((rp.cx<>0) or (rp.dx<>0) then    {CX:DX is non-zero}
+        We have an AI. CX:DX points to the jump table
+  end;
+

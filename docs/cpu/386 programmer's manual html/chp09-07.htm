@@ -1,0 +1,50 @@
+<html>
+<head>
+<title>
+9.7  Error Code
+</title>
+<body>
+<a name="09-07"></a>
+Prev: <a href="chp09-06.htm">9.6  Interrupt Tasks and Interrupt Procedures</a><br>
+Next: <a href="chp09-08.htm">9.8  Exception Conditions</a>
+<hr>
+<h2>
+9.7  Error Code
+</h2>
+<p>
+With exceptions that relate to a specific segment, the processor pushes an
+error code onto the stack of the exception handler (whether procedure or
+task). The error code has the format shown in Figure 9-7. The format of the
+error code resembles that of a selector; however, instead of an RPL field,
+the error code contains two one-bit items:
+<p>
+<pre>
+  1.  The processor sets the EXT bit if an event external to the program
+      caused the exception.
+
+  2.  The processor sets the I-bit (IDT-bit) if the index portion of the
+      error code refers to a gate descriptor in the IDT.
+</pre>
+If the I-bit is not set, the TI bit indicates whether the error code refers
+to the GDT (value 0) or to the LDT (value 1). The remaining 14 bits are the
+upper 14 bits of the segment selector involved. In some cases the error code
+on the stack is null, i.e., all bits in the low-order word are zero.
+<p>
+<p>
+<a name="F-09-07"></a>
+<h3>Figure 9-7.  Error Code Format</h3>
+<p>
+<pre>
+       31              15                                         2 1 0
+      +---------------+----------------+-----------------+-------+-+-+-+
+      |################################|                         |T| |E|
+      |###########UNDEFINED############|     SELECTOR INDEX      | |I| |
+      |################################|                         |I| |X|
+      +---------------+----------------+-----------------+-------+-+-+-+
+</pre>
+<p>
+<hr>
+Prev: <a href="chp09-06.htm">9.6  Interrupt Tasks and Interrupt Procedures</a><br>
+Next: <a href="chp09-08.htm">9.8  Exception Conditions</a>
+</body>
+</html>

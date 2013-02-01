@@ -1,0 +1,48 @@
+<html>
+<head>
+<title>
+15.7  Differences From 80286 Real-Address Mode
+</title>
+<body>
+<a name="15-07"></a>
+Prev: <a href="chp15-06.htm">15.6  Differences From 8086</a><br>
+Next: <a href="chp16-00.htm">Chapter 16  Mixing 16-Bit and 32 Bit Code</a>
+<hr>
+<h2>
+15.7  Differences From 80286 Real-Address Mode
+</h2>
+<p>
+The 80286 processor implements the bus lock function differently than the
+80386. This fact may or may not be apparent to 8086 programs, depending on
+how the V86 monitor handles the LOCK prefix. LOCKed instructions are
+sensitive to IOPL; therefore, software designers can choose to emulate its
+function. If, however, 8086 programs are allowed to execute LOCK directly,
+programs that use forms of memory locking specific to the 8086 may not
+execute properly when transported to a specific application of the 80386.
+<p>
+The LOCK prefix and its corresponding output signal should only be used to
+prevent other bus masters from interrupting a data movement operation. LOCK
+may only be used with the following 80386 instructions when they modify
+memory. An undefined-opcode exception results from using LOCK before any
+other instruction.
+<p>
+<pre>
+  -  Bit test and change: BTS, BTR, BTC.
+  -  Exchange: XCHG.
+  -  One-operand arithmetic and logical: INC, DEC, NOT, and NEG.
+  -  Two-operand arithmetic and logical: ADD, ADC, SUB, SBB, AND, OR, XOR.
+</pre>
+A locked instruction is guaranteed to lock only the area of memory defined
+by the destination operand, but may lock a larger memory area. For example,
+typical 8086 and 80286 configurations lock the entire physical memory space.
+With the 80386, the defined area of memory is guaranteed to be locked
+against access by a processor executing a locked instruction on exactly the
+same memory area, i.e., an operand with identical starting address and
+identical length.
+<p>
+<p>
+<hr>
+Prev: <a href="chp15-06.htm">15.6  Differences From 8086</a><br>
+Next: <a href="chp16-00.htm">Chapter 16  Mixing 16-Bit and 32 Bit Code</a>
+</body>
+</html>

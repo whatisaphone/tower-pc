@@ -1,0 +1,29 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>Vesa BIOS Example. Page 1: </title>
+
+<h1>VESA BIOS Example</h1>
+<h4>Page 8: Restore previous state</h4>
+<p><tr><td colspan=2><hr></td></tr><p>
+
+
+Assuming that you saved the video state in page 3, it is now possible to restore it.
+
+<pre>
+   AH = 4Fh        ;Super VGA support
+   AL = 04h        ;Function 04h (save state)
+   DL = 02h        ;Subfunction 02h (restore the state)
+   CX = 00001111b  ;restore everything please
+   ES:[DI] -> SaveBuffer
+
+   call interrupt 10h
+</pre>
+
+
+If you did not, then, if you're going back into DOS, you should set the video mode back to
+03h.<p>
+
+</body>
+</html>

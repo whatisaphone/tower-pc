@@ -1,0 +1,58 @@
+                                  Head Trouble
+                             Notes on PC Disk Drives
+                    by Theo Clarke, BSL International Limited
+
+        In our Bromley office we have a mixture of microcomputer hardware
+        and  not  all of it is fully compatible. The  main  problem  lies
+        between   the  differnt  types  of  disk  drive.  You  may   have
+        experienced a brand new floppy suddenly developing 'bad  sectors'
+        after being used for reliable recordings of data? Or you may have
+        had  "General failure Error" from a diskette that works  fine  on
+        another machine.
+
+        This  can arise if you were using a high density (HD) disk  in  a
+        low  density drive (or the other way round). High  density  disks
+        need higher write current then low density disks. If you write to
+        an  HD  disk in an ordinary drive the current will  not  be  high
+        enough  to get reliable data storage. If you format  an  ordinary
+        disk  to HD the current would be too high, and over a  period  of
+        time  will lead to data migration across tracks (thus  corrupting
+        the data).
+
+        This  is nothing to do with the difference between  48tracks  per
+        inch  and 96tpi. These disks are the same media but 96tpi  passed
+        better  tests in the factory! HD disks are made from a  different
+        material than SD and DD disks.
+
+        Another problem is writing to the disk with a different drive. If
+        it is a 360k disk which was formatted in a PC/XT (40track  drive)
+        and  written  to  with a PC/XT all its life  there  would  be  no
+        problem. When you WRITE to it in a PC/AT (80track drive) you  may
+        start to get problems.  This is because the heads are smaller  in
+        a  PC/AT,  so  only half the data is  over-written.  See  diagram
+        below:
+
+                       PC/XT tracks        PC/AT tracks
+
+                       ################
+        Track one      ################    ####################
+
+                       ################
+        Track two      ################    ####################
+
+
+        As  you can see the PC/AT will overwrite only half the  data,  so
+        when the PC/XT attempts to READ this data it gets old and new  at
+        the  same time.  READING data will not give problems, so to  move
+        data between machines two disks are needed:
+
+        1. WRITE on with PC/XT ONLY - read with anything
+        2. WRITE on with PC/AT ONLY - read with anything
+
+        All  of  the low density disk drives in the  Bromley  office  are
+        labelled but you may care to note that the Amstrad, the IBM PC/XT
+        and the Walters all have low density drives whereas the IBM PC/AT
+        and the Tandons have high density drives.
+
+
+

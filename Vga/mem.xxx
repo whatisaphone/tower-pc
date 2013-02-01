@@ -1,0 +1,29 @@
+#include "stdafx.h"
+
+namespace Tower { namespace Vga {
+	int8 *RamBase;
+
+	// TODO: can undefined spots still be written/read from/to?
+	int8 TOWER_CC MemRead8(int32 addr) {return *(int8 *)(RamBase + addr);}
+	int16 TOWER_CC MemRead16(int32 addr) {return *(int16 *)(RamBase + addr);}
+	int32 TOWER_CC MemRead32(int32 addr) {return *(int32 *)(RamBase + addr);}
+
+#ifdef _DEBUG
+#define HANDLE_BAD_WRITE else ZSSERT(0);
+#else
+#define HANDLE_BAD_WRITE
+#endif
+
+	// 0xc0000 starts rom
+	void TOWER_CC MemWrite8(int32 addr, int8 data) {
+		if(addr < 0xc0000) *(int8 *)(RamBase + addr) = data; HANDLE_BAD_WRITE
+	}
+
+	void TOWER_CC MemWrite16(int32 addr, int16 data) {
+		if(addr < 0xc0000) *(int16 *)(RamBase + addr) = data; HANDLE_BAD_WRITE
+	}
+
+	void TOWER_CC MemWrite32(int32 addr, int32 data) {
+		if(addr < 0xc0000) *(int32 *)(RamBase + addr) = data; HANDLE_BAD_WRITE
+	}
+}}

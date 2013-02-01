@@ -1,0 +1,176 @@
+from pcguide.com
+
+IRQ0
+16-Bit Priority: 1
+Bus Line: No
+Typical Default Use: System timer.
+Other Common Uses: None; for system use only.
+
+Description: This is the reserved interrupt for the internal system timer. It is used exclusively for internal operations and is never available to peripherals or user devices.
+
+Conflicts: This is a dedicated interrupt line; there should never be any conflicts. If software indicates a conflict on this IRQ, there is a good possibility of a hardware problem somewhere on your system board.
+
+
+IRQ1
+16-Bit Priority: 2
+Bus Line: No
+Typical Default Use: Keyboard / keyboard controller.
+Other Common Uses: None; for system use only. 
+
+Description: This is the reserved interrupt for the keyboard controller. It is used exclusively for keyboard input. Even on systems without a keyboard, IRQ1 is not available for use by other devices. Note that the keyboard controller also controls the PS/2 style mouse if the system has one, but the mouse uses a separate line, IRQ12.
+
+Conflicts: This is a dedicated interrupt line; there should never be any conflicts. If software indicates a conflict on this IRQ, there is a good possibility of a hardware problem somewhere on your system board; this can be a motherboard or chipset (keyboard controller) problem.
+
+
+IRQ2
+16-Bit Priority: n/a
+Bus Line: No
+Typical Default Use: Cascade for IRQs 8 to 15.
+Other Common Uses: Not generally used. Can be used by modems, very old (EGA) video cards, as an alternative IRQ for COM3 (third serial port) or COM4 (fourth serial port). Rerouted to IRQ9 and appears to software as IRQ9.
+
+Description: This is the interrupt number that is used to cascade the second interrupt controller to the first, allowing the use of extra IRQs 8 to 15. This use as a linkage between the two interrupt controllers means that IRQ2 is no longer available for normal use. For compatibility with older cards that used IRQ2 on the original PC or XT machines (which had only one controller and a normal IRQ2 line), the motherboard of modern PCs reroutes IRQ2 to IRQ9. Hence IRQ2 can still be used but appears to the system as IRQ9. The most common cards that do this are old EGA video cards, and newer cards making IRQ2 available with the knowledge that it will be routed to IRQ9.
+
+Conflicts: This interrupt is normally not used on most systems, mostly because the whole IRQ2/IRQ9 thing confuses a lot of people so they tend to avoid it. Conflicts on this line generally come from trying to use a device on IRQ2 and another on IRQ9 at the same time. Some modems and serial port cards allow IRQ2 to be used as an alternative for the two standard lines used for modems and serial ports (IRQ3 and IRQ4) in order to avoid conflicts in those two heavily-contested areas. This is generally a good configuration decision since unused IRQs from 3 to 7 are harder to find than unused IRQs from 10 to 15. If you want to use IRQ2, move any device using IRQ9 to another line like 10 or 11.
+
+
+IRQ3
+16-Bit Priority: 11
+Bus Line: 8/16-bit
+Typical Default Use: COM2 (second serial port).
+Other Common Uses: COM4 (fourth serial port), modems, sound cards, network cards, tape accelerator cards.
+
+Description: This interrupt is normally used by the second serial port, COM2. It is also the default interrupt for the fourth serial port, COM4, and a popular option for modems, sound cards and other devices. Modems often come pre-configured to use COM2 on IRQ3.
+
+Conflicts: Conflicts on IRQ3 are relatively common. The two biggest problem areas are first, modems that attempt to use COM2/IRQ3 and clash with the built-in COM2 port; and second, systems that attempt to use both COM2 and COM4 simultaneously on this same interrupt line. In addition, some devices, particularly network interface cards, come with IRQ3 as the default. In most cases the problem can be avoided by changing the conflicting device to a different interrupt (IRQ2 and IRQ5 usually being the best choices). If the built-in COM2 is not being used, it can be disabled in the BIOS setup, which will allow a modem to stay at COM2/IRQ3 without causing any problems. More general solutions to these issues can be found in the conflict resolution area of the Troubleshooting Expert.
+
+
+IRQ4
+16-Bit Priority: 12
+Bus Line: 8/16-bit
+Typical Default Use: COM1 (first serial port).
+Other Common Uses: COM3 (third serial port), modems, sound cards, network cards, tape accelerator cards.
+
+Description: This interrupt is normally used by the first serial port, COM1. On PCs that do not use a PS/2-style mouse, this port (and thus this interrupt) are almost always used by the serial mouse. IRQ4 is also the default interrupt for the third serial port, COM3, and a popular option for modems, sound cards and other devices. Modems sometimes come pre-configured to use COM3 on IRQ4.
+
+Conflicts: Conflicts on IRQ4 are relatively common, although not as common as on IRQ3. On systems that do not use a serial mouse, problems are less common, because COM1 isn't automatically busy whenever the mouse is in use. The two biggest problem areas are modems that attempt to use COM3/IRQ4 and clash with COM1, and systems that attempt to use both COM1 and COM3 simultaneously on this same interrupt line. In most cases the problem can be avoided by changing the conflicting device to a different interrupt (IRQ2 and IRQ5 usually being the best choices). If a PS/2 mouse is being used, you can disable the built-in COM1 port in the BIOS setup, which will allow a modem to stay at COM3/IRQ4 without causing any problems. However, this is not really recommended. More general solutions to these issues can be found in the conflict resolution area of the Troubleshooting Expert.
+
+
+IRQ5
+16-Bit Priority: 13
+Bus Line: 8/16-bit
+Typical Default Use: Sound card (but varies widely). 
+Other Common Uses: LPT2 (second parallel port), COM3 (third serial port), COM4 (fourth serial port), modems, network cards, tape accelerator cards, hard disk controller on old PC/XT.
+
+Description: This is probably the single "busiest" IRQ in the whole system. On the original PC/XT system this IRQ was used to control the (massive 10 MB) hard disk drive. When the AT was introduced, hard disk control was moved to IRQ14 to free up IRQ5 for 8-bit devices. As a result, IRQ5 is in most systems the only free interrupt below IRQ9 and is therefore the first choice for use by devices that would otherwise conflict with IRQ3, IRQ4, IRQ6 or IRQ7. IRQ5 is the default interrupt for the second parallel port in systems that use two printers for example. It is also the first choice that most sound cards make when looking for an IRQ setting. IRQ5 is also a popular choice as an alternate line for systems that need to use a third COM port, or a modem in addition to two COM ports.
+
+Conflicts: Conflicts on IRQ5 are very common because of the large variety of devices that have it as an option. Since virtually every PC today uses a sound card, and they all like to grab IRQ5, it is almost always taken before you even start looking at more esoteric peripherals. If a second parallel port (LPT2) is being used to allow access to two printers or a printer and a parallel-port drive, then IRQ5 will usually be taken right away. If for some very strange reason you have three parallel ports, watch for a conflict here or with IRQ7, since 5 and 7 are the only two normally used as defaults for parallel ports. Sound cards that default to IRQ5 are generally best left there, to avoid problems with poorly written older software that just assumed the sound card would always be left at IRQ5. To whatever extent possible, move devices that can use higher-valued IRQs away from IRQ5. For example, you can't move COM3 to IRQ11, but you usually can move a network card to it. See the conflict resolution area of the Troubleshooting Expert for more ideas.
+
+
+IRQ6
+16-Bit Priority: 14
+Bus Line: 8/16-bit
+Typical Default Use: Floppy disk controller.
+Other Common Uses: Tape accelerator cards.
+
+Description: This interrupt is reserved for use by the floppy disk controller. Technically, it is available for use by other devices, and some devices will allow you to select IRQ6. Most however do not, realizing that virtually every PC uses at least one floppy disk drive. The most common devices that will let you use IRQ6 are probably tape drive accelerator cards. This is probably because these cards are used for tape drives that run off the floppy interface, and many of them can be set to drive floppy disks themselves.
+
+Conflicts: Conflicts on IRQ6 are uncommon and are usually the result of an incorrectly configured peripheral card, since IRQ6 is pretty standardized in its use for the floppy disks. If you use a tape accelerator card along with an integrated floppy disk controller on your motherboard, watch out for the accelerator trying to take over IRQ6; some even do this by default.
+
+
+IRQ7
+16-Bit Priority: 15
+Bus Line: 8/16-bit
+Typical Default Use: LPT1 (first parallel port).
+Other Common Uses: COM3 (third serial port), COM4 (fourth serial port), modems, sound cards, network cards, tape accelerator cards.
+
+Description: This IRQ is used on most systems to drive the first parallel port, normally for the use of a printer. These days of course many other devices use parallel ports, including external drives. If you are not using a printer or other device then IRQ7 can be used in a similar way to IRQ5: as an alternate for any of the devices that would normally be fighting over IRQ3 or IRQ4.
+
+Conflicts: Conflicts on IRQ7 are relatively unusual. One thing to watch out for if you are using two parallel ports is to make sure the second one is set up to use IRQ5 or another available IRQ. Some add-in parallel boards try to make LPT2 also use IRQ7, which generally won't work. Otherwise, avoiding using IRQ7 for an expansion card if you are using it for LPT1 will eliminate conflicts in most cases.
+
+
+IRQ8
+16-Bit Priority: 3
+Bus Line: No
+Typical Default Use: Real-time clock.
+Other Common Uses: None; for system use only.
+
+Description: This is the reserved interrupt for the real-time clock timer. This timer is used by software programs to manage events that must be calibrated to real-world time; this is done by setting "alarms", which trigger this interrupt at a specified time. For example, if you are using an electronic datebook and have it set to pop up screen messages or beep the PC when it is time for a meeting, the software will set a timer to count down to the appropriate time. When the timer finishes its countdown, an interrupt will be generated on IRQ8.
+
+Conflicts: This is a dedicated interrupt line; there should never be any conflicts. If software indicates a conflict on this IRQ, there is a good possibility of a hardware problem somewhere on your system board.
+
+
+IRQ9
+16-Bit Priority: 4
+Bus Line: 16-bit only
+Typical Default Use: None.
+Other Common Uses: Network cards, sound cards, SCSI host adapters, PCI devices, rerouted IRQ2 devices.
+
+Description: This is usually an open IRQ on most systems, and is a popular choice for use by peripherals, especially network cards. On most PCs it can be used freely since it has no default setting.
+
+Conflicts: There are a couple of things to watch out for when using this IRQ. First, if you are trying to use IRQ2, you cannot use IRQ9 as well, since devices that try to use IRQ2 really end up using IRQ9 instead. Also, some systems that use PCI cards that require the use of a system IRQ line will grab IRQ9; this can be changed in some cases using the BIOS setup parameters that assign IRQs to PCI devices.
+
+
+IRQ10
+16-Bit Priority: 5
+Bus Line: 16-bit only
+Typical Default Use: None.
+Other Common Uses: Network cards, sound cards, SCSI host adapters, secondary IDE channel, quaternary IDE channel, PCI devices.
+
+Description: This is usually open and one of the easiest IRQs to use since it is generally not contested by many devices. While the secondary IDE controller can sometimes be set to use IRQ10, it almost always uses IRQ15 instead.
+
+Conflicts: Conflicts on IRQ10 are unusual; the only thing to watch out for is a PCI card that needs an interrupt line being assigned IRQ10 by the BIOS; this can be changed in some cases using the BIOS setup parameters that assign IRQs to PCI devices.
+
+
+IRQ11
+16-Bit Priority: 6
+Bus Line: 16-bit only
+Typical Default Use: None.
+Other Common Uses: Network cards, sound cards, SCSI host adapters, VGA video cards, tertiary IDE channel, quaternary IDE channel, PCI devices.
+
+Description: This line is usually open and relatively easy to use since it is generally not contested by many devices. If you are using three IDE channels (the third typically being on a sound card), IRQ11 is typically the one that the tertiary controller will try to use. Also, some PCI video cards will try to use IRQ11.
+
+Conflicts: Watch out for PCI cards, especially video cards, that grab IRQ11. This can be changed in some cases using the BIOS setup parameters that assign IRQs to PCI devices.
+
+
+IRQ12
+16-Bit Priority: 7
+Bus Line: 16-bit only
+Typical Default Use: PS/2 mouse.
+Other Common Uses: Network cards, sound cards, SCSI host adapters, VGA video cards, tertiary IDE channel, PCI devices.
+
+Description: On machines that use a PS/2 mouse, this is the IRQ reserved for its use. Using a PS/2 mouse frees up the COM1 serial port and the interrupt it uses (IRQ4) for other devices. Normally this is a good trade since free IRQs with numbers below 8 are harder to find than ones above 8. If a PS/2 mouse is not used, IRQ12 is a good choice for use by other devices such as network cards.
+
+Conflicts: There are some potential problems here. Watch out for PCI cards that can sometimes be assigned this line by the system BIOS. This can be changed in some cases using the BIOS setup parameters that assign IRQs to PCI devices. If you are using a PS/2 mouse you need to make sure no other devices use IRQ12.
+
+
+IRQ Number: 13
+16-Bit Priority: 8
+Bus Line: No
+Typical Default Use: Floating point unit (FPU / NPU / Math coprocessor).
+Other Common Uses: None; for system use only.
+
+Description: This is the reserved interrupt for the integrated floating point unit (on 80486 or later machines) or the math coprocessor (on 80386 or earlier machines that use one). It is used exclusively for internal signaling and is never available for use by peripherals.
+
+Conflicts: This is a dedicated interrupt line; there should never be any conflicts. If software indicates a conflict on this IRQ, there is a good possibility of a hardware problem somewhere on your system board, or possibly with your processor or math coprocessor.
+
+
+IRQ14
+16-Bit Priority: 9
+Bus Line: 16-bit only
+Typical Default Use: Primary IDE channel.
+Other Common Uses: SCSI host adapters.
+
+Description: On most PCs, this IRQ is reserved for use by the primary IDE controller, which provides access to the first two IDE/ATA devices (usually hard disk drives and/or CD-ROM drives). On machines that do not use IDE devices at all, this IRQ can be used for another purpose (such as a SCSI host adapter to provide SCSI drives). In order to do this, you will normally have to disable the IDE channel using either the appropriate BIOS setting (for integrated IDE support on newer boards) or jumpers on the controller board (for older machines that use an IDE controller card).
+
+Conflicts: Problems with IRQ14 are rare, since the universality of its use for IDE means most peripheral vendors avoid offering it as an option. If you are using SCSI and not IDE, and want to use IRQ14, make sure any integrated IDE controllers are disabled first.
+
+
+IRQ15
+16-Bit Priority: 10
+Bus Line: 16-bit only
+Typical Default Use: Secondary IDE channel.
+Other Common Uses: Network cards, SCSI host adapters.
+
+Description: On most newer PCs, this IRQ is reserved for use by the secondary IDE controller, which provides access to the third and fourth IDE/ATA devices (usually hard disk drives and/or CD-ROM drives). If you are not using IDE, or are using only two devices and want to put them on the primary channel to free up this IRQ, that can be done easily as long as you remember to disable the secondary IDE channel using either the appropriate BIOS setting (for integrated IDE support on newer boards) or jumpers on the controller board (for older machines that use an IDE controller card).
+
+Conflicts: Problems with IRQ15 typically result from assigning a peripheral to use it while forgetting to disable the integrated secondary IDE controller. Most Pentium or later (PCI-based) motherboards have two integrated IDE controllers. Some people incorrectly assume that there will be no conflict if nothing is attached to the secondary channel, but this is not always the case.

@@ -1,0 +1,3 @@
+http://bochs.sourceforge.net/techdata.html
+http://www.cs.ucla.edu/~kohler/class/04f-aos/ref/
+http://www.nondot.org/sabre/os/articles

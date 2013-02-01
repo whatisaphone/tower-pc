@@ -1,0 +1,193 @@
+<html>
+<head>
+<title>
+17.3.X  'X' Instructions 
+</title>
+<body>
+<a name="17-03-X"></a>
+Prev: <a href="chp17-w3.htm">17.3.W  'W' Instructions </a><br>
+Next: <a href="app-a.htm">Appendix A  Opcode Map</a>
+<hr>
+<h2>
+17.3.X  'X' Instructions 
+</h2>
+<p>
+<a name="17-03-XCHG"></a>
+<h3>XCHG -- Exchange Register/Memory with Register</h3>
+<p>
+<pre>
+Opcode    Instruction      Clocks     Description
+
+90 + r    XCHG AX,r16      3          Exchange word register with AX
+90 + r    XCHG r16,AX      3          Exchange word register with AX
+90 + r    XCHG EAX,r32     3          Exchange dword register with EAX
+90 + r    XCHG r32,EAX     3          Exchange dword register with EAX
+86  /r    XCHG r/m8,r8     3          Exchange byte register with EA byte
+86  /r    XCHG r8,r/m8     3/5        Exchange byte register with EA byte
+87  /r    XCHG r/m16,r16   3          Exchange word register with EA word
+87  /r    XCHG r16,r/m16   3/5        Exchange word register with EA word
+87  /r    XCHG r/m32,r32   3          Exchange dword register with EA dword
+87  /r    XCHG r32,r/m32   3/5        Exchange dword register with EA dword
+</pre>
+<p>
+Operation
+<p>
+temp <- DEST
+DEST <- SRC
+SRC <- temp
+<p>
+<b>Description</b>
+<p>
+XCHG exchanges two operands. The operands can be in either order. If a
+memory operand is involved, BUS LOCK is asserted for the duration of the
+exchange, regardless of the presence or absence of the LOCK prefix or of the
+value of the IOPL.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if either operand is in a nonwritable segment; #GP(0) for an
+illegal memory operand effective address in the CS, DS, ES, FS, or GS
+segments; #SS(0) for an illegal address in the SS segment; #PF(fault-code)
+for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-XLAT"></a>
+<h3>XLAT/XLATB -- Table Look-up Translation</h3>
+<p>
+<pre>
+D7    XLAT m8    5     Set AL to memory byte DS:[(E)BX + unsigned AL]
+D7    XLATB      5     Set AL to memory byte DS:[(E)BX + unsigned AL]
+</pre>
+<p>
+Operation
+<p>
+IF AddressSize = 16
+THEN
+   AL <- (BX + ZeroExtend(AL))
+ELSE (* AddressSize = 32 *)
+   AL <- (EBX + ZeroExtend(AL));
+FI;
+<p>
+<b>Description</b>
+<p>
+XLAT changes the AL register from the table index to the table entry. AL
+should be the unsigned index into a table addressed by DS:BX (for an
+address-size attribute of 16 bits) or DS:EBX (for an address-size attribute
+of 32 bits).
+<p>
+The operand to XLAT allows for the possibility of a segment override. XLAT
+uses the contents of BX even if they differ from the offset of the operand.
+The offset of the operand should have been moved intoBX/EBX with a previous
+instruction.
+<p>
+The no-operand form, XLATB, can be used if the BX/EBX table will always
+reside in the DS segment.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS, ES,
+FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+#PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+<p>
+<a name="17-03-XOR"></a>
+<h3>XOR -- Logical Exclusive OR</h3>
+<p>
+<p>
+<pre>
+Opcode      Instruction      Clocks   Description
+
+34  ib      XOR AL,imm8      2        Exclusive-OR immediate byte to AL
+35  iw      XOR AX,imm16     2        Exclusive-OR immediate word to AX
+35  id      XOR EAX,imm32    2        Exclusive-OR immediate dword to EAX
+80  /6 ib   XOR r/m8,imm8    2/7      Exclusive-OR immediate byte to r/m
+                                      byte
+81  /6 iw   XOR r/m16,imm16  2/7      Exclusive-OR immediate word to r/m
+                                      word
+81  /6 id   XOR r/m32,imm32  2/7      Exclusive-OR immediate dword to r/m
+                                      dword
+83  /6 ib   XOR r/m16,imm8   2/7      XOR sign-extended immediate byte
+                                      with r/m word
+83  /6 ib   XOR r/m32,imm8   2/7      XOR sign-extended immediate byte
+                                      with r/m dword
+30  /r      XOR r/m8,r8      2/6      Exclusive-OR byte register to r/m
+                                      byte
+31  /r      XOR r/m16,r16    2/6      Exclusive-OR word register to r/m
+                                      word
+31  /r      XOR r/m32,r32    2/6      Exclusive-OR dword register to r/m
+                                      dword
+32  /r      XOR r8,r/m8      2/7      Exclusive-OR byte register to r/m
+                                      byte
+33  /r      XOR r16,r/m16    2/7      Exclusive-OR word register to r/m
+                                      word
+33  /r      XOR r32,r/m32    2/7      Exclusive-OR dword register to r/m
+                                      dword
+</pre>
+<p>
+Operation
+<p>
+DEST <- LeftSRC XOR RightSRC
+CF <- 0
+OF <- 0
+<p>
+<b>Description</b>
+<p>
+XOR computes the exclusive OR of the two operands. Each bit of the result
+is 1 if the corresponding bits of the operands are different; each bit is 0
+if the corresponding bits are the same. The answer replaces the first
+operand.
+<p>
+<b>Flags Affected</b>
+<p>
+CF = 0, OF = 0; SF, ZF, and PF as described in Appendix C; AF is undefined
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-w3.htm">17.3.W  'W' Instructions </a><br>
+Next: <a href="app-a.htm">Appendix A  Opcode Map</a>
+</body>
+</html>

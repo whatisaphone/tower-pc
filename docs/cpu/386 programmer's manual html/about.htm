@@ -1,0 +1,173 @@
+<html>
+<head>
+<title>
+About This Manual
+</title>
+<body>
+Prev: <a href="manual.htm">Intel 80386 Programmer's Reference Manual</a><br>
+Next: <a href="pref.htm">Preface</a>
+<hr>
+<h2>
+About This Manual
+</h2>
+
+<h3>Origins</h3>
+The original source of this manual (INTEL386.TXT), as far as I can tell, 
+is an official Intel source document.
+I found the original document somewhere on the net (I don't remember where).
+You can get the original source document from here:<br>
+http://www.kingsnet.com/~lance/i386/i386txt.zip  (212K)<br>
+(link current as of 3/97).<br>
+<br>
+This hypertext version of the source document, obviously, is not an official
+Intel document or product.  
+You can download the entire hypertext-ed manual from here:<br>
+<a href=i386htm.zip>http://www.kingsnet.com/~lance/i386/i386htm.zip  (2??K)</a>
+<br>(link current as of 3/97).<br>
+<br>
+
+<h3>Purpose</h3>
+I converted the manual to html because:<br>
+(1) I needed a basic 80x86 instruction reference,<br>
+(2) the latest and greatest format of the manuals are huge PDF
+files (on the order of 3-4meg each) and are a pain to sift thru
+with Acrobat,<br>
+(3) I thought it would be a fun project.
+
+<h3>Character Set</h3>
+Because the original document used the extended PC character set, I decided
+to stick with it as much as possible.  At one point, I converted everything
+to standard ASCII, but found that some characters were muddled in the shuffle.
+So ... to properly display the tables and some of the other characters,
+your browser must be using the MS LineDraw character set.
+In Netscape 2.0, use Options/Preferences/Fonts/Fixed Font-Choose Font.
+Select MS LineDraw.  I use a font size of 10.<br>
+<br>
+If your browser is set correctly, the figures below will be
+(1) A box with all double lines,
+(2) a box with horizontal double lines and vertical single lines,
+(3) a box with horizontal single lines and vertical double lines,
+(4) a box with all single lines.
+If not, then you should still see the shapes, 
+but the lines will be drawn with the wrong characters.
+
+<pre>
+  (1)      (2)      (3)      (4)
++--+--+  +--+--+  +--+--+  +--+--+
+|  |  |  |  |  |  |  |  |  |  |  |
+|--+--|  |--+--|  |--+--|  |--+--|
+|  |  |  |  |  |  |  |  |  |  |  |
++--+--+  +--+--+  +--+--+  +--+--+
+</pre>
+
+An unfortunate side effect of using the line drawing character set 
+is that the bullets in lists appear as a large line drawing character.
+<ul>
+<li>See what I mean?
+</ul>
+One character that couldn't be translated to my statisfaction was the
+solid down arrow, ASCII #31.  
+I ended up using the exclamation mark for it.  
+This character appears in some of the figures in the document.
+ 
+<h3>Conversion Process</h3>
+The conversion process was rather simple in concept, but ended up taking
+a lot longer than I expected (mainly because I had to write all the
+software to do it).<br>
+<br>
+With a cursory inspection of the manual, I found it to be divided into
+6 parts; everything before Part I, Parts I, II, III, IV, and the
+appendices.  Within each part are either specific sections, or Chapters.
+The chapters are divided into sections, and the instruction set
+was in its own world.
+Also, I noticed the use of the extended character set (see above);
+the line drawing
+characters and even some characters between #1 and #31 ASCII.<br>
+<br>
+The first task was seeing how the extended characters would display
+in Netscape.  Not real good.  I poked around a bit, and found out that
+I could set the character set to MS LineDraw, which fixed most of the
+problem, but the low end extended characters still wouldn't display
+correctly.  I ended up developing the TXLATE program to convert the
+extended characters to a pseudo-ASCII equivalent.<br>
+<br>
+The next task was to split the file into pieces.  
+Since the original file is 878K, 
+the goal was to have each piece a manageable size, say around 20K.
+By breaking each chapter down into sections, this was achieved except
+for about a dozen cases (less than 10% of the files).  
+For this job, the TSPLIT program was developed.  
+This program reads a command file, and splits up input
+files into output files based on strings.  
+Simple strings didn't cut it, 
+so I had to convert the regexp(3) routines from C into Pascal.
+This also caused me to develop the GREP program, and a program called
+TGREP which is a subset of GREP.<br>
+<br>
+Chapter 17, the Instruction Set, provided a unique problem.  Section 17.2
+actually contained all the instructions, making this a huge section.
+I elected to add a new section, 17.3, which only contained instructions,
+and to group the instructions alphabetically into sub-sections,
+i.e. 17.3.A contains the 'A' instructions.<br>
+<br>
+Once the original file was in pieces, 
+each piece had to be converted into HTML with tags and links added to it.
+The first task was to index the files.
+The TINDEX program was developed for this.  This program reads an input file,
+indexes it based on a command file containing search and pattern strings,
+and writes an output file consisting of the file name, tag, and source line.
+The program also assumes that the first line of each file is the title.<br>
+<br>
+Once all the files are indexed, they needed to be converted from TXT to HTM
+with appropriate markup codes added.  The THTML program was developed for this
+purpose.  THTML reads an input file, adds appropriate HTML information, and
+checks for references to the input file in an index file.
+Matching lines are marked with A NAME= tags.
+<br>
+After I had an initial run, I noticed there was some things lacking.
+I still needed to create the table of contents, figures, and tables
+pages; and I also wanted to have a chapter index at the start of each chapter.
+The THREF program was developed for this.  This program reads an index
+file (output by TINDEX) and generates A HREF= entries.  
+By TGREPing the index file and piping the output to THREF, 
+simple indexes could now be created.
+The TREPLACE, TINDENT, and TBLANK programs were developed to polish
+the results.
+<br>
+
+<h3>Do It Yourself?</h3>
+If you'd like to try this yourself, you can download a ZIP file containing
+the batch file (I386.BAT) and other related files from here:<br>
+http://www.kingsnet.com/~lance/i386/i386misc.zip  (9K)<br>
+(link current as of 3/97).<br>
+<br>
+You'll also need the following utility programs:<br>
+TBLANK,
+TECHO,
+THREF,
+THTML,
+TGREP,
+TINDENT,
+TINDEX,
+TREPLACE,
+TSPLIT,
+TXLATE 
+<br>
+Note that these programs are not specific to this conversion, but are a 
+general set of utilities for the conversion of somewhat structured
+text files.<br>
+<br>
+They are available from here:<br>
+http://www.kingsnet.com/~lance/utillc<br>
+(link current as of 3/97).<br>
+<hr>
+Comments, etc. to:<br>
+<a href="http://www.kingsnet.com/~lance"><b>Lance Costanzo</b></a><br>
+<a href="mailto:lance@mail.kingsnet.com"><i>lance@mail.kingsnet.com</i></a><br>
+03/12/97
+
+<hr>
+Prev: <a href="manual.htm">Intel 80386 Programmer's Reference Manual</a><br>
+Next: <a href="pref.htm">Preface</a>
+</body>
+</html>

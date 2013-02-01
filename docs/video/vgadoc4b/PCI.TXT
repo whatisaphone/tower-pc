@@ -1,0 +1,482 @@
+
+There are two configuration methods, depending on the PCI chipsets used:
+
+Configuration Type 1:
+
+CF8h D(R/W):
+bit   0-7  Index into the configuration space to read/write at CFCh
+    11-15  Card ID (0 - 31)
+    16-19  PCI Bus ID (0 - 15)
+       31  Set to enable the PCI bus configuration space
+
+CFCh D(R/W):
+bit  0-31  The index register identified by the PCI bus/card ID/Index in CF8h
+           can be accessed here.
+
+
+Configuration Type 2:
+
+CF8h (R/W):
+bit   7  Set to select the PCI configuration space
+
+CFAh (R/W):
+bit 0-?  Bus select ?
+
+
+Finding the PCI devices:
+
+  PCItype:=0;
+  outp($CF8,0);
+  outp($CFA,0);
+  if (inp($CF8)=0) and (inp($CFA)=0) then PCItype:=2
+  else begin
+    tmp=inpl($CF8);
+    outpl($CF8,$80000000);
+    if inpl($CF8)=$80000000 then PCItype:=1;
+    outpl($CF8,tmp);
+  end;
+  case PCItype of
+    1:begin   {PCI type 1}
+        for i:=0 to 511 do
+        begin
+          outpl($CF8,$80000000+i*longint(2048));
+          tmp:=inpl($CFC);
+          if ((tmp and $FFFF)<>$FFFF) and ((tmp shr 16)<>$FFFF) then
+            _PCI Device: Vendor: (l and $FFFF)  Device: (l shr 16)_
+        end;
+      end;
+    2:begin   {PCI type 2}
+        outp($CF8,$80);
+        outp($CFA,0);   {Bus select?}
+        for i:=0 to 15 do
+        begin
+          tmp:=inpl(i*256 +$C000);
+          if ((tmp and $FFFF)<>$FFFF) and ((tmp shr 16)<>$FFFF) then
+            _PCI Device: Vendor: (l and $FFFF)  Device: (l shr 16)_
+        end;
+        outp($CF8,0);
+      end;
+  end;
+
+
+The PCI BIOS interface requires a 386 or better CPU.
+
+
+--------X-1AB001-----------------------------
+INT 1A - ? PCI ? - INSTALLATION CHECK
+        AX = B001h
+Return: CF clear if installed
+            DX = 4350h ('CP')
+            CX = 2049h (' I')
+--------X-1AB002-----------------------------
+INT 1A - ? PCI ? - FIND PCI DEVICE
+        AX = B002h
+        CX = device ID
+        DX = vendor ID
+        SI = device index (0-n)
+Return: CF clear if successful
+                BH = bus number
+                BL = device/function number (bits 7-3 device, bits 2-0 func)
+--------X-1AB00A-----------------------------
+INT 1A - ? PCI ? - READ CONFIGURATION DWORD
+        AX = B00Ah
+        BH = bus number
+        BL = device/function number (bits 7-3 device, bits 2-0 function)
+        DI = register number (0000h-00FFh)
+Return: CF clear if successful
+          CX = Low 16 bit of the DWORD
+          DX = High 16 bit of the DWORD
+
+--------X-1AB101-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - INSTALLATION CHECK
+        AX = B101h
+Return: AH = 00h if installed
+            CF clear
+            EDX = 20494350h (' ICP')
+            EDI = physical address of protected-mode entry point (see #0528)
+            AL = PCI hardware characteristics (see #0527)
+            BH = PCI interface level major version (BCD)
+            BL = PCI interface level minor version (BCD)
+            CL = number of last PCI bus in system
+        EAX, EBX, ECX, and EDX may be modified
+        all other flags (except IF) may be modified
+Note:   this function may require up to 1024 byte of stack; it will not enable
+        interrupts if they were disabled before making the call
+
+Bitfields for PCI hardware characteristics:
+Bit(s)  Description (Table 0527)
+ 0      configuration space access mechanism 1 supported
+ 1      configuration space access mechanism 2 supported
+ 2-3    reserved
+ 4      Special Cycle generation mechanism 1 supported
+ 5      Special Cycle generation mechanism 2 supported
+ 6-7    reserved
+
+(Table 0528)
+Call protected-mode entry point with:
+        registers as for real/V86-mode INT call
+        CS = ring 0 descriptor with access to full address space
+Return: as for real/V86-mode call
+--------X-1AB102-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - FIND PCI DEVICE
+        AX = B102h
+        CX = device ID
+        DX = vendor ID
+        SI = device index (0-n)
+Return: CF clear if successful
+        CF set on error
+        AH = status
+            00h successful
+                BH = bus number
+                BL = device/function number (bits 7-3 device, bits 2-0 func)
+            83h bad vendor ID
+            86h device not found
+        EAX, EBX, ECX, and EDX may be modified
+        all other flags (except IF) may be modified
+Notes:  this function may require up to 1024 byte of stack; it will not enable
+        interrupts if they were disabled before making the call device ID FFFFh
+        may be reserved as a wildcard in future implementations the meanings of
+        BL and BH on return were exchanged between the initial drafts of the
+        specification and final implementation all devices sharing a single
+        vendor ID and device ID may be enumerated by incrementing SI from 0
+        until error 86h is returned
+--------X-1AB103-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - FIND PCI CLASS CODE
+        AX = B103h
+        ECX = class code (bits 23-0)
+        SI = device index (0-n)
+Return: CF clear if successful
+        CF set on error
+        AH = status
+            00h successful
+                BH = bus number
+                BL = device/function number (bits 7-3 device, bits 2-0 func)
+            86h device not found
+        EAX, EBX, ECX, and EDX may be modified
+        all other flags (except IF) may be modified
+Notes:  this function may require up to 1024 byte of stack; it will not enable
+        interrupts if they were disabled before making the call the meanings
+        of BL and BH on return were exchanged between the initial drafts of
+        the specification and final implementation all devices sharing the
+        same Class Code may be enumerated by incrementing SI from 0 until
+        error 86h is returned
+--------X-1AB106-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - PCI BUS-SPECIFIC OPERATIONS
+        AX = B106h
+        BL = bus number
+        EDX = Special Cycle data
+Return: CF clear if successful
+        CF set on error
+        AH = status
+            00h successful
+            81h unsupported function
+        EAX, EBX, ECX, and EDX may be modified
+        all other flags (except IF) may be modified
+Note:   this function may require up to 1024 byte of stack; it will not enable
+        interrupts if they were disabled before making the call
+--------X-1AB108-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - READ CONFIGURATION BYTE
+        AX = B108h
+        BL = device/function number (bits 7-3 device, bits 2-0 function)
+        BH = bus number
+        DI = register number (0000h-00FFh)
+Return: CF clear if successful
+             CL = byte read
+        CF set on error
+        AH = status
+             00h successful
+             87h bad register number
+        EAX, EBX, ECX, and EDX may be modified
+        all other flags (except IF) may be modified
+Notes:  this function may require up to 1024 byte of stack; it will not enable
+        interrupts if they were disabled before making the call the meanings
+        of BL and BH on return were exchanged between the initial drafts of
+        the specification and final implementation
+--------X-1AB109-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - READ CONFIGURATION WORD
+        AX = B109h
+        BL = device/function number (bits 7-3 device, bits 2-0 function)
+        BH = bus number
+        DI = register number (0000h-00FFh)
+Return: CF clear if successful
+            CX = word read
+        CF set on error
+        AH = status
+            00h successful
+            87h bad register number
+        EAX, EBX, ECX, and EDX may be modified
+        all other flags (except IF) may be modified
+Notes:  this function may require up to 1024 byte of stack; it will not enable
+        interrupts if they were disabled before making the call the meanings
+        of BL and BH on return were exchanged between the initial drafts of
+        the specification and final implementation
+--------X-1AB10A-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - READ CONFIGURATION DWORD
+        AX = B10Ah
+        BH = bus number
+        BL = device/function number (bits 7-3 device, bits 2-0 function)
+        DI = register number (0000h-00FFh)
+Return: CF clear if successful
+            ECX = dword read
+        CF set on error
+        AH = status
+            00h successful
+            87h bad register number
+        EAX, EBX, ECX, and EDX may be modified
+        all other flags (except IF) may be modified
+Notes: this function may require up to 1024 byte of stack; it will not enable
+       interrupts if they were disabled before making the call the meanings of
+       BL and BH on return were exchanged between the initial drafts of the
+       specification and final implementation
+--------X-1AB10B-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - WRITE CONFIGURATION BYTE
+        AX = B10Bh
+        BH = bus number
+        BL = device/function number (bits 7-3 device, bits 2-0 function)
+        DI = register number (0000h-00FFh)
+        CL = byte to write
+Return: CF clear if successful
+        CF set on error
+        AH = status
+            00h successful
+            87h bad register number
+        EAX, EBX, ECX, and EDX may be modified
+        all other flags (except IF) may be modified
+Notes:  this function may require up to 1024 byte of stack; it will not enable
+        interrupts if they were disabled before making the call the meanings
+        of BL and BH on return were exchanged between the initial drafts of
+        the specification and final implementation
+--------X-1AB10C-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - WRITE CONFIGURATION WORD
+        AX = B10Ch
+        BH = bus number
+        BL = device/function number (bits 7-3 device, bits 2-0 function)
+        DI = register number (multiple of 2 less than 0100h)
+        CX = word to write
+Return: CF clear if successful
+        CF set on error
+        AH = status
+            00h successful
+            87h bad register number
+        EAX, EBX, ECX, and EDX may be modified
+        all other flags (except IF) may be modified
+Notes:  this function may require up to 1024 byte of stack; it will not enable
+        interrupts if they were disabled before making the call the meanings
+        of BL and BH on return were exchanged between the initial drafts of
+        the specification and final implementation
+--------X-1AB10D-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - WRITE CONFIGURATION DWORD
+        AX = B10Dh
+        BH = bus number
+        BL = device/function number (bits 7-3 device, bits 2-0 function)
+        DI = register number (multiple of 4 less than 0100h)
+        ECX = dword to write
+Return: CF clear if successful
+        CF set on error
+        AH = status
+            00h successful
+            87h bad register number
+        EAX, EBX, ECX, and EDX may be modified
+        all other flags (except IF) may be modified
+Notes:  this function may require up to 1024 byte of stack; it will not enable
+        interrupts if they were disabled before making the call the meanings
+        of BL and BH on return were exchanged between the initial drafts of
+        the specification and final implementation
+--------X-1AB181-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - INSTALLATION CHECK (32-bit)
+        AX = B181h
+Return: as for AX=B101h
+--------X-1AB182-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - FIND PCI DEVICE (32-bit)
+        AX = B182h
+        CX = device ID
+        DX = vendor ID
+        SI = device index (0-n)
+Return: as for AX=B102h
+--------X-1AB183-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - FIND PCI CLASS CODE (32-bit)
+        AX = B183h
+        ECX = class code (bits 23-0)
+        SI = device index (0-n)
+Return: as for AX=B103h
+--------X-1AB186-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - PCI BUS-SPECIFIC OPERATIONS (32-bit)
+        AX = B186h
+        BL = bus number
+        EDX = Special Cycle data
+Return: as for AX=B106h
+--------X-1AB188-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - READ CONFIGURATION BYTE (32-bit)
+        AX = B188h
+        BL = bus number
+        BH = device/function number (bits 7-3 device, bits 2-0 function)
+        DI = register number (0000h-00FFh)
+Return: as for AX=B108h
+--------X-1AB189-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - READ CONFIGURATION WORD (32-bit)
+        AX = B189h
+        BL = bus number
+        BH = device/function number (bits 7-3 device, bits 2-0 function)
+        DI = register number (0000h-00FFh)
+Return: as for AX=B109h
+--------X-1AB18A-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - READ CONFIGURATION DWORD (32-bit)
+        AX = B18Ah
+        BL = bus number
+        BH = device/function number (bits 7-3 device, bits 2-0 function)
+        DI = register number (0000h-00FFh)
+Return: as for AX=B10Ah
+--------X-1AB18B-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - WRITE CONFIGURATION BYTE (32-bit)
+        AX = B18Bh
+        BL = bus number
+        BH = device/function number (bits 7-3 device, bits 2-0 function)
+        DI = register number (0000h-00FFh)
+        CL = byte to write
+Return: as for AX=B10Bh
+--------X-1AB18C-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - WRITE CONFIGURATION WORD (32-bit)
+        AX = B18Ch
+        BL = bus number
+        BH = device/function number (bits 7-3 device, bits 2-0 function)
+        DI = register number (multiple of 2 less than 0100h)
+        CX = word to write
+Return: as for AX=B10Ch
+--------X-1AB18D-----------------------------
+INT 1A - Intel PCI BIOS v2.0c - WRITE CONFIGURATION DWORD (32-bit)
+        AX = B18Dh
+        BL = bus number
+        BH = device/function number (bits 7-3 device, bits 2-0 function)
+        DI = register number (multiple of 4 less than 0100h)
+        ECX = dword to write
+Return: as for AX=B10Dh
+
+
+
+The PCI configuration space consists of 256bytes per device, the first 64
+bytes are laid out as follows, though an adapter may not implement all fields.
+
+Offset  Size    Description:
+  00h   WORD    Vendor ID. FFFFh is reserved.
+  02h   WORD    Device ID. FFFFh is reserved.
+  04h   WORD    System Bus Command
+                Bit 0  I/O Space. If set the device is allowed to respond to
+                       I/O requests, if clear the device does not respond.
+                    1  Memory Space. If set the device is allowed to respond
+                       to Meory requests, if clear the device does not
+                       respond.
+                    3  Special Cycles. If set the device is allowed to monitor
+                       special cycles.
+                    5  VGA Palette Snoop. If set special snooping behavior is
+                       enabled. The device must not respond to DAC writes.
+                       If clear palette accesses are treated normally.
+                    6  Parity Error. If set the device responds to parity
+                       errors, if clear it ignores them. The device must
+                       generate parity even if this bit is clear.
+                    7  Wait Cycle Control. If set data/address stepping is
+                       enabled, disabled if clear.
+                    8  System Error Driver. If set the error driver reports
+                       parity errors, if clear the system error driver is
+                       disconnected.
+                    9  Back-to-Back Cycle. If set the device supports back-to
+                        -back cycles.
+  06h   WORD    System Bus Status
+                Bit 7  (R) Fast back-to-back. If set the device is capable of
+                       fast back-to-back cycles, if clear it is not.
+                    8  Bus Master. Only implemented by Bus Masters
+                 9-10  (R) Device Select Timing. DEVSEL# timing. 0: fast,
+                         1: medium, 2: slow
+                   11  Device Target-abort. Set whenever the device (as target)
+                       issues a Target Abort. Write 1 to reset.
+                   12  Received Target-abort. Set whenever the device (as
+                       Master) receives a Target Abort. Write 1 to reset.
+                   13  Master Abort Status. Set whenever the device issues a
+                       Master Abort. Write 1 to reset.
+  08h   BYTE    Revision Code.
+  09h   BYTE    Programming Interface.
+  0Ah   WORD    Class. 300h for VGA devices, 1 for 8514/A devices
+  0Ch   BYTE    Cache line size
+  0Dh   BYTE    Latency timer.
+                Bit 0-2  (R)
+                    3-7
+  0Eh   BYTE    Header type
+                Bit 0-6  Current offset for configuration register ?
+                      7  Multifunction Device?
+  0Fh   BYTE    Bist?
+  10h   DWORD   Base0 - Defines a Memory or I/O region used by the device
+                Bit  0  (R) Memory or I/O. Set if the region is in I/O space,
+                            clear if it is in Memory space.
+                   1-2  (R) Locatable Area. 0: Anywhere in 32bit address space
+                             1: Below 1MB, 2: anywhere in 64bit address space
+                     3  (R) Pre-fetchable. Set if memory is cacheable, clear
+                            if not.
+                   4-7  (R) Address space size
+                  8-31  Memory Base. Upper 24bit of the base address.
+  14h   DWORD   Base1 - Similar to Base0
+  18h   DWORD   Base2 - Similar to Base0
+  1Ch   DWORD   Base3 - Similar to Base0
+  20h   DWORD   Base4 - Similar to Base0
+  24h   DWORD   Base5 - Similar to Base0
+  28h   DWORD   Reserved
+  2Ch   DWORD   Reserved
+  30h   DWORD   ROM Base - Defines the location & size of the BIOS ROM
+                Bit   0  ROM BIOS Decode. Set to enable BIOS access
+                  11-14  (R) ROM BIOS Min Size.
+                           0:  32K ROM (bits 15-17 R/W)
+                           1:  64K ROM (bits 15 RO, 16-17 R/W)
+                           2: 128K ROM (bits 15-16 RO, 17 R/W)
+                           3: 256K ROM (bits 15-17 RO)
+                  15-31  BIOS Base Address. Upper 14-17 bits of the BIOS
+                         location. Depending on the BIOS size in bits 11-14
+                         the lowest 1/2/3 bits may be forced to 0.
+  34h   DWORD   Reserved
+  38h   DWORD   Reserved
+  3Ch   BYTE    Interrupt Line
+                Used for Interrupt Line info during initialisation
+  3Dh   BYTE    Interrupt Pin
+                Identifies the interrupt lines used
+  3Eh   BYTE    Minimum Grant
+                Specifies the longest burst allowed
+  3Fh   BYTE    Max Lat
+                Indicates how often the device geta access to the PCI bus.
+
+
+Known Vendor/Device ID combinations:
+Vendor:   Device:     Card:
+ 0E11h     3032h      Compaq QVision 1280P
+ 1000h                NCR
+ 1002h     4158h      ATI Mach32 (68800-AX)
+           4758h      ATI Mach64 (88800-GX)
+ 1005h     2301h      Avance Logic ALG2301
+           2302h      Avance Logic ALG2302
+           2364h      Avance Logic ALG2364
+ 100Ch     3202h      Tseng ET4000/W32p revA
+           3207h      Tseng ET4000/W32p revD
+ 100Eh     9001h      Weitek Viper/PCI
+           9100h      Weitek Viper Pro/SE
+ 1011h                Digital
+ 1013h     00A0h      Cirrus Logic CL-GD5430
+           00A8h      Cirrus Logic CL-GD5434
+           1200h      Cirrus Logic CL-GD7542 (Nordic)
+           1202h      Cirrus Logic CL-GD7543 (Viking)
+           1204h      Cirrus Logic CL-GD7541 (Nordic Light)
+ 101Ah                NCR
+ 1023h     9420h      Trident TGUI9420DGi
+           9430h      Trident TGUI9430
+ 1025h     1435h      Acer Labs M1435 (huh maybe M3145??)
+ 102Bh     0518h      Matrox ?
+           0D10h      Matrox Impression Plus
+ 102Ch     00B8h      Chips&Tech CT64310
+           00D8h      Chips&Tech CT65545
+ 105Dh     2309h      Number Nine (#9) Imagine-128
+ 1060h                UMC
+ 1142h     3210h      Alliance Pro Motion 3210
+ 1A08h     0000h      Sierra 15064 ?
+ 5333h     8811h      S3 Trio64
+           8880h      S3 86c866
+           88B0h      S3 86c928P
+           88C0h      S3 86c864
+           88C1h      S3 86c864P
+           88D0h      S3 86c964
+ EDD8h     A091h      ARK 1000PV
+           A099h      ARK 2000PV

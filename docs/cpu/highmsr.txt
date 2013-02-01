@@ -1,0 +1,454 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+
+	 Pentium Model-Specific Registers and What They Reveal
+	 -----------------------------------------------------
+		    by Ralf Brown  <ralf@pobox.com>
+			    October 11, 1995
+		(embedded URLs updated June 23, 1996)
+
+
+  Abstract
+  --------
+
+The use of a signed, rather than an unsigned, comparison in the
+microcode for the Intel Pentium(tm) processor's RDMSR and WRMSR
+instructions produces behavior which allows one to infer additional
+details about those instructions' microcode, as well as providing
+access to additional model-specific registers which would normally
+be blocked by the microcode.
+
+
+  Introduction
+  ------------
+
+The October 1, 1995 release of Christian Ludloff's 4P package [1] of
+undocumented information about Intel (and compatible) processors
+mentions the availability of model-specific registers in the range
+80000000h to FFFFFFFFh on Intel's P54C Pentium processors.  This paper
+investigates those registers and presents some thoughts about what may
+be inferred about the Pentium's internal architecture from those
+registers.
+
+The RDMSR and WRMSR instructions provide access to the model-specific
+register specified in register ECX.  These instructions are privileged,
+and thus available only in true real mode or Ring 0 protected-mode
+code.  Many memory managers, such as Microsoft's EMM386 or
+Quarterdeck's QEMM v7.0+, will execute the instructions on the
+application's behalf when they are the reason for a General Protection
+Fault (Exception #13).
+
+
+  The Micro-Code Bug
+  ------------------
+
+A Pentium will accept model-specific registers numbers from 00h to 13h
+or 14h (depending on model, and with a few specific exceptions; see
+Table 1).  This is more-or-less documented by Intel in the Pentium
+Processor User's Manual [2].  However, Pentium processors produced to
+date[*] will also accept any MSR number from 80000000h to FFFFFFFFh,
+inclusive, even though it signals an exception on MSR numbers 00000015h
+to 7FFFFFFFh.  Clearly, there is an internal range check, but rather
+than an unsigned comparison, a signed comparison is performed.  In
+other words, the microcode contains instructions equivalent to 
+	CMP ECX, 00000014h
+	JG  bad_index
+instead of 
+	CMP ECX, 00000014h
+	JA  bad_index
+This improper comparison is present in the microcode for both RDMSR and
+WRMSR instructions, as it is possible to set MSRs above 80000000h as
+well as read them.
+
+[*] And likely any Intel Pentium processors produced in the future,
+    since the Pentium errata document lists this erratum (number 33) as
+    having no fix.  This supports the conjecture that access to the
+    high MSRs is a deliberate back door rather than an unintended bug.
+
+
+  Features of the "High" MSRs
+  ---------------------------
+
+An examination of the values read from MSRs 80000000h and up
+immediately reveals that the values repeat after every 32 MSRs, so
+clearly only the low five bits of the MSR number are actually
+significant.  Further, many of the entries happen to have as their low
+32 bits a value exactly twice the MSR number; it will shortly be seen
+that these MSRs are write-only, and that this behavior reveals
+something of the Pentium internals.
+
+Since the high MSRs repeat every 32 entries, only the first repetition
+will be referenced in this paper.  It should be understood that
+80000000h also refers to 80000020h, 80000040h, ... , FFFFFFE0h (and
+similarly for the other registers 80000001h through 8000001Fh).
+Listing 1 contains the source code for a small (114 bytes) program to
+dump all 32 unique high MSRs; this program was used extensively during
+the investigations described in this paper.
+
+A closer look at the high MSRs, along with a bit of experimentation,
+reveals that 80000000h through 80000014h exactly duplicate the MSRs 00h
+through 14h (except for 03h, 0Ah, and 0Fh, which generate exceptions
+where their high counterparts do not).	Because the high-numbered
+aliases for MSRs 03h, 0Ah, and 0Fh do not generate exceptions, the
+microcode clearly includes specific tests for those three values in
+order to generate exceptions, rather than including some form of
+"valid" bit for each MSR.  Detailed bit assignments for MSRs 00h
+through 13h will not be given here, as they have already been
+documented elsewhere (e.g. [1][5][7]).
+
+It should be possible to determine the ordering of the ECX checks by
+performing exact cycle timings on RDMSR instructions with different
+values in ECX.  Preliminary experiments have shown that RDMSR on valid
+MSR numbers takes 22 clock cycles except on MSRs containing more than
+32 valid bits; those take 26 clock cycles (note that the official
+timing is 20-24 clocks).  The author conjectures that 0015h <= ECX <=
+7FFFFFFFh will execute in at most 18 clock cycles, and the three
+special cases will take three intermediate times in some order.  The
+difficult part of this measurement will be compensating for the time
+taken by the Exception 13 handler (the initial attempt to measure the
+exception-causing cases yielded negative execution times!).
+
+
+  Additional Registers Available Due to RDMSR/WRMSR Bug
+  -----------------------------------------------------
+
+What about MSRs 80000015h through 8000001Fh, which have not yet been
+addressed?  While the first three (80000015h to 80000017h) seem to be
+unimplemented -- they appear as write-only registers, and writes to
+them have no discernable effect -- the remaining eight MSRs are indeed
+implemented.  Further, at least one bit of the normally-inaccessible
+MSR 0Fh is active.  As shown in Table 2, MSRs 80000018h-8000001Ah and
+8000001Ch are read-only, while MSRs 8000001Bh and 8000001Dh-8000001Fh
+are read/write.
+
+MSR 8000000Fh is a write-only register corresponding to the normally
+blocked MSR 0Fh.  Only bit 0 has any obvious effect, instantly locking
+the author's system when set (no effect when cleared). When observed
+with a logic analyzer, all bus activity stops the instant this bit is
+set with WRMSR, apparently because the CPU has been completely halted--
+asserting SMI# (the System Management Interrupt line, which has a
+priority even higher than NMI) has no effect on this condition [3].
+This bit apparently places the CPU into tristate mode (in which the bus
+is left floating); to date, the only method found to leave this mode is
+a system reset.  Attempts to resume normal execution by immediately
+following the WRMSR setting the tristate bit with another clearing it
+were unsuccessful, even with both WRMSR instructions in the same cache
+line (i.e. no memory accesses required).
+
+The purpose of MSR 80000018h is as yet undetermined, but it is related
+to memory management.  This MSR contains 00000004h immediately after a
+cold start, but switches to 00000008h as soon as paging is enabled [6]
+(usually by a memory manager such as EMM386 or QEMM-386).  It remains
+at 00000008h after a QEMM QuickBoot (which does not completely reset
+the machine's state) -- even when rebooting without a memory manager.
+
+MSRs 80000019h through 8000001Bh provide access to the floating point
+unit's instruction stream.  Register 80000019h contains the
+most-recently prefetched floating-point opcode, while register
+8000001Ah contains the most recently executed non-control opcode (i.e.
+instructions such as FSTENV or FRSTOR do not change the MSR).  Register
+8000001Bh contains the opcode of the last non-control instruction
+encountering an exception, and is part of the environment accessed
+through the FSTENV, FLDENV, FSAVE, and FRSTOR instructions.  Any value
+written to this MSR will appear in the opcode field of an immediately
+following FSTENV or FSAVE environment image.  All three registers
+consist of eleven bits, the high three bits of which are the low three
+bits of the instruction's opcode, and the low eight bits of which are
+the second byte of the floating-point instruction (there is an
+ambiguity because FWAIT is stored in MSR 80000019h as 09Bh, as is the
+variant of FCOMP coded by D8h-9Bh).  The most-recently prefetched
+instruction need not be the same as the most recently executed
+instruction, since the most recent instruction may have been a control
+instruction (not stored in MSRs 8000001Ah or 8000001Bh) or the
+processor may have branched to another location before reaching the
+prefetched instruction.
+
+MSR 8000001Ch normally contains the value 00000004h, though the value
+00000000h was seen in one instance, and the value 00000008h was
+reported on a 100MHz Pentium.  Its purpose remains unknown.
+
+MSR 8000001Dh proves to be the Probe Mode Control Register [3] (see
+Table 3), which is ordinarily only visible from an In-Circuit Emulator.
+
+MSRs 8000001Eh and 8000001Fh have not produced any effects in testing,
+though all of the low 32 bits of each are settable (both registers
+initially contain all zeros).  These MSRs may be nothing more than
+scratch storage.  They are known not to be related to the FPU's
+environment, the more common floating-point instructions, CMPXCHG8B,
+SHLD, or BOUND.
+
+
+  What the MSR Contents Imply About the Architecture
+  --------------------------------------------------
+
+Given that unreadable MSRs always return twice their own register
+number in their low 32 bits, it seems clear that the Pentium treats the
+MSRs as an array of sixty-four 32-bit entries internally.  Why this
+doubled value should appear in the programmer-visible registers is less
+clear.	Three possibilities present themselves:
+
+1.  The CPU drives the address of the desired MSR entry onto an internal
+    data bus; unreadable MSR entries leave the data bus floating, which
+    results in the address being read back and placed in EAX before the
+    data lines lose the signal.
+
+2.  The microcode loads EAX with the value of ECX shifted left one bit
+    (e.g. via the equivalent of LEA EAX,[2*ECX]), then uses EAX to index
+    into the MSR entry array.  Unreadable MSRs cause the microcode to
+    abort the instruction without further modifying EAX.
+
+3.  The doubled MSR number is a deliberate feature to allow testing the
+    write-only portions of the MSR space. [3]
+
+The flaw in the argument for the first possibility is that EDX is
+always zero and EAX even rather than odd.  If MSR entries are only 32
+bits (as implied by the doubling of the MSR number), then two data
+transfers would be required, one addressed at 2*ECX for EAX and one at
+2*ECX+1 for EDX.  In support of this possibility, the Pentium's probe
+mode interface is reported to make two accesses in the process of
+fetching a complete MSR, and Christian Ludloff reports that MSRs
+80000002h and 8000000Eh (plus aliases) force some of their bits to zero
+on his machine (which does not occur on the author's machine).
+
+The second possibility seems somewhat contrived -- why load a
+programmer-visible register with 2*ECX when the same effect could be
+had by rearranging the data lines going to the MSR entry storage or
+using one of the already-existing temporary registers in the processor?
+
+The third alternative would be difficult to prove or disprove -- Robert
+Collins suggested that it has the added side-effect of keeping everyone
+wondering.
+
+
+  Conclusion
+  ----------
+
+The apparently deliberate use of an incorrect comparison in the Intel
+Pentium microcode provides access to additional model-specific
+registers, some of which allow use of internal registers or data
+storage which are not normally accessible, or accessible only from an
+In-Circuit Emulator.  Further, the contents read from write-only
+model-specific registers imply that MSRs are stored as an array of
+32-bit values internally, though they are presented to the programmer
+as 64-bit values.
+
+
+			      - - - - - -
+
+Table 1: The Standard Pentium MSRs
+
+MSR Num	Size[*]	R/W	Contents
+=======	====	===	========
+ 00h	64	read	machine check exception address
+ 01h	 6	read	machine check exception type
+ 02h	14	write	TR1 parity reversal test register
+ 03h	--	--	--not implemented--
+ 04h	 4	R/W	TR2 instruction cache end bits
+ 05h	32	R/W	TR3 cache data
+ 06h	32	R/W	TR4 cache tag
+ 07h	15	write	TR5 cache control
+ 08h	32	R/W	TR6 TLB command
+ 09h	32	R/W	TR7 TLB data
+ 0Ah	--	--	--not implemented--
+ 0Bh	32	R/W	TR9 BTB tag
+ 0Ch	32	R/W	TR10 BTB target
+ 0Dh	12	write	TR11 BTB control
+ 0Eh	10	write	TR12 new feature control
+ 0Fh	--	--	--not implemented--
+ 10h	64	R/W	Time Stamp Counter
+ 11h	26	R/W	event counter selection and control
+ 12h	40	R/W	event counter #0
+ 13h	40	R/W	event counter #1
+ 14h	 ?	read	00000000h 00000000h (implemented on P54C only)
+ 15h-7FFFFFFFh	--	--not implemented--
+
+[*] The 'size' column indicates the highest bit which may be set or
+    which is valid on read-only registers.  For readable registers,
+    bits numbered 'size' through 63 are always 0.
+
+			      - - - - - -
+
+
+Table 2: The 800000XXh Pentium MSRs
+
+MSR Number	Size	R/W	Contents (EDX:EAX)
+==========	====	===	==================
+80000000h	64	read	machine check exception address
+80000001h	 6	read	machine check exception type
+80000002h	14	write	TR1 parity reversal test register
+80000003h	--	--	presumably unimplemented (00000000h 2*MSR#)
+80000004h	 4	R/W	TR2 instruction cache end bits
+80000005h	32	R/W	TR3 cache data test register
+80000006h	32	R/W	TR4 cache tag
+80000007h	15	write	TR5 cache control
+80000008h	32	R/W	TR6 TLB command
+80000009h	32	R/W	TR7 TLB data
+8000000Ah	--	--	presumably unimplemented (00000000h 2*MSR#)
+8000000Bh	32	R/W	TR9  BTB tag
+8000000Ch	32	R/W	TR10 BTB target
+8000000Dh	12	write	TR11 BTB control
+8000000Eh	10	write	TR12 new feature control
+8000000Fh	 1?	write	? (bit 0 turns on tristate mode)
+80000010h	64	R/W	Time Stamp Counter
+80000011h	26	R/W	event counter selection and control
+80000012h	40	R/W	event counter #0
+80000013h	40	R/W	event counter #1
+80000014h	 ?	read	P54C only; local APIC? (00000000h 00000000h)
+80000015h	--	--	presumably unimplemented (00000000h 2*MSR#)
+80000016h	--	--	presumably unimplemented (00000000h 2*MSR#)
+80000017h	--	--	presumably unimplemented (00000000h 2*MSR#)
+80000018h	 >= 4	read	paging-related (00000000h 00000004h/0008h)
+80000019h	11	read	floating point last-prefetched opcode
+8000001Ah	11	read	floating point last non-control opcode
+8000001Bh	11	R/W	floating point last exception opcode
+8000001Ch	 >= 4	read	unknown (00000000h 00000000h/0004h/0008h)
+8000001Dh	32	R/W	Probe Mode Control (see Table 3)
+8000001Eh	32	R/W	unknown (00000000h 00000000h)
+8000001Fh	32	R/W	unknown (00000000h 00000000h)
+
+			      - - - - - -
+
+Table 3: MSR 8000001Dh (Probe Mode Control)
+
+Bit	Description
+===	===========
+31	(read-only) System Management Mode is active
+30-3	reserved (0)
+ 2	PB1 monitors breakpoint #1 matches instead of performance counter #1
+ 1	PB0 monitors breakpoint #0 matches instead of performance counter #0
+ 0	ICEBP enabled (every debug exception enters Probe Mode)
+
+Note:	see [4] for complete details on the Probe Mode control register
+
+			      - - - - - -
+
+Listing 1: MSR.ASM
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  High MSR Display Program					  ;;
+;;     -- dumps Model-Specific Registers 80000000h to 8000001Fh	  ;;
+;;	  to standard output					  ;;
+;;	  (Note: will crash on non-Intel CPUs or future Pentia    ;;
+;;	  without access to high MSRs)				  ;;
+;;								  ;;
+;;  Public Domain 1995 Ralf Brown  <ralf@pobox.com>		  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	.title	High MSR Display Program
+	.386
+
+code segment 'code' use16
+	assume	cs:code,ds:code,es:nothing,ss:nothing
+	org	100h
+
+dumpmsr proc near
+	mov	ecx,80000000h		; start showing MSRs at 80000000h
+dump_loop:
+	call	dump_one_msr		; display the value of MSR # ECX
+	mov	al,9			; separate the columns between
+	call	putc			;   the first 16 and last 16
+	mov	al,9			;   MSR with two tabs
+	call	putc
+	add	cx,10h			; switch to second column
+	call	dump_one_msr		;  and display the appropriate MSR
+	mov	al,13			; output a carriage return
+	call	putc
+	mov	al,10			; output a line feed to complete
+	call	putc			;   the newline operation
+	sub	cx,0fh			; advance to next MSR (-10h + 01h)
+	cmp	cx,10h			; quit after 16 lines displayed
+	jb	dump_loop
+	int	20h			; exit program
+dumpmsr endp
+
+dump_one_msr proc near
+	mov	eax,ecx			; show MSR number
+	call	dword_to_string
+	mov	al,'='			; put equal sign between MSR number
+	call	putc			;   and its value
+	db	0fh,32h			; RDMSR (in case mnem. not supported)
+	push	eax			; remember low half of MSR value
+	mov	eax,edx			; output the high half of value
+	call	dword_to_string
+	mov	al,':'			; separate halves with a colon
+	call	putc
+	pop	eax			; get back low half of MSR value
+	;; fall through to dword_to_string
+dump_one_msr endp
+
+dword_to_string proc near
+	push	eax
+	shr	eax,16			; display 32 bits in hex by displaying
+	call	word_to_string		;   high 16 bits first,
+	pop	eax			;   then falling through for low 16
+word_to_string:
+	push	ax
+	mov	al,ah			; display 16 bits in hex by displaying
+	call	byte_to_string		;   high 8 bits first,
+	pop	ax			;   then falling through for low 8
+byte_to_string:
+	push	ax
+	shr	al,4			; display 8 bits as two hex digits
+	call	nybble_to_string	;   by doing high digit first,
+	pop	ax			;   then falling through for low digit
+	and	al,0fh
+nybble_to_string:
+	add	al,90h			; convert nybble in AL into ASCII
+	daa				;   hex digit in AL
+	adc	al,40h
+	daa
+putc:
+	mov	dl,al			; send the character in AL to the
+	mov	ah,2			;   DOS standard output
+	int	21h
+	ret
+dword_to_string endp
+
+code ends
+	end dumpmsr
+			       - - - - - -
+
+
+  Acknowledgements
+  ----------------
+
+This paper owes a great deal to discussions with Robert Collins
+<rcollins@metronet.com> and Christian Ludloff <cl@box.in.chemnitz.de>.
+
+
+  References
+  ----------
+
+[1] Christian Ludloff, Programmer's Processor Power Package (4P),
+    version 3.12.
+    http://webusers.anet-dfw.com/~ludloff
+
+[2] Intel Corporation, Pentium(tm) Processor User's Manual.  Volume 3:
+    Architecture and Programming Manual (1993).  Order number 241430-001.
+
+[3] Robert Collins, personal communication.
+
+[4] Robert Collins, "The Probe Mode Control Register".  Available at
+    http://www.x86.org/articles/pmcr/ProbeModeControlRegister.html.
+
+[5] Ralf Brown, ed.  MS-DOS Interrupt List, release 50 (as of this writing).
+    ftp://ftp.coast.net/SimTel/msdos/info/inter50[a-f].zip
+
+[6] Christian Ludloff, personal communication.
+
+[7] Intel Corporation, Pentium(tm) Processor User's Manual.  Volume 1:
+    Pentium Processor Data Book (1995).  Order number 241428-003.
+
+
+			   -- end of file --
+
+-----BEGIN PGP SIGNATURE-----
+Version: 2.6.2
+
+iQEVAwUBMc3rj1RIjiWXBlOBAQFlVAf+NArW9L/KudTjCBbEMvmEkaJkRj6yeaJ6
+OUiFUNDaOWyzrwrBmV1EWVtK4twtdYsZV9TtbaaBXxn6P8SnAFr224TKBH76pO0G
+0d2G/EnI7PsnpWQ3ZYqON3jKRUcRIutKuwofreIF6BPWuSPMF9Uz52PZ7kN+qvYp
+LQ9ZJKFI6P07wOK2NPB5VVdm4qzva6b4+de9XosgremfZbJt9bs99uH4VdejSzpp
+MbcVqiG5poHCiKS5pZLXsPyYxB1jlyPkIwvcy/zw970XTuqYRf513duN0Popk6/I
+iDKMN7VpY9eBBRqzFzpHd3CpV4Xr307/YJF4n0lEXekToKN0cSSzdA==
+=m4kM
+-----END PGP SIGNATURE-----

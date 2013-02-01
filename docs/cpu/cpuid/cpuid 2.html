@@ -1,0 +1,1132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>CPUID Algorithm Wars</TITLE>
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.0Gold (Win95; I) [Netscape]">
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
+
+<H1 ALIGN=CENTER><FONT COLOR="#0000FF"><FONT SIZE=+3>CPUID Algorithm Wars</FONT></FONT></H1>
+
+<H3 ALIGN=CENTER><FONT COLOR="#0000FF"><FONT SIZE=+1>by Robert R. Collins</FONT></FONT></H3>
+
+<P>
+<HR></P>
+
+<P><FONT COLOR="#000000"><A HREF="../Sep96/Sep96.html">In September</A>,
+I presented the basics for determining the identification of specific families
+of x86 processors - the 8086/88, 80186/88, 80286, 80386, 80486, Pentium,
+Pentium Pro, and the like. In doing so, I analyzed the processor-detection
+algorithm distributed by Intel, noting that it failed to detect some processor
+families, contained a bug that caused it to misdiagnose some processors,
+depended on undocumented processor behavior, and wasn't guaranteed to work
+outside of real mode.</FONT></P>
+
+<P><FONT COLOR="#000000">In spite of these shortcomings, the Intel algorithm
+remains in widespread use primarily because it's supported by Intel, and
+it works most of the time. I concluded by mentioning the possibility of
+writing an algorithm that was more reliable, detected more processor types,
+didn't rely on undocumented processor behavior, and returned the actual
+processor-stepping information - even on processors that don't support
+the CPUID instruction.</FONT></P>
+
+<P><FONT COLOR="#000000">Much like Intel's, my technique uses an algorithm
+to detect different processor families that haven't employed the CPUID
+instruction. My algorithm executes a series of instructions that do not
+exist on all processor families. The algorithm detects if a processor supports
+a particular instruction, thereby detecting the processor family. For example,
+Intel implemented at least one new instruction with each successive processor
+family. My algorithm detects processor differences by attempting to execute
+these newly implemented instructions. If the instruction doesn't exist,
+an invalid-opcode exception is generated. My algorithm intercepts this
+exception and reports that an invalid opcode was detected. Once a newly
+implemented opcode executes successfully, the processor family has been
+determined. This will not work on the 8086/88 however, as this microprocessor
+did not employ the invalid-opcode exception type.</FONT></P>
+
+<P><FONT COLOR="#000000">The 8086-family and 80186- family processors must
+be detected in a different manner. The <I><U>iAPX286Programmer's Reference
+Manual, Appendix D</U> </I>(Intel, part #210498) provides critical information
+that benefits this algorithm:</FONT></P>
+
+<UL>
+<P><I><FONT COLOR="#000000">&quot;The iAPX 286 will push a different value
+on the stack for PUSH SP than the iAPX 86/88.&quot;</FONT></I></P>
+</UL>
+
+<P><FONT COLOR="#000000">The 8086/88 and 80186/188 had a bug in the PUSH
+SP microcode. The 8086 and 80186 stored the value of SP on the stack after
+it was decremented, instead of decrementing SP first and storing the resultant
+value on the stack. Any program that executed PUSH SP and a subsequent
+POP SP would not receive the same value for the PUSH/POP combination. Therefore,
+this well-documented difference is exploited to detect the difference in
+these families of processors. Examples 1(a) and 1(b) illustrate use of
+the PUSH SP microcoded algorithm.</FONT></P>
+
+<P><FONT COLOR="#000000">While the 80186 also demonstrates this same PUSH
+SP behavior, it also implements the invalid-opcode exception type. Therefore,
+it is possible to install an invalid-opcode exception handler and execute
+an instruction that exists only on the 80186-family processors. This would
+determine whether an 80186-family processor was installed. However, I couldn't
+use this approach. I needed to differentiate the 8086 from 80186, and therefore
+couldn't use the invalid-opcode exception for this purpose, as it does
+not exist on the 8086. Instead, I relied upon another documented difference
+between the 8086 and 80186. This difference is mentioned in the <I><U>80186/188,
+80C186/C188 Hardware Reference Manual</U> </I>(#270788), page A-2:</FONT></P>
+
+<UL>
+<P><I><FONT COLOR="#000000">&quot;When a word write is performed at offset
+FFFFh in a segment, the 8086 will write one byte at offset FFFFh, and the
+other at offset 0, while an 80186 family processor will write one byte
+at offset FFFFh, and the other at offset 10000h (one byte beyond the end
+of the segment).&quot;</FONT></I></P>
+</UL>
+
+<P><FONT COLOR="#000000">All processors from the 80286 to 80486 are detected
+by installing an invalid-opcode exception handler and executing instructions
+unique to each processor. When an instruction executes (doesn't generate
+an exception), the processor family has been determined.</FONT></P>
+
+<P><FONT COLOR="#000000">Any processor family that implements the CPUID
+instruction does not need to use this technique. This would include all
+Pentium-class processors, late-model 486s, and some non-Intel x86-compatible
+processors. Once a 386- or 486-class processor has been detected, my algorithm
+blindly executes a CPUID instruction. I don't make any attempt to verify
+the existence of the CPUID instruction using the Intel recommended approach
+(attempt to toggle EFLAGS.ID). I do this because</FONT></P>
+
+<UL>
+<LI><FONT COLOR="#000000">I already have an invalid-opcode handler installed,
+therefore no harm can occur from executing the CPUID instruction.</FONT></LI>
+
+<LI><FONT COLOR="#000000">The Nexgen Nx586 implements the CPUID instruction,
+but not the EFLAGS.ID bit. In this case, the Intel algorithm used to detect
+the EFLAGS.ID bit would fail.</FONT></LI>
+
+<LI><FONT COLOR="#000000">The Cyrix 6x86 implements both EFLAGS.ID and
+CPUID, but must be enabled by programming a processor-configuration register.
+It would be inappropriate for a CPU-identification algorithm to make any
+assumptions about the configurability of an unknown processor type and
+hence, program some model-specific registers.</FONT></LI>
+</UL>
+
+<P><FONT COLOR="#000000">The remainder of the algorithm depends on the
+success or failure of the CPUID instruction. If CPUID exists, it is used
+to determine whether or not the processor is a genuine Intel processor.
+If it is, the processor-detection algorithm is completed; if not, the results
+are modified with a flag to indicate a non-Intel processor (see the comments
+in <A HREF="../../ftp/source/cpuid/cpuid.asm">CPUID.ASM</A>, available
+electronically; see &quot;<A HREF="#Avail">Availability</A>,&quot; below).
+If the CPUID instruction doesn't exist, an invalid-opcode exception occurs,
+and the processor model and stepping are determined by other means.</FONT></P>
+
+<H2><FONT COLOR="#FF0000"><FONT SIZE=+2>Detecting the Processor Model</FONT></FONT></H2>
+
+<P><FONT COLOR="#000000">Detecting the processor model on processors without
+the CPUID instruction is considerably more difficult. For example, the
+80386, 80486, and Pentium have many model types. The 80386 family consists
+of models DX, SX, CX, EX, and SL. The 80486 family consists of models DX,
+DX2, DX4, SX, SX2, and SL, along with the 80487 DX and SX. The Pentium
+family is still growing, but currently has the P5, P54C, OverDrive, and
+OverDrive for DX4 processors. Sometimes it is possible to detect these
+different models, and other times it isn't. (The Intel algorithm makes
+no attempt at determining any processor models.)</FONT></P>
+
+<P><FONT COLOR="#000000">The 80386 DX and SX may be differentiated from
+each other by detecting differences in the CRO register. Bit 4 of this
+register (CR0.ET) may be toggled on the 80386 DX, while it is hardwired
+to 1 on the 80386 SX, CX, EX, and SL. This difference is found by comparing
+Figure 2.2 of the 386 SX microprocessor data sheet (#240187) to the other
+386-class processor data sheets. A further distinction may be made to detect
+the 80386 SL, which has the ability to return its processor identification
+by executing a series of I/O operations (IN/OUT instructions). Accessing
+this internal register is documented in the 80386 SL data sheet (#240815),
+section 8.2. In this case, the actual family, model, and stepping information
+is returned.</FONT></P>
+
+<P><FONT COLOR="#000000">In theory, the 80486 DX and SX may be detected
+in the same manner as the 80386 DX and SX. This difference is documented
+in Figure 2.5 of the <I><U>486 Microprocessor, 487 Math Coprocessor</U>
+</I>data sheet #240950). However, in reality, the documentation is wrong,
+as CR0.ET is hardwired to 1, regardless of which 80486 is in use. Therefore,
+no distinction is made between the 80486 DX and the 80487 SX. However,
+the 80486 DX and 80486 SX may be distinguished from each other by detecting
+the presence of the floating-point unit (FPU). This algorithm is documented
+in the <I><U>80286 and 80287 Programmer's Reference Manual</U> </I>(80287
+section of the manual), Figure 3-1 (#210498). The 80486 SL processor may
+be detected in the exact same manner as the 80386 SL. I did not attempt
+to write an algorithm to detect the differences between the 80486 DX2 and
+DX4. Therefore this algorithm makes no attempt to differentiate these models.</FONT></P>
+
+<H2><FONT COLOR="#FF0000"><FONT SIZE=+2>Detecting the Processor Stepping
+Information</FONT></FONT></H2>
+
+<P><FONT COLOR="#000000">A deeper level of processor identification includes
+obtaining the actual stepping information of the processor. The stepping
+information is useful in determining which bugs are fixed in a specific
+model. Even with this information, you must cross reference the stepping
+ID with the errata documents to determine which bugs are fixed. This information
+is publicly available for the Pentium and Pentium Pro. For all other processors,
+it is still kept confidential and released only by nondisclosure agreement.</FONT></P>
+
+<P><FONT COLOR="#000000">The stepping information is contained in an internal
+processor register called the &quot;ID register.&quot; On all 80386s and
+later processors, this information is returned in EDX after the processor
+completes a RESET. This information is not provided on any processor family
+before the 80386. Even though the format of this register has changed slightly
+over time, it contains the same essential information. To obtain this ID
+register on processors that do not support the CPUID instruction, you must
+RESET the processor. All PC compatibles have a means to recover from a
+RESET and return control to a user program. To do this, you must store
+a special signature in CMOS RAM, and a far-jump pointer in memory before
+the RESET occurs. After RESET, the BIOS reads this signature and returns
+control to your program at the specified far-jump pointer. This doesn't
+always work to retrieve the processor ID, as there is no guarantee that
+EDX hasn't been destroyed by the time the user program regains control.
+There is another technique, but it is much more complicated.</FONT></P>
+
+<P><FONT COLOR="#000000">To capture the processor ID, you must take control
+of code execution immediately after a RESET occurs. Whenever the processor
+is RESET, the CPU starts execution from physical address 0xFFFFFFF0. The
+chipset maps the BIOS from 0xF0000 to the top of memory at 0xFFFF0000.
+This allows the CPU to start executing BIOS code immediately after RESET.
+We want to prevent the BIOS from gaining control of execution after RESET
+and, instead, direct control to our own program. In theory, this is impossible,
+but due to the design of the PC, there is a way to gain control of execution
+before the BIOS. Imagine what would happen if the first instructions the
+processor fetched from the RESET vector contained a bunch of invalid opcodes.
+The processor would generate an invalid-opcode exception and dispatch the
+invalid-opcode exception handler. The invalid-opcode exception handler
+is dispatched by reading a far pointer from address 0:Ox18 and branching
+to that location whenever such an exception occurs. If you set up an invalid-opcode
+exception handler before a RESET occurs, and somehow prevent the BIOS from
+taking control of execution upon RESET, the exception handler could save
+the contents of the CPUID (contained in EDX) before returning control to
+your CPUID-detection program. The difficulty in this technique is forcing
+an invalid-opcode exception to occur after RESET, upon the first instructions
+fetched. Normally, this would not occur, as the first instructions fetched
+would always be valid BIOS instructions.</FONT></P>
+
+<P><FONT COLOR="#000000">Forcing the CPU to fetch invalid opcodes upon
+RESET is easier than it might sound. This technique doesn't employ anything
+as esoteric as reprogramming the chipset to unmask the BIOS Shadow RAM,
+then modifying the executable RAM image of the BIOS to contain invalid
+opcodes, then resetting the processor. Surely this would work to generate
+an invalid-opcode exception, but this technique would be specific to each
+chipset implementation and is a ludicrous suggestion. There is a much simpler
+solution. Remember that the CPU starts executing at physical address 0xFFFFFFF0
+upon RESET. If you could force the CPU to execute from a different physical-memory
+address or somehow make a different physical-memory address appear at 0xFFFFFFF0,
+this would likely suffice to cause the CPU to fetch invalid opcodes and
+generate the requisite exception. Unfortunately, there is no way to force
+the CPU to fetch from any address other than 0xFFFFFFF0, so you must think
+of a technique to force some other memory location to appear at that address.
+In this case, you can thank the CPU A20 gate, which is required by every
+PC-compatible computer. (I will not explain the CPU A20 gate, or the significance
+of the CPU address line A20 for PC-compatibility. For further information
+on this subject, see http://www.x86.org/articles/A20.) When the A20 gate
+is programmed for 8086 compatibility, the CPU address line A20 is always
+grounded. This has the side-effect of making physical address 0xFFEFFFF0
+map to 0xFFFFFFF0. If a reset occurs when the A20 gate is programmed in
+this mode, the CPU fetches opcodes from address 0xFFEFFFF0 instead of the
+normal location (though the CPU doesn't know the difference). Most likely,
+there aren't any valid instructions at this address, and the processor
+fetches invalid opcodes. Subsequently, the requisite invalid-opcode exception
+occurs. Thus, our invalid- opcode exception handler seizes control of execution
+and stores the CPUID value from EDX for later use by your program. The
+program <A HREF="ftp://ftp.x86.org/source/cpuid/shutdown.asm">SHUTDOWN.ASM</A>
+demonstrates this technique.</FONT></P>
+
+<P><FONT COLOR="#000000">There are times when this technique doesn't work.
+Some chipsets think of this anomaly as a bug that could lead to a system
+hang. Such chipsets map the BIOS to both locations (0xFFEF0000 and 0xFFFF0000).
+Therefore, regardless of the state of the A20 gate, a system RESET will
+gracefully invoke the BIOS reset code instead of allowing the system to
+hang. When a chipset decodes the BIOS in both regions, this technique will
+not work. Therefore, my source code detects this condition and doesn't
+attempt to use this technique if it's not going to work.</FONT></P>
+
+<H2><FONT COLOR="#FF0000"><FONT SIZE=+2>The Caveats</FONT></FONT></H2>
+
+<P><FONT COLOR="#000000">This algorithm is written for real and v86 mode.
+However, the algorithm (not the actual implementation) can easily be adapted
+to CPL-0 protected mode.</FONT></P>
+
+<P><FONT COLOR="#000000">Executing this algorithm while using some memory
+managers may not work. Older memory managers, like Microsoft's EMM386.EXE,
+will not allow an application program to execute its own invalid-opcode
+exception handler. Such memory managers halt the system when such an exception
+occurs. Such behavior by the memory manager should be considered a design
+flaw on their part, and not consistent with Intel's original intent of
+providing the invalid- opcode exception type. The invalid-opcode exception
+was intended to trap invalid opcodes and allow extensions to the x86 architecture.
+It was envisioned that a software developer could define his own opcodes
+and rely on his own invalid-opcode exception handler to implement instruction
+extensions. This intention was documented by Intel in the <I><U>iAPX 286
+Programmer's Reference Manual</U>, Appendix B:</I></FONT></P>
+
+<UL>
+<P><I><FONT COLOR="#000000">&quot;Since the offending opcode will always
+be invalid, it cannot be restarted. However, the #UD handler might be coded
+to implement an extension of the iAPX 286 instruction set. In that case,
+the handler could advance the return pointer beyond the extended instruction
+and return control to the program after the extended instruction is emulated.
+Any such extensions may be incompatible with the iAPX 386.&quot;</FONT></I></P>
+</UL>
+
+<P><FONT COLOR="#000000">Further supporting my point is the fact that Intel
+has reserved two opcodes specifically for this purpose. These opcodes will
+not be used by Intel and are guaranteed to be reserved on future generations
+of processors. These opcodes are documented in the 1995 edition of the
+<I><A HREF="http://www.intel.com/design/pentium/manuals/241430_4.pdf">Pentium
+Processor Family Developer's Manual, Volume 3</A> </I>(#241430), Appendix
+A:</FONT></P>
+
+<UL>
+<P><FONT COLOR="#000000">&quot;<I>0F0B and 0FB9 should be used when deliberately
+generating an invalid-opcode exception.</I>&quot;</FONT></P>
+</UL>
+
+<P><FONT COLOR="#000000">All currently available memory managers pass the
+invalid-opcode exception to the faulting v86 task. This development relegates
+all of the objections lodged against my algorithm into obsolescence. I
+tested EMM386-95, 386Max v8.0, and QEMM v8.0, and found that my algorithm
+works without any problems.</FONT></P>
+
+<P><FONT COLOR="#000000">I only make a half-hearted attempt to identify
+non-Intel processors. Some non-Intel processors are identified as a byproduct
+of my algorithm. To accommodate non-Intel processors, I have used two bits
+of the result code to indicate their detection (bits 15 and 14). The <I><A HREF="ftp://ftp.intel.com/pub/IAL/software_specs/ap48504f.pdf">Intel
+Processor Identification With the CPUID Instruction</A></I> (#241618) lists
+these two bits as reserved. Should Intel change their specification, my
+algorithm would need modification.</FONT></P>
+
+<P><FONT COLOR="#000000">I make no attempt at determining some processor
+model types. In some cases, it may be possible to take advantage of processor
+differences (such as the number of CPU address lines) to detect model differences.
+However, any such technique would be at the mercy of the chipset implementation
+(which can map unused memory to the system bus), and render the technique
+ineffective.</FONT></P>
+
+<H2><FONT COLOR="#FF0000"><FONT SIZE=+2>The Results</FONT></FONT></H2>
+
+<P><FONT COLOR="#000000">I tested each processor in as many environments
+as I had available. In all cases, I booted from a Windows 95 boot floppy
+(except the 80286, which isn't supported by Windows 95). I tested the algorithm
+without any device drivers loaded (Clean), and using the latest versions
+of EMM386, 386Max, and QEMM. I also downloaded <A HREF="http://webusers.anet-dfw.com/~jimb/v86mon.zip">V86MON</A>
+from Jim Brooks' Web site (<A HREF="http://webusers.anet-dfw.com/~jimb/x86.htm">http://webusers.anet-dfw.com/~jimb/x86.htm</A>).
+V86MON is a virtual-mode manager that is ideal for testing how a real-mode
+application will operate in v86 mode. The author claims to have run hundreds
+of real-mode applications without a single error by providing near-perfect
+real-mode emulation. V86MON has four flavors: v86 mode with and without
+interrupt virtualization, and enhanced v86 mode with and without interrupt
+virtualization. <A HREF="#Tbl1">Table 1</A> summarizes the results.</FONT></P>
+
+<P><FONT COLOR="#000000">Occasionally, the Intel algorithm fails to properly
+detect any processor higher than an 80386, instead identifying an 80486,
+Pentium, and Pentium Pro as an 80386. (I described this bug in my September
+column.) This error manifests itself when I boot without any device drivers
+(Clean) and while using all of the V86MON variants. As I found out, the
+near-perfect real-mode emulation of V86MON was a little too perfect, as
+Intel's algorithm demonstrated the same errant behavior when run under
+V86MON. The bug didn't manifest itself when run under EMM386, 386Max, or
+QEMM. In these cases, the bug was obscured because these memory managers
+didn't perfectly emulate real-mode behavior. Regardless, my algorithm isn't
+prone to this failure.</FONT></P>
+
+<P><FONT COLOR="#000000">Intel's algorithm locked up the computer when
+run on V86MON (normal v86 mode) with interrupt virtualization enabled.
+My algorithm ran perfectly in this environment.</FONT></P>
+
+<P><FONT COLOR="#000000">Intel's algorithm detects the AMD 5k86 as an 80486-class
+processor, even though it has all of the features and instructions of the
+Pentium, including the CPUID instruction. My algorithm correctly detects
+this processor as a non-Intel, Pentium-class processor.</FONT></P>
+
+<P><FONT COLOR="#000000">Intel's algorithm detected the Cyrix 6x86 as an
+80486-class processor, even though it has all of the performance and instructions
+of a Pentium-class processor. In real mode, my algorithm used the processor-shutdown
+technique to correctly detect the 6x86 as a non-Intel, Pentium class processor.
+Outside of real mode, my algorithm also detected the 6x86 as an 80486-class
+processor. Intel's algorithm detected the Nexgen Nx586 as an 80386-class
+processor. My algorithm detected the Nx586 using CPUID, and correctly reported
+it as a non-Intel, Pentium-class processor.</FONT></P>
+
+<P><FONT COLOR="#000000">Overall, both algorithms produce similar results
+and operate properly in a wide range of environments. Back when the CPUID
+algorithm wars were raging (circa 1988, 1989), the pundits lauded the Intel
+algorithm over my approach, claiming that their algorithm worked in a wider
+range of operating environments. I argued the technical correctness of
+my algorithm and claimed the memory managers, which kept my algorithm from
+running, were designed incorrectly. Therefore, I was proud to discover
+that all of the memory managers I tested for this column have fixed their
+designs. This allows my algorithm to run without failure. As my results
+demonstrate, my algorithm works in a wider range of operating environments,
+isn't prone to misdiagnosing the processor family, isn't prone to misdiagnosing
+non-Intel processors, provides the processor model type where applicable,
+and provides the model and stepping information on processors that don't
+support the CPUID instruction. In addition to these benefits, my algorithm
+is adaptable to protected mode, whereas Intel's isn't. This should settle
+the CPUID algorithm wars once and for all, or at least for the next delta
+of time.</FONT></P>
+
+<CENTER><P><A NAME="Tbl1"></A><B>Table 1 -- Comparison of CPUID detection
+algorithms</B></P></CENTER>
+
+<CENTER><TABLE BORDER=1 >
+<TR>
+<TD WIDTH=180></TD>
+
+<TD WIDTH=72>
+<CENTER><P><B>Win95</B></P></CENTER>
+</TD>
+
+<TD COLSPAN=3 WIDTH=216>
+<CENTER><P><B>Memory Managers</B></P></CENTER>
+</TD>
+
+<TD COLSPAN=4 WIDTH=288>
+<CENTER><P><B>V86MON</B></P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=180></TD>
+
+<TD WIDTH=72>
+<CENTER><P><FONT SIZE=-2>Clean</FONT></P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><FONT SIZE=-2>EMM386</FONT></P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><FONT SIZE=-2>386^Max</FONT></P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><FONT SIZE=-2>QEMM</FONT></P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><FONT SIZE=-2>V86VI</FONT></P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><FONT SIZE=-2>V86NoVi</FONT></P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><FONT SIZE=-2>Ev86Vi</FONT></P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><FONT SIZE=-2>Ev86Nvi</FONT></P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=180><B><FONT SIZE=+1>80286<BR>
+</FONT></B>Intel Algorithm<BR>
+My Algorithm</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+2<BR>
+20F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=180><B><FONT SIZE=+1>80386 DX<BR>
+</FONT></B>Intel Algorithm<BR>
+My Algorithm</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+30F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+30F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+30F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+30F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+Hang<BR>
+30F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+30F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=180><B><FONT SIZE=+1>80386 SX<BR>
+</FONT></B>Intel Algorithm<BR>
+My Algorithm</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+320</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+32F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+32F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+32F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+Hang<BR>
+32F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+32F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=180><B><FONT SIZE=+1>80486 DX<BR>
+</FONT></B>Intel Algorithm<BR>
+My Algorithm</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+402</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+Hang<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=180><B><FONT SIZE=+1>Intel486 DX-50<BR>
+</FONT></B>Intel Algorithm<BR>
+My Algorithm</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+411</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+Hang<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=180><B><FONT SIZE=+1>Intel486 DX4<BR>
+</FONT></B>Intel Algorithm<BR>
+My Algorithm</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+480</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+480</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+480</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+480</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+Hang<BR>
+480</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+480</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=180><B><FONT SIZE=+1>Pentium<BR>
+</FONT></B>Intel Algorithm<BR>
+My Algorithm</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+5<BR>
+52B</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+5<BR>
+52B</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+5<BR>
+52B</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+5<BR>
+52B</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+Hang<BR>
+52B</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+5<BR>
+52B</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+5<BR>
+52B</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+5<BR>
+52B</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=180><B><FONT SIZE=+1>Pentium Pro<BR>
+</FONT></B>Intel Algorithm<BR>
+My Algorithm</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+6<BR>
+611</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+6<BR>
+611</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+6<BR>
+611</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+6<BR>
+611</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+Hang<BR>
+611</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+6<BR>
+611</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+6<BR>
+611</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+6<BR>
+611</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=180><B><FONT SIZE=+1>Texas Instruments 486<BR>
+</FONT></B>Intel Algorithm<BR>
+My Algorithm</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+Hang<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=180><B><FONT SIZE=+1>AMD 5k86<BR>
+</FONT></B>Intel Algorithm<BR>
+My Algorithm</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+C500</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+C500</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+C500</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+C500</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+Hang<BR>
+C500</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+C500</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+C500</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+C500</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=180><B><FONT SIZE=+1>Cyrix 6x86<BR>
+</FONT></B>Intel Algorithm<BR>
+My Algorithm</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+4520</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+Hang<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+4<BR>
+40F</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=180><B><FONT SIZE=+1>Nexgen Nx586<BR>
+</FONT></B>Intel Algorithm<BR>
+My Algorithm</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+C504</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+C504</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+C504</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+C504</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+Hang<BR>
+C504</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+3<BR>
+C504</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+
+<TD WIDTH=72>
+<CENTER><P><BR>
+N/A<BR>
+N/A</P></CENTER>
+</TD>
+</TR>
+</TABLE></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<H3><A NAME="Avail"></A><FONT COLOR="#FF0000"><FONT SIZE=+1>Source Code
+Availability</FONT></FONT></H3>
+
+<P><FONT COLOR="#000000">View source code for CPUID.EXE<BR>
+<A HREF="ftp://ftp.x86.org/source/cpuid/cpuid.asm">ftp://ftp.x86.org/source/cpuid/cpuid.asm<BR>
+</A><A HREF="ftp://ftp.x86.org/source/cpuid/shutdown.asm">ftp://ftp.x86.org/source/cpuid/shutdown.asm<BR>
+</A><A HREF="ftp://ftp.x86.org/source/cpuid/kbc.asm">ftp://ftp.x86.org/source/cpuid/kbc.asm<BR>
+</A><A HREF="ftp://ftp.x86.org/source/cpuid/intel.asm">ftp://ftp.x86.org/source/cpuid/intel.asm<BR>
+</A><A HREF="ftp://ftp.x86.org/source/cpuid/makefile">ftp://ftp.x86.org/source/cpuid/makefile<BR>
+</A><A HREF="ftp://ftp.x86.org/source/include/macros.inc">ftp://ftp.x86.org/source/include/macros.inc<BR>
+</A><A HREF="ftp://ftp.x86.org/source/include/struc.inc">ftp://ftp.x86.org/source/include/struc.inc<BR>
+</A><A HREF="ftp://ftp.x86.org/source/include/equates.inc">ftp://ftp.x86.org/source/include/equates.inc</A></FONT></P>
+
+<P><FONT COLOR="#000000">Download source code archive for CPUID.EXE<BR>
+<A HREF="ftp://ftp.x86.org/dloads/CPUID.ZIP">ftp://ftp.x86.org/dloads/CPUID.ZIP</A></FONT></P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P><A HREF="../ddj.html">Back to Dr. Dobb's Undocumented Corner home page</A></P>
+
+<P><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/bighand_left.gif" ALT="Return to the" VSPACE=14 BORDER=0 HEIGHT=48 WIDTH=64></A><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/gohome.gif" ALT="Intel
+Secrets home page" BORDER=0></A>
+<img src="http://www.x86.org/Count.cgi?ft=0|frgb=69;139;50;tr=0|trgb=0;0;0|wxh=15;20|md=6|dd=C|st=1532481|sh=0|df=Total.html.dat" border=0  align=abscenter width=0 height=0>
+
+<HR><BR>
+<ADDRESS>&copy; 1991-1999 <b><font color="#FF0000">Intel Secrets Web Site</font></b> and Robert Collins. <A HREF="http://pgp5.ai.mit.edu/pks-commands.html#extract">PGP
+key available</A>.<BR>
+<BR>
+<FONT SIZE=-2>Make no mistake!<BR>
+</FONT>This web site is proud to provide superior information and service
+without any affiliation to Intel Corporation.<BR>
+<BR>
+&quot;<B><FONT COLOR="#FF0000">Intel Secrets</FONT></B>&quot;, &quot;<B><FONT COLOR="#FF0000">What
+Intel doesn't want you to know</FONT></B>&quot; <B><FONT COLOR="#FF0000">and
+anything with a dropped e in it</FONT></B>, are phrases that infuriate
+Intel Corporation.</ADDRESS>
+
+<ADDRESS><BR>
+Pentium, Intel, and the letter "I" are registered trademarks of Intel Corporation. 386, 486, 586, P6,
+all other letters, and all other numbers <B><FONT COLOR="#FF0000">are not!<BR>
+</FONT></B>All other trademarks are those of their respective companies.
+See <A HREF="http://www.x86.org/Trademarks.html">Trademarks and Disclaimers</A>
+for more info.<BR>
+<BR>
+Robert Collins works somewhere in the United States of America. Robert
+may be <A HREF="http://www.x86.org/Contact.html">reached via email or telephone</A>.</ADDRESS>
+
+
+</BODY>
+</HTML>

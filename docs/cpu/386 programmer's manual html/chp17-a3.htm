@@ -1,0 +1,438 @@
+<html>
+<head>
+<title>
+17.3.A  'A' Instructions 
+</title>
+<body>
+<a name="17-03-A"></a>
+Prev: <a href="chp17-03.htm">17.3  Instruction Set</a><br>
+Next: <a href="chp17-b3.htm">17.3.B  'B' Instructions </a>
+<hr>
+<h2>
+17.3.A  'A' Instructions 
+</h2>
+<p>
+<a name="17-03-AAA"></a>
+<h3>AAA -- ASCII Adjust after Addition</h3>
+<p>
+<pre>
+Opcode    Instruction    Clocks    Description
+
+37        AAA            4         ASCII adjust AL after addition
+</pre>
+<p>
+Operation
+<p>
+IF ((AL AND 0FH) > 9) OR (AF = 1)
+THEN
+   AL <- (AL + 6) AND 0FH;
+   AH <- AH + 1;
+   AF <- 1;
+   CF <- 1;
+ELSE
+   CF <- 0;
+   AF <- 0;
+FI;
+<p>
+<b>Description</b>
+<p>
+Execute AAA only following an ADD instruction that leaves a byte result
+in the AL register. The lower nibbles of the operands of the ADD instruction
+should be in the range 0 through 9 (BCD digits). In this case, AAA adjusts
+AL to contain the correct decimal digit result. If the addition produced a
+decimal carry, the AH register is incremented, and the carry and auxiliary
+carry flags are set to 1. If there was no decimal carry, the carry and
+auxiliary flags are set to 0 and AH is unchanged. In either case, AL is left
+with its top nibble set to 0. To convert AL to an ASCII result, follow the
+AAA instruction with OR AL, 30H.
+<p>
+<b>Flags Affected</b>
+<p>
+AF and CF as described above; OF, SF, ZF, and PF are undefined
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-AAD"></a>
+<h3>AAD -- ASCII Adjust AX before Division</h3>
+<p>
+<pre>
+Opcode    Instruction    Clocks    Description
+
+D5 0A     AAD            19        ASCII adjust AX before division
+</pre>
+<p>
+Operation
+<p>
+AL <- AH * 10 + AL;
+AH <- 0;
+<p>
+<b>Description</b>
+<p>
+AAD is used to prepare two unpacked BCD digits (the least-significant
+digit in AL, the most-significant digit in AH) for a division operation that
+will yield an unpacked result. This is accomplished by setting AL to
+AL + (10 * AH), and then setting AH to 0. AX is then equal to the binary
+equivalent of the original unpacked two-digit number.
+<p>
+<b>Flags Affected</b>
+<p>
+SF, ZF, and PF as described in Appendix C; OF, AF, and CF are undefined
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-AAM"></a>
+<h3>AAM -- ASCII Adjust AX after Multiply</h3>
+<p>
+<pre>
+Opcode    Instruction    Clocks    Description
+
+D4 0A     AAM            17        ASCII adjust AX after multiply
+</pre>
+<p>
+Operation
+<p>
+AH <- AL / 10;
+AL <- AL MOD 10;
+<p>
+<b>Description</b>
+<p>
+Execute AAM only after executing a MUL instruction between two unpacked
+BCD digits that leaves the result in the AX register. Because the result is
+less than 100, it is contained entirely in the AL register. AAM unpacks the
+AL result by dividing AL by 10, leaving the quotient (most-significant
+digit) in AH and the remainder (least-significant digit) in AL.
+<p>
+<b>Flags Affected</b>
+<p>
+SF, ZF, and PF as described in Appendix C; OF, AF, and CF are undefined
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-AAS"></a>
+<h3>AAS -- ASCII Adjust AL after Subtraction</h3>
+<p>
+<pre>
+Opcode    Instruction    Clocks    Description
+
+3F        AAS            4         ASCII adjust AL after subtraction
+</pre>
+<p>
+Operation
+<p>
+IF (AL AND 0FH) > 9 OR AF = 1
+THEN
+   AL <- AL - 6;
+   AL <- AL AND 0FH;
+   AH <- AH - 1;
+   AF <- 1;
+   CF <- 1;
+ELSE
+   CF <- 0;
+   AF <- 0;
+FI;
+<p>
+<b>Description</b>
+<p>
+Execute AAS only after a SUB instruction that leaves the byte result in the
+AL register. The lower nibbles of the operands of the SUB instruction must
+have been in the range 0 through 9 (BCD digits). In this case, AAS adjusts
+AL so it contains the correct decimal digit result. If the subtraction
+produced a decimal carry, the AH register is decremented, and the carry and
+auxiliary carry flags are set to 1. If no decimal carry occurred, the carry
+and auxiliary carry flags are set to 0, and AH is unchanged. In either case,
+AL is left with its top nibble set to 0. To convert AL to an ASCII result,
+follow the AAS with OR AL, 30H.
+<p>
+<b>Flags Affected</b>
+<p>
+AF and CF as described above; OF, SF, ZF, and PF are undefined
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-ADC"></a>
+<h3>ADC -- Add with Carry</h3>
+<p>
+<p>
+<pre>
+Opcode    Instruction      Clocks    Description
+
+14 ib     ADC AL,imm8      2         Add with carry immediate byte to AL
+15 iw     ADC AX,imm16     2         Add with carry immediate word to AX
+15 id     ADC EAX,imm32    2         Add with carry immediate dword to EAX
+80 /2 ib  ADC r/m8,imm8    2/7       Add with carry immediate byte to r/m
+                                     byte
+81 /2 iw  ADC r/m16,imm16  2/7       Add with carry immediate word to r/m
+                                     word
+81 /2 id  ADC r/m32,imm32  2/7       Add with CF immediate dword to r/m
+                                     dword
+83 /2 ib  ADC r/m16,imm8   2/7       Add with CF sign-extended immediate
+                                     byte to r/m word
+83 /2 ib  ADC r/m32,imm8   2/7       Add with CF sign-extended immediate
+                                     byte into r/m dword
+10 /r     ADC r/m8,r8      2/7       Add with carry byte register to r/m
+                                     byte
+11 /r     ADC r/m16,r16    2/7       Add with carry word register to r/m
+                                     word
+11 /r     ADC r/m32,r32    2/7       Add with CF dword register to r/m dword
+12 /r     ADC r8,r/m8      2/6       Add with carry r/m byte to byte
+                                     register
+13 /r     ADC r16,r/m16    2/6       Add with carry r/m word to word
+                                     register
+13 /r     ADC r32,r/m32    2/6       Add with CF r/m dword to dword register
+</pre>
+<p>
+Operation
+<p>
+DEST <- DEST + SRC + CF;
+<p>
+<b>Description</b>
+<p>
+ADC performs an integer addition of the two operands DEST and SRC and the
+carry flag, CF. The result of the addition is assigned to the first operand
+(DEST), and the flags are set accordingly. ADC is usually executed as part
+of a multi-byte or multi-word addition operation. When an immediate byte
+value is added to a word or doubleword operand, the immediate value is first
+sign-extended to the size of the word or doubleword operand.
+<p>
+<b>Flags Affected</b>
+<p>
+OF, SF, ZF, AF, CF, and PF as described in Appendix C
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) if page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+<p>
+<a name="17-03-ADD"></a>
+<h3>ADD -- Add</h3>
+<p>
+<pre>
+Opcode    Instruction         Clocks    Description
+
+04 ib     ADD AL,imm8          2        Add immediate byte to AL
+05 iw     ADD AX,imm16         2        Add immediate word to AX
+05 id     ADD EAX,imm32        2        Add immediate dword to EAX
+80 /0 ib  ADD r/m8,imm8        2/7      Add immediate byte to r/m byte
+81 /0 iw  ADD r/m16,imm16      2/7      Add immediate word to r/m word
+81 /0 id  ADD r/m32,imm32      2/7      Add immediate dword to r/m dword
+83 /0 ib  ADD r/m16,imm8       2/7      Add sign-extended immediate byte
+                                        to r/m word
+83 /0 ib  ADD r/m32,imm8       2/7      Add sign-extended immediate byte
+                                        to r/m dword
+00 /r     ADD r/m8,r8          2/7      Add byte register to r/m byte
+01 /r     ADD r/m16,r16        2/7      Add word register to r/m word
+01 /r     ADD r/m32,r32        2/7      Add dword register to r/m dword
+02 /r     ADD r8,r/m8          2/6      Add r/m byte to byte register
+03 /r     ADD r16,r/m16        2/6      Add r/m word to word register
+03 /r     ADD r32,r/m32        2/6      Add r/m dword to dword register
+</pre>
+<p>
+Operation
+<p>
+DEST <- DEST + SRC;
+<p>
+<b>Description</b>
+<p>
+ADD performs an integer addition of the two operands (DEST and SRC). The
+result of the addition is assigned to the first operand (DEST), and the
+flags are set accordingly.
+<p>
+When an immediate byte is added to a word or doubleword operand, the
+immediate value is sign-extended to the size of the word or doubleword
+operand.
+<p>
+<b>Flags Affected</b>
+<p>
+OF, SF, ZF, AF, CF, and PF as described in Appendix C
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+<p>
+<a name="17-03-AND"></a>
+<h3>AND -- Logical AND</h3>
+<p>
+<pre>
+Opcode    Instruction          Clocks    Description
+
+24 ib     AND AL,imm8          2         AND immediate byte to AL
+25 iw     AND AX,imm16         2         AND immediate word to AX
+25 id     AND EAX,imm32        2         AND immediate dword to EAX
+80 /4 ib  AND r/m8,imm8        2/7       AND immediate byte to r/m byte
+81 /4 iw  AND r/m16,imm16      2/7       AND immediate word to r/m word
+81 /4 id  AND r/m32,imm32      2/7       AND immediate dword to r/m dword
+83 /4 ib  AND r/m16,imm8       2/7       AND sign-extended immediate byte
+                                         with r/m word
+83 /4 ib  AND r/m32,imm8       2/7       AND sign-extended immediate byte
+                                         with r/m dword
+20 /r     AND r/m8,r8          2/7       AND byte register to r/m byte
+21 /r     AND r/m16,r16        2/7       AND word register to r/m word
+21 /r     AND r/m32,r32        2/7       AND dword register to r/m dword
+22 /r     AND r8,r/m8          2/6       AND r/m byte to byte register
+23 /r     AND r16,r/m16        2/6       AND r/m word to word register
+23 /r     AND r32,r/m32        2/6       AND r/m dword to dword register
+</pre>
+<p>
+Operation
+<p>
+DEST <- DEST AND SRC;
+CF <- 0;
+OF <- 0;
+<p>
+<b>Description</b>
+<p>
+Each bit of the result of the AND instruction is a 1 if both corresponding
+bits of the operands are 1; otherwise, it becomes a 0.
+<p>
+<b>Flags Affected</b>
+<p>
+CF = 0, OF = 0; PF, SF, and ZF as described in Appendix C
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+<p>
+<a name="17-03-ARPL"></a>
+<h3>ARPL -- Adjust RPL Field of Selector</h3>
+<p>
+<pre>
+Opcode    Instruction          Clocks    Description
+
+63 /r     ARPL r/m16,r16       pm=20/21  Adjust RPL of r/m16 to not
+                                         less than RPL of r16
+</pre>
+<p>
+Operation
+<p>
+IF RPL bits(0,1) of DEST < RPL bits(0,1) of SRC
+THEN
+   ZF <- 1;
+   RPL bits(0,1) of DEST <- RPL bits(0,1) of SRC;
+ELSE
+   ZF <- 0;
+FI;
+<p>
+<b>Description</b>
+<p>
+The ARPL instruction has two operands. The first operand is a 16-bit
+memory variable or word register that contains the value of a selector. The
+second operand is a word register. If the RPL field ("requested privilege
+<pre>
+level"--bottom two bits) of the first operand is less than the RPL field of
+the second operand, the zero flag is set to 1 and the RPL field of the
+first operand is increased to match the second operand. Otherwise, the zero
+flag is set to 0 and no change is made to the first operand.
+</pre>
+ARPL appears in operating system software, not in application programs. It
+is used to guarantee that a selector parameter to a subroutine does not
+request more privilege than the caller is allowed. The second operand of
+ARPL is normally a register that contains the CS selector value of the
+caller.
+<p>
+<b>Flags Affected</b>
+<p>
+ZF as described above
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 6; ARPL is not recognized in Real Address Mode
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-03.htm">17.3  Instruction Set</a><br>
+Next: <a href="chp17-b3.htm">17.3.B  'B' Instructions </a>
+</body>
+</html>

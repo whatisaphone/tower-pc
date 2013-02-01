@@ -1,0 +1,86 @@
+New P6 OpCodes: UD2 
+
+----------------------------------------------------------------------------
+
+UD2 -- 0F 0B, 0F B9 -- Undefined Opcode -2
+
+
+                                                              UD2
+Flags:                                       Undefined Opcode - 2 
++-+-+-+-+-+-+-+-+-+                       +----------+----------+
+|O|D|I|T|S|Z|A|P|C|                       | 00001111 | 00001011 |
++-+-+-+-+-+-+-+-+-+                       +----------+----------+
+| | | | | | | | | |                       |    0F    |    0B    |
++-+-+-+-+-+-+-+-+-+                       +----------+----------+
+                                          | 00001111 | 10111001 |
+                                          +----------+----------+
+                                          |    0F    |    B9    |
+                                          +----------+----------+
+
+
+Operation: 
+UD2 {
+  #UD;
+}
+
+
+Description:
+
+Specifying either opcode 0F 0B, or 0F B9 in an instruction stream will 
+cause an undefined opcode to occur. These two opcodes are unique, in 
+that they will always be available. For applications wishing to 
+intentionally generate an undefined opcode exception, for the purposes 
+of instruction set extensions, they should use either of these defined 
+opcodes.
+
+Example: 
+    db  0fh,00bh
+    db  0fh,0b9h
+
+
+Flags affected: 
+None. 
+Exceptions: 
+#UD 
+
+
+----------------------------------------------------------------------------
+
+Get description of other opcodes:
+AAM:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAM.txt
+AAD:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAD.txt
+CMOV:     ftp://ftp.x86.org/pub/x86/p6/opcodes/CMOV.txt
+FCMOV:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCMOV.txt
+FCOMI:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCOMI.txt
+ICEBP:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+INT01:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+LOADALL:  ftp://ftp.x86.org/pub/x86/secrets/opcodes/LOADALL.txt
+RDPMC:    ftp://ftp.x86.org/pub/x86/p6/opcodes/RDPMC.txt
+SALC:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/SALC.txt
+UMOV:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/UMOV.txt
+
+----------------------------------------------------------------------------
+
+Download this file -- OpCodes.ZIP 
+ftp://ftp.x86.org/pub/x86/dloads/OPCODES.ZIP 
+
+----------------------------------------------------------------------------
+
+(c) 1995, 1996 Intel Secrets(TM) home page. PGP key available. 
+
+Make no mistake! 
+The Intel Secrets web site is proud to provide superior information and 
+service without any affilation to Intel. 
+
+"Intel Secrets" and "What Intel doesn't want you to know" are trademarks 
+of Robert Collins. 
+
+Pentium and Intel are trademarks of Intel Corporation. 386, 486, 586, 
+P6, and all other numbers.are not!
+
+All other trademarks are those of their respective companies. See 
+Trademarks and Disclaimers for more info. 
+
+Robert Collins is a Senior Design Engineer and Manager of some sort of 
+Research in Dallas, TX. Robert may be reached via email at 
+rcollins@x86.org or via phone at (214) 491-7718. 

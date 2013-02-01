@@ -1,0 +1,169 @@
+<html>
+
+<head>
+<title>FAT32 Information</title>
+</head>
+
+<body bgcolor="#000000" text="#808080">
+<div align="center"><center>
+
+<table border="0" width="80">
+  <tr>
+    <td width="100%"><p align="left"><img src="fat32.jpg" width="349" height="45"
+    alt="FAT32 Information"></p>
+    <p align="left">&nbsp;</p>
+    <p>FAT32 is a derivative of the FAT file system that supports drives over 2GB. Because
+    FAT32 drives can contain more than 65,526 clusters, smaller clusters are used than on
+    large FAT16 drives, resulting in more efficient allocation of space on the drive.</p>
+    <p>The 32-bit FAT includes four bytes per cluster within the File Allocation Table. This
+    differs from FAT16 and FAT12 in that those files systems contain 2 bytes and 1.5 bytes
+    within the File Allocation Table, respectively.</p>
+    <p>Note that the high 4 bits of the 32-bit values in the FAT32 File Allocation Table are
+    reserved and are not part of the cluster number. Therefore, applications which directly
+    read a FAT32 File Allocation Table must mask off these bits, and preserve them when
+    writing new values.</p>
+    <p><strong>File System Cluster Limits:</strong></p>
+    <p>FAT12 Less than 4086 clusters<br>
+    FAT16 Between 4096 and 65526 clusters<br>
+    FAT32 Greater than 65526 clusters.<br>
+    </p>
+    <p><strong>Boot Sector and Bootstrap Modifications<br>
+    </strong></p>
+    <p><em>Reserved Sectors</em></p>
+    <p>FAT32 drives contain more reserved sectors than FAT16 or FAT12 drives. The number of
+    reserved sectors is usually 32, but can vary.<br>
+    </p>
+    <p><em>Boot Sector Modifications</em></p>
+    <p>Since a FAT32 BIOS Parameter Block (BPB) is larger than a standard BPB., the boot
+    record on FAT32 drives is greater than 1 sector. Also, there is a sector in the reserved
+    area on FAT32 drives that contains values for the count of free clusters and the cluster
+    number of the most recently allocated cluster. These values are members of the
+    BIGFATBOOTFSINFO structure which is contained within this sector. These additional fields
+    allow the system to initialize the values without having to read the entire File
+    Allocation Table.<br>
+    </p>
+    <p><em>Root Directory</em></p>
+    <p>The root directory on a FAT32 drive is not stored in a fixed location as it is on FAT16
+    and FAT12 drives. On FAT32 drives, the root directory is an ordinary cluster chain. The
+    A_BF_BPB_RootDirStrtClus field in the BPB contains the number of the first cluster in the
+    root directory. This allows the root directory to grow as needed. In addition, the
+    BPB_RootEntries field of the BPB is ignored on a FAT32 drive. As a result, the size of the
+    &quot;old&quot; root directory (after the last FAT) is zero clusters.<br>
+    </p>
+    <p><em>Sectors Per FAT</em></p>
+    <p>The A_BF_BPB_SectorsPerFAT field in the BPB is always zero on a FAT32 drive<br>
+    </p>
+    <p><strong>Partition System ID's</strong></p>
+    <pre>01H - 12-bit FAT. Partition smaller than 10MB.
+04H - 16-bit FAT. Partition smaller that 32MB.
+05H - Extended MS-DOS Partition.
+06H - 16-bit FAT. Partition larger than or equal to 32MB.
+0BH - 32-bit FAT. Partition up to 2047GB.
+0CH - Same as 0Bh, but uses Logical Block Address Int 13h extensions.
+0EH - Same as 06h, but uses Logical Block Address Int 13h extensions.
+0FH - Same as 05h, but uses Logical Block Address Int 13h extensions.
+
+</pre>
+    <p><strong>FAT32 BIOS Parameter Block (BPB)</strong></p>
+    <p>The BPB for FAT32 drives is an extended version of the FAT16/FAT12 BPB. It contains
+    identical information to a standard BPB, but also includes several extra fields for FAT32
+    specific information.</p>
+    <pre>A_BF_BPB    STRUC
+
+    A_BF_BPB_BytesPerSector       DW    ?
+    A_BF_BPB_SectorsPerCluster    DB    ?
+    A_BF_BPB_ReservedSectors      DW    ?
+    A_BF_BPB_NumberOfFATs         DB    ?
+    A_BF_BPB_RootEntries          DW    ?
+    A_BF_BPB_TotalSectors         DW    ?
+    A_BF_BPB_MediaDescriptor      DB    ?
+    A_BF_BPB_SectorsPerFAT        DW    ?
+    A_BF_BPB_SectorsPerTrack      DW    ?
+    A_BF_BPB_Heads                DW    ?
+    A_BF_BPB_HiddenSectors        DW    ?
+    A_BF_BPB_HiddenSectorsHigh    DW    ?
+    A_BF_BPB_BigTotalSectors      DW    ?
+    A_BF_BPB_BigTotalSectorsHigh  DW    ?
+    A_BF_BPB_BigSectorsPerFat     DW    ?
+    A_BF_BPB_BigSectorsPerFatHi   DW    ?
+    A_BF_BPB_ExtFlags             DW    ?
+    A_BF_BPB_FS_Version           DW    ?
+    A_BF_BPB_RootDirStrtClus      DW    ?
+    A_BF_BPB_RootDirStrtClusHi    DW    ?
+    A_BF_BPB_FSInfoSec            DW    ?
+    A_BF_BPB_BkUpBootSec          DW    ?
+    A_BF_BPB_Reserved             DW    6 DUP (?)</pre>
+    <pre>A_BF_BPB    ENDS</pre>
+    <p>A_BF_BPB_BytesPerSector - The number of bytes per sector.<br>
+    A_BF_BPB_SectorsPerCluster - The Number of sectors per cluster.<br>
+    A_BF_BPB_ReservedSectors - The number of reserved sectors.<br>
+    A_BF_BPB_NumberOfFATs - The number of File Allocation Tables.<br>
+    A_BF_BPB_RootEntries - This field is ignored on FAT32 drives.<br>
+    A_BF_BPB_TotalSectors - The size of the partition, in sectors.<br>
+    A_BF_BPB_MediaDescriptor - The media descriptor. F8h = harddisk.<br>
+    A_BF_BPB_SectorsPerFAT - The number of sectors per FAT, 0 with FAT32<br>
+    A_BF_BPB_SectorsPerTrack - The number of sectors per track.<br>
+    A_BF_BPB_Heads - The number of read/write heads on the drive.<br>
+    A_BF_BPB_HiddenSectors - The number of hidden sectors on the drive.<br>
+    A_BF_BPB_HiddenSectorsHigh - The high word of the hidden sectors value.<br>
+    A_BF_BPB_BigTotalSectors - The total number of sectors on the FAT32 drive.<br>
+    A_BF_BPB_BigTotalSectorsHigh -The high word of the FAT32 total sectors value.<br>
+    A_BF_BPB_BigSectorsPerFat - The number of sectors per FAT on the drive.<br>
+    A_BF_BPB_BigSectorsPerFatHi -The high word of the sectors per FAT value.</p>
+    <p><br>
+    <em>A_BF_BPBExtFlags</em></p>
+    <p>Flags describing the drive. Bit 8 of this field indicates whether or not writes to the
+    active FAT will be written to all copies of the FAT. The low 4 bits of this field contain
+    the 0-based FAT number of the Active FAT, but are only meaningful if bit 8 is set. This
+    field can contain a combination of the following values.</p>
+    <p>BGBPB_F_ActiveFATMsk (000Fh) Mask for low four bits.<br>
+    BGBPB_F_NoFATMirror (0080h)</p>
+    <p>Mask indicating FAT mirroring state. If set, mirroring is disabled. If clear, FAT
+    mirroring is enabled. Bits 4-6 and 8-15 are reserved.</p>
+    <p><em>A_BF_BPB_FS_Version</em></p>
+    <p>The file system version number of the FAT32 drive. The high byte represents he major
+    version, and the low byte represents the minor version.</p>
+    <p><em>A_BF_BPB_RootDirStrtClus</em></p>
+    <p>The cluster number of the first cluster of the root directory of the FAT32 drive.</p>
+    <p><em>A_BF_BPB_RootDirStrtClusHi</em></p>
+    <p>The high word of the FAT32 starting cluster number.</p>
+    <p><em>A_BF_BPB_FSInfoSec</em></p>
+    <p>The sector number of the file system information sector. The file system info sector
+    contains a BIGFATBOOTFSINFO structure. This field is set to 0FFFFh if there is no FSINFO
+    sector. Otherwise, this value must be non-zero and less than the reserved sector count.</p>
+    <p><em>A_BF_BPB_BkUpBootSec</em></p>
+    <p>The sector number of the backup boot sector. This field is set to 0FFFFh if there is no
+    backup boot sector. Otherwise, this value must be non-zero and less than the reserved
+    sector count.</p>
+    <p><em>A_BF_BPB_Reserved</em> </p>
+    <p>Reserved field. Do not use.<br>
+    </p>
+    <p><strong>BIGFATBOOTFSINFO Structure</strong></p>
+    <p>Contains information about the file system.</p>
+    <pre>BIGFATBOOTFSINFO STRUC
+
+    bfFSInf_Sig               DD    ?
+    bfFSInf_free_clus_cnt     DD    ?
+    bfFSInf_next_free_clus    DD    ?
+    bfFSInf_resvd             DD    3 DUP (?)
+
+BIGFATBOOTFSINFO ENDS
+
+</pre>
+    <p>bfFSInf_Sig - The file system information sector. 61417272H &quot;rrAa&quot;<br>
+    bfFSInf_free_clus_cnt - Free clusters, -1 when the count is unknown.<br>
+    bfFSInf_next_free_clus - Most recently allocated cluster.<br>
+    bfFSInf_resvd - Reserved field. Do not use.<br>
+    </p>
+    <p><strong>FAT Mirroring</strong></p>
+    <p>On all FAT drives, there may be multiple copies of the FAT. If an error occurs reading
+    the primary copy, the file system will attempt to read from the backup copies. On FAT16
+    and FAT12 drives, the first FAT is always the primary copy and a modification will
+    automatically be written to all copies. However, on FAT32 drives, FAT mirroring can be
+    disabled, and a FAT other than the first one can be the primary (or &quot;active&quot;)
+    copy of the FAT.</td>
+  </tr>
+</table>
+</center></div>
+</body>
+</html>

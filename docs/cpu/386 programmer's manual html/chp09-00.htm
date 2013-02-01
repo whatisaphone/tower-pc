@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>
+Chapter 9  Exceptions and Interrupts
+</title>
+<body>
+Prev: <a href="chp08-03.htm">8.3  Protection and I/O</a><br><br>
+Next: <a href="chp09-01.htm">9.1  Identifying Interrupts</a>
+<hr>
+<h2>
+Chapter 9  Exceptions and Interrupts
+</h2>
+<br>
+<p>
+Interrupts and exceptions are special kinds of control transfer; they work
+somewhat like unprogrammed CALLs. They alter the normal program flow to
+handle external events or to report errors or exceptional conditions. The
+difference between interrupts and exceptions is that interrupts are used to
+handle asynchronous events external to the processor, but exceptions handle
+conditions detected by the processor itself in the course of executing
+instructions.
+<p>
+There are two sources for external interrupts and two sources for
+exceptions:
+</p><ol>
+<li>  Interrupts
+<ul>
+<li>     Maskable interrupts, which are signalled via the INTR pin.
+<p>
+<li>     Nonmaskable interrupts, which are signalled via the NMI
+<pre>
+         (Non-Maskable Interrupt) pin.
+</ul></pre>
+<li>  Exceptions
+<ul>
+<li>     Processor detected. These are further classified as faults, traps,
+<pre>
+         and aborts.
+</pre>
+<li>     Programmed. The instructions INTO, INT 3, INT n, and BOUND can
+<pre>
+         trigger exceptions. These instructions are often called "software
+         interrupts", but the processor handles them as exceptions.
+</ul></ol><p></pre>
+This chapter explains the features that the 80386 offers for controlling
+and responding to interrupts when it is executing in protected mode.
+<p>
+<ul>
+<li><a href="chp09-01.htm#09-01">9.1  Identifying Interrupts</a>
+<li><a href="chp09-02.htm#09-02">9.2  Enabling and Disabling Interrupts</a>
+<li>    <a href="chp09-02.htm#09-02-01">9.2.1  NMI Masks Further NMIs</a>
+<li>    <a href="chp09-02.htm#09-02-02">9.2.2  IF Masks INTR</a>
+<li>    <a href="chp09-02.htm#09-02-03">9.2.3  RF Masks Debug Faults</a>
+<li>    <a href="chp09-02.htm#09-02-04">9.2.4  MOV or POP to SS Masks Some Interrupts and Exceptions</a>
+<li><a href="chp09-03.htm#09-03">9.3  Priority Among Simultaneous Interrupts and Exceptions</a>
+<li><a href="chp09-04.htm#09-04">9.4  Interrupt Descriptor Table</a>
+<li><a href="chp09-05.htm#09-05">9.5  IDT Descriptors</a>
+<li><a href="chp09-06.htm#09-06">9.6  Interrupt Tasks and Interrupt Procedures</a>
+<li>    <a href="chp09-06.htm#09-06-01">9.6.1  Interrupt Procedures</a>
+<li>        <a href="chp09-06.htm#09-06-01-01">9.6.1.1  Stack of Interrupt Procedure</a>
+<li>        <a href="chp09-06.htm#09-06-01-02">9.6.1.2  Returning from an Interrupt Procedure</a>
+<li>        <a href="chp09-06.htm#09-06-01-03">9.6.1.3  Flags Usage by Interrupt Procedure</a>
+<li>        <a href="chp09-06.htm#09-06-01-04">9.6.1.4  Protection in Interrupt Procedures</a>
+<li>    <a href="chp09-06.htm#09-06-02">9.6.2  Interrupt Tasks</a>
+<li><a href="chp09-07.htm#09-07">9.7  Error Code</a>
+<li><a href="chp09-08.htm#09-08">9.8  Exception Conditions</a>
+<li>    <a href="chp09-08.htm#09-08-01">9.8.1  Interrupt 0 -- Divide Error</a>
+<li>    <a href="chp09-08.htm#09-08-02">9.8.2  Interrupt 1 -- Debug Exceptions</a>
+<li>    <a href="chp09-08.htm#09-08-03">9.8.3  Interrupt 3 -- Breakpoint</a>
+<li>    <a href="chp09-08.htm#09-08-04">9.8.4  Interrupt 4 -- Overflow</a>
+<li>    <a href="chp09-08.htm#09-08-05">9.8.5  Interrupt 5 -- Bounds Check</a>
+<li>    <a href="chp09-08.htm#09-08-06">9.8.6  Interrupt 6 -- Invalid Opcode</a>
+<li>    <a href="chp09-08.htm#09-08-07">9.8.7  Interrupt 7 -- Coprocessor Not Available</a>
+<li>    <a href="chp09-08.htm#09-08-08">9.8.8  Interrupt 8 -- Double Fault</a>
+<li>    <a href="chp09-08.htm#09-08-09">9.8.9  Interrupt 9 -- Coprocessor Segment Overrun</a>
+<li>    <a href="chp09-08.htm#09-08-10">9.8.10  Interrupt 10 -- Invalid TSS</a>
+<li>    <a href="chp09-08.htm#09-08-11">9.8.11  Interrupt 11 -- Segment Not Present</a>
+<li>    <a href="chp09-08.htm#09-08-12">9.8.12  Interrupt 12 -- Stack Exception</a>
+<li>    <a href="chp09-08.htm#09-08-13">9.8.13  Interrupt 13 -- General Protection Exception</a>
+<li>    <a href="chp09-08.htm#09-08-14">9.8.14  Interrupt 14 -- Page Fault</a>
+<li>        <a href="chp09-08.htm#09-08-14-01">9.8.14.1  Page Fault During Task Switch</a>
+<li>        <a href="chp09-08.htm#09-08-14-02">9.8.14.2  Page Fault with Inconsistent Stack Pointer</a>
+<li>    <a href="chp09-08.htm#09-08-15">9.8.15  Interrupt 16 -- Coprocessor Error</a>
+<li><a href="chp09-09.htm#09-09">9.9  Exception Summary</a>
+<li><a href="chp09-10.htm#09-10">9.10  Error Code Summary</a>
+<p>
+<li><a href="chp09-04.htm#F-09-01">Figure  9-1.   IDT Register and Table</a>
+<li><a href="chp09-04.htm#F-09-02">Figure  9-2.   Pseudo-Descriptor Format for LIDT and SIDT</a>
+<li><a href="chp09-05.htm#F-09-03">Figure  9-3.   80306 IDT Gate Descriptors</a>
+<li><a href="chp09-06.htm#F-09-04">Figure  9-4.   Interrupt Vectoring for Procedures</a>
+<li><a href="chp09-06.htm#F-09-05">Figure  9-5.   Stack Layout after Exception of Interrupt </a>
+<li><a href="chp09-06.htm#F-09-06">Figure  9-6.   Interrupt Vectoring for Tasks</a>
+<li><a href="chp09-07.htm#F-09-07">Figure  9-7.   Error Code Format</a>
+<li><a href="chp09-08.htm#F-09-08">Figure  9-8.   Page-Fault Error Code Format</a>
+<li><a href="chp09-08.htm#F-09-09">Figure  9-9.   CR2 Format</a>
+<p>
+<li><a href="chp09-01.htm#T-09-01">Table   9-1.   Interrupt and Exception ID Assignments</a>
+<li><a href="chp09-04.htm#T-09-02">Table   9-2.   Priority Among Simultaneous Interrupts and Exceptions</a>
+<li><a href="chp09-08.htm#T-09-03">Table   9-3.   Double-Fault Detection Classes</a>
+<li><a href="chp09-08.htm#T-09-04">Table   9-4.   Double-Fault Definition</a>
+<li><a href="chp09-08.htm#T-09-05">Table   9-5.   Conditions That Invalidate the TSS</a>
+<li><a href="chp09-09.htm#T-09-06">Table   9-6.   Exception Summary</a>
+<li><a href="chp09-10.htm#T-09-07">Table   9-7.   Error-Code Summary</a>
+</ul>
+<hr>
+Prev: <a href="chp08-03.htm">8.3  Protection and I/O</a><br><br>
+Next: <a href="chp09-01.htm">9.1  Identifying Interrupts</a>
+</body>
+</html>

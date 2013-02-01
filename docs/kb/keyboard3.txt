@@ -1,0 +1,276 @@
+From: snydert@dmapub.dma.org (Tony Snyder)
+Subject: PC Booting w/o keyboard
+
+A few days ago someone needed information about booting a PC without a 
+keyboard.  I didn't see much posted, that directly satisfied his needs, other 
+than some advice regarding reworking his bios etc.  I just ran across an ad 
+in the September, 1993 Circuit Cellar INK, The Computer Applications Journal, 
+issue number 38, that could help.  On page 93, Verta Systems Corporation, 27 
+Newtown Rd, Plainview, NY, tel # (516)454-6469, advertises a keyboard 
+eliminator which plugs into the keyboard port.  Its called the Phantom 
+Keyboard.  That's all I have for now.  
+
+****
+
+From: <mark@garden.equinox.gen.nz>
+Subject: Re: IBM keyboard logic levels
+ 
+Anyway, I have a fairly good description of what happens on both AT and
+XT keyboards.  It came to me with a description of how to make a IBM to
+Amiga keyboard adaptor. Here's the IBM keyboard stuff which was with it.
+If you do get a valid e-mail address for Paul Campbell, or think that
+enough people do want this, feel free to post it - I thought it was
+a little on the large side!
+ 
+**************************************************************
+ 
+IBM Keyboard Interfact Project, by Eric Rudolph, 1991.
+No Copyright Whatsoever, but I would like credit where it's due.
+ 
+[... lots of stuff about the circuit deleted ...]
+ 
+A little background on the IBM AT keyboard:
+
+The keyboard I used for this circuit was a BTC 5339sx. It costs about $40
+Lucky Computers, 1-800-348-5825. I have also tested the circuit on a
+standard PC keyboard, and an HP Vectra AT keyboard.
+ 
+The AT keyboard DIN connector has 5 pins. Pin 3 is called Reset, but it's
+reserved, so we can't use it. Forget it exists on the AT keyboard. They just
+charge you money for it. (joke) Open collectors drive the clock and data pins,
+so when they are not driven low, they float at 5 volts.
+ 
+The keyboard transmits data by bits, each synchonous somehow with the clock
+line. They keyboard when clocking in or out data, always runs the clock.
+The controller can drive the clock line, but not with reference to data.
+        When the Keyboard sends data, it first sets the data, then drives
+clock low, then high, and then changes the data to the next value.
+        The AT uses 11 bits for a transmission, 1 start bit (0), 8 data
+bits, 1 parity bit-set if the number of 1's in the data bits is even, and
+a stop bit (1). When the keyboard sends it's last bit, the stop bit, the
+controller must drive clock line low as a handshake and to tell the
+keyboard not to send until clock goes high again.
+        Theoretically, the controller could interrupt the sending of the
+bits, but I consider this unnecessary, and don't bother with it.
+When the computer needs to send a command to the keyboard, it sets clock
+line high and the data line low. When the keyboard sees this, it will
+start clocking pulsed on the data line.
+Then, the controller must look for the clock line going low, set the data
+bit, wait for the clock to go high, then wait for the clock to go low
+again, and then change the bit. Thus, it changes the data in the middle
+of the clock low pulse. When the keyboard has received it's 10th bit,
+it will drive the data line low while at the same time clocking out
+an extra clock low pulse. Then, it expects a handshake of the clock line
+low from the controller.
+
+0       1       2   |   7       P     stop    extra
+Clock:------------\___/---\___/---\___/---\___/---\___/---\___/---\___/end
+ 
+Data:-------\_______00000001111111122222|6677777777PPPPPPPP1111xxxxxxxx_____
+ 
+Notice there is NO start bit when the controller sends data to the Keyboard.
+ 
+Special Commands the Keyboard can Send to the Controller:
+-----------------------------------------------------------
+00      Keyboard buffer overflowed
+AA      Selftest passed
+FA      The command sent was received correctly
+FE      The command sent was received poorly. Please resend.
+ 
+Special Commands the Controller can Send to the Keyboard:
+-----------------------------------------------------------
+ED      Set the LEDs according to next byte I send
+        bit 0=Scroll lock 1=on
+        bit 1=Num lock
+        bit 2=Caps lock
+        bits 3-7 must be 0
+F4      clear the key buffer and start scanning
+F6      restore default values
+FE      retransmit last character, please
+FF      Reset, you stupid keyboard!
+ 
+Whew! That about raps it up for the AT keybard! Enough said, right?
+ 
+XT keyboards transmit much the same way except they only use 10 bits.
+Two start bits (both high) and 8 data bits, transmitted in order 0-1-2...-7
+The last bit is a make/break bit which is 1 to signify a break.
+ 
+The XT can have no commands sent to it. The way to reset it is to drive
+the Clock line low for some longish period of time. The keyboard will not
+send data (it will hold off) if the data line is being held low by an
+external source (the controller)
+ 
+****
+
+From: Tomi  H Engdahl <then@vipunen.hut.fi>
+Subject: Re: ibm keyboard port specs wanted
+ 
+>Anyway, here's what I have gathered from the IBM XT TechRef - I'll look
+>some more if no other sources are forthcoming
+>
+>1) the 5 lines are +5V , ground, reset (not uised), clock, data
+>2) both clock and data are bi-directional, using open-collector buffers to
+>  drive them
+>3) clock is normally driven by the keyboard. It is clamped low by the CPU
+>   for 20ms to reset the keyboard processor
+>4) there are 8 data bits.
+>
+>On reset, the keyboard sends AAh to the CPU. A diagnostic tester sends
+>something else 65h I think.
+
+ 
+        The only data I have left from hacking at my keyboard when it died a
+   couple of years ago are some timing diagrams recorded from a 'scope 
+   (wretched ASCII graphics follow):
+ 
+   __            _        _        _        _        _        _        _
+     | Clock    / |      / |      / |      / |      / |      / |      / | (2 more)
+     |_________/  |_____/  |_____/  |_____/  |_____/  |_____/  |_____/  |_____
+ 
+     |<- 36uS->|<-32uS->|12| 20  |        |        |        |        |        |
+   ___________________________________________________________________________
+               \        \ /      \ /      \ /      \ /      \ /      \ /      \
+   Data         \   0    X   1    X    2   X    3   X    4   X    5   X   6    \
+                 \______/_\______/_\______/_\______/_\______/_\______/_\________\_
+ 
+   This is for an XT keyboard.
+   The clock and data lines are both normally high.  When a key is pressed,
+   Clock goes low for 36uS.  This is followed by 9 clock pulses, each 12.5uS low
+   and 20uS high; on the 10th rising edge the clock stays high until the next
+   sequence.  The Data line changes on the rising edge of the clock.  There
+   are only 7 data bits (the last two bit times on the Data line are always low).
+   The ~32uS clock period gives a ~31KHz bit rate.
+   At least, this is how I interpret my drawings...
+
+****
+
+From: wtm@uhura.neoucom.edu (Bill Mayhew)
+Subject: Re: PC (AT) Keyboard Interface INFO NEEDED
+
+The IBM-PC-compatible keyboard interface is fairly nasty to
+duplicate.  I've thought several times about using PC keyboards as
+input devices, but have just fallen back to ASCII parallel
+keyboards or making my own scanning matricx with something like a
+KR2376.
+
+The problem with the IBM-PC keyboard is that it uses a
+bidirectional protocol with both the PC's on-board 8741 (or
+equivalent) keyboard controller single-chip microprocessor and the
+keyboard toggling the clock line and exchanging pulses and scan
+codes with relatively strict timing requirements.
+
+I figured my time to design my own version of the handshake would
+be more expensive than obtaining a more easily dealt-with keyobard.
+If you are talking volume use or have to use the keyboard input for
+some reason, than you can nix the timing argument.
+
+What would be real handy would be for somebody to produce an 8741
+that is programmed to deal with the keyboard and output the
+eqiivalent ASCII decoded from the scan codes along with a strobe
+pulse.  It would make a nice handy experimenter's aid.  Maybe
+somebody already has one?...
+
+If you want the gory timing details, obtain an IBM PC-AT technical
+refrence manual.  It should have a lot of details on the keyboard
+interface.  I've got the Model-80 technical ref and it has a lot of
+info on the keyboard interface.  IBM has many technical manuals for
+fairly reasonable prices.  My old book listed thier number as
+800-IBM-PCTB.  Taht is several years old, so the number may well
+have changed by now.
+
+****
+
+From: lance@helios.UCSC.EDU (Lance Bresee)
+Subject: Re: PC (AT) Keyboard Interface INFO NEEDED
+
+I probably should have Replied to the original poster, but I thought others 
+might be interested as pc keyboards are cheap.
+
+MicroCornucopia
+No 52
+March-April 1990
+Page 36 - 43
+An AT Keyboard Interface
+Don Rowe
+
+Includes description of AT Keyboard serial data transfer and a circuit to 
+interface to an AT keyboard.
+
+****
+
+From: dave@mertec.demon.co.uk (Dave Mclaughlin)
+Subject: Re: Pinout for PS/2 keyboard
+
+>Anyone know what the 2 wirings are?  I can probably dig up the AT pinout
+>myself.
+
+Here is the wiring for both:-
+
+5 Pin DIN (AT/XT)
+-----------------
+
+1   CLK
+2   DATA
+3   NOT RESET
+4   GND
+5   +5V
+
+6 Pin PS2
+---------
+
+1   DATA
+2   No connection
+3   GND
+4   +5V
+5   CLK
+6   No connection
+
+The PS2 is numbered as follows...
+
+
+        ^
+      6   5
+     4     4
+     > 2 1 <
+
+The <>'s indicate the position of the triangular cutouts.
+The 5 Pin DIN is standard universal layout.
+
+****
+
+From: adler@netcom.com (Bruce Adler)
+Subject: Re: XT vs. AT keyboard
+
+The XT and AT keyboards are NOT compatible.  The only way a XT keyboard
+will work on an AT computer is if you've got a motherboard and BIOS
+which are specifically designed to support both keyboard types.
+
+The keyboards differ in at least the following ways:
+
+	1. The XT kb. generates 2 start bits, 8 data bits, make/break
+	bit, and a stop bit. The AT kb. is 1 start bit, 8 data, 1 parity,
+	and a stop bit.
+
+	2. The XT uses a make/break bit to indicate key up/down. The
+	AT sends one byte for keydown and two bytes for keyup.
+
+	2. The XT keyboard scan codes have different values than
+	then AT keyboard make/break codes (for corresponding key
+	locations).
+
+	4. The XT keyboard doesn't accept any of the command strings
+	accepted by the AT keyboard.
+
+	5. The XT keyboard is reset by fiddling the clock and data
+	lines; the AT keyboard accepts a reset command string.
+
+In the same manner plugging an AT keyboard into an XT computer won't
+work either, unless you have one of those clone keyboards which allow
+you to select XT compatible mode.
+
+****
+
+From: byron@cc.gatech.edu (Byron A Jeff)
+Subject: Re: BIOS code modifications
+
+/pub/msdos/sysutl/bios-asm.zip "Public domain generic PC BIOS (MASM source)"

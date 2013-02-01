@@ -1,0 +1,131 @@
+New P6 OpCodes: CMOV 
+
+----------------------------------------------------------------------------
+
+CMOV - 0F 4x - Conditional Move 
+
+
+                                                             CMOV
+Flags:                                      Conditional MOVE data
++-+-+-+-+-+-+-+-+-+         +----------+----------+-------------+
+|O|D|I|T|S|Z|A|P|C|         | 00001111 | 0100cccc | mod,reg,r/m |
++-+-+-+-+-+-+-+-+-+         +----------+----------+-------------+
+| | | | | | | | | |         |    0F    |    4x    |      xx     |
++-+-+-+-+-+-+-+-+-+         +----------+----------+-------------+
+
+
+Syntax: 
+    CMOVcc      r16,r/m16
+    CMOVcc      r32,r/m32
+
+
+Operation: 
+CMOV {
+    IF source_operand = mem {
+        TEMP = [mem];              /* This may cause a #GP or other fault */
+        IF condition {
+            DEST = TEMP;
+        }
+    } ELSE {
+        IF condition {
+            DEST = SOURCE;
+        }
+    }
+}
+
+
+Description: 
+If the condition specified in the opcode (cc) is met, then the source 
+operand is written to the destination operand. If the source operand is 
+a memory operand, then regardless of the condition, the memory operand 
+is read. This indicates that if the memory read operation would generate 
+a fault (#GP or #PG), then even though the condition may be false, the 
+fault occurs. The source and destination operands are always 16 or 32-
+bit. There is no provisions for an 8-bit version of this instruction. 
+Naturally, the operand size is determined by the current operating mode, 
+and subject to an operand size override.
+
+The conditions specified in the condition bits (cc) follow the same 
+format as those of the conditional jump instructions (Jcc) and 
+conditional set instructions (SETcc).
+
+
+Example:
+
+The first example is the operation performed as if CMOV didn't exist. 
+The second example gives the same results, but uses CMOV.
+
+    XOR     EBX,EBX                ; Clear register for later
+    ADD     ECX,[SMALL_COUNT]      ; Adjusts by some small counter value
+    JNC     Continue               ; If ECX didn't overflow, continue
+    MOV     ECX,EBX                ; Reinitialize ECX if it overflowed    
+Continue:
+
+
+Using CMOV: 
+    XOR     EBX,EBX                ; Clear register for later
+    ADD     ECX,[SMALL_COUNT]      ; Adjusts by some small counter value
+    CMOVC   ECX,EBX                ; If ECX overflowed, reinitialize to EBX
+
+
+As you can see from this example, the goal was to reinitialize ECX to 0, 
+if it overflowed during an ADD operation. Since this was the only 
+condition where we wanted to reinitialize ECX, the branch would be taken 
+almost all of the time, until an overflow occurs. By using the CMOV 
+instruction, the JMP is avoided virtually all of the time.
+
+
+Flags affected:
+
+None.
+
+
+Exceptions:
+
+If the source operand is a memory operand, then it is always read, 
+regardless of whether or not the condition is met. This means that 
+whatever exception would have been generated from the memory read, will 
+get generated. If the memory read would have caused a #GP or #PG, then 
+so be it. 
+
+
+----------------------------------------------------------------------------
+
+Get description of other opcodes:
+AAM:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAM.txt
+AAD:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAD.txt
+CMOV:     ftp://ftp.x86.org/pub/x86/p6/opcodes/CMOV.txt
+FCMOV:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCMOV.txt
+FCOMI:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCOMI.txt
+ICEBP:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+INT01:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+LOADALL:  ftp://ftp.x86.org/pub/x86/secrets/opcodes/LOADALL.txt
+RDPMC:    ftp://ftp.x86.org/pub/x86/p6/opcodes/RDPMC.txt
+SALC:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/SALC.txt
+UMOV:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/UMOV.txt
+
+----------------------------------------------------------------------------
+
+Download this file -- OpCodes.ZIP 
+ftp://ftp.x86.org/pub/x86/dloads/OPCODES.ZIP 
+
+----------------------------------------------------------------------------
+
+(c) 1995, 1996 Intel Secrets(TM) home page. PGP key available. 
+
+Make no mistake! 
+The Intel Secrets web site is proud to provide superior information and 
+service without any affilation to Intel. 
+
+"Intel Secrets" and "What Intel doesn't want you to know" are trademarks 
+of Robert Collins. 
+
+Pentium and Intel are trademarks of Intel Corporation. 386, 486, 586, 
+P6, and all other numbers.are not!
+
+All other trademarks are those of their respective companies. See 
+Trademarks and Disclaimers for more info. 
+
+Robert Collins is a Senior Design Engineer and Manager of some sort of 
+Research in Dallas, TX. Robert may be reached via email at 
+rcollins@x86.org or via phone at (214) 491-7718. 

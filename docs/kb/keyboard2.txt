@@ -1,0 +1,82 @@
+From: siim@waterloo.hp.com (Brad Siim)
+Subject: Re: Help with IBM-PC keyboard interfacing
+
+[...] The PS2 keyboard interface is not a very friendly or easy to understand 
+interface.  The best place to get information is in IBM's technical reference 
+manual. All of the documentation that I have seen on this interface is the 
+same/similar (ie. Compac's Technical Reference spec) and almost seems to be a 
+direct copy of IBM's reference manual.
+
+The core of ALL/most PS2 keyboard interfaces is the Intel 8042 microcontroller
+or some derivative of it.  You will need to get a copy of this datasheet as
+well as IBM's keyboard spec.
+
+Basic Description:  
+
+1. The 8042 side of the interface is two bidirectional open collector
+   lines called CLOCK and DATA.
+2. The KEYBOARD side of the interface is identical.
+3. Both sides can drive the lines and often do so at the same time.   Each
+   side has to figure out what is going on if the other side has decided to
+   interrupt.
+4. When the system CPU wants to send something to a KEYBOARD device it
+   writes a command to the 8042 which tells the 8042 that the next command
+   written to the 8042 should be passed on to the KEYBOARD device across the
+   serial DATA line.
+5. Assume that when idle both the DATA and CLOCK lines are high.
+6. The 8042 pulls the clock line low to inhibit any transmission from the
+   KEYBOARD.
+7. The 8042 pulls the data line low to get the KEYBOARD's attention to the
+   fact that it wants to transmit.
+8. The 8042 release the CLOCK line and waits for the KEYBOARD to pull the
+   clock line low.  When the CLOCK line has been pulled low the 8042 places
+   its first bit of data on the DATA line.
+9. The keyboard toggles the clock line and clocks data across on the data line.
+   The 8042 controller will place a new bit on the data line each time the 
+   clock is pulled LOW by the KEYBOARD. 
+
+The following picture will explain better:
+
+CK HHllllHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHllll
+DA HHHllllll000000111111222222333333444444555555666666777777ppppppssssssLLLLHHH
+        ^                                                                ^
+    start bit                                                   important bit
+
+where:  l = 8042 driving the line 
+        L = KEYBOARD driving the line
+        1..7 data
+        p = Parity 8042 driving
+        s = stop   8042 driving
+        P = PARITY KEYBOARD driving the line
+        S = STOP   KEYBOARD driving the line
+       
+11. The last bit in the last clock cycle is a data bit that is returned by the
+    KEYBOARD. The keyboard may also be required to return a whole byte/bytes to
+    the controller depending upon the data that was sent by the controller to
+    the KEYBOARD.  After the controller has seen the last bit it usually
+    will inhibit the keyboard by yanking the clock line low. Please note that
+    if the keyboard has to return data to the 8042 it will do so under the 
+    following protocal after the 8042 has released the clock line.
+12. During the above transmission the contoller may abort the operation by
+    holding the CLOCK line low.  The keyboard has to montitor the CLOCK line
+    and stop clocking if it sees that the CLOCK line is not going high.
+13. If the KEYBOARD wants to send data:  Assume both lines are high. If they
+    are not high the keyboard can't send. If the clock line is being held low
+    by the controller, the controller does not want data.  If the data line
+    is being held low by the controller the controller wants to send data and
+    the keyboard must start clocking it. 
+14. So the lines are high:  The keyboard pulls the data line low and then pulls 
+    the clock line low and then back to high. The data line is changed while
+    the clock is HIGH.  The KEYBOARD pulls the clock line low and high and
+    repeats the operation as follows:
+
+CK HHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHHHLLLHHHLLlllll
+DA HLLLLLL000000111111222222333333444444555555666666777777PPPPPPssssssLLLLLHHHH
+      ^
+    start bit
+
+I have explained this in detail because the documentation is VERY hard to 
+decripher.  I hope this is accurate and helps you. I have not discussed timing,
+implementation or voltage levels as I'm sure you will not have trouble with
+these aspects.
+

@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>
+17.3.N  'N' Instructions 
+</title>
+<body>
+<a name="17-03-N"></a>
+Prev: <a href="chp17-m3.htm">17.3.M  'M' Instructions </a><br>
+Next: <a href="chp17-o3.htm">17.3.O  'O' Instructions </a>
+<hr>
+<h2>
+17.3.N  'N' Instructions 
+</h2>
+<p>
+<a name="17-03-NEG"></a>
+<h3>NEG -- Two's Complement Negation</h3>
+<p>
+<pre>
+Opcode  Instruction   Clocks    Description
+
+F6  /3  NEG r/m8      2/6       Two's complement negate r/m byte
+F7  /3  NEG r/m16     2/6       Two's complement negate r/m word
+F7  /3  NEG r/m32     2/6       Two's complement negate r/m dword
+</pre>
+<p>
+Operation
+<p>
+IF r/m = 0 THEN CF <- 0 ELSE CF <- 1; FI;
+r/m <- - r/m;
+<p>
+<b>Description</b>
+<p>
+NEG replaces the value of a register or memory operand with its two's
+complement. The operand is subtracted from zero, and the result is placed
+in the operand.
+<p>
+The carry flag is set to 1, unless the operand is zero, in which case the
+carry flag is cleared to 0.
+<p>
+<b>Flags Affected</b>
+<p>
+CF as described above; OF, SF, ZF, and PF as described in Appendix C
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS
+segments; #SS(0) for an illegal address in the SS segment; #PF(fault-code)
+for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in real-address mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-NOP"></a>
+<h3>NOP -- No Operation</h3>
+<p>
+<pre>
+Opcode  Instruction   Clocks    Description
+
+90      NOP           3         No operation
+</pre>
+<p>
+<b>Description</b>
+<p>
+NOP performs no operation. NOP is a one-byte instruction that takes
+up space but affects none of the machine context except (E)IP.
+<p>
+NOP is an alias mnemonic for the XCHG (E)AX, (E)AX instruction.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-NOT"></a>
+<h3>NOT -- One's Complement Negation</h3>
+<p>
+<pre>
+Opcode    Instruction   Clocks    Description
+
+F6   /2   NOT r/m8       2/6      Reverse each bit of r/m byte
+F7   /2   NOT r/m16      2/6      Reverse each bit of r/m word
+F7   /2   NOT r/m32      2/6      Reverse each bit of r/m dword
+</pre>
+<p>
+Operation
+<p>
+r/m <- NOT r/m;
+<p>
+<b>Description</b>
+<p>
+NOT inverts the operand; every 1 becomes a 0, and vice versa.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS
+segments; #SS(0) for an illegal address in the SS segment; #PF(fault-code)
+for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in real-address mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-m3.htm">17.3.M  'M' Instructions </a><br>
+Next: <a href="chp17-o3.htm">17.3.O  'O' Instructions </a>
+</body>
+</html>

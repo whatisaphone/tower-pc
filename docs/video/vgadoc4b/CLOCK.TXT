@@ -1,0 +1,495 @@
+Clock Circuits
+
+Early boards used discrete clock crystals since there typically were only 2-4,
+but as newer boards can require more than a dozen frequencies, an integrated
+clock circuit is often used.
+
+Another option is to have the clock circuitry on-chip as with the Cirrus Logic
+CL-GD54xx series.
+
+VCLK refers to Video Clock and MCLK refers to Memory Clock.
+
+
+ICS90c61A
+Startech ST49c061
+
+20pin mask-programmable combined video and memory frequency generator.
+Pins:
+   1  i  Reference Clock Input for 14.318MHz reference crystal.
+   2  i  Feature Clock Input.
+   3  i  External Clock Input.
+   4  i  Video Frequency Select bit 0
+   5  i  Video Frequency Select bit 1
+   6  i  Address Latch Enable. Set low to latch new frequency selectors.
+   7  i  VGATTL. Video Frequency Select bit 2.
+   8  i  FCLKSEL. If low the Feature Clock Input (pin 2) is used as the video
+         clock
+   9  i  Memory Frequency Select bit 0.
+  10  o  Digital Ground
+  11  i  Memory Frequency Select bit 1.
+  12  o  Memory Clock Output.
+  14  i  Memory Clock Output Enable.
+  15  i  Analog Supply Voltage. Single +5V.
+  16  o  Analog Ground.
+  18  i  Video Clock Output Enable.
+  19  o  Video Clock Output.
+  20  i  Digital Supply Voltage. Single +5V.
+
+The memory clock is one of four programmed frequencies selected by pins 9 & 11
+The video clock is one of eight programmed frequencies selected by pins 4,5
+and 7, or the Feature Clock Input (pin2) if pin 8 is low.
+The programmed clocks are calculated as: (Reference clock *A)/(B*C)
+Where A is 1..127, B is 1..127 and C is 1,2 or 4.
+
+As this chip is mask programmable many versions exist:
+
+ICS90c61A      -PR1     -PR2
+ST49c061       -01      -02
+Video Clk 0:   REF      REF
+Video Clk 1:  16.256   16.108
+Video Clk 2:  32.000   32.216
+Video Clk 3:  44.900   44.744
+Video Clk 4:  25.175   25.057
+Video Clk 5:  28.322   28.089
+Video Clk 6:  65.000    EXTRN
+Video Clk 7:  36.000   36.242
+Memory Clk 0: 40.000   41.612
+Memory Clk 1: 37.500   37.585
+Memory Clk 2: 36.000   36.242
+Memory Clk 3: 44.900   44.744
+
+
+
+ICS2494
+Startech ST49c214
+ATI 18811
+Chrontel CH9294
+
+20pin mask-programmable combined video and memory frequency generator.
+Pins:
+   1  i  Crystal or external clock input. Usually 14.318MHz
+   2  o  Crystal output.
+   3  i  External Clock
+   4  i  Video Frequency Select bit 0
+   5  i  Video Frequency Select bit 1
+   6  i  Address Latch Enable. Set high to latch new clock selectors.
+   7  i  Video Frequency Select bit 2
+   8  i  Video Frequency Select bit 3
+   9  i  Memory Frequency Select bit 0
+  10  o  Digital and Analog ground
+  11  i  Memory Frequency Select bit 1
+  12  o  Memory Clock Output.
+  13  i  Digital Supply Voltage. Single +5V
+  14  o  Digital and Analog ground
+  15  i  Analog Supply Voltage. Single +5V
+  16  o  Digital and Analog Ground
+  17  o  Digital and Analog Ground
+  18  o  Buffered Crystal Clock Output Frequency
+  19  o  Video Clock Output
+  20  i  Digital Supply Voltage. Single +5V
+Note: The Chrontel and the ST49c214-25 uses pin 3 as Memory Frequency select 2
+
+The memory clock is one of four programmed frequencies selected by pins 9 & 11
+The video clock is one of sixteen programmed frequencies selected by pins 4,5,
+7 and 8. Also the External Clock Input (pin 3) can be used.
+The programmed clocks are calculated as: (Reference clock *A)/(B*C)
+Where A is 1..127, B is 1..127 and C is 1,2 or 4.
+
+As this chip is mask programmable many versions exist:
+
+ICS2494   -236     -242     -231     -244     -237     -253              -256
+ST49c214   -1       -2       -3       -4       -5       -6       -8       -9
+VCLK 0:   XTAL    30.000   25.175   20.000   50.350   25.175   25.175   25.175
+VCLK 1:  65.028   77.250   28.325   24.000   56.644   28.322   28.322   28.322
+VCLK 2:  EXTRN    EXTRN    85.000   32.000   65.000   40.000   40.000   40.000
+VCLK 3:  36.000   80.000   44.900   40.000   72.000   65.000   32.500   EXCLK
+VCLK 4:  25.175   31.500   40.000   50.000   80.000   44.900   50.000   50.000
+VCLK 5:  28.322   36.000   48.000   66.667   89.800   50.000   65.000   77.000
+VCLK 6:  24.000   75.000   50.000   80.000   63.000  130.000   38.000   36.000
+VCLK 7:  40.000   50.000   81.150  100.000   75.000   75.000   44.900   44.900
+VCLK 8:  44.900   40.000   25.175   54.000   25.175   25.175   31.500  130.000
+VCLK 9:  50.350   50.000   28.325   70.000   28.322   28.322   36.000  120.000
+VCLK A:  16.257   32.000   37.500   90.000   31.500   EXTRN    80.000   80.000
+VCLK B:  32.514   44.900   44.900  110.000   36.000   EXTRN    63.000   31.500
+VCLK C:  56.644   25.175   40.000   25.000   40.000   60.000   50.000  110.000
+VCLK D:  20.000   28.322   32.500   33.333   44.900   80.000  100.000   65.000
+VCLK E:  41.539   65.000   50.000   40.000   50.000   EXTRN    76.000   75.000
+VCLK F:  80.000   36.000   65.000   50.000   65.000   EXTRN   110.000   72.000
+MCLK 0:  32.900   36.000   36.000   16.000   40.000   32.900   70.000   55.000
+MCLK 1:  35.600   44.347   40.000   24.000   41.612   35.600   63.830   75.000
+MCLK 2:  43.900   37.500   45.000   50.000   44.744   43.900   60.000   70.000
+MCLK 3:  49.100   44.773   50.000   66.667   50.000   49.100   81.000   80.000
+
+
+ICS2494   -266     -247     -240     -275     -305     -260
+ST49c214   -10      -16      -17      -18      -19      -20     -25
+CH9294                                                           -G
+VCLK 0:  30.250    XTAL    25.175   25.175   25.175   50.350   25.175
+VCLK 1:  65.000   16.257   28.322   28.322   28.322   56.644   28.322
+VCLK 2:  85.000   EXCLK    28.626   40.000   40.000   33.250   40.000
+VCLK 3:  36.000   32.514   36.000   EXCLK    EXCLK    52.000   72.000
+VCLK 4:  25.175   25.175   40.000   50.000   50.000   80.000   50.000
+VCLK 5:  28.322   28.322   42.954   77.000   77.800   63.000   77.000
+VCLK 6:  34.000   24.000   44.900   36.000   36.000   EXCLK    36.000
+VCLK 7:  40.000   40.000   57.272   44.889   44.889   75.000   44.900
+VCLK 8:  44.900    XTAL    60.000  130.000  130.000   25.175  130.000
+VCLK 9:  50.350   16.257   63.960  120.000  120.000   28.322  120.000
+VCLK A:  31.500   EXCLK    75.000   80.000   80.000   31.500   80.000
+VCLK B:  32.500   36.000   80.000   31.500   31.500   36.000   31.500
+VCLK C:  63.000   25.175   85.000  110.000  110.000   40.000  110.000
+VCLK D:  72.000   28.322   99.000   65.000   65.000   44.900   65.000
+VCLK E:  75.000   24.000  102.000   75.000   75.000   50.000   75.000
+VCLK F:  80.000   40.000  108.000   94.500   94.500   65.000   94.500
+MCLK 0:  36.000   31.000   64.000   45.000   55.000   40.000   55.000
+MCLK 1:  44.000   36.000   40.830   38.000   75.000   33.333   65.000
+MCLK 2:  49.000   43.000   48.000   52.000   70.000   44.000   70.000
+MCLK 3:  40.000   49.000   60.000   50.000   80.000   50.000   80.000
+MCLK 4:                                                        45.000
+MCLK 5:                                                        40.000
+MCLK 6:                                                        60.000
+MCLK 7:                                                        50.000
+
+
+ICS2494             -261
+ATI18811    -0       -1
+OTI068                       -501      -307
+VCLK 0:   42.950  100.000   25.175    25.175
+VCLK 1:   48.770  126.000   28.322    28.322
+VCLK 2:   92.400   92.400   65.0      65.0
+VCLK 3:   36.000   36.000   44,9      44.9
+VCLK 4:   50.350   50.350   14.1      28.1
+VCLK 5:   56.640   56.640   18.1      36.0
+VCLK 6:     0?       0?     40.0      40.0
+VCLK 7:   44.900   44.900   36.3      36.0
+VCLK 8:   30.240  135.000
+VCLK 9:   32.000   32.000
+VCLK A   110.000  110.000
+VCLK B:   80.000   80.000
+VCLK C:   39.910   39.910
+VCLK D:   44.900   44.900
+VCLK E:   75.000   75.000
+VCLK F:   65.000   65.000
+MCLK 0:
+MCLK 1:
+MCLK 2:
+MCLK 3:
+
+
+Special version such as the OAK OTI068 and UMC UM9502 exist
+
+
+
+ICS1394
+Startech ST49c394
+Trident TCK900x
+
+20pin mask-programmable video frequency generator.
+Pins:
+   1  i  Frequency Select bit 3
+   2  i  Address Latch Enable. Set high to latch new selectors.
+   3  i  Digital Supply Voltage. Single +5V
+   4  i  Frequency Select bit 4 or external clock input 1
+   5  i  Crystal or external clock input.
+   6  o  Crystal output
+   7  i  External Clock Input 2
+   8  o  Digital Ground
+   9  o  Video Clock Output
+  12  i  Analog Supply Voltage. Single +5V
+  17  o  Analog Ground
+  18  i  Frequency Select bit 0
+  19  i  Frequency Select bit 1
+  20  i  Frequency Select bit 2
+
+
+The video clock is one of 16 or 32 programmed frequencies selected by pins
+18,19,20,1 and possibly 4. If the chip is in 16closk mode the External Clock
+Input (pin 4) can be used. The programmed clocks are calculated as:
+ (Reference clock *A)/(B*C)
+Where A is 1..127, B is 1..127 and C is 1,2 or 4.
+
+As this chip is mask programmable many versions exist:
+
+ICS1394   -073
+ST49c394            -24      -30
+Trident:                              9001     9002      9004
+Chrontel:                                                       -593
+VCLK 0:  XTAL     25.175   14.318   25.175   25.175   25.275   25.175
+VCLK 1:  16.257   28.322   16.257   28.322   28.322   28.322   28.322
+VCLK 2:  EXTFREQ  32.514   FREQ0    44.900   44.900   44.900...40.0
+VCLK 3:  32.514   36.000   32.514   36.000   36 000   36.000   80.0
+VCLK 4:  25.175   40.000   25.175   57.272   57.272   57.272   50.1
+VCLK 5:  28.322   44.900   28.322   65.000   65.000   65.000   77.0
+VCLK 6:  24.000   65.000   24.000   50.350   50.350   50.350   36.1
+VCLK 7:  40.000   84.000   40.000   40.000   40.000   40.000   44.9
+VCLK 8:  25.175   25.175   14.318            25.175   88.000   80.0
+VCLK 9:  28.322   28.322   16.257            28.322   98.000  119.9
+VCLK A:  36.000   40.000   FREQ0                     118.000  130.1
+VCLK B:  65.000   44.900   36.000            44.900  108.000   31.5
+VCLK C:  44.900   32.514   25.175            72.000   72.000  110.1
+VCLK D:  50.000   28.322   28.322            77.000   77.000   64.9
+VCLK E:  56.000   36.000   24.000            80.000   80.000   74.9
+VCLK F:  75.000   65.000   40.000            75.000   75.000   72.3
+VCLK 10: 25.175   25.175   14.318
+VCLK 11: 28.322   28.322   65.028
+VCLK 12: 40.000   32.514   FREQ0
+VCLK 13: 65.000   36.000   36.000
+VCLK 14: 44.900   40.000   25.175
+VCLK 15: 50.000   44.900   28.322
+VCLK 16: 56.000   56.000   24.000
+VCLK 17: 75.000   65.000   40.000
+VCLK 18: 25.175   25.175   44.900
+VCLK 19: 28.322   28.322   50.344
+VCLK 1A: EXTFREQ  32.514   16.257
+VCLK 1B: EXTFREQ  40.000   32.514
+VCLK 1C: 60.000   44.900   56.644
+VCLK 1D: 80.000   60.000   20.000
+VCLK 1E: EXTFREQ  80.000   50.000
+VCLK 1F: EXTFREQ  84.000   80.000
+
+
+
+ICS90c64
+Startech ST49c064
+
+20pin mask-programmable video and memory clock generator
+Pins:
+   1  i  Clock input. Typically 14.318 MHz
+   2  i  MA2. Memory clock select 2
+   3  i  External clock input (EXCLK)
+   4  i  A1. Video clock select 1
+   5  i  A0. Video clock select 0
+   6  i  Latch inputs (A0-A3, MA0-MA2) on rising edge
+   7  i  A2. Video clock select 2
+   8  i  A3. Video clock select 3
+   9  i  MA0. Memory clock select 0
+  10  o  Digital ground
+  11  i  MA1. Memory clock select 1
+  12  o  MCLK. Memory clock output
+  14  i  MCLK output enable
+  15  i  Analog VCC
+  16  o  Analog ground
+  18  i  DCLK output enable
+  19  o  DCLK. Video clock output
+  20  i  Digital VCC
+
+
+ST49c064   -?       -?
+ICS9064    -?
+AV9064              -?
+VCLK 0:  30.000   30.000
+VCLK 1:  77.250   77.250
+VLKC 2:  EXCLK    EXCLK
+VCLK 3:  80.000   80.000
+VCLK 4:  31.500   31.500
+VCLK 5:  36.000   36.000
+VCLK 6:  75.000   75.000
+VCLK 7:  50.000   50.000
+VCLK 8:  40.000   40.000
+VCLK 9:  50.000   50.000
+VCLK A:  32.000   32.000
+VCLK B:  44.900   44.900
+VCLK C:  25.275   25.275
+VCLK D:  28.322   28.322
+VCLK E:  65.000   65.000
+VCLK F:  36.000   36.000
+MCLK 0:  33.000   41.612
+MCLK 1:  49.218   37.500
+MCLK 2:  60.000   49.128
+MCLK 3:  30.500   44.296
+MCLK 4:  41.612
+MCLK 5:  37.500
+MCLK 6:  49.128
+MCLK 7:  44.296
+
+
+
+IC Designs ICD2061,ICD2061A
+ICS 9161
+Diamond DCS2824
+The ICD2062 appears very similar
+
+16 pin user programmable video and memory clock generator.
+Pins:
+   1  i  SEL0/CLK. In programming mode the clock input, in normal mode selects
+         the clock together with SEL1.
+   2  i  SEL1/DATA In programming mode the data input, in normal mode selects
+         the clock together with SEL0.
+   3  i  AVDD. +5V Analog
+   4  i  OUTDIS-. Output disabled if low.
+   5     Ground.
+   6  i  Reference crystal (typically 14.31818MHz)
+   7  o  Crystal out
+   8  o  Memory Clock output
+   9  o  Video Clock output
+  10  o  Error Output, Low if an error occured in the serial programming
+  11  i  Feature Clock input
+  12  i  INIT0. Selects initial state
+  13  i  VDD. +5V
+  14  i  INIT1. Selects initial state
+  15  i  INTCLK
+  16  i  PWRDWN
+
+The initial frequencies are selected by INIT0 and INIT1:
+  INIT0  INIT1    MREG    REG0    REG1    REG2
+    0      0     32.500  25.175  28.322  28.322
+    0      1     40.000  25.175  28.322  28.322
+    1      0     50.350  40.000  28.322  28.322
+    1      1     56.644  40.000  50.350  50.350
+Note: some versions might have different power on values.
+
+The Memory Clock output is controlled by the MREG register.
+The Video Clock output is controlled by REG0-2 and the Feature Clock:
+   INTCLK   SEL1   SEL0     Video Clock:
+     x       0      0       REG0
+     x       0      1       REG1
+     0       1      0       Feature Clock
+     1       1      0       REG2
+     x       1      1       REG2
+x = Don't care.
+
+There are 6 24bit registers:
+  REG0    Video Clock Register 1
+  REG1    Video Clock Register 2
+  REG2    Video Clock Register 3
+  MREG    Memory or I/O Timing Register
+          bit  0-6  Q Counter. Actual Q value is 2 higher (Ie. 2..129)
+               7-9  Post VCO divider (M). Divide output clock by
+                     0: 1, 1: 2, 2: 4, 3: 8, 4: 16, 5: 32, 6: 64, 7: 128
+             10-16  P Counter. Actual P value is 3 higher (Ie. 3..130)
+             17-20  Index. Selects the VCO range (in MHz):
+                     0: 50.0-51.0  1: 51.0-53.2   2: 53.2-58.5   3: 58.5-60.7
+                     4: 60.7-64.4  5: 64.4-66.8   6: 66.8-73.5   7: 73.5-75.6
+                     8: 75.6-80.9  9: 80.9-83.2  10: 83.2-91.5  11: 91.5-100.0
+                     12-15: 100.0-120.0
+                    For the Video Clocks (REG0-2):
+                       14 turns off VCLK and 15 sets VCLK to MCLK
+             21-23  Selects the register: 0: REG0, 1: REG1, 2: REG2, 3: MREG
+          Output clock is (Pre*Ref*(P/Q))/M
+          Where Pre is the prescale factor, usually 2 but can be set to 4 on
+          the ICD2061A (REG0-2 only) in the control register. Ref is the
+          reference clock typically 14.31818MHz.
+          The
+  PWRDWN  Divisor for Power-Down mode.
+          bit 17-20  Powerdown divisor. When in Power down mode 1 the Memory
+                     Clock is set to the reference crystal/the value below.
+                      1: 32, 2: 30, 3: 28, 4: 26, 5: 24, 6: 22, 7: 20, 8: 18
+                      9: 16, 10: 14, 11: 12, 12: 10, 13: 8, 14: 6, 15: 4
+                     Power on default is 8 I.e. divide by 18.
+              21-23  Always 4 to select Power down register
+  CNTL    Control Register
+          bit    12  (not 2061) P Counter Prescale (REG0). If set REG0 uses a
+                       prescale factor (Pre) of 4, if clear Pre = 2
+                 13  (not 2061) P Counter Prescale (REG1). If set REG1 uses a
+                       prescale factor (Pre) of 4, if clear Pre = 2
+                 14  (not 2061) P Counter Prescale (REG2). If set REG2 uses a
+                       prescale factor (Pre) of 4, if clear Pre = 2
+                 16  Duty Cycle Adjust. If set causes the clock high period to
+                     be 1ns shorter than normally.
+                 18  Timeout Interval. Defines the timeout period for clock
+                     selection and VCO settle. Set for twice normal timeout.
+                 19  MUXREF. Selects the clock to output on VCLKOUT during
+                     frequency changes. Set for MCLK, clear for f(ref).
+                 20  Power-Down Mode. Set for Power-Down Mode 2 (Xtal
+                     oscillator shutdown), clear for Power-Down Mode 1
+                     (MCLKOUT = PWRDWN Divisor).
+              21-23  Always 6 to select Control register
+All undefined bits must be set to 0.
+
+
+To program a clock value:
+    CLK   DATA
+     1      1  !repeat these two 6 times
+     0      1  !
+
+     0      0
+     1      0
+     0      0    !Start bit
+     1      0
+
+     1    ~data    ! Repeat for each of 24 bits, starting with
+     0    ~data    ! the least significant
+     0     data    ! data is the data bit
+     1     data    ! ~data is the inverse data bit
+
+     1      1
+     0      1    !Stop bit
+     1      1
+
+
+
+Sierra SC11412 Programmable dual clock generator.
+The SC11412 has a 20bit command word. The chip is controlled by 3 control pins
+One pin selects either programming mode (1) or operating mode (0).
+The two other pins
+
+Pins:
+  ?  i  Program/Run. When high the chip is in programming mode, when low in
+        run mode.
+  ?  i  Clksel0/Data. If run mode the low bit of the two clock select bits. In
+        programming mode the data line. Typically driven from bit 2 of the
+        Misc Output register at 3C2h.
+  ?  i  Clksel1/Clk. If run mode the high bit of the two clock select bits. In
+        programming mode the clock line. Typically driven from bit 3 of the
+        Misc Output register at 3C2h.
+
+Command word:
+Bit    0  Selects the clock to program. 0: Memory Clock, 1: Pixel clock
+       1  Enable output driver 0 for programming, 1 for reading ?
+       2  Enable VCO (0?)
+       3  External frequency programming mode (0?)
+     4-5  Divider (D). 0: /1, 1: /2, 2: /4, 3: /8
+    6-12  N. Multiplier (3 - 127)
+   13-19  M. (2 - 127)
+The resultant clock is N/(M* 2^D) *Quarts Freq (typically 14.318MHz).
+The frequency before the 2^D factor is applied must be between 45 and 100MHz
+
+To program the chip use the following sequence:
+  Prog/Run   Clock    Data
+     1         0        0
+
+     1         0      data     ! Repeat for each of the 20 data bits, starting
+     1         1      data     ! with bit 0.
+
+     0         1        0      ! Use 0 1 0 to select the Pixel clock
+A delay of a few microseconds between each step might be needed.
+
+
+
+ICS 2595 Programmable Clock generator.
+The ICS2595 uses 5 control pins for selecting and programming 16 clocks
+
+The ICS2595 has a 20 bit control word:
+Bit   0  Start bit. Must be 0.
+      1  R/W Control. 0: Write, 1: Read
+    2-6  Location. Selects the clock to reprogram.
+   7-14  N. Multiplier. App 256 - 465?. Stored as 257 less, i.e 256 is stored
+          as 255, 257 as 0 and 465 as 208.
+     15  EXTFREQ. 0 to disable external clock
+  16-17  Divider (D). 0: /1, 1: /2, 2: /4, 3: /8
+  18-19  Stop bits, both 1.
+The resulting clock is calculated as: basefreq * N/(46 *2^D)
+
+  CLK0  CLK1  CLK2  CLK3  CLK4
+    0     0     0     0     0
+    0     0     0     0     1
+    0     0     0     0     0
+    1     0     0     0     1
+    1     0     0     0     0
+
+    0     0   data    0     1   !Repeat for each bit of the control word,
+    0     0   data    0     0
+    0     0   data    1     1   ! starting with bit 0.
+    0     0   data    1     0
+
+    0     0     0     0     0
+
+
+
+
+Other Clock chips:
+
+MX8602                (Used on MXIC cards)
+
+ICD2042ASC            (Used on Compaq QVision)
+
+HM8694P               (Used on HMC cards)

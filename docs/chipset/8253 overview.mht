@@ -1,0 +1,1644 @@
+Content-Type: multipart/related; start=<op.mhtml.1214690383391.4239ff136d5ec275@192.168.0.5>; boundary=----------cbZd34wrJgv9pF1LljrCti
+Content-Location: http://www.sharpmz.org/mz-700/8253ovview.htm
+Subject: =?utf-8?Q?Overview=20of=20the=208253=20functions?=
+MIME-Version: 1.0
+
+------------cbZd34wrJgv9pF1LljrCti
+Content-Disposition: inline; filename=8253ovview.htm
+Content-Type: text/html; charset=iso-8859-1; name=8253ovview.htm
+Content-Id: <op.mhtml.1214690383391.4239ff136d5ec275@192.168.0.5>
+Content-Location: http://www.sharpmz.org/mz-700/8253ovview.htm
+Content-Transfer-Encoding: 8bit
+
+<html>
+<head>
+<meta http-equiv="Content-Type"	content="text/html; charset=iso-8859-1">
+<META NAME="description"		CONTENT="Overview of the 8253 functions">
+<meta name="abstract"			content="Overview of the 8253 functions">
+<meta name="audience"			content="alle">
+<meta name="page-topic"			content="Gesellschaft">
+<meta name="page-type"			content="Private Homepage">
+<META NAME="keywords"			CONTENT="Sharp MZ-700, MZ-700, MZ-7xx, MZ-711, MZ-721, MZ-731, SHARP, MZ-800, MZ-811, MZ-821, MZ-80, MZ-8xx, MZ">
+<META NAME="author"				CONTENT="www.sharpmz.org">
+<META NAME="copyright"			CONTENT="(C) 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006 by www.sharpmz.org">
+<meta name="publisher"			content="www.sharpmz.org">
+<META NAME="CREATED"			CONTENT="19980701">
+<META NAME="CHANGEDBY"			CONTENT="www.sharpmz.org">
+<META NAME="CHANGED"			CONTENT="20020804">
+<META NAME="revisit-after"		CONTENT="30 days">
+<META NAME="robots"				CONTENT="index,follow">
+<META HTTP-EQUIV="expires"		CONTENT="0">
+<META NAME="LANGUAGE"			CONTENT="english, en">
+<TITLE>Overview of the 8253 functions</TITLE>
+<link rel=stylesheet type="text/css" href="../css/format0.css">
+</HEAD>
+<BODY background="../images/SHARPbg.gif">
+<a name="top"></a> 
+<div align="center"> 
+  <table border="1" cellpadding="7" bordercolor="#996633" bgcolor="#F7F7E7" align="center">
+    <tr> 
+      <td height="90"> <img src="../images/argo.gif" width="45" height="45" align="left" alt="Sharp logo"> 
+        <div align="right" class="head5">8253 functions&nbsp;</div>
+        <div align="right" class="head3">( General overview )&nbsp;&nbsp;</div>
+      </td>
+    </tr>
+    <tr> 
+      <td bordercolor="#F7EBBD"> <b>General</b> 
+        <p>The Intel 8253 is a programmable counter / timer chip designed for 
+          use as an Intel microcomputer peripheral. It uses nMOS technology with 
+          a single +5V supply and is packaged in a 24-pin plastic DIP.<br>
+          <br>
+          It is organized as 3 independent 16-bit counters, each with a counter 
+          rate up to 2 MHz. All modes of operation are software programmable.<br>
+          <br>
+          The 82C54 is pin compatible with the HMOS 8254, and is a superset of 
+          the 8253.<br>
+          <br>
+          Six programmable timer modes allow the 82C54 / 8253 to be used as an 
+          event counter, elapsed time indicator, programmable one-shot, and in 
+          many other applications. </p>
+      </td>
+    </tr>
+    <tr> 
+      <td bordercolor="#F7EBBD"> 
+        <p><b>Block diagram</b></p>
+        <p>I'll examine the block diagram and next I'll explore the internal registers 
+          and operating modes of this device. Take note, the timer has three independent, 
+          programmable counters and they are all identical.</p>
+        <table border="0" cellspacing="0" cellpadding="5">
+          <tr> 
+            <td><img src="images/8253blkd.gif" alt="8253 block diagram" height=333 width=334> 
+              <div class="picfooter">Block diagram of an 8253 programmable interval 
+                timer</div>
+            </td>
+            <td valign="top"> 
+              <P>The block labeled <I>data bus buffer</I> contains the logic to 
+                buffer the data bus to / from the microprocessor, and to the internal 
+                registers. The block labeled <I>read / write logic</I> controls 
+                the reading and the writing of the counter registers. The final 
+                block, the <I>control word register</I>, contains the programmed 
+                information that is sent to the device from the microprocessor. 
+                In effect this register defines how the 8253 logically works. 
+              <P>Each counter in the block diagram has 3 logical lines connected 
+                to it. Two of these lines, clock and gate, are inputs. The third, 
+                labeled OUT is an output. The function of these lines changes 
+                and depends on how the device is initialized or programmed. 
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr> 
+      <td bordercolor="#F7EBBD"> 
+        <p><b>PIN configuration</b> </p>
+        <P>The following picture shows the pin configuration of the 8253 and a 
+          general definition of the lines follows: <br>
+          <br>
+        <table border="0" cellspacing="0" cellpadding="5">
+          <tr> 
+            <td> 
+              <div align="left"><img src="images/8253.gif" alt="8253 device pinout" height=179 width=198></div>
+            </td>
+            <td valign="top"> 
+              <p><b>Clock </b>This is the clock input for the counter. The counter 
+                is 16 bits. The maximum clock frequency is 1 / 380 nanoseconds 
+                or 2.6 megahertz. The minimum clock frequency is DC or static 
+                operation.</p>
+              <p><b>Out</b> This single output line is the signal that is the 
+                final programmed output of the device. Actual operation of the 
+                out line depends on how the device has been programmed.</p>
+              <p><b>Gate</b> This input can act as a gate for the clock input 
+                line, or it can act as a start pulse, depending on the programmed 
+                mode of the counter.</p>
+            </td>
+          </tr>
+          <tr><a name="gate"></a> 
+            <td colspan="2"> <br>
+            </td>
+          </tr>
+        </table>
+        <table border="0" cellspacing="0" cellpadding="5">
+          <tr> 
+            <td valign="top"> 
+              <table BORDER cellpadding=3 bgcolor="#F7F7E7" bordercolor="#996633" width="460" >
+                <tr bgcolor="#F2E6D9"> 
+                  <td> 
+                    <div align=right><b>Signal Status</b></div>
+                  </td>
+                  <td> <b>Low or going low </b></td>
+                  <td> <b>Rising </b></td>
+                  <td> <b>High </b></td>
+                </tr>
+                <tr> 
+                  <td bgcolor="#CCFFCC"> 
+                    <div align="left"><b>Mode</b></div>
+                  </td>
+                  <td bordercolor="#F7F7E7">&nbsp;</td>
+                  <td bordercolor="#F7F7E7">&nbsp;</td>
+                  <td bordercolor="#F7F7E7">&nbsp;</td>
+                </tr>
+                <tr> 
+                  <td bgcolor="#CCFFCC"> 
+                    <div align="left"> &nbsp;&nbsp;0 </div>
+                  </td>
+                  <td bordercolor="#F7EBBD">Disables counting</td>
+                  <td bordercolor="#F7EBBD"> 
+                    <center>
+                      - - 
+                    </center>
+                  </td>
+                  <td bordercolor="#F7EBBD">Enables counting</td>
+                </tr>
+                <tr> 
+                  <td bgcolor="#CCFFCC"> 
+                    <div align="left">&nbsp;&nbsp;1 </div>
+                  </td>
+                  <td bordercolor="#F7EBBD"> 
+                    <center>
+                      - - 
+                    </center>
+                  </td>
+                  <td bordercolor="#F7EBBD">1) Initiates counting<br>
+                    2) Resets output<br>
+                    after next clock</td>
+                  <td bordercolor="#F7EBBD"> 
+                    <center>
+                      - - 
+                    </center>
+                  </td>
+                </tr>
+                <tr> 
+                  <td bgcolor="#CCFFCC"> 
+                    <div align="left">&nbsp;&nbsp;2 </div>
+                  </td>
+                  <td bordercolor="#F7EBBD">1) Disables counting <br>
+                    2) Sets output<br>
+                    immediately high</td>
+                  <td bordercolor="#F7EBBD">1) Reloads counter<br>
+                    2) Initiates counting</td>
+                  <td bordercolor="#F7EBBD">Enables counting</td>
+                </tr>
+                <tr> 
+                  <td bgcolor="#CCFFCC"> 
+                    <div align="left">&nbsp;&nbsp;3 </div>
+                  </td>
+                  <td bordercolor="#F7EBBD">1) Disables counting <br>
+                    2) Sets output<br>
+                    immediately high</td>
+                  <td bordercolor="#F7EBBD">Initiates counting</td>
+                  <td bordercolor="#F7EBBD">Enables counting</td>
+                </tr>
+                <tr> 
+                  <td bgcolor="#CCFFCC"> 
+                    <div align="left">&nbsp;&nbsp;4 </div>
+                  </td>
+                  <td bordercolor="#F7EBBD">Disables counting</td>
+                  <td bordercolor="#F7EBBD"> 
+                    <center>
+                      - - 
+                    </center>
+                  </td>
+                  <td bordercolor="#F7EBBD">Enables counting</td>
+                </tr>
+                <tr> 
+                  <td bgcolor="#CCFFCC"> 
+                    <div align="left">&nbsp;&nbsp;5 </div>
+                  </td>
+                  <td bordercolor="#F7EBBD"> 
+                    <center>
+                      - - 
+                    </center>
+                  </td>
+                  <td bordercolor="#F7EBBD">Initiates counting</td>
+                  <td bordercolor="#F7EBBD"> 
+                    <center>
+                      - - 
+                    </center>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td valign="top"> This table shows the different uses of the 8253 
+              gate input pin. 
+              <p>Each mode of operation for the counter has a different use for 
+                the GATE input pin. </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr> 
+      <td bordercolor="#F7EBBD"> 
+        <p><b>Internal 8253 registers</b></p>
+        <P>Here is a list of the internal 8253 registers that will program the 
+          internal counters of the 8253:</p>
+        <table border="0" cellspacing="0" cellpadding="5">
+          <tr> 
+            <td> </td>
+            <td valign="top"> </td>
+          </tr>
+          <tr> 
+            <td colspan="2"></td>
+          </tr>
+        </table>
+        <table border="0" cellspacing="0" cellpadding="5" align="left">
+          <tr> 
+            <td> 
+              <TABLE BORDER CELLPADDING=5 BGCOLOR="#F7F7E7" bordercolor="#996633" cellspacing="0" width="365">
+                <TR> 
+                  <TD bordercolor="#F7F7E7" bgcolor="#F2E6D9">&nbsp; </TD>
+                  <TD bordercolor="#F7F7E7" bgcolor="#F2E6D9"> <span class="overline">RD</span> 
+                  </TD>
+                  <TD bordercolor="#F7F7E7" bgcolor="#F2E6D9"> <span class="overline">WR</span> 
+                  </TD>
+                  <TD bordercolor="#F7F7E7" bgcolor="#F2E6D9"> A0 </TD>
+                  <TD bordercolor="#F7F7E7" bgcolor="#F2E6D9"> A1 </TD>
+                  <TD bordercolor="#F7F7E7" bgcolor="#F2E6D9"> function </TD>
+                </TR>
+                <TR> 
+                  <TD ROWSPAN="2" bgcolor="#FFCCCC" bordercolor="#FFCCCC"> COUNTER 
+                    0 </TD>
+                  <TD bordercolor="#FFCCCC" bgcolor="#FFCCCC"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFCCCC" bgcolor="#FFCCCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFCCCC" bgcolor="#FFCCCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFCCCC" bgcolor="#FFCCCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFCCCC" bgcolor="#FFCCCC">Load counter 0</TD>
+                </TR>
+                <TR> 
+                  <TD bordercolor="#FFCCCC" bgcolor="#FFCCCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFCCCC" bgcolor="#FFCCCC"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFCCCC" bgcolor="#FFCCCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFCCCC" bgcolor="#FFCCCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFCCCC" bgcolor="#FFCCCC">Read counter 0</TD>
+                </TR>
+                <TR> 
+                  <TD ROWSPAN="2" bordercolor="#FFEBCC" bgcolor="#FFEBCC"> <FONT COLOR="#000000">COUNTER 
+                    1</FONT> </TD>
+                  <TD bordercolor="#FFEBCC" bgcolor="#FFEBCC"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFEBCC" bgcolor="#FFEBCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFEBCC" bgcolor="#FFEBCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFEBCC" bgcolor="#FFEBCC"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFEBCC" bgcolor="#FFEBCC">Load counter 1</TD>
+                </TR>
+                <TR> 
+                  <TD bgcolor="#FFEBCC" bordercolor="#FFEBCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#FFEBCC" bordercolor="#FFEBCC"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#FFEBCC" bordercolor="#FFEBCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#FFEBCC" bordercolor="#FFEBCC"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#FFEBCC" bordercolor="#FFEBCC">Read counter 1</TD>
+                </TR>
+                <TR> 
+                  <TD ROWSPAN="2" bgcolor="#FFFFCC" bordercolor="#FFFFCC"> COUNTER 
+                    2 </TD>
+                  <TD bordercolor="#FFFFCC" bgcolor="#FFFFCC"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFFFCC" bgcolor="#FFFFCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFFFCC" bgcolor="#FFFFCC"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFFFCC" bgcolor="#FFFFCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bordercolor="#FFFFCC" bgcolor="#FFFFCC">Load counter 2</TD>
+                </TR>
+                <TR> 
+                  <TD bgcolor="#FFFFCC" bordercolor="#FFFFCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#FFFFCC" bordercolor="#FFFFCC"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#FFFFCC" bordercolor="#FFFFCC"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#FFFFCC" bordercolor="#FFFFCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#FFFFCC" bordercolor="#FFFFCC">Read counter 2</TD>
+                </TR>
+                <TR> 
+                  <TD bgcolor="#CCFFCC" bordercolor="#CCFFCC"> MODE WORD or<br>
+                    CONTROL WORD </TD>
+                  <TD bgcolor="#CCFFCC" valign="top" bordercolor="#CCFFCC"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#CCFFCC" valign="top" bordercolor="#CCFFCC"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#CCFFCC" valign="top" bordercolor="#CCFFCC"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#CCFFCC" valign="top" bordercolor="#CCFFCC"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#CCFFCC" valign="top" bordercolor="#CCFFCC">Write 
+                    mode word</TD>
+                </TR>
+                <TR> 
+                  <TD bgcolor="#CCCCFF" bordercolor="#CCCCFF"> <font color="#000000">- 
+                    -</font></TD>
+                  <TD bgcolor="#CCCCFF" bordercolor="#CCCCFF"> 
+                    <CENTER>
+                      0 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#CCCCFF" bordercolor="#CCCCFF"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#CCCCFF" bordercolor="#CCCCFF"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#CCCCFF" bordercolor="#CCCCFF"> 
+                    <CENTER>
+                      1 
+                    </CENTER>
+                  </TD>
+                  <TD bgcolor="#CCCCFF" bordercolor="#CCCCFF">No-operation</TD>
+                </TR>
+              </TABLE>
+            </td>
+          </tr>
+        </table>
+        <B>Counter #0, #1, #2</B> Each counter is identical, and each consists 
+        of a 16-bit, pre-settable, down counter. Each is fully independent and 
+        can be easily read by the CPU. When the counter is read, the data within 
+        the counter will not be disturbed. This allows the system or your own 
+        program to monitor the counter's value at any time, without disrupting 
+        the overall function of the 8253. 
+        <p><B>Control Word Register</B> This internal register is used to write 
+          information to, prior to using the device. This register is addressed 
+          when A0 and A1 inputs are logical 1's. The data in the register controls 
+          the operation mode and the selection of either binary or BCD ( <U>b</U>inary 
+          <U>c</U>oded <U>d</U>ecimal ) counting format. The register can only 
+          be written to. You can't read information from the register. </p>
+      </td>
+    </tr>
+    <tbody> 
+    <tr><a name="8253ctrlwrd"></a> 
+      <td bordercolor="#F7EBBD"> 
+        <p><b>Control Word Register</b></p>
+        <table width="100%" border="0" cellspacing="0" cellpadding="5">
+          <tr> 
+            <td> 
+              <table BORDER cellpadding=5 bgcolor="#F7F7E7" bordercolor="#F7EBBD" cellspacing="0" rules="groups">
+                <tr bgcolor="#CCFFCC"> 
+                  <td colspan="8"> 
+                    <center>
+                      <b>CONTROL BYTE D7 - D0 </b> 
+                    </center>
+                  </td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td bgcolor="#E7CCFF"> 
+                    <center>
+                      D7 
+                    </center>
+                  </td>
+                  <td bgcolor="#E7CCFF"> 
+                    <center>
+                      D6 
+                    </center>
+                  </td>
+                  <td bgcolor="#FFFFCC"> 
+                    <center>
+                      D5 
+                    </center>
+                  </td>
+                  <td bgcolor="#FFFFCC"> 
+                    <center>
+                      D4 
+                    </center>
+                  </td>
+                  <td bgcolor="#CCFFFF"> 
+                    <center>
+                      D3 
+                    </center>
+                  </td>
+                  <td bgcolor="#CCFFFF"> 
+                    <center>
+                      D2 
+                    </center>
+                  </td>
+                  <td bgcolor="#CCFFFF"> 
+                    <center>
+                      D1 
+                    </center>
+                  </td>
+                  <td bgcolor="#FFCC99"> 
+                    <center>
+                      D0 
+                    </center>
+                  </td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td bgcolor="#E7CCFF"> 
+                    <center>
+                      SC1 
+                    </center>
+                  </td>
+                  <td bgcolor="#E7CCFF"> 
+                    <center>
+                      SC0 
+                    </center>
+                  </td>
+                  <td bgcolor="#FFFFCC"> 
+                    <center>
+                      RL1 
+                    </center>
+                  </td>
+                  <td bgcolor="#FFFFCC"> 
+                    <center>
+                      RL0 
+                    </center>
+                  </td>
+                  <td bgcolor="#CCFFFF"> 
+                    <center>
+                      M2 
+                    </center>
+                  </td>
+                  <td bgcolor="#CCFFFF"> 
+                    <center>
+                      M1 
+                    </center>
+                  </td>
+                  <td bgcolor="#CCFFFF"> 
+                    <center>
+                      M0 
+                    </center>
+                  </td>
+                  <td bgcolor="#FFCC99"> 
+                    <center>
+                      BCP 
+                    </center>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td valign="top"> 
+              <p><br>
+                All of the operating modes for the counters are selected by writing 
+                bytes to the control register. This is the control word format.</p>
+            </td>
+          </tr>
+        </table>
+        <br>
+        <table width="100%" border="0" cellspacing="0" cellpadding="5">
+          <tr> 
+            <td> 
+              <table BORDER cellpadding=5 cellspacing="0" bordercolor="#F7EBBD" rules="groups">
+                <tr> 
+                  <td bgcolor="#E7CCFF"> 
+                    <center>
+                      <b>D7</b> 
+                    </center>
+                    <center>
+                      SC1 
+                    </center>
+                  </td>
+                  <td bgcolor="#E7CCFF"> 
+                    <center>
+                      <b>D6</b> 
+                    </center>
+                    <center>
+                      SC0 
+                    </center>
+                  </td>
+                  <td bgcolor="#CCFFCC"> 
+                    <center>
+                      <b>Counter Select</b> 
+                    </center>
+                  </td>
+                </tr>
+                <tbody> 
+                <tr bgcolor="#FFCCCC"> 
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      counter 0 
+                    </center>
+                  </td>
+                </tr>
+                <tbody> 
+                <tr bgcolor="#FFEBCC"> 
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      counter 1 
+                    </center>
+                  </td>
+                </tr>
+                <tbody> 
+                <tr bgcolor="#FFFFCC"> 
+                  <td> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      counter 2 
+                    </center>
+                  </td>
+                </tr>
+                <tbody> 
+                <tr bgcolor="#FFFFFF"> 
+                  <td> 
+                    <center>
+                      <font color="#FF0000"> 1 </font> 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      <font color="#FF0000"> 1 </font> 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      <font color="#FF0000">illegal value </font> 
+                    </center>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td valign="top"> 
+              <p>Bits D7 and D6 are labeled SC1 and SC0. These bits select the 
+                counter to be programmed, it is necessary to define, using the 
+                control bits D7 and D6, which counter is being set up.</p>
+              <p><img src="../images/note.gif" width="33" height="14" alt="Note"> 
+                Once a counter is set up, it will remain that way until it is 
+                changed by another control word.</p>
+            </td>
+          </tr>
+        </table>
+        <br>
+        <table border="0" cellspacing="0" cellpadding="5" align="left">
+          <tr> 
+            <td valign="top"> 
+              <table BORDER cellpadding=5 cellspacing="0" bordercolor="#F7EBBD" rules="groups" width="350">
+                <tr> 
+                  <td bgcolor="#FFFFCC"> 
+                    <center>
+                      <b>D5</b> 
+                    </center>
+                    <center>
+                      RL1 
+                    </center>
+                  </td>
+                  <td bgcolor="#FFFFCC"> 
+                    <center>
+                      <b>D4</b> 
+                    </center>
+                    <center>
+                      RL0 
+                    </center>
+                  </td>
+                  <td bgcolor="#CCFFCC"> <b>R / L Definition </b> </td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td valign="top"> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td valign="top"> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td>Counter value is latched. This means<br>
+                    that the selected counter has its<br>
+                    contents transferred into a temporary<br>
+                    latch, which can then be read by the CPU.</td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td valign="top"> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td valign="top"> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td>Read / load least-significant byte only.</td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td valign="top"> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td valign="top"> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td>Read / load most-significant byte only.</td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td valign="top"> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td valign="top"> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td>Read / load least-significant byte first,<br>
+                    then most-significant byte.</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr> 
+            <td> </td>
+          </tr>
+        </table>
+        Bits D5 and D4 ( RL1 / RL0 ) of the <a href="#8253ctrlwrd">control word</a> 
+        shown above are defined as the read / load mode for the register that 
+        is selected by bits D7 and D6. Bits D5 and D4 define how the particular 
+        counter is to have data read from or written to it by the CPU. 
+        <p>These bits are defined as: </p>
+        <p>The 1st value, $00, is the <i>counter latch mode</i>. If this mode 
+          is specified, the current counter value is latched into an internal 
+          register at the time of the I/O write operation to the control register. 
+          When a read of the counter occurs, it is this latched value that is 
+          read. </p>
+        <p><b>Caution:</b> If the latch mode is not used, then it is possible 
+          that the data read back may be in the process of changing while the 
+          read is occurring. This could result in invalid data being input by 
+          the CPU ( see the timing diagrams to the <a href="http://developer.intel.com/design/periphrl/datashts/231244.htm" target="_blank">8253 
+          by intel's site </a> or go to page &quot;<a href="memio.htm">Memory 
+          mapped I/O</a>&quot; ). To read the counter value while the counter 
+          is still in the process of counting, one must first issue a latch control 
+          word, and then issue another control word that indicates the order of 
+          the bytes to be read.</p>
+        <p>An alternative method of obtaining a stable count from the timer is 
+          to externally inhibit counting while the register is being read. To 
+          this, an external logic to the 8253 controlled by the Z80 to inhibit 
+          count during an input read operation is to connect.</p>
+        <p>Each technique has certain disadvantages. The first, the latching method, 
+          may give the CPU a reading that is "old" by several cycles, depending 
+          on the speed of the count and which byte of the counter is being read.</p>
+        <a name="ct0hw"></a> 
+        <p>The second method, the external inhibiting function, requires additional 
+          hardware. In addition, it may change the overall system operation. The 
+          counters 1 and 2 of the MZ-700 are not designed with this additional 
+          hardware function. :-( but the counter 0. You can use this method for 
+          your own purposes even an amplifier is connected to the output pin of 
+          this counter.<br>
+          <img src="../images/note.gif" width="33" height="14" alt="Note"> The 
+          input to counter 0 is 1.1088MHz.</p>
+        <p>The next 3 bits of the <a href="#8253ctrlwrd">control word</a> are 
+          D3, D2, and D1. These bits determine the basic mode of operation for 
+          the selected counter. The mode descriptions follows:</p>
+        <table border="0" cellspacing="0" cellpadding="5">
+          <tr> 
+            <td> 
+              <table BORDER cellpadding=5 width="340" cellspacing="0" bordercolor="#F7EBBD" rules="groups">
+                <tr> 
+                  <td bgcolor="#CCFFFF"> 
+                    <center>
+                      <b>D3 </b> 
+                    </center>
+                    <center>
+                      M2 
+                    </center>
+                  </td>
+                  <td bgcolor="#CCFFFF"> 
+                    <center>
+                      <b>D2</b> 
+                    </center>
+                    <center>
+                      M1 
+                    </center>
+                  </td>
+                  <td bgcolor="#CCFFFF"> 
+                    <center>
+                      <b>D1</b> 
+                    </center>
+                    <center>
+                      M0 
+                    </center>
+                  </td>
+                  <td bgcolor="#CCFFCC"> <b>Mode value </b></td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td>mode 0: interrupt on terminal count</td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td>mode 1: programmable one-shot</td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td> 
+                    <center>
+                      x 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td>mode 2: rate generator</td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td> 
+                    <center>
+                      x 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td>mode 3: square wave generator</td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td>mode 4: software triggered strobe</td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td>mode 5: hardware triggered strobe</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <br>
+        <table border="0" cellspacing="0" cellpadding="5">
+          <tr> 
+            <td> 
+              <table BORDER cellpadding=5 width="150" bordercolor="#F7EBBD" cellspacing="0" rules="groups">
+                <tr> 
+                  <td bgcolor="#FFCC99"> 
+                    <center>
+                      D0 
+                    </center>
+                  </td>
+                  <td bgcolor="#CCFFCC"> 
+                    <center>
+                      <b>counts down in </b> 
+                    </center>
+                  </td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td> 
+                    <center>
+                      0 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      binary 
+                    </center>
+                  </td>
+                </tr>
+                <tbody> 
+                <tr> 
+                  <td> 
+                    <center>
+                      1 
+                    </center>
+                  </td>
+                  <td> 
+                    <center>
+                      BCD 
+                    </center>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td> 
+              <p>The final bit <b>D0</b> of the control register determines how 
+                the register will count:</p>
+              <p>The <b>maximum values</b> for the count in each count mode are 
+                10<sup>4</sup> ( 10,000 decimal ) in BCD, and 2<sup>16</sup> ( 
+                65,536 decimal ) in binary. </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr> 
+      <td bordercolor="#F7EBBD"> 
+        <p><b>Modes</b></p>
+        <p>The following text describes all possible modes. The modes used in 
+          the MZ-700 and set by the monitor's startup are mode 0, mode 2, and 
+          mode 3. </p>
+        <table border="1" cellspacing="0" cellpadding="5" bordercolor="#F7EBBD" rules="groups">
+          <tr><a name="mode0"></a> 
+            <td valign="top" width="48"><b>Mode 0</b></td>
+            <td> <b>Interrupt on Terminal Count</b> 
+              <p>The counter will be programmed to an initial value and afterwards 
+                counts down at a rate equal to the input clock frequency. When 
+                the count is equal to 0, the OUT pin will be a logical 1. The 
+                output will stay a logical 1 until the counter is reloaded with 
+                a new value or the same value or until a mode word is written 
+                to the device. </p>
+              <p>Once the counter starts counting down, the GATE input can disable 
+                the internal counting by setting the GATE to a logical 0 ( see 
+                the <a href="#gate">table above </a>). 
+            </td>
+          </tr>
+          <tbody> 
+          <tr> 
+            <td valign="top" width="48"><b>Mode 1</b></td>
+            <td> <b>Programmable One-Shot</b> 
+              <p>In mode 1, the device can be setup to give an output pulse that 
+                is an integer number of clock pulses. The one-shot is triggered 
+                on the rising edge of the <a href="#gate">GATE input</a>. If the 
+                trigger occurs during the pulse output, the 8253 will be retriggered 
+                again. </p>
+            </td>
+          </tr>
+          <tbody> 
+          <tr><a name="mode2"></a> 
+            <td valign="top" width="48"><b>Mode 2</b></td>
+            <td> <b>Rate Generator</b> 
+              <p>The counter that is programmed for mode 2 becomes a "divide by 
+                n" counter. The OUT pin of the counter goes to low for one input 
+                clock period. The time between the pulses of going low is dependent 
+                on the present count in the counter's register. I mean the time 
+                of the logical 1 pulse. </p>
+              <p>For example, suppose to get an output frequency of 1,000 Hz ( 
+                Hertz ), the period would be 1 / 1,000 s = 1 ms ( millisecond 
+                ) or 1,000 &micro;s ( microseconds ). If an input clock of 1 MHz 
+                ( Mega-Hertz ) were applied to the clock input of the counter 
+                #0, then the counter #0 would need to be programmed to 1000 &micro;s. 
+                This could be done in decimal or in BCD. ( The period of an input 
+                clock of 1 MHz is 1 / 1,000,000 = 1 &micro;s. ) 
+              <p>The formula is: <b>n=f<sub>i</sub> divided by f<sub>out</sub></b>.<br>
+                f<sub>i</sub> = input clock frequency, f<sub>out</sub> = output 
+                frequency, n = value to be loaded. 
+              <p>My example: f<sub>i</sub> = 1 MHz = 1 x 10<sup>6</sup> Hz, f<sub>out</sub> 
+                = 1 kHz = 1 x 10<sup>3</sup> Hz. 
+              <p>n = 1 x 10<sup>6</sup> Hz / 1 x 10<sup>3</sup> Hz = 1 x 10<sup>3</sup> 
+                = 1,000. This is the decimal value to be loaded or the hexadecimal 
+                value $03E8. The following program example uses the decimal load 
+                count. 
+              <pre>B000 3E35	LD	A,$35     ; load <a href="#8253ctrlwrd">control word</a>
+			          ; for counter 0 mode 2 
+B002 3207E0	LD	($E007),A ; into port $E007
+                                  ; for BCD count 
+B005 2104E0	LD	HL,$E004  ; address to the port
+                                  ; of counter 0 
+B008 3E00	LD	A,$00
+B00A 77		LD	(HL),A	  ; load least significant
+                                  ; byte of 1000 first 
+B00B 3E10	LD	A,$10 
+B00D 77		LD	(HL),A	  ; load most significant
+                                  ; byte of 1000 last 
+B00E 3E01	LD	A,1 
+B010 3208E0	LD	($E008),A ; start counter 0 is only
+                                  ; necessary for the MZ-700.
+                                  ; Not necessary for
+                                  ; counter #1 and #2 
+; 
+; The counter is now initialized and the output frequency
+; will be 1000 Hz if the input frequency is 1 MHz.  </pre>
+              <p>If the count is loaded between output pulses, the present period 
+                will not be affected. A new period will occur during the next 
+                count sequence. 
+            </td>
+          </tr>
+          <tbody> 
+          <tr><a name="mode3"></a> 
+            <td valign="top" width="48"><b>Mode 3</b></td>
+            <td> <b>Square Wave Generator</b> 
+              <p>Mode 3 is similar to the mode 2 except that the output will be 
+                high for half the period and low for half. If the count is odd, 
+                the output will be high for ( n + 1 ) / 2 and low for ( n - 1 
+                ) / 2 counts. </p>
+              <p>For example, I'll setup counter #0 for a square wave frequency 
+                of 10 kHz ( kilo-Hertz ), assuming the input frequency is 1 MHz. 
+              <p>Please refer to the formula described at mode 2.<br>
+                1 x 10<sup>6</sup> / 10 x 10<sup>3</sup> = 100. This is the decimal 
+                value to be loaded or the hexadecimal value $0064. The following 
+                program example uses the binary load count. 
+              <pre>B000 3E35	LD	A,$36	  ; load <a href="#8253ctrlwrd">control word</a>
+			          ; for counter 0 mode 3
+B002 3207E0	LD	($E007),A ; into port $E007
+                                  ; for binary count 
+B005 2104E0	LD	HL,$E004  ; address to the port
+                          ; of counter 0 
+B008 3E00	LD	A,$64	  ; equals to
+                                  ; 100 microseconds
+                                  ; for 10,000 Hz
+B00A 77		LD	(HL),A	  ; load least significant
+                                  ; byte of $0064 first 
+B00B 3E10	LD	A,$00 
+B00D 77		LD	(HL),A	  ; load most significant
+                                  ; nyte of $0064 last 
+B00E 3E01	LD	A,1 
+B010 3208E0	LD	($E008),A ; start counter 0 is only
+				  ; necessary for the MZ-700.
+                  ; Not necessary for counter
+                                  ; #1 and #2 
+; 
+; The counter is now initialized and the output frequency 
+; will be 10 kHz if the input frequency is 1 MHz.  </pre>
+            </td>
+          </tr>
+          <tbody> 
+          <tr> 
+            <td valign="top" width="48"><b>Mode 4</b></td>
+            <td> <b>Software Triggered Strobe</b> 
+              <p>In this mode the programmer can set up the counter to give an 
+                output timeout starting when the register is loaded. On the terminal 
+                count, when the counter equals to 0, the output will go to a logical 
+                0 for one clock period and then returns to a logical 1. First 
+                the mode is set, the output will be a logical 1. </p>
+            </td>
+          </tr>
+          <tbody> 
+          <tr> 
+            <td valign="top" width="48"><b>Mode 5</b></td>
+            <td> <b>Hardware Triggered Strobe</b> 
+              <p>In this mode the rising edge of the trigger input will start 
+                the counting of the counter. The output goes low for one clock 
+                at the terminal count. The counter is retriggerable, thus meaning 
+                that if the trigger input is taken low and then high during a 
+                count sequence, the sequence will start over. </p>
+              <p>When the external trigger input goes to a logical 1, the timer 
+                will start to time out. If the external trigger occurs again, 
+                prior to the time completing a full timeout, the timer will retrigger.</p>
+            </td>
+          </tr>
+        </table>
+        <p>Go to page &quot;<a href="memio.htm">Memory mapped I/O</a>&quot; to 
+          download the complex datasheet of the 8253.</p>
+      </td>
+    </tr>
+  </table>
+</div>
+<p class="afooter"><br>
+  <a href="#top"><img src="../images/top.gif" border="0" alt="Go to the top of this page" width="10" height="11"></a> 
+  <a href="http://www.sharpmz.org/index.html" target="_top"><img src="../images/home.gif" border="0" alt="Home" width="13" height="14" hspace="25"></a> 
+  <br>
+  <br>
+  last updated August 4, 2002<br>
+  <img src="../images/copyright.gif" align="absbottom" width="12" height="12" alt="copyright by www.sharpmz.org"> 
+  <a href="mailto:sharpmz@sharpmz.org" class="afooter">sharpmz@sharpmz.org<br>
+  </a></p>
+</BODY>
+</HTML>
+
+------------cbZd34wrJgv9pF1LljrCti
+Content-Disposition: inline; filename=format0.css
+Content-Type: text/css; charset=iso-8859-1; name=format0.css
+Content-Location: http://www.sharpmz.org/css/format0.css
+Content-Transfer-Encoding: 8bit
+
+h4, li, ul, span, caption		{font-family: Arial, Geneva, Helvetica, sans-serif;
+					font-size: 10pt}
+
+td, p					{font-family: Arial, Geneva, Helvetica, sans-serif;
+					font-size: 10pt; text-align: justify }
+		 
+b, strong					{font-weight: bold;
+					font-family: Arial, Geneva, Helvetica, sans-serif;
+					font-size: 10pt}
+		 
+h3					{font-family: Arial, Geneva, Helvetica, sans-serif;
+					font-size: 12pt}
+		 
+.head5				{ color: #996633; font-family: Arial, Geneva, Helvetica, sans-serif; 
+					font-size: 18pt}
+		 
+.head3				{ font-family: Arial, Geneva, Helvetica, sans-serif;
+					font-size: 12pt; font-weight: normal}	
+
+.picfooter				{ font-family: Arial, Geneva, Helvetica, sans-serif;
+					font-size: 10pt; font-weight: normal}
+
+.px8:link			{ font-family: Arial, Helvetica, sans-serif; font-size: 8pt;
+					text-decoration: none}
+
+.px8:visited			{ font-family: Arial, Helvetica, sans-serif; font-size: 8pt;
+					text-decoration: none}
+
+.px8:active			{ font-family: Arial, Helvetica, sans-serif; font-size: 8pt;
+					text-decoration: none}
+
+.px8				{ font-family: Arial, Helvetica, sans-serif; font-size: 8pt;
+					LINE-HEIGHT: 12px;}
+
+.px8b				{ font-family: Arial, Helvetica, sans-serif; font-size: 8pt;
+					font-weight:bold}
+					
+.tabhead3			{font-weight: bold;
+					font-family: Arial, Geneva, Helvetica, sans-serif;
+					font-size: 12pt}
+
+.txtmarkerred		{ font-family: Arial, Geneva, Helvetica, sans-serif;
+					font-size: 10pt; background-color:#FFCCCC;
+					color:000000; font-weight:bold}
+
+.overline			{ font-family: Arial, Geneva, Helvetica, sans-serif;
+					font-size: 10pt; font-weight: normal; text-decoration: overline;
+					line-height:18pt}
+
+.overlineb			{ font-family: Arial, Geneva, Helvetica, sans-serif;
+					font-size: 10pt; font-weight: bold; border-top: 2px solid;
+					line-height:18pt}
+
+pre     			{font-family: Courier New, Courier, mono;
+					font-size: 10pt}
+		 
+a:link				{ color: #0000ff; font-family: Arial, Helvetica, sans-serif;
+					font-size: 10pt; Text-decoration: none}
+a:visited			{ color: #0000A0; font-family: Arial, Helvetica, sans-serif;
+					font-size: 10pt; Text-decoration: none}
+a:active			{ color: #ff0000; font-family: Arial, Helvetica, sans-serif;
+					font-size: 10pt; text-decoration: none}
+					
+.afooter:link		{ color: #0000ff; font-family: Arial, Helvetica, sans-serif;
+					font-size: 7pt; text-decoration: none}
+.afooter:visited	{ color: #0000A0; font-family: Arial, Helvetica, sans-serif; 
+					font-size: 7pt; text-decoration: none}
+.afooter:active		{ color: #ff0000; font-family: Arial, Helvetica, sans-serif; 
+					font-size: 7pt; text-decoration: none}
+					
+.afooter			{ font-family: Arial, Helvetica, sans-serif; font-size: 7pt}
+	
+body				{ background-attachment:fixed; background-color:#F7F7E7;
+					SCROLLBAR-FACE-COLOR: #F2E8BA;
+					SCROLLBAR-TRACK-COLOR: #F7F7E7;
+					SCROLLBAR-ARROW-COLOR: #996633;
+					SCROLLBAR-HIGHLIGHT-COLOR: #FFFFFF;
+					SCROLLBAR-3DLIGHT-COLOR: #F2E8BA;
+					SCROLLBAR-SHADOW-COLOR: #E4B71C;
+					SCROLLBAR-DARKSHADOW-COLOR: #604020}
+------------cbZd34wrJgv9pF1LljrCti
+Content-Disposition: inline; filename=SHARPbg.gif
+Content-Type: image/gif; name=SHARPbg.gif
+Content-Location: http://www.sharpmz.org/images/SHARPbg.gif
+Content-Transfer-Encoding: Base64
+
+R0lGODdh7ABSAPcAAPfetffrvffrvffvzvfv1vf31vf33vf35///////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+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
+jHHN6177+tfADrawh03sLgYEAAA7
+
+------------cbZd34wrJgv9pF1LljrCti
+Content-Disposition: inline; filename=argo.gif
+Content-Type: image/gif; name=argo.gif
+Content-Location: http://www.sharpmz.org/images/argo.gif
+Content-Transfer-Encoding: Base64
+
+R0lGODlhLQAtALMAAAAAABAAACEAADEAAEIAAFIAAGMAAHMAAIwAAJwAAK0AAL0A
+AM4AAN4AAO8AAP8AACH5BAEAAAAALAAAAAAtAC0AAAT+EMhJ6ww2680nWV0oZsgj
+jGh4PE9zprDVsM8RB0QslY8ziIICIVCYFXSAxCMnUjwMgRUDoys8fqLCgvAZMHXK
+RIcqYZjIN8cDpAksHAQBAoBYCA7oFMGhQOQnAkZOLzN/IwwKXl8UCwgEeAReBgAG
+DYYiCH4HixIBDwwSQ0kmSBIGBn4GBy8UBT8LLTlHpXSoSQdYFHgKDggMcLNIAwgF
+cwnDFggHCw10V5wwxQl+CgDVFQE4PQ9ztABbC5NTdrqzBQk23m4ADAMBDQPoE7YS
+AwqT3gmgbEsC15kXZrChda+SBG4rCEwDZObBtVIDTCip04OBwE57aDzscMcAKwD+
+/ratUcakAQNUDWkE68CjBYMFv1g4MBBJggADvGjoZHGpggAWDXLKVCMz5c6jD0Yo
+YSAgQEgEAob1KBAVlgIuLXWCanJlxbFjDVw0OFDAQQIC8BRYcrITXwglA8wsiLLi
+gZYCZuAgiMgta4+PHFbgCnrAkpI9UJkRuKJv2s5uWVg4yrTmXBFuBQ4cYMCAap0Z
+LDaG4PtgWksECQzQQF3XwQEFSj4B5kjDNQLQCzTD6nEgQewnDHz31EDaQeaUCBTU
+deh7d3LRI4rjTdkA9e5e1Xkvhhbip0wrqlU+oWGAM00JsGaHUIhocRE1cBwWbmcF
+smoxpRaDKCAkgJNc7/hLMEEJ6eiwWDMUlDAQJS2QYUYpAjgABwURLkGBE5ApRMtE
+FSxFIQveJFiaTyy4RUmBISrhAGAlrBRiBapNgU0uL1oQQAIu1qhjKREAADs=
+
+------------cbZd34wrJgv9pF1LljrCti
+Content-Disposition: inline; filename=8253blkd.gif
+Content-Type: image/gif; name=8253blkd.gif
+Content-Location: http://www.sharpmz.org/mz-700/images/8253blkd.gif
+Content-Transfer-Encoding: Base64
+
+R0lGODlhTgFNAbMAAP//////zP/rzP/MzPf358z/zMzM/5lmMwAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAACwAAAAATgFNAQAE/vDISau9OOvNu/9gKI5kaZ5oqhFs675w
+LM90bd94ru987//AoHAYkxCPyKRyyWw6n0cjdEqtWq/YbE6q7Xq/4LCYwB2bz+i0
+WlZeu9/weLMtr9vv+OIhz+/73XR/gjoIhYOHO4GILoWNjo+QkZKTjUsIBpgIMJpM
+lJ6foItke6IyCAWoqaqrrK2ur5xJl5gGsQSGnQO6u7y9vr/AwLaDiqWnr8jJyqjD
+RLO0nJfNRwjB1tfYutN+xaLHy+DhBdtBz9Cz5ELV2eztA+l53Yvf4vWwlrT50E3r
+7v7B8PDIQ0TPnkFVAXuY01eL37+HvxLaGXio4MGDEncs1JeRRz+I/iA7xqE4yOJF
+eyJxbMyXMsdHkA9bAiJVatPJmzJrrNyXC2ZIUSQFmbwZLieNnZkc+oRoNE3QP0OJ
+LmtqiiFLpUv/UT3z1E9Uqcm2brLK01LWmEBp1mQE1qDYF0gb9jzr7q2Yrn2+tnVl
+t0Xcvozo+gNsCtcwW4dx2cDLR+9eVoT/YhWcLZqTWJoO+4W7ebHatSwcP0aIj6xc
+s5TZZSYcehPnW65bewYNl28jyAgdIVQW2fRpJS9TAwRFHFJnRpwVH0/IuJO6GUO/
+0TtVsPq4sNB1QvdNLmF34ZVvsYb92m/m2ORrNAdOVTnbVtNTUV9lXe8295vucy98
+A39o8NhY/uZcebKlVyBzn3Xhn0b38bUbM9c9KF+E98SwoHlVmXafd/cBeM14yLWm
+WYEH3rAeEtKo85tfDk5IYXwuUgifhSuONY1kNvZX4y0eWgMiI4Y5YmBiEp1IzY4a
+7Rjdg49IOI5uFcKFpF9K7pejDSlu0iNAaYGBjoo1LgmhjC/GOOaMUk4ZWlJpktXM
+l1iyGdiWEXX5BZxA4MkifLedeaZ09EVJpZq3yDmom2MRumaYdNa5iJFgKhqnobeM
+VlSb8DxzmJWHelfWf4328iMWkJbzqQ+a1mbpVJjqdCqOnepIaXCNjnpFqT+Y095V
+e66K3aGE6soIp4WemqGh/TSyi7Lv/iz7zjqQPFuItB/ZagWuqPKap7aV+vrropQm
+iiyxwk6KrDbOJtssutOuq66z6GpjZxYLFecJR716yxewtXyCL7hWYcYRcf/yuC68
+zapbzcLxSttwsvNiEZdvFBcs2qoCV8wprBNrfBq0oqYrMsMHV8usvI8mSEXHHlcc
+DW9QwgglbwC3zFA0VrLscTQPl+wztCA37DPKiJQhZGhHQ1eJeW/a3K/OvDoW39RO
+Vgh1zlg7rSGoDmvTbtdAP6zsu++sjB9iQj4CF35GH0eiKZ1hNqzNmmqdGW+7UV1P
+ZlpvLdnVGmcWqqhvy+L2eSEamPgwbR+OJXJy8+syNHZ3iwwk/jIeU4g4fPcdcLGI
+Au6ywYPLe+FziyseOXqMq4WY29lttrroT3u+eVh5O3k7zJ5r+BftLtNKp73Er+7a
+iOItXaILjS+vneyHO1239JbDkruZft4D/Od/9x566cuKxw/Tzqd3H+zNk3ejcq8b
+D/j0dFffIoR6Z7/v9jeDzr333DMlvGqFo8Zr1LYcuL2tecY7StxgdzX47Sw0MOvT
+k3Y3s1/hjyc4umDUYiK0wUwhcshLYAGZ5zrlKU5p7Dub9ApROfnpiz41s10Mo8a/
+DWqlg3UxWwJnlzSkNQNbHqnh6CD4wn3NMH5HlJMGP8bBg2klYleoV/EiYbEiGlF/
+T6OE/sU2NjBQWKyJ/wsQFKPIrWx96mKWQkwZxfUbWOnPU2f0H0ysVQUgBtFYd0SW
+FdEEsExxy43lclUcwVe2lN0Jj0ma1R4h06qjvIpYoIPjisLoITpSwY553JUimRGz
+vOmmSaCs4DgauZ1ZQTJV5joMIQtZNJWRUVKCfJOZ5jMh61QNRsxIlB/DBMliwfFN
+q7TkFDB5R03K0k+0pF+gbqk7XcaSjflL0y+1REhhQoGYQdzVjeQDSk/eLmafFOWN
+glWlrV3JVTcK5hjpBUtHbhOZmSOTLV1kkXH6cZzmlJKn0lnNddKrPQ2CZ/2yN8/q
+8Oco+snn2vrToX5+UDHt62Hy/kzkSokB1BSzjOc8CYq9DekkoYiyEIdMoU7DlUdA
+5UupHsbQHuhwU4KdvOUnm2nA2NFIoQSyKTXBBxj2JSd1J50NbfK1yFECp5fUCOYU
+icPAIcHOfEIdqgv32BucoqikKHod5IDK1RlgEw1oHE1VQ4oangInp4hTqQhh8NUz
+hPUxY/3cXEpnKxB2VaVsrag3ikqao1o1qQ6Fggl7uD4ESZWIfDWqLJDqDKweoq1m
+eOte4hrNstLVn8ZIbC79SlbgOJYYep2HZhWLIsYOgZIAsuYTIMvS0VK2YJ4N7GND
+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
+JzEFDh5lRtL3zfbMCPRsw8Lsv8Qsy1TsylXznMa4zfqEdn91fvY0zwfdwoSazyLU
+EfvsEf0Mkh/JKueUR6lq0fiJ0RmdwrbsQ6kpd9nIv9e8itn8fO28nhQ9YA6IT2+y
+0l1cyh96/jkvZ4yuWH/354CobFU7XYKz7NMo3Moz7cNplhMiXJyROUlO/dRA/QaC
+fNNfmdM4ZtWheRhZfcJQnc5tCJlJ/ZiguayIUdZqvNXc6mtq3ctXSNBzqMaFoNdz
+LMlPvNc6/AiBvdeOYNZyvQZdDdD88l5c9IaCyYlGrMY6LNl+HdiRPdmXndl+fdhq
+kNgkzcQ7OZhChBmZrdmYPdl/jdl+DdiVbcScXboNKjMUxHzACdqhHZaj/cvhfNqp
+Hdmp3deSzdfhfNagIYzKdNzQyc7kaVQQSTHLmNuIzNvSXdl9Ddyl3do6/NpgFY/g
+N55KKZ+2fdvleNuZwdfmbcSsjd6a/t0I0u3aGXqNaSNR8PfRGsHdyE0//wzeze3c
+4d035Q3X2X3IGuE4C31X9E0IB6lM3k3UfCLezr3f/QLg2S25Ax6QXteYB+4SCQ6O
+3p3c39ff5A3i1LPbTk3O4Kw6vLtmGa4SSFnTIhp5owThfhPiJO7T0ryOuLm5mfLC
+UQ2gL5VRTLlZMi5X+xgNilzjtRzADxwNQ7l1aunQl5xnIS7iDxTdlFzapCy+WGml
+PorOxf1qQ75FJinEdfzH732Wy0FYErXi/QHmXbRUjR2Y/jKYR57GxO2fdN3EN5Zi
+xOnWBs3JfnznO5vn5Cu7sNXnWfjnlMzeiqzdbsVsVr3WYW2D/uJC1gAu6MgKC7Qt
+Hb35LV8t0JN+nbJp5WWN6Xt1OaK3zp6+KFTdS0uNnYpe6o4eWbjz3fH52ekK1rz3
+6tLU1HBt6pum6Y03U6tZ0olkoHitJBIO7O5mPTUZoIpt7JIOsSgt7aSe1cz+XahO
+kxyF60Ci6zYbz1/n67K+sM0+PyM9ot7+eybdsuL+7Spd7oJFpSIi3yrJ5lhS6/gN
+U0O96gy958SL19Cx7PfcknZ64TKN1lYMypAsypfOHkOq4+fMw8cc5c2s55G87Gza
+VAfvsviuE7zMvRjv8L8O8RxPqqD78UcR8hfMxwP/8C9beKSKppZMVfg48qoM89cm
+iLFX/ndQbvMXX+hyTPBn7tK7GtNejudKPO3OPPQ676sVD/QM3/QZ//TlGvVVePNC
+X/Ulb+7avvCwjPOEQPTQqvCvbIgNn/NdX/ZfvvR2ncl9bPXuivV9qvUY/O9kvvZQ
+//NZH/R3/8x6f/V8X/d+7/KmQPZ7H60bPHiF78uYufizLhSdncqUm7W5+2Jif20U
+PlQqX/C9RfmTysH/xcgBVrqgv/NQ1vmqK2Gfm3Rfpvqh+/mtv71eRmirNsMku/qr
+S/onZvqzX/mPS2e3f/pll/q872K+b8iub/yXL2XKT/tVdvyBm/yhDP2Wj7eT//ta
+XvvCn/3PD/x32/3Un/bgL7q2/u/91V/+u9/8Pqb9qM/9bDb87l/88E9m8v/92x/9
+7B9m8/+2wQ8BRE5a7cVZb9458kJxQwzzREFPHVuCdWN5Fo+DxnM9g/e8RAV7PMTQ
+NzEelUuKjfmEYopTatV6xWa11KBw+wWHq1Gy0llGp9W8bmpVXMflnfPcft8B24Yk
+3v9vugEcJNTQa+srVFSrW3QEPOxKfKRcaqzEXIsUyux8uvQMZdp0EzXFAT1VpSE9
+mVyFtUiNpV3ZM3mtjZ3V7b1oxfUVnuAdFgbmMxYuVtZFzm3uZI6Ofaaunb5WtdaG
+ze4W5QY//R7vFDcPLU+vRGfPXH93dJenjK8vpMdfvN+HnrxN5s+eIIGh9BUE1A+h
+nYML8Sh0GKdhxDkQKaaZeHGNRY1kMnZEwxHkk48jo4g0qQRIEUkp7aB0mSdgJGgx
+j8C0iQMOklI50+D0KWOInppBURE0OmhK0pBImT4FBxTq1EpSqV5VZBXr1j9auX6t
+6BTsWFNeyZ49KRbt2kdm2b7VYUPuXLp17d7Fm1fvXr59/f4FHFjwYMKFDR9GrDcC
+ADs=
+
+------------cbZd34wrJgv9pF1LljrCti
+Content-Disposition: inline; filename=8253.gif
+Content-Type: image/gif; name=8253.gif
+Content-Location: http://www.sharpmz.org/mz-700/images/8253.gif
+Content-Transfer-Encoding: Base64
+
+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
+
+------------cbZd34wrJgv9pF1LljrCti
+Content-Disposition: inline; filename=note.gif
+Content-Type: image/gif; name=note.gif
+Content-Location: http://www.sharpmz.org/images/note.gif
+Content-Transfer-Encoding: Base64
+
+R0lGODlhIQAOALMAADEQGJxjMaUAAK3O3t7e3vf35/8pCP///wAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAACH5BAEAAAcALAAAAAAhAA4AQARw8MhJq71WGK1BCERIBABQ
+FEQJYJPhvqp5ziQgesOpTnFp9TuWkCKbnVLBywsGMhZqM6AttDoIrtjYB3lMDoXS
+6lDKcxpTIK9k6fKYUbIpOtRdsz30rm5KIvrWHBseW1R7IX1CWFk8gzWHYl+RkhIR
+AAA7
+
+------------cbZd34wrJgv9pF1LljrCti
+Content-Disposition: inline; filename=top.gif
+Content-Type: image/gif; name=top.gif
+Content-Location: http://www.sharpmz.org/images/top.gif
+Content-Transfer-Encoding: Base64
+
+R0lGODlhCgALAPcAAJlmM8zMzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAACH5BAEAAAEALAAAAAAKAAsAAAgnAAMIDAAAwMCDBQseJJhQ
+ocCGDRlCTLiw4kCHCyMihHhxokGPCQMCADs=
+
+------------cbZd34wrJgv9pF1LljrCti
+Content-Disposition: inline; filename=home.gif
+Content-Type: image/gif; name=home.gif
+Content-Location: http://www.sharpmz.org/images/home.gif
+Content-Transfer-Encoding: Base64
+
+R0lGODlhDQAOAPcAAAAAABgYGCkpKUJCQkpKSmNjY3Nzc4QAhISEAISEhIyMjJQh
+AJwpAJxKAJxjMaUpALUpALW1tb0xAMYxAMbGxs4xAM7OztYxAN4pAN45AN7e3uc5
+AOfn5+85AO/v7/dCAPf35/f39/8AAP85AP9CAP9KCP9KEP9SGP9aIf9jMf9rMf9r
+Of9zQv97Sv+EUv+ce/+lhP+tjP+tlP+9pf+9rf/Otf/Ovf/Wvf/Wxv/n3v/v5///
+AP///////////////////////////////////wAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAACH5BAEAABQALAAAAAANAA4AAAhnACkIHJiAYAIAAwUmWKiQ
+B0KCDgEUTOAQIoAIESRSfLgxAg8eGTdS6PjRg4eMDknyMOlBQ0aJF0ua1EDTAkIA
+JR3obFDzZs6dPSngbKnTAU8NHnxa0FD0qE2hFqI2jfoUgNWrWK0GBAA7
+
+------------cbZd34wrJgv9pF1LljrCti
+Content-Disposition: inline; filename=copyright.gif
+Content-Type: image/gif; name=copyright.gif
+Content-Location: http://www.sharpmz.org/images/copyright.gif
+Content-Transfer-Encoding: Base64
+
+R0lGODlhDAAMAPcAAJlmM8zMzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAACH5BAEAAAEALAAAAAAMAAwAAAgzAAMIBECwoMCDAA4iXBig
+YMKGECMOHPjwocKGFS9SnKiRIEeOHimGhGjxosWSH0UaFBgQADs=
+
+------------cbZd34wrJgv9pF1LljrCti--

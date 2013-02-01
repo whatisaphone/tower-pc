@@ -1,0 +1,102 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>The VGA card - basics -</title>
+											
+<center><h1>The VGA card</h1></center>
+
+I do not know a huge amount about the VGA card. I have spent my life writing graphics code
+for one screen mode, and I have done a small amount in SuperVGA, so this information will
+only get you started, and you'll have to go and get a big book of you really want to know
+how to fiddle with it.<p>
+
+<center><img src="tape2.gif"></center><p>
+
+<h2>Graphics Mode 13h</h2><p>
+
+This is everyone's favourite graphics mode. It's extremely easy to use. Takes a couple of seconds
+to learn how it all works. Right here goes<p>
+
+The screen resolution is 320 pixels by 200 pixels. Therefore there are 64000 pixels visible on
+the screen. Each one of these pixels is capable of showing one of 262144 different colours.
+However, you may only ever have 256 different colours visible on screen at once. I shall explain
+all in a sec.<p>
+
+Every pixel on the screen is represented by one byte in the PC's memory. If you change the value
+of that byte, the colour of the corresponding pixel will change immediately. Writing a pixel to
+the screen, therefore, is simply a matter of working out which byte you need to change, and changing
+it. <p>
+
+The bytes are arranged in memory in order. They are arranged in the same order that you read
+letters from a page. The top-left pixel comes first, followed by the one to its right . . . and
+the next few . . . then the top-right pixel, then the one below the top-left one. . . and finally
+the bottom-right pixel. <p>
+
+So the pixels on the first line of the screen are numbered 0 to 319. The pixels on the next line
+are numbered 320 to 639. etc.<p>
+
+Understand that? Yer it's simple isn't it? OK, so here's a little bit of maths to convert a
+pair of (x, y) co-ordinates to a byte location:<br>
+
+<h4><ul>offset = (Y * 320) + X</ul></h4>
+
+Of course, if you're programming in real mode, you'll need to know the segment all this is
+taking place in. The segment is:
+
+<h4><ul>A000h</ul></h4>
+
+Now you have all the information you need to write pixels to the VGA card in mode 13h. Next
+thing you'll need to know is how to mix your own colours.<p>
+
+<center><img src="tape2.gif"></center><p>
+
+<h2>Palette Mixing</h2>
+
+Because each pixel is represented by one byte, that gives us a maximum of 256 different
+colours which can be displayed on screen at once. Exactly which colours these are depends on
+the palette. You can choose any 256 colours from a selection of 262144. You choose the colours
+by literally mixing red, green, and blue light.<p>
+
+For each of the 256 colour values, you choose how much red, green, and blue light you want the
+screen to give out. By mixing these colours in various amounts, you can create almost all the
+colours the eye can see.<br>
+<h4>Note:</h4> This is not quite the same as mixing paints. Mixing red and blue paint will
+produce purple, and the same applies for light. However, mixing yellow and blue paint produces
+green, but mixing red and green light produces yellow. Mixing all three colours of paint produces
+almost black, but all three colours of light gives white. <p>
+
+<h4>Getting the colours you want</h4>
+There are various ways of assigning Red, Green, Blue values to a colour number. There is an
+interrupt to do it, but interrupts are slow, and there is a much faster way to acheive it.
+The VGA card has two ports for choosing colours. They are numbered 968 and 969. The way to mix
+your colours is this:<p>
+
+send a byte to port 968. This is the pixel value you want to assign red, green and blue values
+to. Next send 3 bytes to port 969. First the red, then the green then the blue value. The
+range of colour you are allowed is 0 to 63.<p>
+
+<h4>for example:<p>
+send 15 to port 968<br>
+send 63 to port 969<br>
+send 40 to port 969<br>
+send 0 to port 969<br>
+</h4>
+
+This will assign orange to colour number 15. So every time you plot a pixel with value 15 to
+the screen it will be orange.<p>
+
+now, if you do this:<p>
+<h4>
+send 15 to port 968<br>
+send 30 to port 969<br>
+send 30 to port 969<br>
+send 63 to port 969<br>
+</h4>
+
+All those orange pixels will turn light blue.<p>
+
+And there you have it. Nothing could be simpler.
+
+</body>
+</html>

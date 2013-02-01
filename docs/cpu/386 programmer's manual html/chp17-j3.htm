@@ -1,0 +1,475 @@
+<html>
+<head>
+<title>
+17.3.J  'J' Instructions 
+</title>
+<body>
+<a name="17-03-J"></a>
+Prev: <a href="chp17-i3.htm">17.3.I  'I' Instructions </a><br>
+Next: <a href="chp17-l3.htm">17.3.L  'L' Instructions </a>
+<hr>
+<h2>
+17.3.J  'J' Instructions 
+</h2>
+<p>
+<a name="17-03-Jcc"></a>
+<h3>Jcc -- Jump if Condition is Met</h3>
+<p>
+<p>
+<pre>
+Opcode         Instruction       Clocks   Description
+
+77  cb         JA rel8           7+m,3    Jump short if above (CF=0 and
+                                          ZF=0)
+73  cb         JAE rel8          7+m,3    Jump short if above or equal
+                                          (CF=0)
+72  cb         JB rel8           7+m,3    Jump short if below (CF=1)
+76  cb         JBE rel8          7+m,3    Jump short if below or equal
+                                          (CF=1 or ZF=1)
+72  cb         JC rel8           7+m,3    Jump short if carry (CF=1)
+E3  cb         JCXZ rel8         9+m,5    Jump short if CX register is 0
+E3  cb         JECXZ rel8        9+m,5    Jump short if ECX register is 0
+74  cb         JE rel8           7+m,3    Jump short if equal (ZF=1)
+74  cb         JZ rel8           7+m,3    Jump short if 0 (ZF=1)
+7F  cb         JG rel8           7+m,3    Jump short if greater (ZF=0 and
+                                          SF=OF)
+7D  cb         JGE rel8          7+m,3    Jump short if greater or equal
+                                          (SF=OF)
+7C  cb         JL rel8           7+m,3    Jump short if less (SF<>OF)
+7E  cb         JLE rel8          7+m,3    Jump short if less or equal
+                                          (ZF=1 and SF<>OF)
+76  cb         JNA rel8          7+m,3    Jump short if not above (CF=1 or
+                                          ZF=1)
+72  cb         JNAE rel8         7+m,3    Jump short if not above or equal
+                                          (CF=1)
+73  cb         JNB rel8          7+m,3    Jump short if not below (CF=0)
+77  cb         JNBE rel8         7+m,3    Jump short if not below or equal
+                                          (CF=0 and ZF=0)
+73  cb         JNC rel8          7+m,3    Jump short if not carry (CF=0)
+75  cb         JNE rel8          7+m,3    Jump short if not equal (ZF=0)
+7E  cb         JNG rel8          7+m,3    Jump short if not greater (ZF=1
+                                          or SF<>OF)
+7C  cb         JNGE rel8         7+m,3    Jump short if not greater or
+                                          equal (SF<>OF)
+7D  cb         JNL rel8          7+m,3    Jump short if not less (SF=OF)
+7F  cb         JNLE rel8         7+m,3    Jump short if not less or equal
+                                          (ZF=0 and SF=OF)
+71  cb         JNO rel8          7+m,3    Jump short if not overflow
+                                          (OF=0)
+7B  cb         JNP rel8          7+m,3    Jump short if not parity (PF=0)
+79  cb         JNS rel8          7+m,3    Jump short if not sign (SF=0)
+75  cb         JNZ rel8          7+m,3    Jump short if not zero (ZF=0)
+70  cb         JO rel8           7+m,3    Jump short if overflow (OF=1)
+7A  cb         JP rel8           7+m,3    Jump short if parity (PF=1)
+7A  cb         JPE rel8          7+m,3    Jump short if parity even (PF=1)
+7B  cb         JPO rel8          7+m,3    Jump short if parity odd (PF=0)
+78  cb         JS rel8           7+m,3    Jump short if sign (SF=1)
+74  cb         JZ rel8           7+m,3    Jump short if zero (ZF = 1)
+0F  87 cw/cd   JA rel16/32       7+m,3    Jump near if above (CF=0 and
+                                          ZF=0)
+0F  83 cw/cd   JAE rel16/32      7+m,3    Jump near if above or equal
+                                          (CF=0)
+0F  82 cw/cd   JB rel16/32       7+m,3    Jump near if below (CF=1)
+0F  86 cw/cd   JBE rel16/32      7+m,3    Jump near if below or equal
+                                          (CF=1 or ZF=1)
+0F  82 cw/cd   JC rel16/32       7+m,3    Jump near if carry (CF=1)
+0F  84 cw/cd   JE rel16/32       7+m,3    Jump near if equal (ZF=1)
+0F  84 cw/cd   JZ rel16/32       7+m,3    Jump near if 0 (ZF=1)
+0F  8F cw/cd   JG rel16/32       7+m,3    Jump near if greater (ZF=0 and
+                                          SF=OF)
+0F  8D cw/cd   JGE rel16/32      7+m,3    Jump near if greater or equal
+                                          (SF=OF)
+0F  8C cw/cd   JL rel16/32       7+m,3    Jump near if less (SF<>OF)
+0F  8E cw/cd   JLE rel16/32      7+m,3    Jump near if less or equal (ZF=1
+                                          and SF<>OF)
+0F  86 cw/cd   JNA rel16/32      7+m,3    Jump near if not above (CF=1 or
+                                          ZF=1)
+0F  82 cw/cd   JNAE rel16/32     7+m,3    Jump near if not above or equal
+                                          (CF=1)
+0F  83 cw/cd   JNB rel16/32      7+m,3    Jump near if not below (CF=0)
+0F  87 cw/cd   JNBE rel16/32     7+m,3    Jump near if not below or equal
+                                          (CF=0 and ZF=0)
+0F  83 cw/cd   JNC rel16/32      7+m,3    Jump near if not carry (CF=0)
+0F  85 cw/cd   JNE rel16/32      7+m,3    Jump near if not equal (ZF=0)
+0F  8E cw/cd   JNG rel16/32      7+m,3    Jump near if not greater (ZF=1
+                                          or SF<>OF)
+0F  8C cw/cd   JNGE rel16/32     7+m,3    Jump near if not greater or
+                                          equal (SF<>OF)
+0F  8D cw/cd   JNL rel16/32      7+m,3    Jump near if not less (SF=OF)
+0F  8F cw/cd   JNLE rel16/32     7+m,3    Jump near if not less or equal
+                                          (ZF=0 and SF=OF)
+0F  81 cw/cd   JNO rel16/32      7+m,3    Jump near if not overflow (OF=0)
+0F  8B cw/cd   JNP rel16/32      7+m,3    Jump near if not parity (PF=0)
+0F  89 cw/cd   JNS rel16/32      7+m,3    Jump near if not sign (SF=0)
+0F  85 cw/cd   JNZ rel16/32      7+m,3    Jump near if not zero (ZF=0)
+0F  80 cw/cd   JO rel16/32       7+m,3    Jump near if overflow (OF=1)
+0F  8A cw/cd   JP rel16/32       7+m,3    Jump near if parity (PF=1)
+0F  8A cw/cd   JPE rel16/32      7+m,3    Jump near if parity even (PF=1)
+0F  8B cw/cd   JPO rel16/32      7+m,3    Jump near if parity odd (PF=0)
+0F  88 cw/cd   JS rel16/32       7+m,3    Jump near if sign (SF=1)
+0F  84 cw/cd   JZ rel16/32       7+m,3    Jump near if 0 (ZF=1)
+</pre>
+<p>
+<pre>
+---------------------------------------------------------------------------
+NOTES:
+  The first clock count is for the true condition (branch taken); the
+  second clock count is for the false condition (branch not taken). rel16/32
+  indicates that these instructions map to two; one with a 16-bit relative
+  displacement, the other with a 32-bit relative displacement, depending on
+  the operand-size attribute of the instruction.
+---------------------------------------------------------------------------
+</pre>
+Operation
+<p>
+IF condition
+THEN
+   EIP <- EIP + SignExtend(rel8/16/32);
+<pre>
+   IF OperandSize = 16
+   THEN EIP <- EIP AND 0000FFFFH;
+   FI;
+FI;
+</pre>
+<b>Description</b>
+<p>
+Conditional jumps (except JCXZ) test the flags which have been set by
+a previous instruction. The conditions for each mnemonic are given in
+parentheses after each description above. The terms "less" and "greater"
+are used for comparisons of signed integers; "above" and "below" are
+used for unsigned integers.
+<p>
+If the given condition is true, a jump is made to the location provided as
+the operand. Instruction coding is most efficient when the target for the
+conditional jump is in the current code segment and within -128 to
++127 bytes of the next instruction's first byte. The jump can also target
+-32768 thru +32767 (segment size attribute 16) or -2^(31) thru +2^(31) -1
+(segment size attribute 32) relative to the next instruction's first byte.
+When the target for the conditional jump is in a different segment, use
+the opposite case of the jump instruction (i.e., JE and JNE), and then
+access the target with an unconditional far jump to the other segment.
+<pre>
+For example, you cannot code--
+</pre>
+JZ FARLABEL;
+<p>
+<pre>
+You must instead code--
+
+   JNZ BEYOND;
+   JMP FARLABEL;
+BEYOND:
+</pre>
+Because there can be several ways to interpret a particular state of the
+flags, ASM386 provides more than one mnemonic for most of the
+conditional jump opcodes. For example, if you compared two characters in
+AX and want to jump if they are equal, use JE; or, if you ANDed AX
+with a bit field mask and only want to jump if the result is 0, use JZ, a
+synonym for JE.
+<p>
+JCXZ differs from other conditional jumps because it tests the contents of
+the CX or ECX register for 0, not the flags. JCXZ is useful at the beginning
+of a conditional loop that terminates with a conditional loop instruction
+(such as LOOPNE TARGET LABEL. The JCXZ prevents entering the loop with CX or
+ECX equal to zero, which would cause the loop to execute 64K or 32G times
+instead of zero times.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the offset jumped to is beyond the limits of the code segment
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-JMP"></a>
+<h3>JMP -- Jump</h3>
+<p>
+<p>
+<pre>
+Opcode    Instruction     Clocks          Description
+
+EB  cb    JMP rel8        7+m             Jump short
+E9  cw    JMP rel16       7+m             Jump near, displacement relative
+                                          to next instruction
+FF  /4    JMP r/m16       7+m/10+m        Jump near indirect
+EA  cd    JMP ptr16:16    12+m,pm=27+m    Jump intersegment, 4-byte
+                                          immediate address
+EA  cd    JMP ptr16:16    pm=45+m         Jump to call gate, same
+                                          privilege
+EA  cd    JMP ptr16:16    ts              Jump via task state segment
+EA  cd    JMP ptr16:16    ts              Jump via task gate
+FF  /5    JMP m16:16      43+m,pm=31+m    Jump r/m16:16 indirect and
+                                          intersegment
+FF  /5    JMP m16:16      pm=49+m         Jump to call gate, same
+                                          privilege
+FF  /5    JMP m16:16      5 + ts          Jump via task state segment
+FF  /5    JMP m16:16      5 + ts          Jump via task gate
+E9  cd    JMP rel32       7+m             Jump near, displacement relative
+                                          to next instruction
+FF  /4    JMP r/m32       7+m,10+m        Jump near, indirect
+EA  cp    JMP ptr16:32    12+m,pm=27+m    Jump intersegment, 6-byte
+                                          immediate address
+EA  cp    JMP ptr16:32    pm=45+m         Jump to call gate, same
+                                          privilege
+EA  cp    JMP ptr16:32    ts              Jump via task state segment
+EA  cp    JMP ptr16:32    ts              Jump via task gate
+FF  /5    JMP m16:32      43+m,pm=31+m    Jump intersegment, address at
+                                          r/m dword
+FF  /5    JMP m16:32      pm=49+m         Jump to call gate, same
+                                          privilege
+FF  /5    JMP m16:32      5 + ts          Jump via task state segment
+FF  /5    JMP m16:32      5 + ts          Jump via task gate
+</pre>
+<p>
+<pre>
+---------------------------------------------------------------------------
+NOTE:
+Values of ts are given by the following table:
+
+                               New Task
+
+                386 TSS       386 TASK       286 TSS
+                VM = 0        VM = 1
+
+Old Task                   Via Task Gate?
+
+                N     Y       N      Y       N     Y
+386
+TSS VM=0       303   312     220    229     276   285
+</pre>
+286
+<pre>
+TSS            301   310     218    227     274   283
+---------------------------------------------------------------------------
+</pre>
+Operation
+<p>
+IF instruction = relative JMP
+<pre>
+   (* i.e. operand is rel8, rel16, or rel32 *)
+THEN
+   EIP <- EIP + rel8/16/32;
+   IF OperandSize = 16
+   THEN EIP <- EIP AND 0000FFFFH;
+   FI;
+FI;
+IF instruction = near indirect JMP
+   (* i.e. operand is r/m16 or r/m32 *)
+THEN
+   IF OperandSize = 16
+   THEN
+      EIP <- [r/m16] AND 0000FFFFH;
+   ELSE (* OperandSize = 32 *)
+      EIP <- [r/m32];
+   FI;
+FI;
+</pre>
+IF (PE = 0 OR (PE = 1 AND VM = 1)) (* real mode or V86 mode *)
+<pre>
+   AND instruction = far JMP
+   (* i.e., operand type is m16:16, m16:32, ptr16:16, ptr16:32 *)
+THEN GOTO REAL-OR-V86-MODE;
+   IF operand type = m16:16 or m16:32
+   THEN (* indirect *)
+      IF OperandSize = 16
+      THEN
+         CS:IP <- [m16:16];
+         EIP <- EIP AND 0000FFFFH; (* clear upper 16 bits *)
+      ELSE (* OperandSize = 32 *)
+         CS:EIP <- [m16:32];
+      FI;
+   FI;
+   IF operand type = ptr16:16 or ptr16:32
+   THEN
+      IF OperandSize = 16
+      THEN
+         CS:IP <- ptr16:16;
+         EIP <- EIP AND 0000FFFFH; (* clear upper 16 bits *)
+      ELSE (* OperandSize = 32 *)
+         CS:EIP <- ptr16:32;
+      FI;
+   FI;
+FI;
+</pre>
+IF (PE = 1 AND VM = 0) (* Protected mode, not V86 mode *)
+<pre>
+   AND instruction = far JMP
+THEN
+   IF operand type = m16:16 or m16:32
+   THEN (* indirect *)
+      check access of EA dword;
+      #GP(0) or #SS(0) IF limit violation;
+   FI;
+   Destination selector is not null ELSE #GP(0)
+   Destination selector index is within its descriptor table limits ELSE
+#GP(selector)
+   Depending on AR byte of destination descriptor:
+      GOTO CONFORMING-CODE-SEGMENT;
+      GOTO NONCONFORMING-CODE-SEGMENT;
+      GOTO CALL-GATE;
+      GOTO TASK-GATE;
+      GOTO TASK-STATE-SEGMENT;
+   ELSE #GP(selector); (* illegal AR byte in descriptor *)
+FI;
+</pre>
+CONFORMING-CODE-SEGMENT:
+<pre>
+   Descriptor DPL must be . CPL ELSE #GP(selector);
+   Segment must be present ELSE #NP(selector);
+   Instruction pointer must be within code-segment limit ELSE #GP(0);
+   IF OperandSize = 32
+   THEN Load CS:EIP from destination pointer;
+   ELSE Load CS:IP from destination pointer;
+   FI;
+   Load CS register with new segment descriptor;
+</pre>
+NONCONFORMING-CODE-SEGMENT:
+<pre>
+   RPL of destination selector must be . CPL ELSE #GP(selector);
+   Descriptor DPL must be = CPL ELSE #GP(selector);
+   Segment must be present ELSE # NP(selector);
+   Instruction pointer must be within code-segment limit ELSE #GP(0);
+   IF OperandSize = 32
+   THEN Load CS:EIP from destination pointer;
+   ELSE Load CS:IP from destination pointer;
+   FI;
+   Load CS register with new segment descriptor;
+   Set RPL field of CS register to CPL;
+</pre>
+CALL-GATE:
+<pre>
+   Descriptor DPL must be . CPL ELSE #GP(gate selector);
+   Descriptor DPL must be . gate selector RPL ELSE #GP(gate selector);
+   Gate must be present ELSE #NP(gate selector);
+   Examine selector to code segment given in call gate descriptor:
+      Selector must not be null ELSE #GP(0);
+      Selector must be within its descriptor table limits ELSE
+         #GP(CS selector);
+      Descriptor AR byte must indicate code segment
+         ELSE #GP(CS selector);
+      IF non-conforming
+      THEN code-segment descriptor, DPL must = CPL
+      ELSE #GP(CS selector);
+      FI;
+      IF conforming
+      THEN code-segment descriptor DPL must be . CPL;
+      ELSE #GP(CS selector);
+      Code segment must be present ELSE #NP(CS selector);
+      Instruction pointer must be within code-segment limit ELSE #GP(0);
+      IF OperandSize = 32
+      THEN Load CS:EIP from call gate;
+      ELSE Load CS:IP from call gate;
+      FI;
+   Load CS register with new code-segment descriptor;
+   Set RPL of CS to CPL
+</pre>
+TASK-GATE:
+<pre>
+   Gate descriptor DPL must be . CPL ELSE #GP(gate selector);
+   Gate descriptor DPL must be . gate selector RPL ELSE #GP(gate
+     selector);
+   Task Gate must be present ELSE #NP(gate selector);
+   Examine selector to TSS, given in Task Gate descriptor:
+   Must specify global in the local/global bit ELSE #GP(TSS selector);
+   Index must be within GDT limits ELSE #GP(TSS selector);
+   Descriptor AR byte must specify available TSS (bottom bits 00001);
+      ELSE #GP(TSS selector);
+   Task State Segment must be present ELSE #NP(TSS selector);
+SWITCH-TASKS (without nesting) to TSS;
+Instruction pointer must be within code-segment limit ELSE #GP(0);
+</pre>
+TASK-STATE-SEGMENT:
+<pre>
+   TSS DPL must be . CPL ELSE #GP(TSS selector);
+   TSS DPL must be . TSS selector RPL ELSE #GP(TSS selector);
+   Descriptor AR byte must specify available TSS (bottom bits 00001)
+      ELSE #GP(TSS selector);
+   Task State Segment must be present ELSE #NP(TSS selector);
+   SWITCH-TASKS (without nesting) to TSS;
+   Instruction pointer must be within code-segment limit ELSE #GP(0);
+</pre>
+<b>Description</b>
+<p>
+The JMP instruction transfers control to a different point in the
+instruction stream without recording return information.
+<p>
+The action of the various forms of the instruction are shown below.
+<p>
+Jumps with destinations of type r/m16, r/m32, rel16, and rel32 are near
+jumps and do not involve changing the segment register value.
+<p>
+The JMP rel16 and JMP rel32 forms of the instruction add an offset to
+the address of the instruction following the JMP to determine the
+destination. The rel16 form is used when the instruction's operand-size
+attribute is 16 bits (segment size attribute 16 only); rel32 is used when
+the operand-size attribute is 32 bits (segment size attribute 32 only). The
+result is stored in the 32-bit EIP register. With rel16, the upper 16 bits
+of EIP are cleared, which results in an offset whose value does not exceed
+16 bits.
+<p>
+JMP r/m16 and JMP r/m32 specifies a register or memory location from which
+the absolute offset from the procedure is fetched. The offset fetched from
+r/m is 32 bits for an operand-size attribute of 32 bits (r/m32), or 16 bits
+for an operand-size attribute of 16 bits (r/m16).
+<p>
+The JMP ptr16:16 and ptr16:32 forms of the instruction use a four-byte
+or six-byte operand as a long pointer to the destination. The JMP
+and  forms fetch the long pointer from the memory location
+specified (indirection). In Real Address Mode or Virtual 8086 Mode,
+the long pointer provides 16 bits for the CS register and 16 or 32 bits
+for the EIP register (depending on the operand-size attribute). In
+Protected Mode, both long pointer forms consult the Access Rights (AR)
+byte in the descriptor indexed by the selector part of the long pointer.
+<p>
+Depending on the value of the AR byte, the jump will perform one of
+the following types of control transfers:
+<p>
+<pre>
+  -  A jump to a code segment at the same privilege level
+  -  A task switch
+</pre>
+For more information on protected mode control transfers, refer to
+Chapter 6 and Chapter 7.
+<p>
+<b>Flags Affected</b>
+<p>
+All if a task switch takes place; none if no task switch occurs
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+Far jumps: #GP, #NP, #SS, and #TS, as indicated in the list above.
+<p>
+Near direct jumps: #GP(0) if procedure location is beyond the code
+segment limits.
+<p>
+Near indirect jumps: #GP(0) for an illegal memory operand effective
+address in the CS, DS, ES, FS, or GS segments: #SS(0) for an illegal
+address in the SS segment; #GP if the indirect offset obtained is beyond
+the code segment limits; #PF(fault-code) for a page fault.
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would be outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as under Real Address Mode; #PF(fault-code) for a
+page fault
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-i3.htm">17.3.I  'I' Instructions </a><br>
+Next: <a href="chp17-l3.htm">17.3.L  'L' Instructions </a>
+</body>
+</html>

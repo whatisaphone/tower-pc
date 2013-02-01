@@ -1,0 +1,23 @@
+TRIMFONT: Trim font to its true height. Version 1.0, Aug 28 1993
+Copyright (c) 1992-1993 by Yossi Gil, P.O.Box 3148, Jerusalem, ISRAEL.
+Email: yogi@cs.technion.ac.il
+
+  Usage: TRIMFONT [flags] [inpfont [outfont]]
+
+TRIMFONT reads `inpfile' as a font file. It then determines the font extent
+i.e., the minimal and maximal used row in the font grid. Based on this extent,
+the input font is then trimmed to its minimal height and dumped to `outfile'.
+If `outfile' is missing, then TRIMFONT will dump the output font to the
+standard output. If `inpfile' is missing as well, then TRIMFONT will take
+its input from the standard input. However, TRIMFONT will not read or dump
+to console, and (by default) will refuse to overwrite existing files.
+
+FLAGS
+  -f         Force mode. Allow overwriting existing outfile.
+  -h -H -?   Display this message
+
+SEE ALSO
+            fontspan
+COPYING POLICY Copy freely for private use. Usage as part of any commercial
+  package is under the same restrictions as of Rhaul Dehsi ZOO program. If
+  you cannot obtain ZOO, you cannot use 'trimfont' commercially.

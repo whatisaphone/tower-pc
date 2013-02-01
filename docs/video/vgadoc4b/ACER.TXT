@@ -1,0 +1,73 @@
+Acer Labs:
+M3135  ALi CAT/32  (or possibly the M3141??)
+M3145  ALi CAT/64
+
+
+3CEh index 0Eh (R/W):
+bit 2-3  Video memory. 0: 256K, 1: 512K, 2: 1Mb, 3: 2Mb
+
+3CEh index 0Fh (R/W):
+bit   7  Set to enable 64K banking
+
+3CEh index 10h (R/W):
+bit 0-?  Write Bank in units of 64K
+
+3CEh index 11h (R/W):
+bit 0-7  Read Bank in units of 64K
+
+3CEh index 17h (R/W):
+bit 0-?  Address of linear frame buffer in units of 1Mb
+      7  Set to enable the linear frame buffer
+
+3CEh index FFh (R/W):
+bit 0-7  Write 7 to unlock the extended 3CEh registers
+
+3d4h index 81h (R/W):
+bit 0-1  CRTC Offset bits 8-9. Bits 0-7 are in 3d4h index 13h
+    4-5  Display Start Address bits 16-17. Bits 0-15 are in 3d4h index 0Ch,0Dh
+
+3d4h index FFh (R/W):
+bit   0  Set to unlock the extended 3d4h registers.
+
+Video modes:
+ 54h G   640  480  256color
+ 56h G   800  600   16color
+ 57h G   800  600  256color
+ 59h G  1024  768   16color
+ 5Ah G  1024  768  256color
+ 5Bh G  1280 1024   16color
+ 5Eh G  1280 1024  256color
+ 70h G   640  480  32Kcolor
+ 71h G   640  480  64Kcolor
+ 72h G   640  480  16Mcolor
+ 73h G   800  600  32Kcolor
+ 74h G   800  600  64Kcolor
+ 75h G   800  600  16Mcolor
+ 76h G  1024  768  32Kcolor
+ 77h G  1024  768  64Kcolor
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

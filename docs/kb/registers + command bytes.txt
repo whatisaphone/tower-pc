@@ -1,0 +1,214 @@
+For PC AT or newer:
+- 8048 chip in the keyboard
+- 8042 chip on the PC motherboard
+
+Both are tiny 8-bit microprocessors, programmed to understand
+simple one- or two-byte commands.
+
+Features of the 8042 chip:
+- I/O ports:
+    60h read/write      Data register
+    64h write           Command register
+    64h read            Status register
+- Can be in "AT mode" or "PS/2 mode", depending on the
+  motherboard type. If your PC has a PS/2 mouse port,
+  the 8042 uses PS/2 mode.
+- "Output Port"; used for controlling the A20 gate, resetting
+  the PC, etc. This port is written by 8042 command byte D1h,
+  and read by command byte D0h
+- "Input Port"; used for reading the status of the keyboard
+  lock keyswitch (located on the front of many PCs). This port
+  is read by 8042 command byte C0h
+- The poorly-named "Command Byte register"; various functions.
+  This register is written by 8042 command byte 60h, and
+  read by 8042 command byte 20h
+
+================================================================
+8042 REGISTERS IN "AT MODE"
+================================================================
+Bits in 8042 Status register
+    b7  PERR    parity error in data received from keyboard
+    b6  RxTO    receive (Rx) timeout
+    b5  TxTO    transmit (Tx) timeout
+    b4  INH     keyboard communications inhibited
+    b3  A2      0=60h was the port last written to, 1=64h was last
+    b2  SYS     distinguishes reset types: 0=cold reboot, 1=warm reboot
+    b1  IBF     input buffer full (data from host to keyboard)
+    b0  OBF     output buffer full (data from keyboard to host)
+
+Bits in 8042 Output Port (Table P0383 in PORTS.A)
+    b7          1=keyboard data line pulled low (inhibited)
+    b6          1=keyboard clock line pulled low (inhibited)
+    b5          output buffer empty (xxx - input buffer NOT full?)
+    b4          input buffer full (xxx - output buffer NOT empty?)
+    b3          (undefined)
+    b2          (undefined)
+    b1          A20 gate on/off
+    b0          reset the PC (THIS BIT SHOULD ALWAYS BE SET TO 1)
+
+Bits in 8042 Input Port
+    b7          1=keyboard inhibit switch is activated (locked)
+    b6          display type switch status (1=color, 0=monochrome)
+    b5          manufacturing setting (?)
+    b4          external RAM (?)
+    b3          (undefined)
+    b2          (undefined)
+    b1          (undefined)
+    b0          (undefined)
+
+Bits in Command Byte register (Table P0404 in PORTS.A)
+    b7          (reserved)
+    b6  XLAT    convert set 2 scancodes to set 1 ("IBM PC compatibility mode")
+    b5  PC      ?
+    b4  _EN     disables keyboard when set
+    b3  OVR     1=override inhibit keyswitch
+    b2  SYS     System Flag (same as b2 in Status register)
+    b1          (reserved)
+    b0  INT     enables IRQ 1 interrupt on keyboard IBF
+
+================================================================
+8042 REGISTERS IN "PS/2 MODE"
+================================================================
+Bits in 8042 Status register
+    b7  PERR    parity error in data received from keyboard
+    b6  TO      general timeout (Rx or Tx)
+    b5  MOBF    mouse output buffer full
+    b4  INH     keyboard communications inhibited
+    b3  A2      0=60h was the port last written to, 1=64h was last
+    b2  SYS     distinguishes reset types: 0=cold reboot, 1=warm reboot
+    b1  IBF     input buffer full (data from host to keyboard)
+    b0  OBF     output buffer full (data from keyboard to host)
+
+Bits in 8042 Output Port
+    b7          1=keyboard data line pulled low (inhibited)
+    b6          1=keyboard clock line pulled low (inhibited)
+    b5          enables IRQ 12 interrupt on mouse IBF
+    b4          enables IRQ 1 interrupt on keyboard IBF
+    b3          1=mouse clock line pulled low (inhibited)
+    b2          1=mouse data line pulled low (inhibited)
+    b1          A20 gate on/off
+    b0          reset the PC (THIS BIT SHOULD ALWAYS BE SET TO 1)
+
+Bits in 8042 Input Port
+    b7          1=keyboard inhibit switch is activated (locked)
+    b6          display type switch status (1=color, 0=monochrome)
+    b5          manufacturing setting (?)
+    b4          external RAM (?)
+    b3          (undefined)
+    b2          (undefined)
+    b1          mouse data line
+    b0          keyboard data line
+
+Bits in Command Byte register
+    b7          (reserved)
+    b6  XLAT    convert set 2 scancodes to set 1 ("IBM PC compatibility mode")
+    b5  _EN2    disables mouse when set
+    b4  _EN     disables keyboard when set
+    b3          (reserved)
+    b2  SYS     System Flag (same as b2 in Status register)
+    b1  INT2    enables IRQ 12 interrupt on mouse IBF
+    b0  INT     enables IRQ 1 interrupt on keyboard IBF
+
+================================================================
+8042 CONTROLLER COMMANDS (from Table P0401 of PORTS.A)
+================================================================
+Before writing each byte of these commands to port 64h,
+poll the status register (port 64h) until bit b1=0.
+
+20h-3Fh         reads byte from 8042 RAM at address=lower 5 bits of command
+                  The byte at address 0 is the "Command Byte".
+60h-7Fh nn      writes byte nn to 8042 RAM at address=lower 5 bits of command
+                  The byte at address 0 is the "Command Byte".
+
+(xxx - It may be that only address 0 [the "Command Byte"] can be
+read and written. In that case, only command bytes 20h and 60h
+will work.)
+
+90h-9Fh         write bottom 4 bits of command to bottom 4 bits of Output Port
+A7h             disables PS/2 mouse port
+A8h             enables PS/2 mouse port
+A9h             self-test mouse interface, returns Result Byte (see below)
+AAh             self-test 8042; returns 55h if success, FCh if failure
+ABh             self-test keyboard interface, returns Result Byte (see below)
+ADh             disables keyboard (sets b4 of Command Byte register)
+AEh             enables keyboard (clears b4 of Command Byte register)
+C0h         	reads Input Port
+D0h         	reads Output Port
+D1h nn      	writes Output Port
+                  Important: bit 0 (system reset) should always be set here,
+		  as the system may hang constantly. To reset the PC,
+		  pulse b0 of the Output Port with command FEh instead.
+D4h nn          send command byte to PS/2 mouse
+DDh             disable A20 ("Vectra" method; see
+                        http://www.execpc.com/~geezer/osd/boot/a20.asm)
+DFh             enable A20 ("Vectra" method)
+F0h-FFh     	pulse bit(s) of Output Port low for 6 microseconds.
+                  If b0-b3 of the command is low, the corresponding bit
+                  in the Output Port will be pulsed low. b0=system reset,
+                  and should ALWAYS be PULSED low, never set low constantly.
+
+================================================================
+8048 KEYBOARD COMMANDS (from Table P0386 of PORTS.A)
+================================================================
+Before writing each byte of these commands to port 60h,
+poll the status register (port 64h) until bit b1=0.
+Unless otherwise noted: each command responds with FAh (ACKnowledge)
+or FEh (Resend) after receiving each byte of the command.
+
+EDh nn      	write LEDs. nn=
+		    b2      Caps Lock
+		    b1      Num Lock
+		    b0      Scroll Lock
+EEh             Echo, keyboard responds with EEh
+F0h nn          Selects scancode set nn=1-3 or 0 to return current set.
+                Only scancode set 2 is widely (and correctly) supported.
+F2h             Read ID. Keyboard responds with ACK (FAh) and two optional
+		ID bytes:
+		    (none)	AT keyboard
+		    83h ABh   	(?)
+		    ABh 41h   	MF2, translation mode
+		    ABh 83h   	MF2, pass-through mode
+F3h nn          Set typematic (auto-repeat) rate/delay. nn=
+		    b7      unused
+		    b6..5   Repeat delay (00=250 msec ... 11=1000msec)
+                    b4..0   Repeat rate (00000=30 Hz ... 11111=2 Hz).
+F4h             Clears output buffer, enables keyboard
+F5h             Disables keyboard, resets to defaults
+F6h             Sets keyboard default typematic rate/delay and
+                selects scancode set 2
+F7h             [*] Make all keys make/typematic (auto-repeat; no break)
+F8h             [*] Make all keys make/break (no typematic)
+F9h             [*] Make all keys make-only (no typematic or break)
+FAh             [*] Make all keys typematic/make/break
+FBh nn          [*] Make one key make/typematic
+                    nn is the key's Set 3 scancode
+FCh nn          [*] Make one key make/break
+FDh nn          [*] Make one key make-only
+FEh             Resend previous byte (unless previous byte is FEh)
+FFh             Reset 8048, do power-on self-test, return test result byte
+
+[*] These functions work only when the keyboard is using scancode Set 3
+
+Result Byte for interface self-tests (Table P0406 in PORTS.A)
+Returned by controller commands A9h or ABh
+    0           no error
+    1           clock line stuck low
+    2           clock line stuck high
+    3           data line stuck low
+    4           data line stuck high
+
+non-key status bytes
+--------------------
+00h    Key detection error or buffer full.
+AAh    Power-on/reset diagnostics successful.
+E0h    (scancode sets 1 and 2) Prefix byte for "gray" keys
+	(keys not on original 83-/84-key keyboard)
+EEh    Sent in response to ECHO command.
+F0h    (scancode sets 2 and 3) Prefix byte for break codes.
+FAh    ACKnowledge; response to most commands.
+FCh    Diagnostics failed (MF keyboard).
+FDh    Diagnostics failed (AT keyboard).
+	The keyboard stops scanning and waits for next command
+	after returning code FCh or FDh
+FEh    Last command was invalid or had parity error; resend it.
+FFh    Key detection error or buffer full.

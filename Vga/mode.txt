@@ -1,0 +1,171 @@
+              80/50 40/25 80/25 40/50 640x480
+
+3c6 =          ff    ff    ff    ff
+
+attr[10] =     0c    0c    0c           01
+attr[11] =     00    00    00           00
+attr[12] =     0f    0f    0f           0f
+attr[13] =     08    08    08           00
+
+seq[00] =      03    03    03    03     03
+seq[01] =      00    08    00    08     01
+seq[02] =      03    03    03    03     0f
+seq[03] =      00    00    00    00     00
+seq[04] =      02    02    02    02     06
+
+gfx_ctrl[00] = 00    00    
+gfx_ctrl[01] = 00    00    
+gfx_ctrl[02] = 00    00    
+gfx_ctrl[03] = 00    00    
+gfx_ctrl[04] = 00    00    
+gfx_ctrl[05] = 10    10                 00
+gfx_ctrl[06] = 0e    0e                 05
+gfx_ctrl[07] = 0f    0f                 0f
+gfx_ctrl[08] = ff    ff                 ff
+
+crtc[11] =     00    00    00    00     00
+crtc[00] =     5f    2d    5f    2d     5f
+crtc[01] =     4f    27    4f    27     4f
+crtc[02] =     50    28    50    28     50
+crtc[03] =     82    90    82    90     82
+crtc[04] =     55    2b    55    2b     54
+crtc[05] =     81    a0    81    a0     80
+crtc[06] =     bf    bf                 0b
+crtc[07] =     1f    1f                 3e
+crtc[08] =     00    00                 00
+crtc[09] =     4f    4f                 40
+crtc[0a] =     0d    0d                 00
+crtc[0b] =     0e    0e                 00
+crtc[0c] =     00    00                 00
+crtc[0d] =     00    00                 00
+crtc[0e] =     00    00                 00
+crtc[0f] =     00    00                 00
+crtc[10] =     9c    9c                 ea
+crtc[11] =     8e    8e                 8c
+crtc[12] =     8f    8f                 df
+crtc[13] =     28    14    28    14     28
+crtc[14] =     1f    1f                 00
+crtc[15] =     96    96                 e7
+crtc[16] =     b9    b9                 04
+crtc[17] =     a3    a3                 e3
+crtc[18] =     ff    ff                 ff
+
+misc_out =     67    67                 e3
+attr[00] =     20    20                 20
+
+read(3da)
+
+seq[02] =                               0f
+
+crtc[0a] =     0e    0e
+crtc[0b] =     0f    0f
+crtc[0e] =     00    00
+crtc[0f] =     00    00
+crtc[0c] =     00    00
+crtc[0d] =     00    00
+crtc[0e] =     00    00
+crtc[0f] =     00    00
+
+seq[00] =      01    01
+seq[02] =      04    04
+seq[04] =      07    07
+seq[00] =      03    03
+
+gfx_ctrl[04] = 02    02
+gfx_ctrl[05] = 00    00                 02
+gfx_ctrl[06] = 04    04
+
+seq[00] =      01    01
+seq[02] =      03    03                 0f
+seq[04] =      03    03
+seq[00] =      03    03
+
+read(3cc)
+
+gfx_ctrl[06] = 0e    0e
+gfx_ctrl[04] = 00    00
+gfx_ctrl[05] = 10    10
+
+crtc[09] =     47                47
+crtc[0a] =     0e                0e
+crtc[0b] =     0f                0f
+
+seq[03] =      00    00
+8-bit read from port 0x03da
+8-bit read from port 0x03c1
+attr[10] =     04    04
+
+
+
+
+
+
+z.com         90x60 90x50
+
+seq[00] =      01    01
+seq[01] =      01    01
+seq[02] =      03    03
+seq[03] =      00    00
+seq[04] =      02    02
+
+misc_out =     e7    67
+seq[00] =      03    03
+
+crtc[11] =     0e    0e
+crtc[00] =     6b    6b
+crtc[01] =     59    59
+crtc[02] =     5a    5a
+crtc[03] =     8e    8e
+crtc[04] =     5f    5f
+crtc[05] =     8a    8a
+crtc[06] =     0b    bf
+crtc[07] =     3e    1f
+crtc[08] =     00    00
+crtc[09] =     47    47
+crtc[0a] =     06    06
+crtc[0b] =     07    07
+crtc[0c] =     00    00
+crtc[0d] =     00    00
+crtc[0e] =     00    00
+crtc[0f] =     00    00
+crtc[10] =     ea    9c
+crtc[11] =     ac    8e
+crtc[12] =     df    8f
+crtc[13] =     2d    2d
+crtc[14] =     1f    1f
+crtc[15] =     e7    96
+crtc[16] =     06    b9
+crtc[17] =     a3    a3
+crtc[18] =     ff    ff
+
+attr[10] =     08    08
+attr[11] =     00    00
+attr[12] =     0f    0f
+attr[13] =     00    00
+
+gfx_ctrl[00] = 00    
+gfx_ctrl[01] = 00    
+gfx_ctrl[02] = 00    
+gfx_ctrl[03] = 00    
+gfx_ctrl[04] = 00    
+gfx_ctrl[05] = 10    
+gfx_ctrl[06] = 0e    
+gfx_ctrl[07] = 00    
+
+seq[00] =      01    
+seq[01] =      04    
+seq[02] =      07    
+seq[03] =      03    
+
+gfx_ctrl[04] = 02    
+gfx_ctrl[05] = 00    
+gfx_ctrl[06] = 04    
+
+seq[00] =      01    
+seq[02] =      03    
+seq[04] =      03    
+seq[00] =      03    
+
+gfx_ctrl[06] = 0e    
+gfx_ctrl[04] = 00    
+gfx_ctrl[05] = 10

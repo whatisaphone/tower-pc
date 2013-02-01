@@ -1,0 +1,85 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>Vesa BIOS Example. Page 0: Things your program will need</title>
+
+<h1>VESA BIOS Example</h1>
+<h4>Page 0: Things your program will need</h4>
+<p><tr><td colspan=2><hr></td></tr><p>
+
+<h4>
+The first thing to do is to set up all the data structures you will need to pass to interrupt
+10h. You will also need somewhere to store a list of mode numbers (a list of integers).<p>
+Anything after a ';' is a comment.
+
+Data description section<br>
+The TYPE definitions are not declerations of variables, they are specifications of a structure.<br>
+Below them are the declerations.<br>
+
+</h4>
+
+<pre>
+
+   TYPE DataBuffer		    ; To be filled by function 00h
+      Signature         4 bytes		; 
+      VersionL          byte		; lower Version Number
+      VersionH          byte		; higher Version Number
+      OEMStringPtr      long word	; pointer to description string
+      CapableOf         long word	; 32 flags of graphics card capabilities
+      VidModePtr        long word	; Pointer to list of available modes
+      TotalMemory       word		; Memory available of card
+      Reserved          236 bytes	; --
+   END TYPE
+
+   TYPE ModeInfoBlock   	    ; To be filled by function 01h
+      ModeAttributes      word    	; mode attributes
+      WinAAttributes      byte    	; window A attributes
+      WinBAttributes      byte    	; window B attributes
+      WinGranularity      word    	; window granularity
+      WinSize             word    	; window size
+      WinASegment         word    	; window A start segment
+      WinBSegment         word    	; window B start segment
+      WinFuncPtr          long word   ; pointer to window function
+      BytesPerScanLine    word    	; bytes per scan line
+
+      XResolution         word    	; horizontal resolution
+      YResolution         word    	; vertical resolution
+      XCharSize           byte    	; character cell width
+      YCharSize           byte    	; character cell height
+      NumberOfPlanes      byte    	; number of memory planes
+      BitsPerPixel        byte    	; bits per pixel
+      NumberOfBanks       byte    	; number of banks
+      MemoryModel         byte    	; memory model type
+      BankSize            byte    	; bank size in kb
+      NumberOfImagePages  byte    	; number of images
+      Reserved            byte    	; reserved for page function
+
+      RedMaskSize         byte    	; size of direct color red mask in bits
+      RedFieldPosition    byte    	; bit position of LSB of red mask
+      GreenMaskSize       byte    	; size of direct color green mask in bits
+      GreenFieldPosition  byte    	; bit position of LSB of green mask
+      BlueMaskSize        byte    	; size of direct color blue mask in bits
+      BlueFieldPosition   byte    	; bit position of LSB of blue mask
+      RsvdMaskSize        byte    	; size of direct color reserved mask in bits
+      DirectColorModeInfo byte    	; Direct Color mode attributes
+      Reserved            216 bytes     ; remainder of ModeInfoBlock
+   END TYPE
+</pre>
+<h4>
+Next are the Variables. Their declerations follow the format:<br>
+Data Type : Variable name<br>
+</h4>
+
+<pre>
+Variables
+   DataBuffer : DataBlock 
+   ModeInfoBlock : ModeInformation
+   Array of 256 words : ModeList
+</pre>
+
+
+
+
+</body>
+</html>

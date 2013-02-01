@@ -1,0 +1,30 @@
+<html>
+<head>
+<title>
+9.3  Priority Among Simultaneous Interrupts and Exceptions
+</title>
+<body>
+<a name="09-03"></a>
+Prev: <a href="chp09-02.htm">9.2  Enabling and Disabling Interrupts</a><br>
+Next: <a href="chp09-04.htm">9.4  Interrupt Descriptor Table</a>
+<hr>
+<h2>
+9.3  Priority Among Simultaneous Interrupts and Exceptions
+</h2>
+<p>
+If more than one interrupt or exception is pending at an instruction
+boundary, the processor services one of them at a time. The priority among
+classes of interrupt and exception sources is shown in Table 9-2. The
+processor first services a pending interrupt or exception from the class
+that has the highest priority, transferring control to the first
+instruction of the interrupt handler. Lower priority exceptions are
+discarded; lower priority interrupts are held pending. Discarded exceptions
+will be rediscovered when the interrupt handler returns control to the point
+of interruption.
+<p>
+<p>
+<hr>
+Prev: <a href="chp09-02.htm">9.2  Enabling and Disabling Interrupts</a><br>
+Next: <a href="chp09-04.htm">9.4  Interrupt Descriptor Table</a>
+</body>
+</html>

@@ -1,0 +1,56 @@
+
+ MV452    Pro Graphics 1024
+ MV451?   Pro Graphics 1280
+
+ MV462    DAC for the 1024
+
+
+The Mediavision Pro Graphics 1024 uses two registers located at one of
+these locations: 538h/539h, E88h/E89h, F48h/F49h, 60Ch/60Dh, 148h/149h.
+
+
+279h (W):
+bit 0-7  The base register (REG) is programmed by writing the following
+         38 byte sequence to this register:
+          00h 00h B2h D9h ECh 76h BBh 5Dh AEh D7h 6Bh 35h 9Ah CDh E6h F3h
+          79h BCh 5Eh AFh 57h 2Bh 15h 8Ah C5h E2h F1h F8h 7Ch 3Eh 9Fh 4Fh
+          27h 13h  <high>  <low>  00h 00h
+         Where <high> and <low> are the high and low byte of the base
+         register (REG). 538h, E88h, F48h, 60Ch and 148h are known to work.
+NB: is this the unlock sequence instead ??
+
+REG (R/W):  Index
+bit 0-?  (W) Selects the indexed register to read or write at REG+1
+         (R) 38h if the base register is programmed, FFh if not
+
+REG index  0 ():
+bit 3-7  (R) Always 7
+
+REG index  1 (R/W):
+bit 0-1  ??
+
+REG index  2 (R/W):
+bit 0-7  ??
+
+REG index  5 (R/W):
+bit   4  ??
+      5  ??
+      7  ??
+
+REG index  8 (R/W):
+
+REG index  9 (R/W):
+bit   0  ??
+      2  ??
+      3  ??
+
+
+
+Memory mapped registers:
+
+M+000h
+
+M+002h
+bit 0-3
+      4
+      6

@@ -1,0 +1,1089 @@
+<html>
+<head>
+<title>
+17.3.S  'S' Instructions 
+</title>
+<body>
+<a name="17-03-S"></a>
+Prev: <a href="chp17-r3.htm">17.3.R  'R' Instructions </a><br>
+Next: <a href="chp17-t3.htm">17.3.T  'T' Instructions </a>
+<hr>
+<h2>
+17.3.S  'S' Instructions 
+</h2>
+<p>
+<a name="17-03-SAHF"></a>
+<h3>SAHF -- Store AH into Flags</h3>
+<p>
+<pre>
+Opcode  Instruction  Clocks   Description
+
+9E      SAHF         3        Store AH into flags SF ZF xx AF xx PF xx CF
+</pre>
+<p>
+Operation
+<p>
+SF:ZF:xx:AF:xx:PF:xx:CF <- AH;
+<p>
+<b>Description</b>
+<p>
+SAHF loads the flags listed above with values from the AH register,
+from bits 7, 6, 4, 2, and 0, respectively.
+<p>
+<b>Flags Affected</b>
+<p>
+SF, ZF, AF, PF, and CF as described above
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-SAL"></a>
+<h3>SAL/SAR/SHL/SHR -- Shift Instructions</h3>
+<p>
+<p>
+<pre>
+Opcode          Instruction       Clocks  Description
+
+D0   /4         SAL r/m8,1        3/7     Multiply r/m byte by 2, once
+D2   /4         SAL r/m8,CL       3/7     Multiply r/m byte by 2, CL times
+C0   /4 ib      SAL r/m8,imm8     3/7     Multiply r/m byte by 2, imm8
+                                          times
+D1   /4         SAL r/m16,1       3/7     Multiply r/m word by 2, once
+D3   /4         SAL r/m16,CL      3/7     Multiply r/m word by 2, CL times
+C1   /4 ib      SAL r/m16,imm8    3/7     Multiply r/m word by 2, imm8
+                                          times
+D1   /4         SAL r/m32,1       3/7     Multiply r/m dword by 2, once
+D3   /4         SAL r/m32,CL      3/7     Multiply r/m dword by 2, CL
+                                          times
+C1   /4 ib      SAL r/m32,imm8    3/7     Multiply r/m dword by 2, imm8
+                                          times
+D0   /7         SAR r/m8,1        3/7     Signed divide^(1) r/m byte by 2,
+                                          once
+D2   /7         SAR r/m8,CL       3/7     Signed divide^(1) r/m byte by 2,
+                                          CL times
+C0   /7 ib      SAR r/m8,imm8     3/7     Signed divide^(1) r/m byte by 2,
+                                          imm8 times
+D1   /7         SAR r/m16,1       3/7     Signed divide^(1) r/m word by 2,
+                                          once
+D3   /7         SAR r/m16,CL      3/7     Signed divide^(1) r/m word by 2,
+                                          CL times
+C1   /7 ib      SAR r/m16,imm8    3/7     Signed divide^(1) r/m word by 2,
+                                          imm8 times
+D1   /7         SAR r/m32,1       3/7     Signed divide^(1) r/m dword by 2,
+                                          once
+D3   /7         SAR r/m32,CL      3/7     Signed divide^(1) r/m dword by 2,
+                                          CL times
+C1   /7 ib      SAR r/m32,imm8    3/7     Signed divide^(1) r/m dword by 2,
+                                          imm8 times
+D0   /4         SHL r/m8,1        3/7     Multiply r/m byte by 2, once
+D2   /4         SHL r/m8,CL       3/7     Multiply r/m byte by 2, CL times
+C0   /4 ib      SHL r/m8,imm8     3/7     Multiply r/m byte by 2, imm8
+                                          times
+D1   /4         SHL r/m16,1       3/7     Multiply r/m word by 2, once
+D3   /4         SHL r/m16,CL      3/7     Multiply r/m word by 2, CL times
+C1   /4 ib      SHL r/m16,imm8    3/7     Multiply r/m word by 2, imm8
+                                          times
+D1   /4         SHL r/m32,1       3/7     Multiply r/m dword by 2, once
+D3   /4         SHL r/m32,CL      3/7     Multiply r/m dword by 2, CL
+                                          times
+C1   /4 ib      SHL r/m32,imm8    3/7     Multiply r/m dword by 2, imm8
+                                          times
+D0   /5         SHR r/m8,1        3/7     Unsigned divide r/m byte by 2,
+                                          once
+D2   /5         SHR r/m8,CL       3/7     Unsigned divide r/m byte by 2,
+                                          CL times
+C0   /5 ib      SHR r/m8,imm8     3/7     Unsigned divide r/m byte by 2,
+                                          imm8 times
+D1   /5         SHR r/m16,1       3/7     Unsigned divide r/m word by 2,
+                                          once
+D3   /5         SHR r/m16,CL      3/7     Unsigned divide r/m word by 2,
+                                          CL times
+C1   /5 ib      SHR r/m16,imm8    3/7     Unsigned divide r/m word by 2,
+                                          imm8 times
+D1   /5         SHR r/m32,1       3/7     Unsigned divide r/m dword by 2,
+                                          once
+D3   /5         SHR r/m32,CL      3/7     Unsigned divide r/m dword by 2,
+                                          CL times
+C1   /5 ib      SHR r/m32,imm8    3/7     Unsigned divide r/m dword by 2,
+                                          imm8 times
+</pre>
+<p>
+Not the same division as IDIV; rounding is toward negative infinity.
+<p>
+Operation
+<p>
+(* COUNT is the second parameter *)
+(temp) <- COUNT;
+WHILE (temp <> 0)
+DO
+<pre>
+   IF instruction is SAL or SHL
+   THEN CF <- high-order bit of r/m;
+   FI;
+   IF instruction is SAR or SHR
+   THEN CF <- low-order bit of r/m;
+   FI;
+   IF instruction = SAL or SHL
+   THEN r/m <- r/m * 2;
+   FI;
+   IF instruction = SAR
+   THEN r/m <- r/m /2 (*Signed divide, rounding toward negative infinity*);
+   FI;
+   IF instruction = SHR
+   THEN r/m <- r/m / 2; (* Unsigned divide *);
+   FI;
+   temp <- temp - 1;
+OD;
+(* Determine overflow for the various instructions *)
+IF COUNT = 1
+THEN
+   IF instruction is SAL or SHL
+   THEN OF <- high-order bit of r/m <> (CF);
+   FI;
+   IF instruction is SAR
+   THEN OF <- 0;
+   FI;
+   IF instruction is SHR
+   THEN OF <- high-order bit of operand;
+   FI;
+ELSE OF <- undefined;</pre>
+FI;
+<p>
+<b>Description</b>
+<p>
+SAL (or its synonym, SHL) shifts the bits of the operand upward. The
+high-order bit is shifted into the carry flag, and the low-order bit is set
+to 0.
+<p>
+SAR and SHR shift the bits of the operand downward. The low-order
+bit is shifted into the carry flag. The effect is to divide the operand by
+2. SAR performs a signed divide with rounding toward negative infinity (not
+the same as IDIV); the high-order bit remains the same. SHR performs an
+unsigned divide; the high-order bit is set to 0.
+<p>
+The shift is repeated the number of times indicated by the second
+operand, which is either an immediate number or the contents of the CL
+register. To reduce the maximum execution time, the 80386 does not
+allow shift counts greater than 31. If a shift count greater than 31 is
+attempted, only the bottom five bits of the shift count are used. (The
+8086 uses all eight bits of the shift count.)
+<p>
+The overflow flag is set only if the single-shift forms of the instructions
+are used. For left shifts, OF is set to 0 if the high bit of the answer is
+the same as the result of the carry flag (i.e., the top two bits of the
+original operand were the same); OF is set to 1 if they are different. For
+SAR, OF is set to 0 for all single shifts. For SHR, OF is set to the
+high-order bit of the original operand.
+<p>
+<b>Flags Affected</b>
+<p>
+OF for single shifts; OF is undefined for multiple shifts; CF, ZF, PF,
+and SF as described in Appendix C
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS
+segments; #SS(0) for an illegal address in the SS segment; #PF(fault-code)
+for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-SBB"></a>
+<h3>SBB -- Integer Subtraction with Borrow</h3>
+<p>
+<p>
+<pre>
+Opcode       Instruction       Clocks  Description
+
+1C  ib       SBB AL,imm8       2       Subtract with borrow immediate byte
+                                       from AL
+1D  iw       SBB AX,imm16      2       Subtract with borrow immediate word
+                                       from AX
+1D  id       SBB EAX,imm32     2       Subtract with borrow immediate
+                                       dword from EAX
+80  /3 ib    SBB r/m8,imm8     2/7     Subtract with borrow immediate byte
+                                       from r/m byte
+81  /3 iw    SBB r/m16,imm16   2/7     Subtract with borrow immediate word
+                                       from r/m word
+81  /3 id    SBB r/m32,imm32   2/7     Subtract with borrow immediate
+                                       dword from r/m dword
+83  /3 ib    SBB r/m16,imm8    2/7     Subtract with borrow sign-extended
+                                       immediate byte from r/m word
+83  /3 ib    SBB r/m32,imm8    2/7     Subtract with borrow sign-extended
+                                       immediate byte from r/m dword
+18  /r       SBB r/m8,r8       2/6     Subtract with borrow byte register
+                                       from r/m byte
+19  /r       SBB r/m16,r16     2/6     Subtract with borrow word register
+                                       from r/m word
+19  /r       SBB r/m32,r32     2/6     Subtract with borrow dword register
+                                       from r/m dword
+1A  /r       SBB r8,r/m8       2/7     Subtract with borrow byte register
+                                       from r/m byte
+1B  /r       SBB r16,r/m16     2/7     Subtract with borrow word register
+                                       from r/m word
+1B  /r       SBB r32,r/m32     2/7     Subtract with borrow dword register
+                                       from r/m dword
+</pre>
+<p>
+Operation
+<p>
+IF SRC is a byte and DEST is a word or dword
+THEN DEST = DEST - (SignExtend(SRC) + CF)
+ELSE DEST <- DEST - (SRC + CF);
+<p>
+<b>Description</b>
+<p>
+SBB adds the second operand (DEST) to the carry flag (CF) and
+subtracts the result from the first operand (SRC). The result of the
+subtraction is assigned to the first operand (DEST), and the flags are
+set accordingly.
+<p>
+When an immediate byte value is subtracted from a word operand, the
+immediate value is first sign-extended.
+<p>
+<b>Flags Affected</b>
+<p>
+OF, SF, ZF, AF, PF, and CF as described in Appendix C
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS
+segments; #SS(0) for an illegal address in the SS segment; #PF(fault-code)
+for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-SCAS"></a>
+<h3>SCAS/SCASB/SCASW/SCASD -- Compare String Data</h3>
+<p>
+Opcode  Instruction  Clocks  Description
+<p>
+<pre>
+AE      SCAS m8      7       Compare bytes AL-ES:[DI], update (E)DI
+AF      SCAS m16     7       Compare words AX-ES:[DI], update (E)DI
+AF      SCAS m32     7       Compare dwords EAX-ES:[DI], update (E)DI
+AE      SCASB        7       Compare bytes AL-ES:[DI], update (E)DI
+AF      SCASW        7       Compare words AX-ES:[DI], update (E)DI
+AF      SCASD        7       Compare dwords EAX-ES:[DI], update (E)DI
+</pre>
+<p>
+Operation
+<p>
+IF AddressSize = 16
+THEN use DI for dest-index;
+ELSE (* AddressSize = 32 *) use EDI for dest-index;
+FI;
+IF byte type of instruction
+THEN
+<pre>
+   AL - [dest-index]; (* Compare byte in AL and dest *)
+   IF DF = 0 THEN IndDec <- 1 ELSE IncDec <- -1; FI;
+ELSE
+   IF OperandSize = 16
+   THEN
+      AX - [dest-index]; (* compare word in AL and dest *)
+      IF DF = 0 THEN IncDec <- 2 ELSE IncDec <- -2; FI;
+   ELSE (* OperandSize = 32 *)
+      EAX - [dest-index];(* compare dword in EAX & dest *)
+      IF DF = 0 THEN IncDec <- 4 ELSE IncDec <- -4; FI;
+   FI;
+FI;
+dest-index = dest-index + IncDec
+</pre>
+<b>Description</b>
+<p>
+SCAS subtracts the memory byte or word at the destination register from
+the AL, AX or EAX register. The result is discarded; only the flags are set.
+The operand must be addressable from the ES segment; no segment override is
+possible.
+<p>
+If the address-size attribute for this instruction is 16 bits, DI is used
+as the destination register; otherwise, the address-size attribute is 32
+bits and EDI is used.
+<p>
+The address of the memory data being compared is determined solely by the
+contents of the destination register, not by the operand to SCAS. The
+operand validates ES segment addressability and determines the data type.
+Load the correct index value into DI or EDI before executing SCAS.
+<p>
+After the comparison is made, the destination register is automatically
+updated. If the direction flag is 0 (CLD was executed), the destination
+register is incremented; if the direction flag is 1 (STD was executed), it
+is decremented. The increments or decrements are by 1 if bytes are compared,
+by 2 if words are compared, or by 4 if doublewords are compared.
+<p>
+SCASB, SCASW, and SCASD are synonyms for the byte, word and
+doubleword SCAS instructions that don't require operands. They are
+simpler to code, but provide no type or segment checking.
+<p>
+SCAS can be preceded by the REPE or REPNE prefix for a block search
+of CX or ECX bytes or words. Refer to the REP instruction for further
+details.
+<p>
+<b>Flags Affected</b>
+<p>
+OF, SF, ZF, AF, PF, and CF as described in Appendix C
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS,
+ES, FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+#PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-SETcc"></a>
+<h3>SETcc -- Byte Set on Condition</h3>
+<p>
+<p>
+<pre>
+Opcode   Instruction  Clocks  Description
+
+0F  97   SETA r/m8    4/5     Set byte if above (CF=0 and ZF=0)
+0F  93   SETAE r/m8   4/5     Set byte if above or equal (CF=0)
+0F  92   SETB r/m8    4/5     Set byte if below (CF=1)
+0F  96   SETBE r/m8   4/5     Set byte if below or equal (CF=1 or (ZF=1)
+0F  92   SETC r/m8    4/5     Set if carry (CF=1)
+0F  94   SETE r/m8    4/5     Set byte if equal (ZF=1)
+0F  9F   SETG r/m8    4/5     Set byte if greater (ZF=0 or SF=OF)
+0F  9D   SETGE r/m8   4/5     Set byte if greater or equal (SF=OF)
+0F  9C   SETL r/m8    4/5     Set byte if less (SF<>OF)
+0F  9E   SETLE r/m8   4/5     Set byte if less or equal (ZF=1 and
+                              SF<>OF)
+0F  96   SETNA r/m8   4/5     Set byte if not above (CF=1)
+0F  92   SETNAE r/m8  4/5     Set byte if not above or equal (CF=1)
+0F  93   SETNB r/m8   4/5     Set byte if not below (CF=0)
+0F  97   SETNBE r/m8  4/5     Set byte if not below or equal (CF=0 and
+                              ZF=0)
+0F  93   SETNC r/m8   4/5     Set byte if not carry (CF=0)
+0F  95   SETNE r/m8   4/5     Set byte if not equal (ZF=0)
+0F  9E   SETNG r/m8   4/5     Set byte if not greater (ZF=1 or SF<>OF)
+0F  9C   SETNGE r/m8  4/5     Set if not greater or equal (SF<>OF)
+0F  9D   SETNL r/m8   4/5     Set byte if not less (SF=OF)
+0F  9F   SETNLE r/m8  4/5     Set byte if not less or equal (ZF=1 and
+                              SF<>OF)
+0F  91   SETNO r/m8   4/5     Set byte if not overflow (OF=0)
+0F  9B   SETNP r/m8   4/5     Set byte if not parity (PF=0)
+0F  99   SETNS r/m8   4/5     Set byte if not sign (SF=0)
+0F  95   SETNZ r/m8   4/5     Set byte if not zero (ZF=0)
+0F  90   SETO r/m8    4/5     Set byte if overflow (OF=1)
+0F  9A   SETP r/m8    4/5     Set byte if parity (PF=1)
+0F  9A   SETPE r/m8   4/5     Set byte if parity even (PF=1)
+0F  9B   SETPO r/m8   4/5     Set byte if parity odd (PF=0)
+0F  98   SETS r/m8    4/5     Set byte if sign (SF=1)
+0F  94   SETZ r/m8    4/5     Set byte if zero (ZF=1)
+</pre>
+<p>
+Operation
+<p>
+IF condition THEN r/m8 <- 1 ELSE r/m8 <- 0; FI;
+<p>
+<b>Description</b>
+<p>
+SETcc stores a byte at the destination specified by the effective address
+or register if the condition is met, or a 0 byte if the condition is not
+met.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a non-writable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-SGDT"></a>
+<h3>SGDT/SIDT -- Store Global/Interrupt Descriptor Table Register</h3>
+<p>
+<pre>
+Opcode       Instruction   Clocks   Description
+
+0F  01 /0    SGDT m        9        Store GDTR to m
+0F  01 /1    SIDT m        9        Store IDTR to m
+</pre>
+<p>
+Operation
+<p>
+DEST <- 48-bit BASE/LIMIT register contents;
+<p>
+<b>Description</b>
+<p>
+SGDT/SIDT copies the contents of the descriptor table register the six
+bytes of memory indicated by the operand. The LIMIT field of the
+register is assigned to the first word at the effective address. If the
+operand-size attribute is 32 bits, the next three bytes are assigned the
+BASE field of the register, and the fourth byte is written with zero. The
+last byte is undefined. Otherwise, if the operand-size attribute is 16
+bits, the next four bytes are assigned the 32-bit BASE field of the
+register.
+<p>
+SGDT and SIDT are used only in operating system software; they are
+not used in application programs.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+Interrupt 6 if the destination operand is a register; #GP(0) if the
+destination is in a nonwritable segment; #GP(0) for an illegal memory
+operand effective address in the CS, DS, ES, FS, or GS segments; #SS(0) for
+an illegal address in the SS segment; #PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 6 if the destination operand is a register; Interrupt 13 if any
+part of the operand would lie outside of the effective address space from
+0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+Compatability Note
+<p>
+The 16-bit forms of the SGDT/SIDT instructions are compatible with
+the 80286, if the value in the upper eight bits is not referenced. The
+80286 stores 1's in these upper bits, whereas the 80386 stores 0's if the
+operand-size attribute is 16 bits. These bits were specified as undefined
+by the SGDT/SIDT instructions in the iAPX 286 Programmer's
+Reference Manual.
+<p>
+<p>
+<a name="17-03-SHLD"></a>
+<h3>SHLD -- Double Precision Shift Left</h3>
+<p>
+<pre>
+Opcode   Instruction          Clocks   Description
+
+0F  A4   SHLD r/m16,r16,imm8  3/7      r/m16 gets SHL of r/m16 concatenated
+                                       with r16
+0F  A4   SHLD r/m32,r32,imm8  3/7      r/m32 gets SHL of r/m32 concatenated
+                                       with r32
+0F  A5   SHLD r/m16,r16,CL    3/7      r/m16 gets SHL of r/m16 concatenated
+                                       with r16
+0F  A5   SHLD r/m32,r32,CL    3/7      r/m32 gets SHL of r/m32 concatenated
+                                       with r32
+</pre>
+<p>
+Operation
+<p>
+(* count is an unsigned integer corresponding to the last operand of the
+instruction, either an immediate byte or the byte in register CL *)
+ShiftAmt <- count MOD 32;
+inBits <- register; (* Allow overlapped operands *)
+IF ShiftAmt = 0
+THEN no operation
+ELSE
+<pre>
+   IF ShiftAmt . OperandSize
+   THEN (* Bad parameters *)
+      r/m <- UNDEFINED;
+      CF, OF, SF, ZF, AF, PF <- UNDEFINED;
+   ELSE (* Perform the shift *)
+      CF <- BIT[Base, OperandSize - ShiftAmt];
+         (* Last bit shifted out on exit *)
+   FOR i <- OperandSize - 1 DOWNTO ShiftAmt
+   DO
+      BIT[Base, i] <- BIT[Base, i - ShiftAmt];
+   OF;
+   FOR i <- ShiftAmt - 1 DOWNTO 0
+   DO
+      BIT[Base, i] <- BIT[inBits, i - ShiftAmt + OperandSize];
+   OD;
+   Set SF, ZF, PF (r/m);
+      (* SF, ZF, PF are set according to the value of the result *)
+   AF <- UNDEFINED;
+   FI;
+FI;
+</pre>
+<b>Description</b>
+<p>
+SHLD shifts the first operand provided by the r/m field to the left as
+many bits as specified by the count operand. The second operand (r16 or r32)
+provides the bits to shift in from the right (starting with bit 0). The
+result is stored back into the r/m operand. The register remains unaltered.
+<p>
+The count operand is provided by either an immediate byte or the contents
+of the CL register. These operands are taken MODULO 32 to provide a number
+between 0 and 31 by which to shift. Because the bits to shift are provided
+by the specified registers, the operation is useful for multiprecision
+shifts (64 bits or more). The SF, ZF and PF flags are set according to the
+value of the result. CS is set to the value of the last bit shifted out. OF
+and AF are left undefined.
+<p>
+<b>Flags Affected</b>
+<p>
+OF, SF, ZF, PF, and CF as described above; AF and OF are undefined
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+<p>
+<a name="17-03-SHRD"></a>
+<h3>SHRD -- Double Precision Shift Right</h3>
+<p>
+<pre>
+Opcode   Instruction           Clocks  Description
+
+0F  AC   SHRD r/m16,r16,imm8   3/7     r/m16 gets SHR of r/m16 concatenated
+                                       with r16
+0F  AC   SHRD r/m32,r32,imm8   3/7     r/m32 gets SHR of r/m32 concatenated
+                                       with r32
+0F  AD   SHRD r/m16,r16,CL     3/7     r/m16 gets SHR of r/m16 concatenated
+                                       with r16
+0F  AD   SHRD r/m32,r32,CL     3/7     r/m32 gets SHR of r/m32 concatenated
+                                       with r32
+</pre>
+<p>
+Operation
+<p>
+(* count is an unsigned integer corresponding to the last operand of the
+instruction, either an immediate byte or the byte in register CL *)
+ShiftAmt <- count MOD 32;
+inBits <- register; (* Allow overlapped operands *)
+IF ShiftAmt = 0
+THEN no operation
+ELSE
+<pre>
+   IF ShiftAmt . OperandSize
+   THEN (* Bad parameters *)
+      r/m <- UNDEFINED;
+      CF, OF, SF, ZF, AF, PF <- UNDEFINED;
+   ELSE (* Perform the shift *)
+      CF <- BIT[r/m, ShiftAmt - 1]; (* last bit shifted out on exit *)
+      FOR i <- 0 TO OperandSize - 1 - ShiftAmt
+      DO
+         BIT[r/m, i] <- BIT[r/m, i - ShiftAmt];
+      OD;
+      FOR i <- OperandSize - ShiftAmt TO OperandSize - 1
+      DO
+         BIT[r/m,i] <- BIT[inBits,i+ShiftAmt - OperandSize];
+      OD;
+      Set SF, ZF, PF (r/m);
+         (* SF, ZF, PF are set according to the value of the result *)
+      Set SF, ZF, PF (r/m);
+      AF <- UNDEFINED;
+   FI;
+FI;
+</pre>
+<b>Description</b>
+<p>
+SHRD shifts the first operand provided by the r/m field to the right as many
+bits as specified by the count operand. The second operand (r16 or r32)
+provides the bits to shift in from the left (starting with bit 31). The
+result is stored back into the r/m operand. The register remains unaltered.
+<p>
+The count operand is provided by either an immediate byte or the contents
+of the CL register. These operands are taken MODULO 32 to provide a number
+between 0 and 31 by which to shift. Because the bits to shift are provided
+by the specified register, the operation is useful for multi-precision
+shifts (64 bits or more). The SF, ZF and PF flags are set according to the
+value of the result. CS is set to the value of the last bit shifted out. OF
+and AF are left undefined.
+<p>
+<b>Flags Affected</b>
+<p>
+OF, SF, ZF, PF, and CF as described above; AF and OF are undefined
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS
+segments; #SS(0) for an illegal address in the SS segment; #PF(fault-code)
+for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-SLDT"></a>
+<h3>SLDT -- Store Local Descriptor Table Register</h3>
+<p>
+<pre>
+Opcode      Instruction   Clocks      Description
+
+0F  00 /0   SLDT r/m16    pm=2/2      Store LDTR to EA word
+</pre>
+<p>
+Operation
+<p>
+r/m16 <- LDTR;
+<p>
+<b>Description</b>
+<p>
+SLDT stores the Local Descriptor Table Register (LDTR) in the two-byte
+register or memory location indicated by the effective address operand.
+This register is a selector that points into the Global Descriptor Table.
+<p>
+SLDT is used only in operating system software. It is not used in
+application programs.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 6; SLDT is not recognized in Real Address Mode
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+Notes
+<p>
+The operand-size attribute has no effect on the operation of the
+instruction.
+<p>
+<p>
+<a name="17-03-SMSW"></a>
+<h3>SMSW -- Store Machine Status Word</h3>
+<p>
+<pre>
+Opcode      Instruction     Clocks          Description
+
+0F  01 /4   SMSW r/m16      2/3,pm=2/2      Store machine status word to EA
+                                            word
+</pre>
+<p>
+Operation
+<p>
+r/m16 <- MSW;
+<p>
+<b>Description</b>
+<p>
+SMSW stores the machine status word (part of CR0) in the two-byte register
+or memory location indicated by the effective address operand.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+Notes
+<p>
+This instruction is provided for compatibility with the 80286; 80386
+programs should use MOV ..., CR0.
+<p>
+<p>
+<a name="17-03-STC"></a>
+<h3>STC -- Set Carry Flag</h3>
+<p>
+<pre>
+Opcode      Instruction     Clocks      Description
+
+F9          STC             2           Set carry flag
+</pre>
+<p>
+Operation
+<p>
+CF <- 1;
+<p>
+<b>Description</b>
+<p>
+STC sets the carry flag to 1.
+<p>
+<b>Flags Affected</b>
+<p>
+CF = 1
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-STD"></a>
+<h3>STD -- Set Direction Flag</h3>
+<p>
+<pre>
+Opcode  Instruction   Clocks    Description
+
+FD      STD           2         Set direction flag so (E)SI and/or (E)DI
+                                decrement
+</pre>
+<p>
+Operation
+<p>
+DF <- 1;
+<p>
+<b>Description</b>
+<p>
+STD sets the direction flag to 1, causing all subsequent string operations
+to decrement the index registers, (E)SI and/or (E)DI, on which they
+operate.
+<p>
+<b>Flags Affected</b>
+<p>
+DF = 1
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-STI"></a>
+<h3>STI -- Set Interrupt Flag</h3>
+<p>
+<pre>
+Opcode  Instruction   Clocks   Description
+
+F13     STI           3        Set interrupt flag; interrupts enabled at the
+                               end of the next instruction
+</pre>
+<p>
+Operation
+<p>
+IF <- 1
+<p>
+<b>Description</b>
+<p>
+STI sets the interrupt flag to 1. The 80386 then responds to external
+interrupts after executing the next instruction if the next instruction
+allows the interrupt flag to remain enabled. If external interrupts are
+disabled and you code STI, RET (such as at the end of a subroutine),
+the RET is allowed to execute before external interrupts are recognized.
+Also, if external interrupts are disabled and you code STI, CLI, then
+external interrupts are not recognized because the CLI instruction clears
+the interrupt flag during its execution.
+<p>
+<b>Flags Affected</b>
+<p>
+IF = 1
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the current privilege level is greater (has less privilege) than
+the I/O privilege level
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-STOS"></a>
+<h3>STOS/STOSB/STOSW/STOSD -- Store String Data</h3>
+<p>
+<pre>
+Opcode  Instruction  Clocks   Description
+
+AA      STOS m8      4        Store AL in byte ES:[(E)DI], update (E)DI
+AB      STOS m16     4        Store AX in word ES:[(E)DI], update (E)DI
+AB      STOS m32     4        Store EAX in dword ES:[(E)DI], update (E)DI
+AA      STOSB        4        Store AL in byte ES:[(E)DI], update (E)DI
+AB      STOSW        4        Store AX in word ES:[(E)DI], update (E)DI
+AB      STOSD        4        Store EAX in dword ES:[(E)DI], update (E)DI
+</pre>
+<p>
+Operation
+<p>
+IF AddressSize = 16
+THEN use ES:DI for DestReg
+ELSE (* AddressSize = 32 *) use ES:EDI for DestReg;
+FI;
+IF byte type of instruction
+THEN
+   (ES:DestReg) <- AL;
+<pre>
+   IF DF = 0
+   THEN DestReg <- DestReg + 1;
+   ELSE DestReg <- DestReg - 1;
+   FI;
+ELSE IF OperandSize = 16
+   THEN
+      (ES:DestReg) <- AX;
+      IF DF = 0
+      THEN DestReg <- DestReg + 2;
+      ELSE DestReg <- DestReg - 2;
+      FI;
+   ELSE (* OperandSize = 32 *)
+      (ES:DestReg) <- EAX;
+      IF DF = 0
+      THEN DestReg <- DestReg + 4;
+      ELSE DestReg <- DestReg - 4;
+      FI;
+   FI;
+FI;
+</pre>
+<b>Description</b>
+<p>
+STOS transfers the contents of all AL, AX, or EAX register to the memory
+byte or word given by the destination register relative to the ES segment.
+The destination register is DI for an address-size attribute of 16 bits or
+EDI for an address-size attribute of 32 bits.
+<p>
+The destination operand must be addressable from the ES register. A segment
+override is not possible.
+<p>
+The address of the destination is determined by the contents of the
+destination register, not by the explicit operand of STOS. This operand is
+used only to validate ES segment addressability and to determine the data
+type. Load the correct index value into the destination register before
+executing STOS.
+<p>
+After the transfer is made, DI is automatically updated. If the direction
+flag is 0 (CLD was executed), DI is incremented; if the direction flag is
+1 (STD was executed), DI is decremented. DI is incremented or decremented by
+1 if a byte is stored, by 2 if a word is stored, or by 4 if a doubleword is
+stored.
+<p>
+STOSB, STOSW, and STOSD are synonyms for the byte, word, and doubleword STOS
+instructions, that do not require an operand. They are simpler to use, but
+provide no type or segment checking.
+<p>
+STOS can be preceded by the REP prefix for a block fill of CX or ECX bytes,
+words, or doublewords. Refer to the REP instruction for further details.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+<p>
+<a name="17-03-STR"></a>
+<h3>STR -- Store Task Register</h3>
+<p>
+<pre>
+Opcode        Instruction   Clocks       Description
+
+0F  00 /1     STR r/m16     pm=23/27     Load EA word into task register
+</pre>
+<p>
+Operation
+<p>
+r/m <- task register;
+<p>
+<b>Description</b>
+<p>
+The contents of the task register are copied to the two-byte register or
+memory location indicated by the effective address operand.
+<p>
+STR is used only in operating system software. It is not used in application
+programs.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 6; STR is not recognized in Real Address Mode
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode
+<p>
+Notes
+<p>
+The operand-size attribute has no effect on this instruction.
+<p>
+<p>
+<a name="17-03-SUB"></a>
+<h3>SUB -- Integer Subtraction</h3>
+<p>
+<pre>
+Opcode      Instruction      Clocks   Description
+
+2C  ib      SUB AL,imm8      2        Subtract immediate byte from AL
+2D  iw      SUB AX,imm16     2        Subtract immediate word from AX
+2D  id      SUB EAX,imm32    2        Subtract immediate dword from EAX
+80  /5 ib   SUB r/m8,imm8    2/7      Subtract immediate byte from r/m byte
+81  /5 iw   SUB r/m16,imm16  2/7      Subtract immediate word from r/m word
+81  /5 id   SUB r/m32,imm32  2/7      Subtract immediate dword from r/m
+                                      dword
+83  /5 ib   SUB r/m16,imm8   2/7      Subtract sign-extended immediate byte
+                                      from r/m word
+83  /5 ib   SUB r/m32,imm8   2/7      Subtract sign-extended immediate byte
+                                      from r/m dword
+28  /r      SUB r/m8,r8      2/6      Subtract byte register from r/m byte
+29  /r      SUB r/m16,r16    2/6      Subtract word register from r/m word
+29  /r      SUB r/m32,r32    2/6      Subtract dword register from r/m
+                                      dword
+2A  /r      SUB r8,r/m8      2/7      Subtract byte register from r/m byte
+2B  /r      SUB r16,r/m16    2/7      Subtract word register from r/m word
+2B  /r      SUB r32,r/m32    2/7      Subtract dword register from r/m
+                                      dword
+</pre>
+<p>
+Operation
+<p>
+IF SRC is a byte and DEST is a word or dword
+THEN DEST = DEST - SignExtend(SRC);
+ELSE DEST <- DEST - SRC;
+FI;
+<p>
+<b>Description</b>
+<p>
+SUB subtracts the second operand (SRC) from the first operand (DEST). The
+first operand is assigned the result of the subtraction, and the flags are
+set accordingly.
+<p>
+When an immediate byte value is subtracted from a word operand, the
+immediate value is first sign-extended to the size of the destination
+operand.
+<p>
+<b>Flags Affected</b>
+<p>
+OF, SF, ZF, AF, PF, and CF as described in Appendix C
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the result is in a nonwritable segment; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS segments;
+#SS(0) for an illegal address in the SS segment; #PF(fault-code) for a page
+fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page fault
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-r3.htm">17.3.R  'R' Instructions </a><br>
+Next: <a href="chp17-t3.htm">17.3.T  'T' Instructions </a>
+</body>
+</html>

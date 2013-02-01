@@ -1,0 +1,681 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="Template"
+content="C:\Program Files\Microsoft Office\Office\html.dot">
+<meta name="GENERATOR" content="Microsoft FrontPage 2.0">
+<title>PC Processors Guide by x86.org</title>
+</head>
+
+<body bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
+
+<table border="0" cellpadding="0" cellspacing="0" width="800">
+    <tr>
+        <td align="center" width="70%"><font color="#0000FF"
+        size="5" face="Arial"><b>PC Processors Guide by x86.org</b></font></td>
+        <td align="center" width="30%"><a
+        href="http://www.x86.org" target="default"><img
+        src="../Style/Style0498/small_logo.jpg" border="0"></a></td>
+    </tr>
+</table>
+
+<hr>
+
+<p><font size="3" face="Arial"><i>&quot;The Intel 8086, a new
+microcomputer, extends the midrange 8080 family into the 16-bit
+arena. The chip has attributes of both 8- and 16-bit processors.
+By executing the full set of 8080A/8085 8-bit instructions plus a
+powerful new set of 16-bit instructions, it enables a system
+designer familiar with existing 8080 devices to boost performance
+by a factor of as much as 10 while using essentially the same
+8080 software package and development tools.</i></font></p>
+
+<p><font size="3" face="Arial"><i>&quot;The goals of the 8086
+architectural design were to extend existing 8080 features
+symmetrically, across the board, and to add processing
+capabilities not to be found in the 8080. The added features
+include 16-bit arithmetic, signed 8- and 16-bit arithmetic
+(including multiply and divide), efficient interruptible
+byte-string operations, and improved bit manipulation.
+Significantly, they also include mechanisms for such
+minicomputer-type operations as reentrant code,
+position-independent code, and dynamically relocatable programs.
+In addition, the processor may directly address up to 1 megabyte
+of memory and has been designed to support multiple-processor
+configurations.&quot;</i></font></p>
+
+<p align="right"><font size="3" face="Arial"><i>-- Intel
+Corporation, February, 1979</i></font></p>
+
+<hr>
+
+<h3><font color="#FF0000" size="4" face="Arial">Introduction</font></h3>
+
+<p><font size="3" face="Arial">In 1979, Intel introduced the 8086
+and 8088 microprocessor extensions to the 8080 product line.
+Since that time, the x86 product line has gone through six
+generations and become the most successful microprocessor in
+history. Much of this success was due to the success of the
+IBM-PC and its clones. Therefore Intel was at the right place at
+the right time when IBM made their historic decision to use the
+8088. Today, the x86 market is a multi-billion dollar industry,
+selling tens-of-millions of units per year.</font></p>
+
+<p><font size="3" face="Arial">The huge popularity of these x86
+chips has lead to a prosperous x86 clone industry. AMD, Cyrix,
+IBM, TI, UMC, Siemens, NEC, Harris, and others have all dabbled
+in the x86 chip industry. Today, AMD, Cyrix, and Centaur are
+still actively competing. However, there are numerous stories
+that approximately one dozen other companies are actively working
+to create a x86 clone chip. Ultimately, the market will decide
+who survives and who perishes in this cutthroat chips business.</font></p>
+
+<h3><font color="#FF0000" size="4" face="Arial"><strong>Merced</strong></font></h3>
+
+<p><font color="#000000" size="3" face="Arial">Merced is Intel's
+future-generation microprocessor architecture; Merced is not
+Intel's next-generation x86 microprocessor. Instead, Merced is a
+completely new microprocessor design and instruction set. Merced
+will have the means to run legacy x86 programs via a hardware
+translation mechanism.</font></p>
+
+<p><font color="#000000" size="3" face="Arial">The Merced design
+is a further departure from its x86 predecessors. Merced is not </font><a
+href="help.htm#CISC"><font color="#000000" size="3" face="Arial">CISC</font></a><font
+color="#000000" size="3" face="Arial"> (Complex Instruction Set
+Computer), </font><a href="help.htm#RISC"><font color="#000000"
+size="3" face="Arial">RISC</font></a><font color="#000000"
+size="3" face="Arial"> (Reduced Instruction Set Computer), but
+closely resembles a </font><a href="help.htm#VLIW"><font
+color="#000000" size="3" face="Arial">VLIW</font></a><font
+color="#000000" size="3" face="Arial"> design (Very Long
+Instruction Word). Intel doesn't want to call this chip VLIW,
+ostensibly for political reasons (not invented here). Instead,
+Intel has coined the term </font><a href="help.htm#EPIC"><font
+color="#000000" size="3" face="Arial">EPIC</font></a><font
+color="#000000" size="3" face="Arial"> -- Explicitely Parallel
+Instruction Computing. For all intents and purposes, EPIC is
+VLIW.</font></p>
+
+<p><font color="#000000" size="3" face="Arial">First versions of
+Merced will run between 600 MHz and 1000 MHz (1 GHz). x86
+compatibility is acheived internally via a hardware translation
+mechanism. This translation mechanism enables Merced to run your
+existing Windows and DOS applications. Intel claims that Merced
+will never run x86 programs as fast as the current
+state-of-the-art x86 microprocessors. Therefore, Intel offers
+Merced into the server and workstation market, and will offer x86
+compatibility as a matter of convenience.</font></p>
+
+<p><font color="#FF0000" size="4" face="Arial"><strong>Xeon</strong></font></p>
+
+<p><font color="#000000" size="3" face="Arial">The Xeon is a
+Pentium II on steroids. The Pentium II contains a P6 (Pentium
+Pro) core with a 1/2-speed 2nd-level cache (L2 cache). Xeon
+differs from Pentium II in that the L2 cache runs at full
+processor speed. Pentium II connects to the motherboard in a slot
+named Slot-1. Xeon is not slot-compatible with Pentium II.
+Instead, Xeon uses a new slot named Slot-2.</font></p>
+
+<p><font color="#000000" size="3" face="Arial">Xeon is Intel's
+high-end microprocessor brand for the computer server market. As
+such, Xeon is priced much higher than Pentium II or Celeron.</font></p>
+
+<p><font color="#FF0000" size="4" face="Arial"><strong>Celeron</strong></font></p>
+
+<p><font color="#000000" size="3" face="Arial">The Celeron
+microprocessor is a stripped down Pentium II. This chip is
+affectionately knows as &quot;the Castrated One.&quot; The
+Celeron is offered without any 2nd-level cache, making its
+performance lackluster, and reportedly slower than a Pentium
+(with </font><a href="help.htm#MMX"><font color="#000000"
+size="3" face="Arial">MMX</font></a><font color="#000000"
+size="3" face="Arial">) running at nearly one-half of its speed.</font></p>
+
+<p><font color="#000000" size="3" face="Arial">Intel was
+completely caught off-guard by the advent and popularity of the
+sub-$1000 PC. In fact, the sub-$1000 PC completely ruins Intel's
+marketing game plan. Therefore, Intel hastily created the Celeron
+in an attempt to regain some marketshare they lost to their
+competition.</font></p>
+
+<p><font color="#FF0000" size="4" face="Arial"><strong>Pentium II</strong></font></p>
+
+<p><font color="#000000" size="3" face="Arial">The Pentium II is
+a glorified Pentium Pro with </font><a href="help.htm#MMX"><font
+color="#000000" size="3" face="Arial">MMX</font></a><font
+color="#000000" size="3" face="Arial"> extensions. The Pentium II
+has a different package than the Pentium Pro. This new package is
+called &quot;Slot-1.&quot; Officially, Intel claimed technical
+reasons for needing Slot-1. Industry pundits claimed that slot-1
+was devised to thwart industry competition with the Pentium Pro,
+and further the Intel monopoly. Strangely, the &quot;technical
+reasons for needing slot-1&quot; evaporated as soon as the
+Pentium Pro was dead; as Intel somehow made a
+&quot;breakthrough&quot; that they had previously claimed was
+impossible (thereby &quot;needing&quot; to invent the proprietary
+slot-1).</font></p>
+
+<p><font color="#000000" size="3" face="Arial">Slot-1 was also
+promised to be the upgrade path for consumers -- leading many
+years into the future. Unfortunately, every time Intel has made
+this promise, first with the 80486, then with the Pentium, the
+promise has been broken. As soon as Intel saturated the saturated
+the market with slot-1 computers, they announced the future high
+performance upgrade path would be &quot;slot-2.&quot;</font></p>
+
+<p><font color="#000000" size="3" face="Arial">The Pentium II can
+address up to 64 GB of main memory, but has </font><a
+href="help.htm#Cache"><font color="#000000" size="3" face="Arial">cache</font></a><font
+color="#000000" size="3" face="Arial"> limitations preventing
+memory use above 512 MB.</font></p>
+
+<h3><font color="#FF0000" size="4" face="Arial">The Pentium Pro</font></h3>
+
+<p><font size="3" face="Arial">The Pentium Pro was introduced in
+November 1995 as Intel's 6<sup>th</sup> generation x86 design --
+code-named the &quot;P6.&quot; The Pentium Pro offered some minor
+programming enhancements, four more address lines, and a large 2<sup>nd</sup>-level
+</font><a href="help.htm#Cache"><font size="3" face="Arial">cache</font></a><font
+size="3" face="Arial">. By this time, the entire &quot;<b><i>secret</i></b>&quot;
+programming features of the Pentium had been revealed (mostly at
+the Intel Secrets Web Site: </font><a href="http://www.x86.org/"><font
+size="3" face="Arial">http://www.x86.org</font></a><font size="3"
+face="Arial">). Therefore, Intel abandoned their attempts at
+keeping most of their new P6 programming features as a secret. By
+adding four more </font><a href="help.htm#Address Lines"><font
+size="3" face="Arial">address lines</font></a><font size="3"
+face="Arial">, the Pentium Pro could address up to 64 GB of main
+memory. The addition of the 2<sup>nd</sup>-level cache gave the
+Pentium Pro a nice performance boost, but was very expensive to
+manufacture.</font></p>
+
+<p><font size="3" face="Arial">Intel continued their attempts at
+closing the architecture to the exclusion and elimination of
+their competition. Intel managed to gain patent protection for
+some pins on the Pentium Pro socket; thus making this chip very
+difficult to clone without substantial legal liability. However,
+Intel wasn't paranoid enough. Intel introduced the Pentium II
+under the guise that the Pentium Pro could never achieve their
+performance goals. Intel alleged that the Pentium Pro 2<sup>nd</sup>-level
+cache could never run faster than 200 MHz, and therefore they
+must discontinue the development of this product line. The
+Pentium II abandoned the socket approach to microprocessors, and
+introduced the &quot;slot&quot; concept. The slot-1 of the
+Pentium II was further enshrouded in patent protection, thereby
+further raising the bar to the cost of competition. Now that the
+Pentium Pro is dead (along with the possibility that their
+competition will clone this product), Intel has ironically
+announced a 400 MHz Pentium II with a full-speed 2<sup>nd</sup>-level
+cache.</font></p>
+
+<p><font size="3" face="Arial">Regardless of Intel's continued
+monopolistic business practices, the P6 product line has
+diversified and flourished. The Pentium II added </font><a
+href="help.htm#MMX"><font size="3" face="Arial">MMX</font></a><font
+size="3" face="Arial"> enhancements and a variety of 2<sup>nd</sup>-level
+cache options. Intel has created the Celeron brand to compete in
+the sub-$1000 market. The Xeon was introduced to compete in the
+server market with a 100 MHz system bus. As time goes on, Intel
+will continue to diversify the P6 family product line, most
+likely with a 200 MHz system bus.</font></p>
+
+<p><font size="3" face="Arial">Intel's competitors have gone in a
+different direction than Intel. Intel's competitors have stayed
+with a Pentium-compatible pin-out. AMD has continued to develop
+the K6 processor and added MMX enhancements. Cyrix has added MMX
+enhancements to the MII product line. Centaur products always
+contained MMX enhancements. These three companies combined their
+abilities to create a common set MMX-3D instruction set
+extensions. All three companies have announced plans to create a
+100 MHz system bus and an integrated 2<sup>nd</sup>-level cache
+(though Intel-fellow Fred Pollack has said publicly that the 2<sup>nd</sup>-level
+cache integration is electronically impossible).</font></p>
+
+<h3><font color="#FF0000" size="4" face="Arial">The Pentium</font></h3>
+
+<p><font size="3" face="Arial">The Pentium processor was a big
+departure from all past Intel x86 processors. The Pentium name
+signaled the end to the 80x86 nomenclature, and was spurred by
+losing a trademark dispute against AMD. The Pentium processor
+contained more than one execution unit -- making it superscalar.
+Intel no longer needed (or wanted) any second-source fabs
+manufacturing their microprocessors; Intel wanted all of the
+profits to themselves. The Pentium also added many programming
+enhancements though Intel tried to keep all of them secret.</font></p>
+
+<p><font size="3" face="Arial">Intel rapidly diversified the
+Pentium product line. The original Pentium product ran at 60 and
+66 MHz. Shortly thereafter, Intel introduced 90, 100, 120, 133
+MHz versions of the popular processor. Intel introduced low-power
+versions of the Pentium to be used in notebook computer
+applications. Finally, Intel introduced the </font><a
+href="help.htm#MMX"><font size="3" face="Arial">MMX</font></a><font
+size="3" face="Arial">-enhanced processors.</font></p>
+
+<p><font size="3" face="Arial">AMD and Cyrix didn't sit idly by
+and watch Intel expand and dominate the market. AMD introduced
+the K5 processor -- their first in-house x86 design. However, the
+K5 was late to market, and was very slow. In response to their
+bleak outlook for the K5, AMD bought Nexgen. Nexgen created their
+own x86-compatible microprocessor, calling it the Nx586. At the
+time of the acquisition, Nexgen had already finished the design
+of their next-generation processor core -- the Nx686. AMD used
+the Nx686 core and created the successful K6 processor. AMD has
+continued to upgrade this processor to include MMX, and other
+enhancements.</font></p>
+
+<p><font size="3" face="Arial">During this time Cyrix introduced
+the 6x86. The 6x86 was pin-compatible with the Pentium, though
+the 6x86 nomenclature might lead the consumer to believe that it
+is a 6<sup>th</sup>-generation (Pentium Pro) compatible chip. The
+6x86 has also been enhanced with MMX instructions as the 6x86 MX.
+Cyrix has continued to enhance this chip in their attempt to gain
+more market share.</font></p>
+
+<p><font size="3" face="Arial">During the Pentium era, a new
+Intel competitor emerged. Centaur Technologies (a wholly owned
+subsidiary of IDT) created a fast, cheap, and somewhat low power
+Pentium compatible chip. Centaur has a low-end (low-cost) market
+focus. Some industry pundits have called this marketing strategy
+&quot;bottom-feeding.&quot; However, with the emergence and
+overwhelming popularity of the sub-$1000 PC, Centaur may end up
+having the last laugh.</font></p>
+
+<h3><font color="#FF0000" size="4" face="Arial">The 80486</font></h3>
+
+<p><font size="3" face="Arial">The 80486 offered little in the
+way of architectural enhancements over its 80386 predecessor. The
+most significant enhancement of the 486 family was the
+integration of the 80387-math coprocessor into the 80486-core
+logic. Now, all software that requires the math coprocessor could
+run on the 80486 without any expensive hardware upgrades.</font></p>
+
+<p><font size="3" face="Arial">Like the 80386 SX, Intel decided
+to introduce the 80486 SX as a cost-reduced 80486 DX.
+Unfortunately, Intel chose to ensure that these processors were
+neither pin-compatible, nor 100% software compatible with each
+other. Unlike the 80386 SX, the 80486 SX enjoyed the full data
+bus and address bus of its DX counterpart. Instead, Intel removed
+the math coprocessor, thereby rendering the 80486 SX somewhat
+software incompatible with its DX counterpart. To further
+complicate matters, Intel introduced the 80487 SX -- the &quot;<b><i>math
+coprocessor</i></b>&quot; to the 80486 SX. Intel convinced
+vendors to include a new socket on the motherboard that could
+accommodate the 80486 SX and 80487 SX as an expensive hardware
+upgrade option. Unbeknownst to the consumer, the 80486 SX was an
+80486 DX with a non-functional math unit (though later versions
+of the chip actually removed the math unit). The 80487 SX was a
+full 80486 DX with a couple of pins relocated on the package --
+to prevent consumers from using the cheaper 80486 DX as an
+upgrade option. In this regard, Intel created a marketing
+deception. Intel marketed the 80487 SX as a math coprocessor to
+the 80486 SX. In reality, the 80487 SX electronically disabled
+the 80486 SX when installed, thereby relegating this chip to the
+status of an expensive space heater. Sadly, the consumer never
+knew or even suspected Intel of playing such manipulative games.</font></p>
+
+<p><font size="3" face="Arial">Also like the 80386, the Intel
+began to diversify their 80486 offerings. Low-power versions of
+the chip were introduced. The 80486 SL was introduced along with
+the 80386 SL as an integrated, low-power chip for notebook
+applications. The 80486 DX2 and DX4 were introduced, which
+doubled and tripled the core clock frequency. Power-saving
+features from the SL were introduced in later versions of the
+DX4. Finally, after Intel introduced the Pentium chip, they
+produced a version of the Pentium that was pin-compatible with
+the 80486. They called this chip an &quot;<b><i>overdrive</i></b>&quot;
+processor.</font></p>
+
+<p><font size="3" face="Arial">Likewise, AMD and Cyrix continued
+to pursue their own 486-compatible chip solutions. AMD introduced
+many Am486 variants. Cyrix continued their nomenclature of
+calling an 80486-compatible chip, the Cyrix 5x86. TI continued to
+manufacture Cyrix chips, and eventually started their own
+in-house microprocessor design (though the effort eventually
+failed). UMC entered the CPU market, but later withdrew because
+of patent infringement problems. IBM began manufacturing for
+Cyrix, and still pursuing their own microprocessor designs (the
+Blue Lightning series).</font></p>
+
+<h3><font color="#FF0000" size="4" face="Arial">The 80386</font></h3>
+
+<p><font size="3" face="Arial">In 1985, Intel introduced the
+80386. Like the 80286 before it, the 80386 added significant
+programming and addressibility enhancements. Protected mode was
+enhanced to allow easy transitions between it and real mode
+(without resetting the microprocessor). Another new operating
+mode (v86 mode) was introduced to allow DOS programs to execute
+within a protected mode environment. Addressibility was further
+enhanced to 32-bits, giving the 80386 four gigabytes of memory
+addressibility (2^32 = 4 GB).</font></p>
+
+<p><font size="3" face="Arial">Also like the 80286, the 80386 was
+not introduced in any computer systems for many years after its
+introduction. Compaq was the first mainstream company to
+introduce an 80386-based computer -- beating IBM to market.
+Regardless, the 80386 enjoyed a very long life for home and
+business computer users. This long life was largely due to the
+programming extensions in the 80386 -- namely the ability to
+create a protected mode operating system to take advantage of all
+4 GB of potential memory while still being able to run legacy DOS
+applications.</font></p>
+
+<p><font size="3" face="Arial">Shortly after the 80386 was
+introduced, Intel introduced the 80386 SX. To avoid confusion,
+Intel renamed the 80386 to the 80386 DX. The SX was a
+cost-reduced 80386 with a 16-bit data bus, and 24-bit address
+bus. The 16-bit data bus meant the SX was destined to have lower
+memory throughput than its DX counterpart; while the 24-bit
+address bus mean that the SX could only address 16 MB of physical
+memory. Regardless of the address bus and data bus differences,
+the SX and DX were software compatible with each other. Intel
+also introduced the 80376 as part of the 80386 family. The 376
+was an 80386 SX that exclusively ran in protected mode.</font></p>
+
+<p><font size="3" face="Arial">During its long reign, the
+80386-based computer began to evolve. Chipset vendors began
+dreaming of ways they could help improve the performance of the
+computer, thus giving their products a competitive advantage. One
+of the innovations was the introduction of the memory </font><a
+href="help.htm#Cache"><font size="3" face="Arial">cache</font></a><font
+size="3" face="Arial">. The memory cache within the chipset would
+play a huge role in Intel's future product plans. First, Intel
+introduced a cache . Later, they incorporated the cache into the
+microprocessor itself. Intel also made their second failed
+attempt at chip integration. The 80386 SL integrated core logic,
+chipset functionality, and power-saving features into the
+microprocessor.</font></p>
+
+<p><font size="3" face="Arial">During this time, the popularity
+of the personal computer, and most notably their Intel
+microprocessors, didn't escape the notice of many entrepreneurs
+wishing to cash in on Intel's business. AMD began their own
+&quot;x86&quot; microprocessor division. IIT began cloning the
+Intel math coprocessors. Other small startups, such as Cyrix and
+Nexgen, decided they too could design an Intel-compatible
+microprocessor. The aspirations of these companies didn't bode
+well within Intel. Shortly thereafter, Intel began taking
+measures to ensure their own dominance in the industry -- to the
+exclusion of everybody else. Hence, Intel began what many believe
+are anti-competitive (illegal) business practices.</font></p>
+
+<p><font size="3" face="Arial">In spite of Intel's business
+practices, many 80386 clones began to appear. AMD marketed the
+Am386 microprocessors in speeds from 16 MHz to 40 MHz, though it
+was possible to overclock this chip up to 80 MHz. IBM introduced
+the 386 SLC, which featured a low-power 386 with an integrated
+8-KB cache. IBM created other 386/486 hybrid chips -- some that
+were pin-compatible with Intel, and others that were not. Chips
+and Technologies created their own 386 clone. Cyrix stunned
+everybody by offering a 386 pin-compatible CPU, but called it a
+486 (a nomenclature pattern that Cyrix still uses). Texas
+Instruments served as a foundry for Cyrix, and negotiated rights
+to produce chips under their own name. Eventually, TI produced
+their own chips (based on the Cyrix core), with their own unique
+enhancements.</font></p>
+
+<h3><font color="#FF0000" size="4" face="Arial">The 80286</font></h3>
+
+<p><font size="3" face="Arial">In 1982, Intel introduced the
+80286. For the first time, Intel did not simultaneously introduce
+an 8-bit bus version of this processor (ala 80288). The 80286
+introduced some significant microprocessor extensions. Intel
+continued to extend the instruction set; but more significantly,
+Intel added four more </font><a href="help.htm#Address Lines"><font
+size="3" face="Arial">address lines</font></a><font size="3"
+face="Arial"> and a new operating mode called &quot;protected
+mode.&quot; Recall that the number of address lines directly
+relates to amount of physical that can be addressed by the
+microprocessor. The 8086, 8088, 80186, and 80188 all contained 20
+address lines, giving these processors one megabyte of
+addressibility (2^20 = 1MB). The 80286, with its 24 address
+lines, gives 16 megabytes of addressibility (2^24 = 16 MB).</font></p>
+
+<p><font size="3" face="Arial">For the most part, the new
+instructions of the 80286 were introduced to support the new
+protected mode. Real mode was still limited to the one megabyte
+program addressing of the 8086, et al. For all intents and
+purposes, a program could not take advantage of the 16-megabyte
+address space without using protected mode. Unfortunately,
+protected mode could not run real-mode (DOS) programs. These
+limitations thwarted attempts to adopt the 80286 programming
+extensions for mainstream consumer use.</font></p>
+
+<p><font size="3" face="Arial">IBM was spurred by the huge
+success of the IBM PC and decided to use the 80286 in their next
+generation computer, the IBM PC-AT. However, the PC-AT was not
+introduced until 1985 -- three years after introduction of the
+80286. </font></p>
+
+<p><font size="3" face="Arial">During the reign of the 80286, the
+first &quot;chipsets&quot; were introduced. The computer chipset
+was nothing more than a set of chips that replaced dozens of
+other peripheral chips, while maintaining identical
+functionality. Chips and Technologies became one of the first
+popular chipset companies.</font></p>
+
+<p><font size="3" face="Arial">Like the IBM PC, the PC-AT was
+hugely successful for home and business use. Intel continued to
+second-source the chips to ensure an adequate supply of chips to
+the computer industry. Intel, AMD, IBM, and Harris were known to
+produce 80286 chips as OEM products; while Siemens, Fujitsu, and
+Kruger either cloned it, or were also second-sources. Between
+these various manufacturers, the 80286 was offered in speeds
+ranging from 6 MHz to 25 MHz.</font></p>
+
+<h3><font color="#FF0000" size="4" face="Arial">The 80186 / 80188</font></h3>
+
+<p><font size="3" face="Arial">Intel continued the evolution of
+the 8086 and 8088 by introducing the 80186 and 80188. These
+processors featured new instructions, new fault tolerance
+protection, and was Intel's first of many failed attempts at the
+x86 chip integration game. </font></p>
+
+<p><font size="3" face="Arial">The new instructions and fault
+tolerance additions were logical evolutions of the 8086 and 8088.
+Intel added instructions that made programming much more
+convenient for low-level (assembly language) programmers. Intel
+also added some fault tolerance protection. The original 8086 and
+8088 would hang when they encountered an invalid computer
+instruction. The 80186 and 80188 added the ability to trap this
+condition and attempt a recovery method.</font></p>
+
+<p><font size="3" face="Arial">Intel integrated this processor
+with many of the peripheral chips already employed in the IBM-PC.
+The 80186 / 80188 integrated interrupt controllers, interval
+timers, DMA controllers, clock generators, and other core support
+logic. In many ways, this chip was produced a decade ahead of its
+time. Unfortunately, this chip didn't catch on with many hardware
+manufacturers; thus spelled the end of Intel's first attempt at
+CPU integration. However, this chip has enjoyed a tremendous
+success in the world of embedded processors. If you look on your
+high performance disk driver or disk controller, you might still
+see an 80186 being used.</font></p>
+
+<p><font size="3" face="Arial">Eventually, many embedded
+processor vendors began manufacturing these chips as a second
+source to Intel, or in clones of their own. Between the various
+vendors, the 80186/80188 was available in speeds ranging from 6
+MHz to 40 MHz.</font></p>
+
+<h3><font color="#FF0000" size="4" face="Arial">The 8086 / 8088</font></h3>
+
+<p><font size="3" face="Arial">The 8086 and 8088 were binary
+compatible with each other, but not pin-compatible. Binary
+compatibility means that either microprocessor could execute the
+same programs. Pin-incompatibility means that you can&#146;t plug
+the 8086 into the 8088 and visa versa, and expect the chips to
+work. The new &quot;x86&quot; chips implemented a Complex
+Instruction Set Computer (</font><a href="help.htm#CISC"><font
+size="3" face="Arial">CISC</font></a><font size="3" face="Arial">)
+design methodology. </font></p>
+
+<p><font size="3" face="Arial">The 8086 and 8088 both feature
+twenty address pins. The number of address pins determines how
+much memory a microprocessor can access. Twenty address pins gave
+these microprocessors a total address space of one megabyte (2^20
+= one megabyte).</font></p>
+
+<p><font size="3" face="Arial">The 8086 and 8088 featured
+different data bus sizes. The data bus size determines how many
+bytes of data the microprocessor can read in each cycle. The 8086
+featured a 16-bit data bus, while the 8088 featured an 8-bit data
+bus. IBM chose to implement the 8088 in the IBM-PC, thus saving
+some cost and design complexity.</font></p>
+
+<p><font size="3" face="Arial">At the time IBM introduced the
+IBM-PC, a fledgling Intel Corporation struggled to supply enough
+chips to feed the hungry assembly lines of the expanding personal
+computer industry. Therefore to ensure sufficient supply to the
+personal computer industry, Intel subcontracted the fabrication
+rights of these chips to AMD, Harris, Hitachi, IBM, Siemens, and
+possibly others. Amongst Intel and their cohorts, the 8086 line
+of processors ran at speeds ranging from 4 MHz to 16 MHz.</font></p>
+
+<p><font size="3" face="Arial">It didn&#146;t take long for the
+industry to start &quot;cloning&quot; the IBM-PC. Many companies
+tried; but mostly they all failed because their BIOS was not
+compatible with the IBM-PC BIOS. Columbia, Kayro and others went
+by the wayside because they were not totally PC-compatible.
+Compaq broke though the compatibility barrier with the
+introduction of the Compaq portable computer. Compaq's success
+created the turning point that enabled today's modern computer
+industry.</font></p>
+
+<p><font size="3" face="Arial">NEC was the first to
+&quot;clone&quot; this new Intel chip with their V20 and V30
+designs. The V20 was pin-compatible with the 8088, while the V30
+was pin-compatible with the 8086. The V-series ran approximately
+20% faster than the Intel chips when running at the same clock
+speed. Therefore, the V-series chips provided a cheap
+&quot;upgrade&quot; to owners of the IBM-PC and other clones
+computers. The V-series chips were very interesting. These chips
+were introduced in 1985 at approximately the same time as Intel's
+introduction of the 80386. The 80386 was still years away from
+production, and the 80286 was just barely being accepted in the
+IBM-PC/AT. Even though these chips were pin-compatible with the
+8086 and 8088, they also had some extensions to the architecture.
+They featured all of the &quot;new&quot; instructions on the
+80186 / 80188, and also were capable of running in Z-80 mode
+(directly running programs written for the Z-80 microprocessor).</font></p>
+
+<p>&nbsp;</p>
+
+<hr>
+
+<p>&nbsp;</p>
+
+<table border="0" cellpadding="0" cellspacing="0" width="800">
+    <tr>
+        <td align="center" width="70%"><font color="#0000FF"
+        size="5" face="Arial"><b>Glossary of PC Processors by
+        x86.org</b></font></td>
+        <td align="center" width="30%"><a
+        href="http://www.x86.org" target="default"><img
+        src="../Style/Style0498/small_logo.jpg" border="0"></a></td>
+    </tr>
+</table>
+
+<table border="0" cellpadding="5" cellspacing="0" width="800">
+    <tr>
+        <td valign="top" width="20%"><a name="CISC"><font
+        size="3" face="Arial">CISC</font></a></td>
+        <td valign="top" width="80%"><font size="3" face="Arial">Complex
+        Instruction Set Computer. A CISC microprocessor is one in
+        which the number of bytes needed to represent the opcode
+        instruction is not a fixed, regular length (for example,
+        32-bits each). (See also RISC, EPIC, and VLIW.)</font></td>
+    </tr>
+    <tr>
+        <td valign="top" width="20%"><a name="Opcode"><font
+        size="3" face="Arial">Opcode</font></a></td>
+        <td valign="top" width="80%"><font size="3" face="Arial">The
+        data that represents a microprocessor instruction.</font></td>
+    </tr>
+    <tr>
+        <td valign="top" width="20%"><a name="RISC"><font
+        size="3" face="Arial">RISC</font></a></td>
+        <td valign="top" width="80%"><font size="3" face="Arial">Reduced
+        Instruction Set Computer. A RISC microprocessor that has
+        fewer, simpler instructions than its CISC counterpart.
+        RISC instructions perform simple, rudimentary functions.
+        The simplicity of these instructions results in a very
+        simple microprocessor design that can execute very fast.
+        RISC instructions are typically characterized by fix
+        length instruction sets (for example, all instructions
+        are 32-bits each). (See also CISC, EPIC, and VLIW.)</font></td>
+    </tr>
+    <tr>
+        <td valign="top" width="20%"><a name="EPIC"><font
+        size="3" face="Arial">EPIC</font></a></td>
+        <td valign="top" width="80%"><font size="3" face="Arial">Explicitely
+        Parallel Instruction Computing. EPIC is a fancy acronym
+        that Intel invented to obfuscate the fact that they do
+        not want the public appearance that their Merced
+        microprocessor is actually a VLIW design. After all,
+        Intel didn't invent VLIW, therefore they don't want to be
+        publicly associated with a VLIW design.</font></td>
+    </tr>
+    <tr>
+        <td valign="top" width="20%"><a name="VLIW"><font
+        size="3" face="Arial">VLIW</font></a></td>
+        <td valign="top" width="80%"><font size="3" face="Arial">Very
+        Long Instruction Word. A microprocessor that packs many
+        simple RISC-like instructions into a much longer internal
+        instruction word format. A VLIW microprocessor will
+        usually have execution units, capable of executing all of
+        the instructions contained in the instruction word, in
+        parallel.</font></td>
+    </tr>
+    <tr>
+        <td valign="top" width="20%"><a name="MMX"><font size="3"
+        face="Arial">MMX</font></a></td>
+        <td valign="top" width="80%"><font size="3" face="Arial">Multi-Media
+        eXtensions. Intel claims that &quot;MMX&quot; is not an
+        acronym, meaning &quot;Multi-Media eXtensions&quot;
+        because they have filed for a trademark under this name.
+        In reality, MMX instructions are intended to enhance
+        programs that have multi-media capabilities. </font></td>
+    </tr>
+    <tr>
+        <td valign="top" width="20%"><a name="Address Lines"><font
+        size="3" face="Arial">Address Lines</font></a></td>
+        <td valign="top" width="80%"><font size="3" face="Arial">The
+        number of address lines, or &quot;address pins&quot; on a
+        microprocessor determine how much memory the chip can
+        address. The amount of addressible memory can be
+        calculated as 2^#address_lines (two raised to the power
+        of the number of address lines). A microprocessor with 32
+        address lines can address 2<sup>32 </sup>bytes of memory
+        (4 G Bytes).</font></td>
+    </tr>
+    <tr>
+        <td valign="top" width="20%"><a name="Cache"><font
+        size="3" face="Arial">Cache</font></a></td>
+        <td valign="top" width="80%"><font size="3" face="Arial">A
+        cache is a bank of high speed memory that stores the most
+        recently accessed code and data. When the microprocessor
+        requests data that is in the cache, the amount of time to
+        retrieve the data is many times less than the amount of
+        time needed to access main memory. Many microprocessors
+        have a cache inside of the chip itself. In some cases,
+        there is a cache for the cache (known as a 2<sup>nd</sup>-level
+        cache). A cache may hold code, data, or even recently
+        accessed data on a hard disk. In general, a cache can be
+        created for faster access to any slower device, beit main
+        memory or hard disks.</font></td>
+    </tr>
+</table>
+
+<hr>
+
+<address>
+    © Copyright 1998, Intel Secrets Web Site and Robert R.
+    Collins 
+</address>
+</body>
+</html>

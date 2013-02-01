@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>
+9.5  IDT Descriptors
+</title>
+<body>
+<a name="09-05"></a>
+Prev: <a href="chp09-04.htm">9.4  Interrupt Descriptor Table</a><br>
+Next: <a href="chp09-06.htm">9.6  Interrupt Tasks and Interrupt Procedures</a>
+<hr>
+<h2>
+9.5  IDT Descriptors
+</h2>
+<p>
+The IDT may contain any of three kinds of descriptor:
+<p>
+<pre>
+   -  Task gates
+   -  Interrupt gates
+   -  Trap gates
+</pre>
+Figure 9-3 illustrates the format of task gates and 80386 interrupt gates
+and trap gates. (The task gate in an IDT is the same as the task gate
+already discussed in Chapter 7.)
+<p>
+<p>
+<a name="F-09-03"></a>
+<h3>Figure 9-3.  80306 IDT Gate Descriptors</h3>
+<p>
+<pre>
+                                80386 TASK GATE
+   31                23                15                7                0
+  +-----------------+-----------------+---+---+---------+-----------------+
+  |#############(NOT USED)############| P |DPL|0 0 1 0 1|###(NOT USED)####|4
+  |-----------------------------------+---+---+---------+-----------------|
+  |             SELECTOR              |#############(NOT USED)############|0
+  +-----------------+-----------------+-----------------+-----------------+
+
+                                80386 INTERRUPT GATE
+   31                23                15                7                0
+  +-----------------+-----------------+---+---+---------+-----+-----------+
+  |           OFFSET 31..16           | P |DPL|0 1 1 1 0|0 0 0|(NOT USED) |4
+  |-----------------------------------+---+---+---------+-----+-----------|
+  |             SELECTOR              |           OFFSET 15..0            |0
+  +-----------------+-----------------+-----------------+-----------------+
+
+                                80386 TRAP GATE
+   31                23                15                7                0
+  +-----------------+-----------------+---+---+---------+-----+-----------+
+  |          OFFSET 31..16            | P |DPL|0 1 1 1 1|0 0 0|(NOT USED) |4
+  |-----------------------------------+---+---+---------+-----+-----------|
+  |             SELECTOR              |           OFFSET 15..0            |0
+  +-----------------+-----------------+-----------------+-----------------+
+</pre>
+<p>
+<hr>
+Prev: <a href="chp09-04.htm">9.4  Interrupt Descriptor Table</a><br>
+Next: <a href="chp09-06.htm">9.6  Interrupt Tasks and Interrupt Procedures</a>
+</body>
+</html>

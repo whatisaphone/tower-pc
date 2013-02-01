@@ -1,0 +1,584 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>Detecting Intel Processors -- Knowing the generation of a system CPU</TITLE>
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.0Gold (Win95; I) [Netscape]">
+</HEAD>
+<BODY>
+
+<H1 ALIGN=CENTER><FONT COLOR="#0000FF"><FONT SIZE=+3>Detecting Intel Processors</FONT></FONT></H1>
+
+<H2 ALIGN=CENTER><FONT COLOR="#0000FF"><FONT SIZE=+2>Knowing the generation
+of a system CPU</FONT></FONT></H2>
+
+<H3 ALIGN=CENTER><FONT COLOR="#0000FF"><FONT SIZE=+1>by Robert R. Collins</FONT></FONT></H3>
+
+<P>
+<HR></P>
+
+<P>The debate about the correct way to detect different generations of
+Intel microprocessors has raged for years. In one corner are programmers
+who traditionally used a series of PUSHF/POPF instructions to detect the
+FLAGs differences between processors. In the other corner, it always seemed
+I stood alone, arguing that this technique is flawed. The debate subsided
+somewhat in 1989, when Intel published an algorithm that relied upon PUSHF/POPF
+for microprocessor identification, But even while the naysayers said, &quot;See,
+even Intel does it our way,&quot; I stood in my little corner saying &quot;Sure,
+but it's wrong.&quot;</P>
+
+<P>The truth is, neither algorithm is fail-safe. Intel's PUSHF/POPF method
+can misdiagnose which processor family is running and does not guarantee
+to operate outside of real mode. My technique should always run in v86
+mode, but sometimes doesn't because of shortcomings in the design of many
+v86-memory managers - like EMM386 from Microsoft.</P>
+
+<H2><FONT COLOR="#FF0000">Intel's Algorithm</FONT></H2>
+
+<P>All current-generation Intel x86 processors have an instruction called
+CPUID that reads CPU identification information. This information can be
+used by software to dynamically take advantage of processor-specific programming
+techniques. Before CPUID, you needed to write an algorithm to detect differences
+between different generations of processors. This algorithm would serve
+much of the same purpose as executing the CPUID instruction. Intel didn't
+invent the algorithm; the company borrowed one that was in wide distribution
+on the Internet, and published it in the <I><U>i486 Microprocessor Programmer's
+Reference Manual</U> </I>(Intel Corp. 1990), claiming &quot;Copyright Intel
+Corporation.&quot; Oddly, the original algorithm was published in two halves,
+in opposite ends of the manual. Section 22. 10 contained the algorithm
+to detect the differences between 8086 through 80386. Figure 3-23 contained
+the algorithm to detect the difference between the 80386 and 80486. The
+latest edition of this manual removes the code fragments, referring you
+to &quot;<U>AP-485, Intel Processor Identification With the CPUID Instruction</U>,&quot;
+Order Number 241618 (<A HREF="ftp://ftp.intel.com/pub/IAL/software specs/ap48504f.pdf">ftp://ftp.intel.com/pub/IAL/software
+specs/ap48504f.pdf</A>).</P>
+
+<UL>
+<P><B>AP-485 includes the following comment:</B></P>
+</UL>
+
+<UL>
+<P><I>Please understand that the code sequences have been validated by
+Intel to detect CPU ID, math coprocessor function, and initialize accordingly.
+Any other approach may produce unpredictable results in future processors.</I></P>
+</UL>
+
+<P>It's ironic that Intel claims that &quot;any other approach may produce
+unpredictable results,&quot; since its algorithm is prone to failures that
+yield unpredictable results (as I'll demonstrate in this article). For
+more information on CPUID, see the text box &quot;<U>Pentium Detection</U>,&quot;
+by Robert Moote (which accompanied the article &quot;<U>Processor-Detection
+Schemes</U>,&quot; by Richard C. Leinecker, <I>DDJ, </I>June 1993).</P>
+
+<P>The Intel algorithm relies on a series of PUSHF/POPF instructions to
+set and clear various FLAGs bits. Each generation of processor has a slightly
+different behavior which may be detected by this approach. This algorithm
+makes no attempt to detect the 80186/88 series of processors. In this regard,
+the algorithm is incomplete.</P>
+
+<P>The 8086/88 is distinguished from the 80286 by attempting to clear bits
+12 - 15 of the FLAGs register, The 8086/88 will always set these bits,
+regardless of what values are popped into them (<A HREF="#Lst1">see Listing
+One</A>). The 286 treats these bits differently. In real mode, these bits
+are always cleared by the 286; in protected mode, they are used for IOPL
+(I/O Privilege Level) and NT (Nested Task). To continue the detection code,
+you need to set bits 12 - 15 in the FLAGs register, and see if they are
+cleared by the processor. If they are, then a 286 has been detected (<A HREF="#Lst2">see
+Listing Two</A>).</P>
+
+<P>If you gethis point in the algorithm, you know you have at least a 386.
+Therefore, it is safe to use 32-bit instructions, like PUSHFD. This will
+be necessary in detecting the difference between a 386 and 486. These processors
+are distinguished from each othmpting to set the AC flag in the EFLAGs
+register. This flag was introduced in the 486, The 386 never sets this
+bit, and always clhen it is set by POPFD. Therefore, to detect the difference
+between these processor generations, the algorithm attempts to set thiee
+if it is latched or cleared by the processor (<A HREF="#Lst3">see Listing
+Three</A>).</P>
+
+<P>At this point in the algorithm, you're almost home. To detect the difference
+between the 486 and the Pentium, you attempt to set another new EFLAG bit
+(bit-21) called the &quot;ID flag.&quot; This flag has only one purpose
+- to indicate the presence of the CPUID instruction. This bit was first
+introduced on the Pentium, but later retrofitted into the 486. If the CPUID
+instruction exists on either processor, it may be executed to return the
+processor-identification information. 486s without the CPUID instruction
+will not be able to toggle this bit. Therefore, it is safe to execute a
+sequence of instructions on either processor that detects the processor's
+ability to toggle this bit (see <A HREF="#Lst4">Listing Four</A>).</P>
+
+<P>Once the algorithm gets to this point, you can execute the CPUID instruction
+to obtain the processor identification. This instruction can be run in
+any processor mode, at any privilege level. On the Pentium and 486, the
+CPUID instruction has two levels:</P>
+
+<UL>
+<LI>Level 0 returns a vendor ID string in EBX:EDX:ECX, which says &quot;GenuineIntel&quot;
+when printed as ASCII text.</LI>
+
+<LI>Level 1 returns the processor identification signature - the same signature
+that appears in the EDX register after a processor RESET (see <A HREF="#Lst5">Listing
+Five</A>).</LI>
+</UL>
+
+<P>The complete Intel algorithm is available in AP-485, or via anonymous
+FTP at <A HREF="ftp://ftp.intel.com/pub/IAL/tools_utils_demos/cpuid3.zip">ftp://ftp.intel.com/pub/IAL/tools_utils_demos/cpuid3.zip</A>.<BR>
+</P>
+
+<H2><FONT COLOR="#FF0000">The Caveats</FONT></H2>
+
+<P>In spite of Intel's claim, this algorithm is far from perfect. For one
+thing, it fails to detect the 80186/88 series of processors. Even though
+this processor wasn't adopted by many PC manufacturers, it was used, in
+some computers, primarily notebook computers. The 80186/88 processor contains
+most of the new instructions and CPU-generated exceptions contained in
+the 80286. These instructions include <I>PUSHA/POPA, PUSH immed, SHL reg,
+immed, </I>and the invalid opcode exception. The only 80286 instructions
+and exceptions not implemented in the 80186/88 are those specifically used
+for protected mode. Failure to detect this processor could prohibit the
+use of some software that can take advantage of these new instructions
+and exceptions.</P>
+
+<P>This algorithm is only designed to run in real mode, not in a virtual-8086
+DOS box running under Windows. This limitation is even mentioned in the
+486 manual. This results from the fact that PUSHF and POPF are privileged
+instructions that are sensitive to the I/O Privilege Level while running
+in protected mode. (DOS boxes, running under Windows, run in virtual-8086
+mode - a special form of protected mode.) If IOPL is not equal to three,
+then a general-protection fault occurs while attempting to execute these
+instructions. The operating system then intervenes to emulate the instruction
+as it sees fit. Therefore, there is no guarantee that the operating system
+will mimic the real-mode behavior of the specific processor under test.
+In reality, this may not be as big a problem as it sounds. Windows sets
+IOPL equal to three for DOS boxes. This renders these instructions transparent
+to the operating system, and they execute without generating a fault.</P>
+
+<P>Not all operating systems with a DOS-compatibility box follow the example
+set by Windows. OS/2 Warp uses a special form of virtual-8086 mode, called
+Virtual Mode Extensions (VME). Running in VME affords the protection advantages
+of running at IOPL=2 without incurring the faults generated by PUSHF/POPF
+used in this algorithm. (See http://www.x86.org/vme1 for a discussion on
+VME.) To accommodate this behavior, Intel modified the algorithms of PUSHF/POPF
+to allow them to run in VME without faulting to the host operating system.
+When IOPL&lt;3, PUSHF always pushes an IOPL value of three onto the stack.
+This doesn't cause any problems for the Intel algorithm, as none of the
+detection code depends upon setting or clearing these two bits alone.</P>
+
+<P>Should the CPUID instruction ever return a signed number (for example,
+80000001h), the Intel algorithm will fail. In <A HREF="#Lst5">Listing Five</A>,
+the instruction above the designated &quot;&lt;--&quot; symbol is a conditional
+jump based on a signed comparison. This is a common programming error which
+can easily be fixed in the Intel algorithm.</P>
+
+<P>This algorithm relies on undocumented processor behavior to detect the
+differences between early generations of Intel processors. The use of such
+programming tricks violates Intel's own recommendations. Consider the following
+guidelines set forth in various Intel manuals:</P>
+
+<UL>
+<P><B><I><FONT SIZE=+1>Reserved Bits and Software Compatibility</FONT></I></B></P>
+
+<P><I>Software should not try to identify features by exploiting programming
+tricks, undocumented features, or otherwise deviating from the guidelines
+presented in this application note.</I></P>
+
+<P><I>When bits are marked as reserved, it is essential for compatibility
+with future processors that software treat these bits as having a future,
+though unknown, effect. The behavior of reserved bits should be regarded
+as not only undefined, but unpredictable. Software should follow these
+guidelines in dealing with reserved bits:</I></P>
+
+<UL>
+<LI><I>Do not use undocumented features of a processor to identify steppings
+or features.</I></LI>
+
+<LI><I>Do not depend on the states of any reserved bits when testing the
+values of registers which contain such bits. Mask out the reserved bits
+before testing.</I></LI>
+
+<LI><I>Do not depend on the states of any reserved bits when storing to
+memory or to a register.</I></LI>
+
+<LI><I>Do not depend on the ability to retain information written into
+any reserved bits.</I></LI>
+
+<LI><I>When loading a register, always load the reserved bits with the
+values indicated in the documentation, if any, or reload them with values
+previously read from the same register.</I></LI>
+</UL>
+</UL>
+
+<P>These guidelines were quoted from a combination of two sources: <I><U>Pentium
+Pro Family Developer's Manual, Volume 3: Operating System Writer's Manual</U>
+</I>(1996), section 1.3.2 and <I><U>AP-485 Application Note: Intel Processor
+Identification With the CPUID Instruction</U>. </I>Very similar guidelines
+also appear in the <I><U>80386 High Performance Microprocessor with Integrated
+Memory Management Unit</U> </I>(1985), section 2.3. 10; <I><U>i486 Microprocessor</U>
+</I>(1989), section 2.1.6; and <I><U>Pentium Processor Family Deoeloper's
+Manual, Volume 3</U> </I>(1995), section 1.3.2.</P>
+
+<P>These are strong guidelines set forth in Intel's documentation, and
+the irony of Intel's algorithm is that it violates each and every one of
+them. Detecting the difference between 8086/88 and 80286/88, and between
+80286/88 and 80386, completely depends upon setting and clearing reserved
+bits in the FLAGs register, and then depends on the state of those bits
+when they are stored to a resultant register. Detecting the difference
+between 386 and 486, and between 486 and Pentium, depends upon setting
+an EFLAGs bit that is undefined on the previous-generation processor, then
+depends on that processor to clear the undefined bit. To abide by Intel's
+guidelines, the behavior of these undocumented FLAGs bits must be documented
+in their respective manuals - but they aren't. None of these differences
+are documented in any of the processors' respective data sheets. Processor
+behavior often isn't documented until many years after release. The 8086
+FLAGs behavior was first described in the 386 programmer's reference manual
+in 1988 (nearly ten years after the 8086's introduction). The 80286 FLAGs
+behavior wasn't described until the Pentium manuals were introduced in
+1993 (ten years after the 80286 introduction, and four years after Intel
+introduced this algorithm in the 486 manuals).</P>
+
+<P>Even though Intel's algorithm violates all of its own guidelines, the
+company is partially exonerated by the Pentium programmer's reference manual,
+where Intel says that it's acceptable to use this algorithm to detect the
+differences in these processors. However, the Pentium manual doesn't change
+the prohibitions set forth in the 386 or 486 manuals; those prohibitions
+still exist. The following excerpt was taking from the <I><U>Pentium Programmer's
+Reference Manual</U>, </I>chapter 5:</P>
+
+<P>The setting of the flags stored by the PUSHF instruction, by interrupts,
+and by exceptions is different on the 32-bit processors than that stored
+by the 8086, and Intel 286 processors in bits 12 and 13 (IOPL), 14 (NT),
+and 15 (reserved). These differences can be used to distinguish what type
+of processor is present in a system while an application is running.</P>
+
+<P>My biggest objection to this algorithm is that it's prone to failure
+on all processors newer than a 386. When it fails, the algorithm incorrectly
+determines that a 386 processor is installed in the system. The failure
+is caused when an interrupt occurs precisely where the &quot;&quot; appears
+in <A HREF="#Lst3">Listing Three</A>. When this occurs, the AC flag is
+cleared (in real mode), and the algorithm fails to detect the correct processor
+type. The AC flag has always behaved in this manner, but the behavior wasn't
+documented until the 1994 edition of the <I><U>Pentium Programmer's Reference
+Manual</U> </I>(chapter 25, description of INT instruction). There are
+a few ways to demonstrate this failure (assuming you're running on a 486
+or later processor). You can put an HLT instruction or an INT instruction
+at the point designated by the &quot;&lt;--&quot;, or run the algorithm
+in a loop. Eventually, a timer-tick interrupt will occur at this point.
+Inserting an HLT instruction will force the processor to wait for an interrupt
+before continuation. When the interrupt occurs, the AC flag will be cleared
+during its invocation. <A HREF="#Lst6">Listing Six</A> presents source
+code to demonstrate this behavior.</P>
+
+<H2><FONT COLOR="#FF0000">Conclusion</FONT></H2>
+
+<P>The Intel algorithm isn't nearly as bad as it sounds. It has a few bugs
+that can easily be fixed. Intel's intentions were noble, but their implementation
+was flawed. In spite of its drawbacks, the reasons this algorithm is in
+such widespread use are simple:</P>
+
+<UL>
+<LI>It's conveniently available and published by Intel.</LI>
+
+<LI>It works - most of the time, even in v86 mode.</LI>
+</UL>
+
+<P>The biggest drawbacks are that it's not guaranteed to work outside of
+real mode, and it depends upon undocumented processor behavior. It would
+be nice if an algorithm existed to get the actual stepping information
+of processors that didn't support the CPUID instruction, and didn't rely
+on undocumented processor behavior. In my next column, I'll present such
+an algorithm, discuss its strengths and weaknesses, along with a comparison
+of the two algorithms under real operating conditions.</P>
+
+<P><A NAME="Lst1"></A><B><FONT SIZE=+1>Listing One</FONT></B></P>
+
+<PRE>        pushf                   ; push original FLAGS
+        pop     ax              ; get original FLAGS
+        mov     cx, ax          ; save original FLAGS
+        and     ax, 0fffh       ; clear bits 12-15 in FLAGS
+        push    ax              ; save new FLAGS value on stack
+        popf                    ; replace current FLAGS value
+        pushf                   ; get new FLAGS
+        pop     ax              ; store new FLAGS in AX
+        and     ax, 0f000h      ; if bits 12-15 are set, then
+        cmp     ax, 0f000h      ;   processor is an 8086/8088
+        mov     _cpu_type, 0    ; turn on 8086/8088 flag
+        je      end_cpu_type    ; jump if processor is 8086/8088
+</PRE>
+
+<P><BR>
+</P>
+
+<P><A NAME="Lst2"></A><B><FONT SIZE=+2>Listing Two</FONT></B></P>
+
+<PRE>        or      cx, 0f000h      ; try to set bits 12-15
+        push    cx              ; save new FLAGS value on stack
+        popf                    ; replace current FLAGS value
+        pushf                   ; get new FLAGS
+        pop     ax              ; store new FLAGS in AX
+        and     ax, 0f000h      ; if bits 12-15 are clear
+        mov     _cpu_type, 2    ; processor=80286, turn on 80286 flag
+        jz      end_cpu_type    ; if no bits set, processor is 80286
+</PRE>
+
+<P><BR>
+</P>
+
+<P><A NAME="Lst3"></A><B><FONT SIZE=+2>Listing Three</FONT></B></P>
+
+<PRE>        pushfd                  ; push original EFLAGS
+        pop     eax             ; get original EFLAGS
+        mov     ecx, eax        ; save original EFLAGS
+        xor     eax, 40000h     ; flip AC bit in EFLAGS
+        push    eax             ; save new EFLAGS value on stack
+        popfd                   ; replace current EFLAGS value
+; &lt;--
+        pushfd                  ; get new EFLAGS
+        pop     eax             ; store new EFLAGS in EAX
+        xor     eax, ecx        ; can't toggle AC bit, processor=80386
+        mov     _cpu_type, 3    ; turn on 80386 processor flag
+        jz      end_cpu_type    ; jump if 80386 processor
+        push    ecx
+        popfd                   ; restore AC bit in EFLAGS first
+</PRE>
+
+<P><BR>
+</P>
+
+<P><A NAME="Lst4"></A><B><FONT SIZE=+2>Listing Four</FONT></B></P>
+
+<PRE>        mov     _cpu_type, 4    ; turn on 80486 processor flag
+        mov     eax, ecx        ; get original EFLAGS
+        xor     eax, 200000h    ; flip ID bit in EFLAGS
+        push    eax             ; save new EFLAGS value on stack
+        popfd                   ; replace current EFLAGS value
+        pushfd                  ; get new EFLAGS
+        pop     eax             ; store new EFLAGS in EAX
+        xor     eax, ecx        ; can't toggle ID bit,
+        je      end_cpu_type    ; processor=80486
+</PRE>
+
+<P><BR>
+</P>
+
+<P><A NAME="Lst5"></A><B><FONT SIZE=+2>Listing Five</FONT></B></P>
+
+<PRE>        mov     _cpuid_flag, 1  ; flag indicating use of CPUID inst.
+        push    ebx             ; save registers
+        push    esi
+        push    edi
+        mov     eax, 0          ; set up for CPUID instruction
+        CPU_ID                  ; get and save vendor ID
+
+        mov     dword ptr _vendor_id, ebx
+        mov     dword ptr _vendor_id[+4], edx
+        mov     dword ptr _vendor_id[+8], ecx
+
+        mov     si, ds
+        mov     es, si
+
+        mov     si, offset _vendor_id
+        mov     di, offset intel_id
+        mov     cx, 12          ; should be length intel_id
+        cld                     ; set direction flag
+        repe    cmpsb           ; compare vendor ID to &quot;GenuineIntel&quot;
+        jne     end_cpuid_type  ; if not equal, not an Intel processor
+
+        mov     _intel_CPU, 1   ; indicate an Intel processor
+        cmp     eax, 1          ; make sure 1 is valid input for CPUID
+        jl      end_cpuid_type  ; if not, jump to end
+; &lt;--
+        mov     eax, 1
+        CPU_ID                  ; get family/model/stepping/features
+        mov     _cpu_signature, eax
+        mov     _features_ebx, ebx
+        mov     _features_edx, edx
+        mov     _features_ecx, ecx
+
+        shr     eax, 8          ; isolate family
+        and     eax, 0fh
+        mov     _cpu_type, al   ; set _cpu_type with family
+</PRE>
+
+<P><BR>
+</P>
+
+<P><A NAME="Lst6"></A><B><FONT SIZE=+2>Listing Six</FONT></B></P>
+
+<PRE>        TITLE   intel
+        DOSSEG
+        .model  small
+        .stack  100h
+
+;----------------------------------------------------------------------
+; Include file section
+;----------------------------------------------------------------------
+        includelib      \masm\lib\miscutil.lib
+        includelib      \masm\lib\videofns.lib
+
+
+;----------------------------------------------------------------------
+; External declarations
+;----------------------------------------------------------------------
+        extrn   _get_fpu_type: proc
+        extrn   _get_cpu_type: proc
+        extrn   Set_cursor:     proc
+        extrn   Get_cursor:     proc
+        extrn   HEX32OUT:       proc
+        extrn   CLS:            proc
+
+        extrn   _cpu_type: byte
+        extrn   _fpu_type: byte
+        extrn   _cpuid_flag: byte
+        extrn   _intel_CPU: byte
+        extrn   _vendor_id: byte
+        extrn   _cpu_signature: dword
+        extrn   _features_ecx: dword
+        extrn   _features_edx: dword
+        extrn   _features_ebx: dword
+
+;----------------------------------------------------------------------
+; Local variables &amp; Equates
+;----------------------------------------------------------------------
+        KBD_ReadFn      equ     0       ; function to read keyboard
+        KBD_StatusFn    equ     1       ; function to read keyboard
+status
+
+;----------------------------------------------------------------------
+; Misc data variables
+;----------------------------------------------------------------------
+        .data
+        PSeriesMsg      label   byte
+                        db      &quot;P6:     &quot;
+        P6Buffer        db      &quot;         &quot;,0dh,0ah
+                        db      &quot;P5:     &quot;
+        P5Buffer        db      &quot;         &quot;,0dh,0ah
+                        db      &quot;P4:     &quot;
+        P4Buffer        db      &quot;         &quot;,0dh,0ah
+                        db      &quot;P3:     &quot;
+        P3Buffer        db      &quot;         &quot;,0dh,0ah
+                        db      &quot;P2:     &quot;
+        P2Buffer        db      &quot;         &quot;,0dh,0ah
+                        db      &quot;P2:     &quot;
+        P1Buffer        db      &quot;         &quot;,0dh,0ah
+                        db      &quot;P0:     &quot;
+        P0Buffer        db      &quot;         &quot;,0dh,0ah,24h
+
+
+        P6Count         dd      0
+        P5Count         dd      0
+        P4Count         dd      0
+        P3Count         dd      0
+        P2Count         dd      0
+        P1Count         dd      0
+        P0Count         dd      0
+
+        CPUTbl1         dw      offset  P6Count
+                        dw      offset  P5Count
+                        dw      offset  P4Count
+                        dw      offset  P3Count
+                        dw      offset  P2Count
+                        dw      offset  P1Count
+                        dw      offset  P0Count
+
+        CPUTbl2         dw      offset  P6Buffer
+                        dw      offset  P5Buffer
+                        dw      offset  P4Buffer
+                        dw      offset  P3Buffer
+                        dw      offset  P2Buffer
+                        dw      offset  P1Buffer
+                        dw      offset  P0Buffer
+
+        CPUID_Buffer    db      &quot;        $&quot;
+
+;----------------------------------------------------------------------
+;
+;----------------------------------------------------------------------
+        .code
+        .8086
+start:  mov     ax, @data
+        mov     ds, ax          ; set segment register
+        mov     es, ax          ; set segment register
+        and     sp, not 3       ; align stack to avoid AC fault
+        call    CLS             ; clear screen
+        call    Get_cursor
+        mov     ah,9
+        mov     dx,offset PSeriesMsg            ; get message buffer
+address
+        int     21h
+        mov     P6Buffer[8],'$'         ; make ASCII$ string
+        mov     P5Buffer[8],'$'         ; make ASCII$ string
+        mov     P4Buffer[8],'$'         ; make ASCII$ string
+        mov     P3Buffer[8],'$'         ; make ASCII$ string
+        mov     P2Buffer[8],'$'         ; make ASCII$ string
+        mov     P1Buffer[8],'$'         ; make ASCII$ string
+        mov     P0Buffer[8],'$'         ; make ASCII$ string
+
+@GetCPUID:
+        call    _get_cpu_type   ; determine processor type
+        call    print
+        mov     _cpu_type,0             ; clear it...for later
+        mov     ah,KBD_StatusFn         ; get keyboard status
+        int     16h                     ; read keyboard status
+        jz      @GetCPUID
+        mov     ah,KBD_ReadFn           ; read keyboard function
+        int     16h                     ; get get key
+        mov     ax, 4c00h       ; terminate program
+        int     21h
+
+
+;----------------------------------------------------------------------
+  print proc    near
+;----------------------------------------------------------------------
+        xor     bx,bx
+        mov     bl,_cpu_type            ; get CPUID
+        shl     bx,1                    ; *2
+        mov     si,CPUTbl1[bx]          ; get pointer to variable
+        add     word ptr [si],1         ; adjust CPUID counter
+        adc     word ptr [si][2],0
+        mov     dx,608h                 ; get initial row/col pointer
+        sub     dh,byte ptr _cpu_type
+        call    Set_cursor              ; set cursor position
+        mov     si,CPUTbl1[bx]
+        mov     di,CPUTbl2[bx]          ; get buffer pointer
+        call    HEX32OUT                ; do buffer
+        mov     ah,9                    ; print it
+        mov     dx,CPUTbl2[bx]          ; get buffer address
+        int     21h
+        ret
+print   endp
+        end     start</PRE>
+
+<P>
+<HR></P>
+
+<P><A HREF="../ddj.html">Back to Dr. Dobb's Undocumented Corner home page</A></P>
+
+<P><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/bighand_left.gif" ALT="Return to the" VSPACE=14 BORDER=0 HEIGHT=48 WIDTH=64></A><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/gohome.gif" ALT="Intel
+Secrets home page" BORDER=0></A>
+<img src="http://www.x86.org/Count.cgi?ft=0|frgb=69;139;50;tr=0|trgb=0;0;0|wxh=15;20|md=6|dd=C|st=1532481|sh=0|df=Total.html.dat" border=0  align=abscenter width=0 height=0>
+
+<HR><BR>
+<ADDRESS>&copy; 1991-1999 <b><font color="#FF0000">Intel Secrets Web Site</font></b> and Robert Collins. <A HREF="http://pgp5.ai.mit.edu/pks-commands.html#extract">PGP
+key available</A>.<BR>
+<BR>
+<FONT SIZE=-2>Make no mistake!<BR>
+</FONT>This web site is proud to provide superior information and service
+without any affiliation to Intel Corporation.<BR>
+<BR>
+&quot;<B><FONT COLOR="#FF0000">Intel Secrets</FONT></B>&quot;, &quot;<B><FONT COLOR="#FF0000">What
+Intel doesn't want you to know</FONT></B>&quot; <B><FONT COLOR="#FF0000">and
+anything with a dropped e in it</FONT></B>, are phrases that infuriate
+Intel Corporation.</ADDRESS>
+
+<ADDRESS><BR>
+Pentium, Intel, and the letter "I" are registered trademarks of Intel Corporation. 386, 486, 586, P6,
+all other letters, and all other numbers <B><FONT COLOR="#FF0000">are not!<BR>
+</FONT></B>All other trademarks are those of their respective companies.
+See <A HREF="http://www.x86.org/Trademarks.html">Trademarks and Disclaimers</A>
+for more info.<BR>
+<BR>
+Robert Collins works somewhere in the United States of America. Robert
+may be <A HREF="http://www.x86.org/Contact.html">reached via email or telephone</A>.</ADDRESS>
+
+
+</BODY>
+</HTML>

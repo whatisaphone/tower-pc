@@ -1,0 +1,23 @@
+BREAKCPI: break DOS 3.3+ .CPI file into font files. Version 1.5, Apr 16 1993
+Copyright (c) 1991-1993 by Yossi Gil, P.O.Box 3148, Jerusalem, ISRAEL.
+Email: yogi@cs.technion.ac.il
+
+               Usage: breakcpi [-f] [-i] [-d] filename
+
+Will read 'filename' as a DOS 3.3+ cpi file, analyze it, and store each of the
+screen fonts in it to a file. The font files thus generated are named CPxxx.Fyy
+where 'xxx'is the 3 digit DOS code page number and 'yy' is the font height.
+
+EXAMPLE             breakcpi ega.cpi
+
+FLAGS   -h   Display this message
+        -f   Overwrite existing font files
+        -i   Report if extracted font is identical to existing font file
+        -d   Report if extracted font is different than existing font file
+        -s   Silent mode. No overwrite complain messages
+
+BUGS    Does not recognize all CPI files internals. In particular it fails on        printer (4201 etc.) CPI files.
+
+COPYING POLICY Copy freely for private use. Usage as part of any commerical
+  package is under the same restrictions as of Rhaul Dehsi ZOO program. If you
+  cannot obtain ZOO, you cannot use 'breakcpi' commercially.

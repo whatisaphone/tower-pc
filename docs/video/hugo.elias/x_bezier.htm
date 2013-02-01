@@ -1,0 +1,170 @@
+<html>
+<body>
+
+<body bgcolor=#eeeeee text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>Bezier Curves</title>
+	
+<center><h1>Bezier Curves</h2></center>
+<hr>
+
+Once, the F117a stealth bomber was made of flat panels, now the Blackbird is a curved beautiful
+aircraft. Once, concept sports cars were designed with straight edges, now you see elegantly
+organic vehicles on the road. Until now, you may have only been able to draw straight lines
+on your computer, Breshenhan or anti-aliased, but soon you will be able to bend them.
+
+<p>
+
+<table border=0 align=center>
+  <tr><td width=290 align=center><font size=+2>Lines</font></td>
+      <td width=64> </td>
+      <td width=290 align=center><font size=+2>Curves</font></td>
+  </tr>
+
+  <tr>
+    <td align=center width=290><img src="line00.gif" width=256 height=197></td>
+      <td width=64> </td>
+    <td align=center width=290><img src="bezier00.gif" width=266 height=216></td>
+  </tr>
+
+  <tr>
+    <td width=290>
+In the past, you have probably specified a line by the position of it's end points. The Breshenham or
+anti-aliased algorithm simply draws a straight line between the two points.
+
+    </td>
+      <td width=64> </td>
+    <td width=290>
+A bezier curve allows you to specify, not only the end points of the line, but also the direction of the line
+as it passes through the end points.  The algorithm draws a curve that passes through the end points at an
+angle parallel to the specified direction.
+
+    </td>
+  </tr>
+</table>
+
+
+<p>
+
+<table align=center border=0>
+  <tr>
+    <td align=center><img src="bezier01.gif" width=192 height=110></td>
+    <td align=left>All sorts of curves can be specified with different direction vectors at the end points.  </td>
+  <tr>
+
+  <tr>
+    <td align=center><img src="bezier03.gif" width=192 height=210></td>
+    <td align=left>Reflex curves appear when you set the vectors in different directions.</td>
+  <tr>
+  </tr>
+    <td align=center><img src="bezier04.gif" width=332 height=163></td>
+    <td align=left>You can even make loops.</td>
+  </tr>
+</table>
+
+<p><hr><p>
+
+<font size=+2>Drawing the Curve:</font><p>
+
+
+<table border=0 width=100%>
+<tr>
+  <td>
+
+<font size=+1>A look back on drawing a line:</font><br>
+Drawing a line is a matter of starting at one end point, and moving directly towards the other end point, drawing as
+you go.  This is also known as linear interpolation.
+<p>
+<table border=1>
+<tr>
+<td>
+<u><font size=+1>Linear Interpolation</font></u>
+<pre>
+
+  procedure <b>draw_line</b>(<b>point1</b>, <b>point2</b>)
+
+      loop <b>t</b> from <b>0</b> to <b>1</b> in steps of <b>.01</b>
+
+         <b>a</b> = <b>t</b>
+         <b>b</b> = <b>1</b> - <b>t</b>
+
+         <b>point</b> = (<b>point1</b> * <b>b</b>) + (<b>point2</b> * <b>a</b>)
+
+         drawpixel (<b>point</b>)
+
+      end of loop
+
+  end of <b>draw_line</b>
+</pre>
+</td>
+</tr>
+</table>
+
+  </td>
+
+  <td>
+    <img src="line00.gif" width=256 height=197>
+  </td>
+</tr>
+
+<tr><td height=64>&nbsp</td></tr>
+
+<tr>
+  <td>
+
+<font size=+1>Drawing the curve:</font><br>
+To draw a curve, we shall move from linear interpolation, to cubic interpolation.<p>
+
+We choose two end points, and call them <b>A</b> and <b>D</b>. <br>
+Next we choose two direction vectors for those end points, and call them <b><u>v1</u></b> and <b><u>v2</u></b>.<br>
+At the ends of those vectors, we shall define two new points:
+<dd><b>B</b> = <b>A</b> + <b><u>v1</u></b>
+<dd><b>C</b> = <b>D</b> + <b><u>v2</u></b><p>
+
+With these four points defined, we can now use a cubic interpolation to draw a curve:
+
+<table align=left border=1>
+<tr>
+<td>
+<u><font size=+1>Cubic Interpolation</font></u>
+<pre>
+
+  procedure <b>draw_bezier</b>(<b>A</b>, <b>v1</b>, <b>v2</b>, <b>D</b>)
+
+      <b>B</b> = <b>A</b> + <b><u>v1</u></b>
+      <b>C</b> = <b>D</b> + <b><u>v2</u></b>
+
+      loop <b>t</b> from <b>0</b> to <b>1</b> in steps of <b>.01</b>
+
+          <b>a</b> = <b>t</b>
+          <b>b</b> = <b>1</b> - <b>t</b>
+
+          <b>point</b> = <b>A</b>*<b>b</b><sup>3</sup> + <b>3</b>*<b>B</b>*<b>b</b><sup>2</sup>*<b>a</b> + <b>3</b><b>C</b>*<b>b</b>*<b>a</b><sup>2</sup> + <b>D</b>*<b>a</b><sup>3</sup>  
+
+         drawpixel (<b>point</b>)
+
+      end of loop
+
+  end of <b>draw_bezier</b>
+</pre>
+</td>
+</tr>
+</table>
+
+  </td>
+
+  <td valign=top>
+    <img src="bezier05.gif" width=382 height=260>
+  </td>
+</tr>
+</table>
+
+<p><hr><p>
+
+
+<a href="http://freespace.virgin.net/hugo.elias">
+<img src="../flagsmal.gif" width=95 height=50 border=0>
+ Return to the Good Looking Textured Light Sourced Bouncy Fun Smart and Stretchy Page.
+</a>
+
+</body>
+</html>

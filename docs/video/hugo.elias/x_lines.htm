@@ -1,0 +1,150 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>Drawing lines</title>                                    
+                                                                                        
+<center>
+<h1>Drawing Lines</h1>
+</center>
+<p><tr><td colspan=2><hr></td></tr><p>
+
+Drawing lines is one of those fundamental things everyone should have in their graphics library.
+It is very easy, and, since Breshenam invented his algorithm, very fast. It uses only integer
+maths, and all multiplies and divides are by powers of 2, so can be performes with bit shifts.
+<p>
+
+You will need to make two versions of the algorithm, one to handle nearly horizontal, and one
+for nearly vertical lines. You can even get it to check for perfectly horizontal or vertical
+lines and draw those really quickly.<p>
+
+<h4>Right, onto the algorithm:</h4>
+Imagine a line drawn 30 pixels across and 10 pixels down. It would look like this:<p>
+
+<center><img src="line01.gif"></center>
+
+Every three pixels across, the line moves down a pixel. Or you might say that every pixel across
+the line moves down a third of a pixel. <br>
+Gosh, a little formula there. Every pixel, the line moves down 10/30 of a pixel. This is true
+for all lines. It's therefore very simple to write an algorithm that runs along a line, adding
+a fraction to the Y-value and plotting pixels:<p>
+
+<pre>
+
+Xdifference = (Xend-Xstart)
+Ydifference = (Yend-Ystart)
+
+y = Ystart
+delta_Y = Ydifference / Xdifference
+
+loop x Xstart to Xend
+    plot_pixel(x, y)
+    y = y + delta_y
+end_of_loop x
+</pre>
+
+Now, the problem with this approach is that it uses non-integer maths. Very slow, quite
+unnecessary, and not as accurate as the integer version. It it possible to handle fractions
+perfectly using integers. It also translates very well into assembler. <p>
+
+<h3>Adding Fractions</h3>
+
+Adding fractions is dead easy, especially if they have the same denominator (number on the
+bottom, I always forget that one). <p>
+
+<pre>
+        10   10   20
+        -- + -- = --
+        30   30   30
+</pre>
+
+There, easy as adding numbers together. Remember this, you'll need it in a miniute: a fraction is
+greater than 1 if the number on top is bigger.<p>
+
+Lets try an algorithm using fractions instead of floats, entirely in integer maths.
+
+
+<pre>
+Xdifference = (Xend-Xstart)
+Ydifference = (Yend-Ystart)
+
+Yerror = 0
+loop x Xstart to Xend
+    plot_pixel(x, y)
+    Yerror = Yerror + Ydifference
+    if Yerror >= Xdifference then
+        y = y + 1
+        Yerror = Yerror - Xdifference
+    end_if
+end_of_loop x
+</pre>
+
+It may not be entirely clear how this represents fractions. Since all the fractions have the
+same denominator (Xdifference), it can just be ignored. Yerror represents the fraction
+(Ydifference / Xdifference). As you keep adding to it, eventually the top will become bigger
+than the bottom (i.e. Yerror > Xdifference), at which point it is bigger than 1. Then it is time
+to move the line down one pixel and subtract 1 from the fraction (i.e. subtract Xdifference). <p>
+
+Using just this integer maths, it is now possible to write a dead fast assembler routine to
+draw lines. Note that the algorithm above will only draw lines which are nearly horizontal
+and go from top-left to bottom right. For speed, it's best to write 4 versions to handle the
+4 types of line:
+
+Nearly Horizontal (Xdifference > Ydifference)
+        1: Ydifference >= 0
+        2: Ydifference <  0
+
+
+Nearly Vertical   (Xdifference < Ydifference)
+        3: Xdifference >= 0
+        4: Xdifference <  0
+
+
+<p>
+
+This version handles lines of type 1.<p>
+
+(all variables are integers)<p>
+
+<pre>
+arguments:
+        x1, y1, x2, y2, colour
+                
+        mov     ax, y1                  ; calculate the begining of the line
+        mov     bx, 320                 ; 
+        mul     bx                      ;
+        mov     di, ax                  ; (yes i know it's unoptimised)
+
+        mov     ax, x2                  ; calculate Xdifference in AX
+        sub     ax, x1
+        mov     cx, ax                  ; number of pixels to draw in CX
+
+        mov     bx, y2                  ; calculate Ydifference in BX
+        sub     bx, y1
+
+        mov     si, ax                  ; Yerror is in SI
+        dec     si
+
+        mov     dl, colour              ; line colour is in DL
+
+LoopTop:
+        mov     es:[di], dl             ; draw a pixel
+        sub     si, bx                  ; Yerror = Yerror + Ydifference
+        jnl     SkipY                   ; if Yerror does not go below 0 then don't
+        add     di, 320                 ;     move line down one pixel
+        add     si, ax                  ;     Yerror = Yerror + Xdifference
+SkipY:
+        inc     di
+
+        dec     cx                      ; End of Loop
+        jnz     LoopTop                 ;
+</pre>
+
+You may notice that the Yerror calculations are being dealt with backwards. Starting at 1, and
+if it goes below 0, move the line one pixel down. This is because in assembler, it is faster
+to check if a number has gone below 0 after a subtraction.
+
+
+
+</body>
+</html>

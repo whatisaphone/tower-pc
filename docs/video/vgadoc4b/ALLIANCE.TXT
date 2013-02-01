@@ -1,0 +1,167 @@
+
+   Alliance Pro Motion 3210
+
+PM 3210   208pin
+
+
+3C4h index 10h
+bit 0-7  Write 12h to enable extensions.
+
+3C4h index 11h-18h (R):
+Always reads 'AS32iM10' (41h 53h 33h 32h 69h 4Dh 31h 30h) for the PM3210.
+
+3C4h index 1Ah
+
+3C4h index 1Bh
+bit 0-2  Set to 1 to access the memory mapped registers at A000h
+      3  ??
+
+3C4h index 1Ch
+bit   3  Set to access the memory mapped registers at A000h ??
+      5  ?
+
+3d4h index 19h
+bit 0-7  Interlace start (~half Htot ??)
+
+3d4h index 1Ah
+bit   0  Vertical Total bit 10. Bits 0-7 are in 3d4h index 6. ??
+      1  Vertical Display End bit 10. Bits 0-7 are in 3d4h index 12h.
+      2  Vertical Retrace Start bit 10. Bits 0-7 are in 3d4h index 10h ??
+      3  Vertical Blanking Start bit 10. Bits 0-7 are in 3d4h index 15h ??
+      4  Line Compare bit 10. Bits 0-7 are in 3d4h index 18h ??
+
+3d4h index 1Bh
+bit   0  Horizontal Total bit 8. Bits 0-7 are in 3d4h index 0.
+      2  Horizontal Blanking Start bit 8. Bits 0-7 are in 3d4h index 2.
+      3  Horizontal Retrace Start bit 8. Bits 0-7 are in 3d4h index 4.
+      4  Bit 8 of 3d4h index 19h ??
+    5-7  ??
+
+3d4h index 1Ch (R/W):
+bit 0-3  Display Start Address bits 16-19. Bits 0-15 are in 3d4 index 0C,0D
+    4-7  CRTC Offset bits 8-11. Bits 0-7 are in 3d4h index 13h
+
+3d4h index 1Dh (R/W):
+bit 0-2  ??
+
+3d4h index 1Eh (R/W):
+bit   0  ??
+
+Memory mapped registers:
+
+Mem 00h D()
+
+Mem 43h (R/W):
+bit 0-2  Display Pitch ?. 0: 4096?, 1: 640, 2: 800, 4: 1024, 5: 1152, 6: 1280,
+          7: 1600
+
+Mem 80h (R/W):
+bit   5
+
+Mem C0h W(R/W):
+bit 0-?  Bank index in units of 4Kb
+
+Mem C4h (R/W):
+bit   0  ??
+
+Mem C6h (R/W):
+bit 0-3  ??
+
+Mem D0h (R/W):
+bit 0-1  VESA Power State. 0: ON, 1: Stand By, 2: Suspend, 3: Off
+
+Mem D8h  ??
+bit 0-3  If 3C2h/3CCh bits 2-3 = 3 this is the effective clock selection.
+
+Mem F0h
+Bit 0-7  Memory Size in units of 64Kb
+Note: This register is initialised by the BIOS
+
+Mem F1h
+Bit 0-7  DAC type? 3: MUSIC MU9c4910, 81h: AT&T 21c498? (ID: 84h, 98h),
+          84h: STG1703, 86h: AT&T 2xc498? (ID: 84h, 09h)
+Note: This register is initialised by the BIOS
+
+Mem 7830h ()
+
+Mem 7838h D()
+
+Mem 783Ch W()
+
+Mem 783Eh W()
+
+Mem 7840h D()
+
+Mem 7846h ()
+
+Mem 7847h ()
+
+Mem 7848h D()
+
+Mem 784Ch D()
+
+Mem 7850h D()
+
+Mem 7854h D()
+
+Mem 7858h D()
+
+Mem 7860h D()
+
+Mem 7864h D()
+
+Mem 78C4h ()
+bit   5
+
+Mem 78CAh ()
+bit   0  Test for ??
+
+Mem 78D4h ()
+
+Mem 78D5h ()
+
+Mem 78D6h ()
+
+Mem 78DAh ()
+
+Mem 7940h ()
+bit   0  Enable hardware cursor
+
+Mem 7941h ()
+
+Mem 7942h ()
+
+Mem 7943h ()
+bit   0
+      1
+      2  ??
+
+Mem 7944h W()
+bit 0-?  Address of cursor image in units of 1Kbyte
+
+Mem 7948h W()
+bit 0-?  Cursor X coordinate
+
+Mem 794Ah W()
+bit 0-?  Cursor Y coordinate
+
+Mem 794Ch ()
+bit 0-5  Cursor X hotspot (20h-3Fh for 32x32 cursor ?)
+
+Mem 794Dh ()
+bit 0-5  Cursor Y hotspot (20h-3Fh for 32x32 cursor ?)
+
+Mem 79FCh W()
+bit 0-?  Number of free slots in the write FIFO ?
+      8  Test for ??
+
+Mem 79FFh ()
+
+
+Video modes:
+
+28h   640 x  480  P8
+29h   800 x  600  P8
+38h  1280 x 1024  PL4
+58h   800 x  600  PL4
+5Dh  1024 x  768  PL4

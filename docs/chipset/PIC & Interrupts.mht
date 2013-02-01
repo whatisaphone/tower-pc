@@ -1,0 +1,1390 @@
+Content-Type: multipart/related; start=<op.mhtml.1214610565699.fbbc457b403db69d@192.168.0.5>; boundary=----------i1j23JlE4GpvEEpvNNbk9F
+Content-Location: http://www.beyondlogic.org/interrupts/interupt.htm
+Subject: =?utf-8?Q?Interfacing=20The=20PC=20:=20Using=20Interrupts?=
+MIME-Version: 1.0
+
+------------i1j23JlE4GpvEEpvNNbk9F
+Content-Disposition: inline; filename=interupt.htm
+Content-Type: text/html; name=interupt.htm
+Content-Id: <op.mhtml.1214610565699.fbbc457b403db69d@192.168.0.5>
+Content-Location: http://www.beyondlogic.org/interrupts/interupt.htm
+Content-Transfer-Encoding: 8bit
+
+<html>
+<head>
+   <title>Interfacing The PC : Using Interrupts </title>
+   <META name="description" content="Info on Programming and Implementing IRQ's. Includes IRQ2-9 Redirection, 8259 Registers and Sample Code in C.">
+   <META name="keywords" content="PIC, Interrupts, Interrupt Service Routines, 8259, ISR, IRQ">
+</head>
+<body background="/background.gif">
+
+<STYLE TYPE="text/css">
+#TITLEBLOCK { text-decoration: none; color:#FFFFFF }
+TD,P,FONT {font-family : Arial}
+</STYLE>
+
+<CENTER>
+ <BR>
+ <BR>
+ <a href="http://www.beyondlogic.org"><img src="/interface.gif" alt="Interfacing the PC / Beyond Logic" border=0></a>
+ <BR>
+ <TABLE WIDTH="70%">
+ <TR><TD>
+ <DIV ALIGN=RIGHT><FONT SIZE=+1 FACE=ARIAL>Quality Information in one Place . . .</FONT></DIV>
+ </TD></TR></TABLE>
+ <BR>
+<TABLE WIDTH="90%" BORDER=0>
+<TR>
+<TD BGCOLOR=BLUE HEIGHT=25 WIDTH="20%"><FONT FACE=ARIAL COLOR=WHITE><B><CENTER><A ID="TITLEBLOCK" HREF="/index.html#PARALLEL">Parallel Ports</a></CENTER></B></FONT></TD>
+<TD BGCOLOR=BLUE HEIGHT=25 WIDTH="20%"><FONT FACE=ARIAL COLOR=WHITE><B><CENTER><A ID="TITLEBLOCK" HREF="/index.html#SERIAL">Serial Ports</a></CENTER></B></FONT></TD>
+<TD BGCOLOR=BLUE HEIGHT=25 WIDTH="20%"><FONT FACE=ARIAL COLOR=WHITE><B><CENTER><A ID="TITLEBLOCK" HREF="/index.html#INTERRUPTS">Interrupts</a></CENTER></B></FONT></TD>
+<TD BGCOLOR=BLUE HEIGHT=25 WIDTH="20%"><FONT FACE=ARIAL COLOR=WHITE><B><CENTER><A ID="TITLEBLOCK" HREF="/index.html#ATKEYBOARDS">AT Keyboard Ports</a></CENTER></B></FONT></TD>
+<TD BGCOLOR=BLUE HEIGHT=25 WIDTH="20%"><FONT FACE=ARIAL COLOR=WHITE><B><CENTER><A ID="TITLEBLOCK" HREF="/index.html#USB">USB</a></CENTER></B></FONT></TD>
+</TR>
+</TABLE>
+<br>
+<HR><font SIZE=5>Using Interrupts</font><HR></center>
+
+<CENTER><FONT SIZE=+1>Interrupts</FONT></CENTER> 
+<CENTER><A HREF="#1">What are Interrupts?</A></CENTER>
+<CENTER><A HREF="#2">Interrupts and Intel Architecture</A></CENTER>
+<CENTER><A HREF="#3">Hardware Interrupts</A></CENTER>
+<CENTER><FONT SIZE=+1>Programming</FONT></CENTER> 
+<CENTER><A HREF="#4">Implementing the Interrupt Service Routine (ISR)</A></CENTER>
+<CENTER><A HREF="#5">Using your new Interrupt Service Routine</A></CENTER>
+<CENTER><FONT SIZE=+1>The Programmable Interrupt Controller's Operation</FONT></CENTER> 
+<CENTER><A HREF="#6">The Programmable Interrupt Controller</A></CENTER>
+<CENTER><A HREF="#7">IRQ2/IRQ9 Redirection</A></CENTER>
+<CENTER><FONT SIZE=+1>The Programmable Interrupt Controller's Registers</FONT></CENTER> 
+<CENTER><A HREF="#8">Programmable Interrupt Controller's Addresses</A></CENTER>
+<CENTER><A HREF="#9">Initialization Command Words (ICWs)</A></CENTER>
+<CENTER><A HREF="#13">Operation Control Words (OCWs)</A></CENTER>
+<CENTER><FONT SIZE=+1>Feedback</FONT></CENTER> 
+<CENTER><A HREF="#16">Feedback</A></CENTER>
+<BR>
+
+<UL>
+<A NAME="1"></A>
+<HR width="100%"><I><FONT SIZE=+2>What are Interrupts?</FONT></I>
+<HR width="100%">
+<p>
+When receiving data and change in status from I/O Ports, we have two methods
+available to us. We can <i>Poll</I> the port, which involves reading the
+status of the port at fixed intervals to determine whether any data has been
+received or a change of status has occurred. If so, then we can branch to a
+routine to service the ports requests.
+</P>
+<p>
+As you could imagine, polling the port would consume quite some time. Time
+which could be used doing other things such refreshing the screen, displaying
+the time etc. A better alternative would be to use <I>Interrupts</I>. Here,
+the processor does your tasks such as refreshing the screen, displaying the
+time etc, and when a I/O Port/Device needs attention as a byte has been
+received or status has changed, then it sends a Interrupt Request (IRQ)
+to the processor.
+</P>
+<p>
+Once the processor receives an Interrupt Request, it finishes its current
+instruction, places a few things on the stack, and executes the appropriate
+Interrupt Service Routine (ISR) which can remove the byte from the port and
+place it in a buffer. Once the ISR has finished, the processor returns to
+where it left off.
+</P>
+<p>
+Using this method, the processor doesn't have to waste time, looking to see
+if your I/O Device is in need of attention, but rather the device will
+<i>interrupt</I> the processor when it needs attention.
+</P>
+
+<A NAME="2"></A>
+<HR width="100%"><I><FONT SIZE=+2>Interrupts and Intel Architecture</FONT></I>
+<HR width="100%">
+<p>
+Interrupts do not have to be entirely associated with I/O devices. The 8086
+family of microprocessors provides 256 interrupts, many of these are only
+for use as software interrupts, which we do not attempt to explain in this
+document.
+</P>
+<P>
+The 8086 series of microprocessors has an Interrupt Vector Table situated at
+0000:0000 which extends for 1024 bytes. The Interrupt Vector table holds the
+address of the Interrupt Service Routines (ISR), all four bytes in length.
+This gives us room for the 256 Interrupt Vectors.
+</P>
+
+<center>
+<table border width="80%">
+<TR><TD><center><B>INT (Hex)</B></center></TD><TD><b><center>IRQ</center></B></TD><TD><b>Common Uses</b></TD></TR>
+<TR><TD><center>00 - 01</center></TD><TD><center>Exception Handlers</center></TD><TD><center>-</Center></TD></TR>
+<TR><TD><center>02</center></TD><TD><center>Non-Maskable IRQ</center></TD><TD>Non-Maskable IRQ (Parity Errors)</TD></TR>
+<TR><TD><center>03 - 07</center></TD><TD><center>Exception Handlers</center></TD><TD><center>-</center></TD></TR>
+<TR><TD><center>08</center></TD><TD><center>Hardware IRQ0</center></TD><TD>System Timer</TD></TR>
+<TR><TD><center>09</center></TD><TD><center>Hardware IRQ1</center></TD><TD>Keyboard</TD></TR>
+<TR><TD><center>0A</center></TD><TD><center>Hardware IRQ2</center></TD><TD>Redirected</TD></TR>
+<TR><TD><center>0B</center></TD><TD><center>Hardware IRQ3</center></TD><TD>Serial Comms. COM2/COM4</TD></TR>
+<TR><TD><center>0C</center></TD><TD><center>Hardware IRQ4</center></TD><TD>Serial Comms. COM1/COM3 </TD></TR>
+<TR><TD><center>0D</center></TD><TD><center>Hardware IRQ5</center></TD><TD>Reserved/Sound Card </TD></TR>
+<TR><TD><center>0E</center></TD><TD><center>Hardware IRQ6</center></TD><TD>Floppy Disk Controller </TD></TR>
+<TR><TD><center>0F</center></TD><TD><center>Hardware IRQ7</center></TD><TD>Parallel Comms. </TD></TR>
+<TR><TD><center>10 - 6F</center></TD><TD><center>Software Interrupts</center></TD><TD><center>-</center></TD></TR>
+<TR><TD><center>70</center></TD><TD><center>Hardware IRQ8</center></TD><TD>Real Time Clock</TD></TR>
+<TR><TD><center>71</center></TD><TD><center>Hardware IRQ9</center></TD><TD>Redirected IRQ2</TD></TR>
+<TR><TD><center>72</center></TD><TD><center>Hardware IRQ10</center></TD><TD>Reserved</TD></TR>
+<TR><TD><center>73</center></TD><TD><center>Hardware IRQ11</center></TD><TD>Reserved</TD></TR>
+<TR><TD><center>74</center></TD><TD><center>Hardware IRQ12</center></TD><TD>PS/2 Mouse</TD></TR>
+<TR><TD><center>75</center></TD><TD><center>Hardware IRQ13</center></TD><TD>Math's Co-Processor</TD></TR>
+<TR><TD><center>76</center></TD><TD><center>Hardware IRQ14</center></TD><TD>Hard Disk Drive</TD></TR>
+<TR><TD><center>77</center></TD><TD><center>Hardware IRQ15</center></TD><TD>Reserved </TD></TR>
+<TR><TD><center>78 - FF</center></TD><TD><center>Software Interrupts</center></TD><TD><center>-</center></TD></TR>
+</Table>
+<font size =-1> Table 1 : x86 Interrupt Vectors </Font>
+</center>
+<p>
+The average PC, only has 15 Hardware IRQ's plus one Non-Maskable IRQ. The
+rest of the interrupt vectors are used for software interrupts and exception
+handlers. Exception handlers are routines like ISR's which get called or
+<I>interrupted</I> when an error results. Such an example is the first
+Interrupt Vector which holds the address of the Divide By Zero, Exception
+handler. When a divide by zero occurs the Microprocessor fetches the
+address at 0000:0000 and starts executing the code at this Address.
+</P>
+
+
+
+<A NAME="3"></A>
+<HR width="100%"><I><FONT SIZE=+2>Hardware Interrupts</FONT></I>
+<HR width="100%">
+<P>
+The Programmable Interrupt Controller (PIC) handles hardware interrupts. Most
+PC's will have two of them located at different addresses. One handles IRQ's
+0 to 7 and the other, IRQ's 8 to 15, giving a total of 15 individual IRQ lines,
+as the second PIC is cascaded into the first, using IRQ2.
+</P>
+
+<P>
+Most of the PIC's initialization is done by BIOS, thus we only have to worry
+about two instructions. The PIC has a facility available where we can <I>
+mask</I> individual IRQ's so that these requests will not reach the Processor.
+Thus the first instruction is to the
+<a href="#13">Operation Control Word 1 (OCW1)</A> to
+set which IRQ's to mask and which IRQ's not too.
+</P>
+
+<P>
+As there are two PIC's located at different addresses, we must first
+determine which PIC we need to use. The first PIC, located at Base Address
+0x20h controls IRQ 0 to IRQ 7. The bit format of PIC1's Operation Control
+Word 1 is shown below in table 2.
+</P>
+
+<center>
+<Table border width="80%">
+<TR><TD><Center><B>Bit</B></Center></TD><TD><Center><B>Disable IRQ</B></Center></TD><TD><center><B>Function</B></center></TD></TR>
+<TR><TD><CENTER>7</CENTER></TD><TD><Center>IRQ7</center></TD><TD>Parallel Port</TD></TR>
+<TR><TD><CENTER>6</CENTER></TD><TD><Center>IRQ6</center></TD><TD>Floppy Disk Controller</TD></TR>
+<TR><TD><CENTER>5</CENTER></TD><TD><Center>IRQ5</center></TD><TD>Reserved/Sound Card</TD></TR>
+<TR><TD><CENTER>4</CENTER></TD><TD><Center>IRQ4</center></TD><TD>Serial Port</TD></TR>
+<TR><TD><CENTER>3</CENTER></TD><TD><Center>IRQ3</center></TD><TD>Serial Port</TD></TR>
+<TR><TD><CENTER>2</CENTER></TD><TD><Center>IRQ2</center></TD><TD>PIC2</TD></TR>
+<TR><TD><CENTER>1</CENTER></TD><TD><Center>IRQ1</center></TD><TD>Keyboard</TD></TR>
+<TR><TD><CENTER>0</CENTER></TD><TD><Center>IRQ0</center></TD><TD>System Timer</TD></TR>
+</table>
+<font size=-1>Table 2 : PIC1 Operation Control Word 1 (0x21)</FONT>
+</center>
+
+<P>
+<i>
+Note that IRQ 2 is connected to PIC2, thus if you mask this IRQ, then you
+will be disabling IRQ's 8 to 15.
+</I>
+</P>
+
+<P>
+The second PIC located at a base address of 0xA0h controls IRQs 8 to 15.
+Below is the individual bits required to make up it's Operation Control
+Word.
+</P>
+
+<center>
+<Table border width="80%">
+<TR><TD><Center><B>Bit</B></Center></TD><TD><Center><B>Disable IRQ</B></Center></TD><TD><center><B>Function</B></center></TD></TR>
+<TR><TD><CENTER>7</CENTER></TD><TD><Center>IRQ15</center></TD><TD>Reserved</TD></TR>
+<TR><TD><CENTER>6</CENTER></TD><TD><Center>IRQ14</center></TD><TD>Hard Disk Drive</TD></TR>
+<TR><TD><CENTER>5</CENTER></TD><TD><Center>IRQ13</center></TD><TD>Maths Co-Processor</TD></TR>
+<TR><TD><CENTER>4</CENTER></TD><TD><Center>IRQ12</center></TD><TD>PS/2 Mouse</TD></TR>
+<TR><TD><CENTER>3</CENTER></TD><TD><Center>IRQ11</center></TD><TD>Reserved</TD></TR>
+<TR><TD><CENTER>2</CENTER></TD><TD><Center>IRQ10</center></TD><TD>Reserved</TD></TR>
+<TR><TD><CENTER>1</CENTER></TD><TD><Center>IRQ9</center></TD><TD>Redirected IRQ2</TD></TR>
+<TR><TD><CENTER>0</CENTER></TD><TD><Center>IRQ8</center></TD><TD>Real Time Clock</TD></TR>
+</table>
+<font size=-1>Table 3 : PIC2 Operation Control Word 1 (0xA1) </FONT>
+</center>
+
+<P>
+As the above table shows the bits required to disable an IRQ, we must
+invert them should we want to enable an IRQ. For example, if we want to
+enable IRQ 3 then we would send the byte 0xF7 as OCW1 to PIC1. But what
+happens if one of these IRQs are already enabled and then we come
+along and disable it?
+</P>
+
+<P>
+Therefore we must first get the mask and use the AND function to output the
+byte back to the register with our changes so to cause the least upset to
+the other IRQs. Going back to our IRQ3 example, we could use
+<font color="#400080"><TT>outportb(0x21,(inportb(0x21) & 0xF7);</TT></FONT>
+to enable IRQ3. Take note that the OCW1 goes to the register at Base + 1.
+</P>
+
+<p>
+The same procedure must be used to mask (disable) an IRQ once we are finished with it.
+However this time we must OR the byte 0x08 to the contents of OCW1. Such
+and example of code is
+<font color="#400080"><TT>outportb(0x21,(inportb(0x21) | 0x08);</TT></FONT>
+</P>
+
+<P>
+The other PIC instruction we have to worry about is the End of Interrupt (EOI).
+This is sent to the PIC at the end of the Interrupt Service Routine so that
+the PIC can reset the In Service Register. See <a href="#6">The Programmable
+Interrupt Controller</A> for more information. An EOI can be sent using
+<font color="#400080"><TT>outportb(0x20,0x20);</TT></FONT> for PIC1 or
+<font color="#400080"><TT>outportb(0xA0,0x20);</TT></FONT> for PIC2
+</P>
+
+<A NAME="4"></A>
+<HR width="100%"><I><FONT SIZE=+2>Implementing the Interrupt Service Routine (ISR)</FONT></I>
+<HR width="100%">
+
+<P>
+In C you can implement your ISR using
+<font color="#400080"><TT>void interrupt yourisr()</TT></font> where
+<TT>yourisr</TT> is a far pointer, pointing to the address that your
+Interrupt Service Routine will reside in memory. This is later placed in
+the Interrupt Vector Table so that, it will be called when interrupted.
+</P>
+
+<P>
+The following code is a basic implementation of an ISR.
+</P>
+
+<PRE>
+void interrupt yourisr()   /* Interrupt Service Routine (ISR) */
+{
+  disable();
+
+  /* Body of ISR goes here */
+	      
+  oldhandler();
+
+  outportb(0x20,0x20);     /* Send EOI to PIC1 */
+  enable();
+}
+</PRE>
+
+<P>
+<font color="#400080"><TT>void interrupt yourisr()</TT></font>
+defines this function as an Interrupt Service Routine. <font color="#400080">
+<TT>disable();</TT></font> clears the interrupt flag, so that
+no other hardware interrupts ,except a NMI (Non-Maskable Interrupt) can
+occur. Otherwise, and interrupt with a higher priority that this one
+can interrupt the execution of this ISR. However this is not really
+a problem in many cases, thus is optional.
+</P>
+
+<p>
+The body of your ISR will include code which you want to execute upon
+this interrupt request being activated. Most Ports/UARTs may interrupt
+the processor for a range of reasons, eg byte received, time-outs, FIFO
+buffer empty, overruns etc, thus the nature of the interrupt has to be
+determined. This is normally achieved by reading the status registers
+of the port you are using. Once it has been established, you can service
+it's requests.
+</P>
+
+<p>
+If you read any data from a port, it is normally common practice to
+place it in a buffer, rather that immediately writing it to the screen,
+inhibiting further interrupts to be processed. Most Ports these days will
+have FIFO buffers which can contain more than one byte, thus repeat your
+read routine, until the FIFO is empty, then exit your ISR.
+</P>
+
+<p>
+In some cases it may be appropriate to chain the old ISR to this one. Such
+an example would be the Clock Interrupt. Other TSR or resident programs
+may also be using it, thus if you intercept the interrupt and keep it
+all for yourself, the other ISR's can no longer function possibly causing
+some side effects. However for Serial/Parallel Ports this is not a problem. 
+To chain the old ISR to your new ISR, you can call it using
+<font color="#400080"><TT>oldhandler();</TT></font> where <TT>oldhandler</TT>
+points to your old ISR.
+</TT>
+
+<p>
+Before we can return from the interrupt, we must tell the Programmable
+Interrupt Controller, that we are ending the interrupt by sending
+an EOI (End of Interrupt 0x10) to it. As there are two PIC's you must
+first establish which one to send it to. Use
+<font color="#400080"><TT>outportb(0x20,0x20);</TT></font> for PIC 1 (IRQ 0 - 7) or 
+<font color="#400080"><TT>outportb(0xA0,0x20);</TT></font> for PIC 2 (IRQ 8 - 15).
+</P>
+
+<P>
+<I>Note: If using PIC2, then an EOI has to be sent to both PIC1 and PIC2.
+</I>
+</P>
+
+<A NAME="5"></A>
+<HR width="100%"><I><FONT SIZE=+2>Using your new Interrupt Service Routine</FONT></I>
+<HR width="100%">
+
+<p>
+Now that we have written our new interrupt service routine, we can start
+looking at how to implement it. The following code segment shows the
+basic usage of your new ISR. For this example we have chosen to use
+IRQ 3.
+</P>
+
+<PRE>
+#include &lt;dos.h&gt;
+
+#define INTNO 0x0B                     /* Interupt Number - See Table 1 */
+
+void main(void)
+{
+ oldhandler = getvect(INTNO);           /* Save Old Interrupt Vector */
+ setvect(INTNO, yourisr);               /* Set New Interrupt Vector Entry */
+ outportb(0x21,(inportb(0x21) & 0xF7)); /* Un-Mask (Enable) IRQ3 */ 
+
+ /* Set Card - Port to Generate Interrupts */
+
+ /* Body of Program Goes Here */
+
+ /* Reset Card - Port as to Stop Generating Interrupts */
+
+ outportb(0x21,(inportb(0x21) | 0x08)); /* Mask (Disable) IRQ3 */ 
+ setvect(INTNO, oldhandler);            /* Restore old Interrupt Vector Before Exit */
+}
+</PRE>
+
+<P>
+Before you can place the address of your new ISR in the interrupt vector
+table, you must first save the old interrupt vector, so that you can restore
+it once you exit your program. This is done using <font color="#400080">
+<TT>oldhandler = getvect(INTNO);</TT></font> where INTNO is the number of
+the interrupt vector you wish to return. Before <TT>oldhandler</TT> can be
+used, you must first declare it using <font color="#400080"><TT>void
+interrupt ( *oldhandler)();</TT></font>
+</P>
+
+<P>
+Once the old interrupt vector is stored, we can now install your new ISR
+into the interrupt vector table. This is done using the line
+<font color="#400080"><TT> setvect(INTNO, yourisr);</TT></font> where
+<TT>yourisr</TT> points to your interrupt service routine.
+</P>
+
+<p>
+The IRQ which you are using must now be unmasked. We have already discussed
+this earlier. See <A HREF="#3">Hardware Interrupts</A>.
+</P>
+
+<p>
+Most Ports/UARTs will need some initialization to be able to generate
+interrupts. For Example, The Standard Parallel Port (SPP) will require
+Bit 4 of the Control Port, <I> Enable IRQ Via ACK Line</I> to be set at
+Base + 2. The Serial Port will require the appropriate setting of
+Bits 0 to 4 of the Interrupt Enable Register (IER) located at Base + 1.
+</P>
+
+<P>
+Your body of the program normally consists of a few housekeeping tasks
+depending upon your application. Here you look for new keys pressed, menus
+being selected, updating clocks, checking for incoming data in buffers etc,
+knowing that any data from your Ports will be automatically read and
+processed, by the ISR.
+</P>
+
+<p>
+If you like implementing ISR's so much, you can attach your own ISR to
+the Keyboard Interrupt, so any keys being pressed will be automatically
+handled by another ISR, and even one to the clock. Upon every 18.2 ticks
+you can update the seconds on your display! The possibilities of ISR's are
+endless.
+</P>
+    
+<P>
+Before you exit your program always restore the old interrupt vector, so
+that your computer doesn't become unstable. This is done using <TT>
+<font color="#400080">setvect(INTNO, oldhandler); </font></TT>, where
+<TT>oldhandler</TT> points to the old interrupt service routine, which
+we stored using <font color="#400080"><TT> oldhandler = getvect(INTNO);
+</TT></font>
+</P>
+
+<A NAME="6"></A>
+<HR width="100%"><I><FONT SIZE=+2>The Programmable Interrupt Controller</FONT></I>
+<HR width="100%">
+
+<P>
+As we have all ready discussed, the Interrupt ReQuests (IRQ's) of a PC is 
+handled by two 8259 Programmable
+Interrupt Controllers. On the old XT's/AT's these were two 28 Pin DIP IC's, but as
+you can imagine, things have changed dramatically since then. While the
+operational principal is still the same, the PIC is now integrated somewhere
+into your chipset, along with many other devices.
+</P>
+<center><img src="piclogic.gif" alt="Internal's of a Programmable Interrupt Controller" border=0 height=344 width=645></center>
+<P>
+The basic block diagram of the PIC is shown above. The 8 individual interrupt
+request lines are first passed through the Interrupt Mask Register (IMR) to
+see if they have been masked or not. If they are masked, then the request
+isn't processed any further. However if they are not masked, they will
+register their request with the Interrupt Request Register (IRR).
+</P>
+<P>
+The Interrupt Request Register will hold all the requested IRQ's until they
+have been dealt with appropriately. If required, this register can be read
+by setting certain bits of the
+<a href="#15">Operation Control Word 3</A>. The Priority
+Resolver simply selects the IRQ of highest priority. The higher priority
+interrupts are the lower numbered ones. For Example IRQ 0 has the highest
+priority followed by IRQ 1 etc.
+</P>
+<p>
+Now that the PIC has determined which IRQ to process, it is now time to
+tell the processor, so that it can call your ISR for you. This process is
+done by sending a INT to the processor, i.e. the INT line on the processor
+is asserted. The processor will then finish the current instruction it's
+processing and acknowledge your INT request with a INTA (Interrupt
+Acknowledge) pulse.
+</P>
+<p>
+Upon receiving the processor's INTA, the IRQ which the PIC is processing at the time is stored
+in the In Service Register (ISR) which as the name suggests, shows which
+IRQ is currently in service. The IRQ's bit is also reset in the Interrupt
+Request Register, as it is no longer requesting service but actually getting
+service.
+</P>
+<p>
+Another INTA pulse will be sent by the processor, to tell the PIC to place
+a 8 bit pointer on the data bus, corresponding to the IRQ number. If an IRQ
+serviced by PIC2 is requesting the service, then PIC2 will send
+the pointer to the processor. The Master (PIC1) at this stage, will select
+PIC2 to send the pointer, by placing PIC2's Slave ID on the Cascade lines,
+which is a 3 wire bus between all the PIC's in a system.
+</P>
+<P>
+The 5 most
+significant bits of this pointer is set using the Initialization Command
+Word 2 (ICW2). This will be 00001 for PIC1 and 01110 for PIC2. The three
+least significant bits, will be sent due to which IRQ is being serviced.
+For example, if IRQ3 is requesting service then the 8 bit pointer will
+be made up with 00001 for the 5 most significant bits and 011 (IR3) for the
+least significant bits. Put this together and you get 00001011 or 0x0B which
+just happens to be IRQ3's interrupt vector.
+</P>
+<P>
+For PIC2, the same principal
+is applied. If IRQ10 is requesting service, then 01110010 will be sent, which
+just happens to represent Interrupt 72h. IRQ10 happens to be connected to
+IR2 on the Second PIC, thus 010 is used as the least significant bits.
+</P>
+<P>
+Once your ISR has done everything it needs, it sends an End of Interrupt
+(EOI) to the PIC, which resets the In-Service Register. If the request
+came from PIC2, then EOI's are required to be sent to both PICs.
+The PIC will then determine the next highest priority interrupt and
+repeat the same process. If no Interrupt Requests are present, then
+the PIC waits for the next request before interrupting the processor.
+</P>
+
+<A NAME="7"></A>
+<HR width="100%"><I><FONT SIZE=+2>IRQ2/IRQ9 Redirection</FONT></I>
+<HR width="100%">
+
+<P>
+The redirection of IRQ2 causes quite some confusion, and thus is discussed
+here. In the original XT's there were only one PIC, thus only eight IRQ's.
+However users soon out grew these resources, thus an additional 7 IRQ's
+were added to the PC. This involved attaching another PIC to the existing
+one already in the XT. Compatibility always causes problems as the new
+configuration still had to be compatible with old hardware and software. 
+The "new" configuration is shown below.
+</P>
+
+<center><img src="irq2irq9.gif" alt="IRQ2/IRQ9 Redirection Schematic" border=0 height=455 width=402></center>
+
+<p>
+The CPU only has one interrupt line, thus the second controller had to be
+connected to the first controller, in a master/slave configuration. IRQ2 was
+selected for this. By using IRQ2 for the second controller, no other
+devices could use IRQ2, so what happened to all these devices using IRQ2?
+Nothing, the interrupt request line found on the bus, was simply diverted
+into the IRQ 9 input. As no devices yet used the second PIC or IRQ9, this
+could be done.
+</P>
+<p>
+The next problem was that a hardware device using IRQ2 would install it's
+ISR at INT 0x0A. Therefore an ISR routine was used at INT 71h, which sent
+a EOI to PIC2 and then called the ISR at INT 0x0A. If you dis-assemble
+the ISR for IRQ9, it will go a little like,
+</P>
+<center>
+<Table width="80%">
+<TR><TD>
+<PRE>
+MOV AL,20
+OUT A0,AL   ; Send EOI to PIC2
+INT 0A      ; Call ISR for IRQ2
+IRET        
+</PRE>
+</TD></TR>
+</TABLE>
+</center>
+<P>
+The routine only has to send a EOI to PIC2, as it is expected that a ISR
+routine written for IRQ2 will send a EOI to PIC1. This example destroys 
+the contents of Register AL, thus this must be placed on the stack first (Not
+shown in example). As PIC2
+is initialized with a Slave on IRQ2, any request using PIC2 will
+not call the ISR routine for IRQ2. The 8 bit pointer will come from PIC2.
+</p>
+
+<A NAME="8"></A>
+<HR width="100%"><I><FONT SIZE=+2>Programmable Interrupt Controller's Addresses</FONT></I>
+<HR width="100%">
+
+<P>
+The two PIC's found in an IBM compatible system are initialized via BIOS
+thus you don't have to worry about all of their registers. However for
+some people, who have inquisitive minds the following information may come
+in some use or maybe you want to (re)program a BIOS?
+Below is a table of all the command words of the 8259 and
+compatible Programmable Interrupt Controller. The Top Table shows the
+Addresses for the PIC1, while the bottom table shows addresses for PIC2.
+</P>
+<p>
+<center>
+<Table border width="80%">
+<TR><TD><B><center>Address</center></B></TD><TD><B><center>Read/Write</center></B></TD><TD><B>Function</B></TD></TR>
+<TR><TD rowspan=5><center>20h</center></td><TD><center>Write</center></TD><TD>Initialization Command Word 1 (ICW1)</TD></TR>
+<TR>                                       <TD><center>Write</center></TD><TD>Operation Command Word 2 (OCW2)</TD></TR>
+<TR>                                       <TD><center>Write</center></TD><TD>Operation Command Word 3 (OCW3)</TD></TR>
+<TR>                                       <TD><center>Read</center></TD><TD>Interrupt Request Register (IRR)</TD></TR>
+<TR>                                       <TD><center>Read</center></TD><TD>In-Service Register (ISR)</TD></TR>
+<TR><TD rowspan=4><center>21h</center></td><TD><center>Write</center></TD><TD>Initialization Command Word 2 (ICW2)</TD></TR>
+<TR>                                       <TD><center>Write</center></TD><TD>Initialization Command Word 3 (ICW3)</TD></TR>
+<TR>                                       <TD><center>Write</center></TD><TD>Initialization Command Word 4 (ICW4)</TD></TR>
+<TR>                                       <TD><center>Read/Write</center></TD><TD>Interrupt Mask Register (IMR)</TD></TR>
+</table>
+<font size=-1>Table 4 : Addresses/Registers for PIC1 </FONT>
+</center>
+</P>
+
+<P>
+PIC2 Addresses . . .
+</P>
+
+<P>
+<center>
+<Table border width="80%">
+<TR><TD><B><center>Address</center></B></TD><TD><B><center>Read/Write</center></B></TD><TD><B>Function</B></TD></TR>
+<TR><TD rowspan=5><center>A0h</center></td><TD><center>Write</center></TD><TD>Initialization Command Word 1 (ICW1)</TD></TR>
+<TR>                                       <TD><center>Write</center></TD><TD>Operation Command Word 2 (OCW2)</TD></TR>
+<TR>                                       <TD><center>Write</center></TD><TD>Operation Command Word 3 (OCW3)</TD></TR>
+<TR>                                       <TD><center>Read</center></TD><TD>Interrupt Request Register (IRR)</TD></TR>
+<TR>                                       <TD><center>Read</center></TD><TD>In-Service Register (ISR)</TD></TR>
+<TR><TD rowspan=4><center>A1h</center></td><TD><center>Write</center></TD><TD>Initialization Command Word 2 (ICW2)</TD></TR>
+<TR>                                       <TD><center>Write</center></TD><TD>Initialization Command Word 3 (ICW3)</TD></TR>
+<TR>                                       <TD><center>Write</center></TD><TD>Initialization Command Word 4 (ICW4)</TD></TR>
+<TR>                                       <TD><center>Read/Write</center></TD><TD>Interrupt Mask Register (IMR)</TD></TR>
+</table>
+<font size=-1>Table 5 : Addresses/Registers for PIC2 </FONT>
+</center>
+</P>
+
+<A NAME="9"></A>
+<HR width="100%"><I><FONT SIZE=+2>Initialization Command Word 1 (ICW1)</FONT></I>
+<HR width="100%">
+
+<p>
+If the PIC has been reset, it must be initialized with 2 to 4 Initialization 
+Command Words (ICW) before it will accept and process Interrupt Requests. The 
+following selection outlines the four possible Initialization Command Words.
+</P>
+
+<P>
+<center>
+<table border width="70%">
+<TR><TD><B><center>Bit(s)</center><B></TD><TD colspan=2><B>Function</B></TD></TR>
+<TR><TD><center>7:5</center></TD><TD colspan=2>Interrupt Vector Addresses for MCS-80/85 Mode.</TD></TR>
+<TR><TD><center>4</center></TD><TD colspan=2>Must be set to 1 for ICW1</TD></TR>
+<TR><TD rowspan=2><center>3</center></TD><TD><center>1</center></TD><TD>Level Triggered Interrupts</TD></TR>
+<TR>                                     <TD><center>0</center></TD><TD>Edge Triggered Interrupts</TD></TR>
+<TR><TD rowspan=2><center>2</center></TD><TD><center>1</center></TD><TD>Call Address Interval of 4</TD></TR>
+<TR>                                     <TD><center>0</center></TD><TD>Call Address Interval of 8</TD></TR>
+<TR><TD rowspan=2><center>1</center></TD><TD><center>1</center></TD><TD>Single PIC</TD></TR>
+<TR>                                     <TD><center>0</center></TD><TD>Cascaded PICs</TD></TR>
+<TR><TD rowspan=2><center>0</center></TD><TD><center>1</center></TD><TD>Will be Sending ICW4</TD></TR>
+<TR>                                     <TD><center>0</center></TD><TD>Don't need ICW4</TD></TR>
+</table>
+<font size=-1>Table 6 : Initialization Command Word 1 (ICW1) </FONT>
+</center>
+</P>
+
+<P>
+The 8259 Programmable Interrupt Controller, offers many other features which
+are not used in the PC. It also offers support for MCS-80/85 microprocessors.
+All we have to be aware of being PC uses, is if the system is running in single mode (One PIC) 
+or if in Cascaded Mode (More than one PIC) and if the Initialization Command Word 
+4 is needed. If no ICW4 is used, then all of it's bits will be set to 0. As
+we are using it in 8086 mode, we must send a ICW4.
+</P>
+
+<A NAME="10"></A>
+<HR width="100%"><I><FONT SIZE=+2>Initialization Command Word 2 (ICW2)</FONT></I>
+<HR width="100%">
+
+<P>
+<center>
+<Table border width="80%">
+<TR><TD><Center><B>Bit</B></Center></TD><TD><Center><B>8086/8080 Mode</B></Center></TD><TD><center><B>MCS 80/85 Mode</B></center></TD></TR>
+<TR><TD><CENTER>7</CENTER></TD><TD><Center>I7</center></TD><TD><Center>A15</Center></TD></TR>
+<TR><TD><CENTER>6</CENTER></TD><TD><Center>I6</center></TD><TD><Center>A14</Center></TD></TR>
+<TR><TD><CENTER>5</CENTER></TD><TD><Center>I5</center></TD><TD><Center>A13</Center></TD></TR>
+<TR><TD><CENTER>4</CENTER></TD><TD><Center>I4</center></TD><TD><Center>A12</Center></TD></TR>
+<TR><TD><CENTER>3</CENTER></TD><TD><Center>I3</center></TD><TD><Center>A11</Center></TD></TR>
+<TR><TD><CENTER>2</CENTER></TD><TD><Center> - </center></TD><TD><Center>A10</Center></TD></TR>
+<TR><TD><CENTER>1</CENTER></TD><TD><Center> - </center></TD><TD><Center>A9</Center></TD></TR>
+<TR><TD><CENTER>0</CENTER></TD><TD><Center> - </center></TD><TD><Center>A8</Center></TD></TR>
+</table>
+<font size=-1>Table 7 : Initialization Command Word 2 (ICW2) </FONT>
+</center>
+</P>
+
+<P>
+Initialization Command Word 2 (ICW2) selects which vector information is
+released onto the bus, during the 2nd INTA Pulse. Using the 8086 mode, 
+only bits 7:3 need to be used. This will be 00001000 (0x08) for PIC1 and 
+01110000 (0x70) for PIC2. If you wish to relocate the IRQ Vector Table,
+then you can use this register.
+</P>
+
+<A NAME="11"></A>
+<HR width="100%"><I><FONT SIZE=+2>Initialization Command Word 3 (ICW3)</FONT></I>
+<HR width="100%">
+
+<p>
+There are two different Initialization Command Word 3's. One is used, if 
+the PIC is a master, while the other is used for slaves. The top table
+shows the ICW3 for the master.
+</P>
+
+<P>
+<center>
+<Table border width="80%">
+<TR><TD><Center><B>Bit</B></Center></TD><TD><center><B>Function</B></center></TD></TR>
+<TR><TD><CENTER>7</CENTER></TD><TD>IR7 is connected to a Slave</center></TD></TR>
+<TR><TD><CENTER>6</CENTER></TD><TD>IR6 is connected to a Slave</center></TD></TR>
+<TR><TD><CENTER>5</CENTER></TD><TD>IR5 is connected to a Slave</center></TD></TR>
+<TR><TD><CENTER>4</CENTER></TD><TD>IR4 is connected to a Slave</center></TD></TR>
+<TR><TD><CENTER>3</CENTER></TD><TD>IR3 is connected to a Slave</center></TD></TR>
+<TR><TD><CENTER>2</CENTER></TD><TD>IR2 is connected to a Slave</center></TD></TR>
+<TR><TD><CENTER>1</CENTER></TD><TD>IR1 is connected to a Slave</center></TD></TR>
+<TR><TD><CENTER>0</CENTER></TD><TD>IR0 is connected to a Slave</center></TD></TR>
+</table>
+<font size=-1>Table 8 : Initialization Command Word 3 for Master PIC (ICW3)  </FONT>
+</center>
+</P>
+
+<P>
+And for the slave device, the ICW3 below is used.
+</P>
+
+<center>
+<table border width="80%">
+<TR><TD width="15%"><B><center>Bit(s)</center><B></TD><TD colspan=2><B>Function</B></TD></TR>
+
+<TR><TD><center>7</center></TD><TD colspan=2>Reserved. Set to 0</TD></TR>
+<TR><TD><center>6</center></TD><TD colspan=2>Reserved. Set to 0</TD></TR>
+<TR><TD><center>5</center></TD><TD colspan=2>Reserved. Set to 0</TD></TR>
+<TR><TD><center>4</center></TD><TD colspan=2>Reserved. Set to 0</TD></TR>
+<TR><TD><center>3</center></TD><TD colspan=2>Reserved. Set to 0</TD></TR>
+<TR><TD rowspan=9 valign=top><center>2:0</center></TD><TD colspan=2><I>Slave ID</I></TD></TR>
+<TR>                                                  <TD width="10%"><center>000</center></TD><TD>Slave 0</TD></TR>
+<TR>                                                  <TD><center>001</center></TD><TD>Slave 1</TD></TR>
+<TR>                                                  <TD><center>010</center></TD><TD>Slave 2</TD></TR>
+<TR>                                                  <TD><center>011</center></TD><TD>Slave 3</TD></TR>
+<TR>                                                  <TD><center>100</center></TD><TD>Slave 4</TD></TR>
+<TR>                                                  <TD><center>101</center></TD><TD>Slave 5</TD></TR>
+<TR>                                                  <TD><center>110</center></TD><TD>Slave 6</TD></TR>
+<TR>                                                  <TD><center>111</center></TD><TD>Slave 7</TD></TR>
+</table>
+<font size=-1>Table 9 : Initialization Command Word 3 for Slaves (ICW3)  </FONT>
+</center>
+<P>
+</P>
+
+<A NAME="12"></A>
+<HR width="100%"><I><FONT SIZE=+2>Initialization Command Word 4 (ICW4)</FONT></I>
+<HR width="100%">
+
+<P>
+<center>
+<table border width="80%">
+<TR><TD><B><center>Bit(s)</center><B></TD><TD colspan=2><B>Function</B></TD></TR>
+<TR><TD><center>7</center></TD><TD colspan=2>Reserved. Set to 0</TD></TR>
+<TR><TD><center>6</center></TD><TD colspan=2>Reserved. Set to 0</TD></TR>
+<TR><TD><center>5</center></TD><TD colspan=2>Reserved. Set to 0</TD></TR>
+<TR><TD rowspan=2><center>4</center></TD><TD><center>1</center></TD><TD>Special Fully Nested Mode</TD></TR>
+<TR>                                     <TD><center>0</center></TD><TD>Not Special Fully Nested Mode </TD></TR>
+<TR><TD rowspan=3 valign=top><center>3:2</center></TD><TD><center>0x</center></TD><TD>Non - Buffered Mode</TD></TR>
+<TR>                                       <TD><center>10</center></TD><TD>Buffered Mode - Slave </TD></TR>
+<TR>                                       <TD><center>11</center></TD><TD>Buffered Mode - Master</TD></TR>
+<TR><TD rowspan=2><center>1</center></TD><TD><center>1</center></TD><TD>Auto EOI</TD></TR>
+<TR>                                     <TD><center>0</center></TD><TD>Normal EOI</TD></TR>
+<TR><TD rowspan=2><center>0</center></TD><TD><center>1</center></TD><TD>8086/8080 Mode</TD></TR>
+<TR>                                     <TD><center>0</center></TD><TD>MCS-80/85 </TD></TR>
+</table>
+<font size=-1>Table 10 : Initialization Command Word 4 (ICW4)</FONT>
+</center>
+</P>
+
+<P>
+Once again, many of these are special functions not used with the 8259 PIC in a 
+PC. We don't use, Special Fully Nested Mode, thus this bit is set to 0. 
+Likewise we use non-buffered mode and Normal EOI's thus all these corresponding
+bits are set to 0. The only thing we must set is 8086/8080 Mode which is 
+done using Bit 0.
+</P>
+
+<A NAME="13"></A>
+<HR width="100%"><I><FONT SIZE=+2>Operation Control Word 1 (OCW1)</FONT></I>
+<HR width="100%">
+<P>
+Once all the required Initialization Command Words have been sent to the PIC,
+then you can send Operation Control Words, in any order and at any time
+during the PIC's operation. The Operation Control Words are shown in the 
+next sections.
+</P>
+
+<P>
+<center>
+<Table border width="80%">
+<TR><TD><Center><B>Bit</B></Center></TD><TD><Center><B>PIC 2</B></Center></TD><TD><center><B>PIC 1</B></center></TD></TR>
+<TR><TD><CENTER>7</CENTER></TD><TD><Center>Mask IRQ15</center></TD><TD><Center>Mask IRQ7</Center></TD></TR>
+<TR><TD><CENTER>6</CENTER></TD><TD><Center>Mask IRQ14</center></TD><TD><Center>Mask IRQ6</Center></TD></TR>
+<TR><TD><CENTER>5</CENTER></TD><TD><Center>Mask IRQ13</center></TD><TD><Center>Mask IRQ5</Center></TD></TR>
+<TR><TD><CENTER>4</CENTER></TD><TD><Center>Mask IRQ12</center></TD><TD><Center>Mask IRQ4</Center></TD></TR>
+<TR><TD><CENTER>3</CENTER></TD><TD><Center>Mask IRQ11</center></TD><TD><Center>Mask IRQ3</Center></TD></TR>
+<TR><TD><CENTER>2</CENTER></TD><TD><Center>Mask IRQ10</center></TD><TD><Center>Mask IRQ2</Center></TD></TR>
+<TR><TD><CENTER>1</CENTER></TD><TD><Center>Mask IRQ9</center></TD><TD><Center>Mask IRQ1</Center></TD></TR>
+<TR><TD><CENTER>0</CENTER></TD><TD><Center>Mask IRQ8</center></TD><TD><Center>Mask IRQ0</Center></TD></TR>
+</table>
+<font size=-1>Table 11 : Operation Control Word 1 (OCW1) </FONT>
+</center>
+</P>
+<P>
+Operation Control Word 1, shown above is used to mask the inputs of the 
+PIC. This has already been discussed, earlier in this article.
+</P>
+<A NAME="14"></A>
+<HR width="100%"><I><FONT SIZE=+2>Operation Control Word 2 (OCW2)</FONT></I>
+<HR width="100%">
+
+<P>
+<center>
+<table border width="80%">
+<TR><TD><B><center>Bit(s)</center><B></TD><TD colspan=2><B>Function</B></TD></TR>
+<TR><TD rowspan=8 valign=top><center>7:5</center></TD><TD><center>000</center></TD><TD>Rotate in Auto EOI Mode (Clear)</TD></TR>
+<TR>                                                  <TD><center>001</center></TD><TD>Non Specific EOI</TD></TR>
+<TR>                                                  <TD><center>010</center></TD><TD>Reserved </TD></TR>
+<TR>                                                  <TD><center>011</center></TD><TD>Specific EOI</TD></TR>
+<TR>                                                  <TD><center>100</center></TD><TD>Rotate in Auto EOI Mode (Set)</TD></TR>
+<TR>                                                  <TD><center>101</center></TD><TD>Rotate on Non-Specific EOI</TD></TR>
+<TR>                                                  <TD><center>110</center></TD><TD>Set Priority Command (Use Bits 2:0) </TD></TR>
+<TR>                                                  <TD><center>111</center></TD><TD>Rotate on Specific EOI (Use Bits 2:0)</TD></TR>
+<TR><TD><center>4</center></TD><TD colspan=2>Must be set to 0</TD></TR>
+<TR><TD><center>3</center></TD><TD colspan=2>Must be set to 0</TD></TR>
+<TR><TD rowspan=8 valign=top><center>2:0</center></TD><TD><center>000</center></TD><TD>Act on IRQ 0 or 8</TD></TR>
+<TR>                                                  <TD><center>001</center></TD><TD>Act on IRQ 1 or 9</TD></TR>
+<TR>                                                  <TD><center>010</center></TD><TD>Act on IRQ 2 or 10</TD></TR>
+<TR>                                                  <TD><center>011</center></TD><TD>Act on IRQ 3 or 11</TD></TR>
+<TR>                                                  <TD><center>100</center></TD><TD>Act on IRQ 4 or 12</TD></TR>
+<TR>                                                  <TD><center>101</center></TD><TD>Act on IRQ 5 or 13</TD></TR>
+<TR>                                                  <TD><center>110</center></TD><TD>Act on IRQ 6 or 14</TD></TR>
+<TR>                                                  <TD><center>111</center></TD><TD>Act on IRQ 7 or 15</TD></TR>
+</table>
+<font size=-1>Table 12 : Operation Control Word 2 (OCW2) </FONT>
+</center>
+</P>
+<P>
+Operation Control Word 2 selects how the End of Interrupt (EOI) procedure works. The
+only thing of interest to us in this register is the non-specific EOI 
+command, which we must send at the end of our ISR's.
+</P>
+
+<A NAME="15"></A>
+<HR width="100%"><I><FONT SIZE=+2>Operation Control Word 3 (OCW3)</FONT></I>
+<HR width="100%">
+
+<p>
+<center>
+<table width="80%" border>
+<TR><TD><B><center>Bit(s)</center><B></TD><TD colspan=2><B>Function</B></TD></TR>
+
+<TR><TD><center>7</center></TD><TD colspan=2>Must be set to 0</TD></TR>
+<TR><TD rowspan=4 valign=top><center>6:5</center></TD><TD><center>00</center></TD><TD>Reserved</TD></TR>
+<TR>                                       <TD><center>01</center></TD><TD>Reserved</TD></TR>
+<TR>                                       <TD><center>10</center></TD><TD>Reset Special Mask </TD></TR>
+<TR>                                       <TD><center>11</center></TD><TD>Set Special Mask</TD></TR>
+<TR><TD><center>4</center></TD><TD colspan=2>Must be set to 0</TD></TR>
+<TR><TD><center>3</center></TD><TD colspan=2>Must be set to 1</TD></TR>
+<TR><TD rowspan=2><center>2</center></TD><TD><center>1</center></TD><TD>Poll Command</TD></TR>
+<TR>                                     <TD><center>0</center></TD><TD>No Poll Command</TD></TR>
+<TR><TD rowspan=4 valign=top><center>1:0</center></TD><TD><center>00</center></TD><TD>Reserved</TD></TR>
+<TR>                                       <TD><center>01</center></TD><TD>Reserved</TD></TR>
+<TR>                                       <TD><center>10</center></TD><TD>Next Read Returns Interrupt Request Register </TD></TR>
+<TR>                                       <TD><center>11</center></TD><TD>Next Read Returns In-Service Register</TD></TR>
+</table>
+<font size=-1>Table 13 : Operation Control Word 3 (OCW3) </FONT>
+</center>
+</P>
+<P>
+Bits 0 and 1 are of the most significant to us, in Operation Control Word 3.
+These two bits enable us to read the status of the Interrupt Request Register
+(IRR) and the In-Service Register (ISR). This is done by setting the 
+appropriate bits correctly as above, and reading the register at the Base 
+Address.
+</P>
+<P>
+For example if we wanted to read the In-Service Register (ISR), then we would 
+set both bits 1 and 0 to 1. The next read to the base register, (0x20 for
+PIC1 or 0xA0 for PIC2) will return the status of the In-Service Register.
+</P>
+
+</UL>
+<HR>
+<CENTER>
+<TABLE WIDTH="90%" BORDER=0>
+<TR>
+<TD BGCOLOR=BLUE HEIGHT=25 WIDTH="20%"><FONT FACE=ARIAL COLOR=WHITE><B><CENTER><A ID="TITLEBLOCK" HREF="/index.html#PARALLEL">Parallel Ports</a></CENTER></B></FONT></TD>
+<TD BGCOLOR=BLUE HEIGHT=25 WIDTH="20%"><FONT FACE=ARIAL COLOR=WHITE><B><CENTER><A ID="TITLEBLOCK" HREF="/index.html#SERIAL">Serial / RS-232 Ports</a></CENTER></B></FONT></TD>
+<TD BGCOLOR=BLUE HEIGHT=25 WIDTH="20%"><FONT FACE=ARIAL COLOR=WHITE><B><CENTER><A ID="TITLEBLOCK" HREF="/index.html#INTERRUPTS">Interrupts</a></CENTER></B></FONT></TD>
+<TD BGCOLOR=BLUE HEIGHT=25 WIDTH="20%"><FONT FACE=ARIAL COLOR=WHITE><B><CENTER><A ID="TITLEBLOCK" HREF="/index.html#ATKEYBOARDS">AT Keyboard Ports</a></CENTER></B></FONT></TD>
+<TD BGCOLOR=BLUE HEIGHT=25 WIDTH="20%"><FONT FACE=ARIAL COLOR=WHITE><B><CENTER><A ID="TITLEBLOCK" HREF="/index.html#USB">USB</a></CENTER></B></FONT></TD>
+</TR>
+</TABLE>
+<HR>
+<FONT SIZE=2>
+Copyright 1997-2000 <A href="mailto:cpeacock@senet.com.au(Craig Peacock)">Craig Peacock </a> - Monday 28th February 2000.
+<HR>
+</CENTER>
+</FONT>
+</BODY>
+</HTML>
+
+------------i1j23JlE4GpvEEpvNNbk9F
+Content-Disposition: inline; filename=background.gif
+Content-Type: image/gif; name=background.gif
+Content-Location: http://www.beyondlogic.org/background.gif
+Content-Transfer-Encoding: Base64
+
+R0lGODdhuAsBAPcAAP/////+//7///7+//39//z8//v7//r7//r6//n5//n4//f3
+//X2//X1//Tz//Pz//Ly//Hy//Hx/+/w/+/u/+7u/+7t/+zs/+zr/+vr/+rr/+np
+/+jp/+jo/+fn/+bm/+bl/+Tl/+Pj/+Pi/+Hh/+Dg/97e/93c/9zc/9vb/9rb/9ra
+/9nZ/9jY/9fW/9XW/9XV/9TU/9PT/9LS/9LR/9DQ/87P/83N/8zM/8vL/8rK/8nJ
+/8jJ/8jH/8bG/8TF/8TE/8PC/8LC/8HC/8HB/8C//7+//76+/729/7y8/7u7/7u6
+/7q6/7m5/7i4/7e4/7e3/7W1/7Sz/7Oz/7Ky/7Kx/7Gw/7Cw/6+v/66u/62s/6ys
+/6uq/6qq/6qp/6mp/6en/6am/6Wl/6Sl/6Oj/6Kj/6Ki/6Gh/6Cg/5+f/52d/5yc
+/5ub/5qa/5qZ/5iZ/5eX/5aW/5SV/5OT/5KS/5CQ/4+P/42O/4yM/4qL/4mJ/4eH
+/4aF/4SD/4KC/4GB/39//359/3t8/3p6/3h5/3d3/3R1/3Jz/3Fx/29v/2xs/2pq
+/2ho/2Zl/2Nj/2Fh/15f/1tc/1lZ/1ZW/1NS/1BQ/01N/0lJ/0ZH/0ND/0BA/zw9
+/zk5/zY1/zIy/zAw/ysr/ygo/yQk/yEg/x0d/xwc/wAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAC4CwEAQAjNAEkJJCVKFChQnRJu2oSp
+oSVLkyJCmtioYqKLiQppLASoY8c9IEHaGUkSjsmTcNKoXJkGTEswMGNimUlzJhQs
+UHLqhPLECBQjQIMaKeKjqNGiPWwoXbrUhQ0XUKNCNeHChNWrVj2Y8MC1a1cKHiiI
+HSt2woKzaNMCWMu2rdu3cOPKnUu3rt27ePPq3cu3r9+/gAMLHky4sOHDiBMrXsy4
+sePHkCNLnky5suXLmDNr3sy5s+fPoEOLHk26tOnTqFOrXs26tevXsGPLnu05IAA7
+
+------------i1j23JlE4GpvEEpvNNbk9F
+Content-Disposition: inline; filename=interface.gif
+Content-Type: image/gif; name=interface.gif
+Content-Location: http://www.beyondlogic.org/interface.gif
+Content-Transfer-Encoding: Base64
+
+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
+
+------------i1j23JlE4GpvEEpvNNbk9F
+Content-Disposition: inline; filename=piclogic.gif
+Content-Type: image/gif; name=piclogic.gif
+Content-Location: http://www.beyondlogic.org/interrupts/piclogic.gif
+Content-Transfer-Encoding: Base64
+
+R0lGODlhhQJYAfcAAAAAAP///wAAVvXghuoWFAdW9QAAegcAAPKGOy+/BTmHPI4I
+AS4HAAA2878FAAApAAAA5gEiAEMBAAAAAEgAAADYEAIAZwH+/2cBNvN4BScD1AFD
+ASIASAAIAmMAIgBIAAgCRoenh08EZvYCAOCHAgBoh2cBLgcAAAtwPGxCbFKHwhhn
+Fy4Hggd/VqiHIACXATIHYIdIKve/AAAAAOYBGwA0DYUAAQAAAAAAAADgEGcXAAAA
+AAKQ/L8AAAAAJPhvAOD3bwAUP/e/IQAAAPtB97+QlPy/6s33v5CU/L8AAAAAD/hv
+AAAAAAC8928AAAAAABH4bwAAAAAA4hP3v18BAADFEve/TnFvABYAAABeQfe/LPlv
+ANz7bwAAAAAAFPlvAMlj978P+G8AFgAAACz5bwAAAAAA3PtvAAAAAAAAAAAAqHJI
+AEJsGkM6XE5FV0hPTX4xXElOVEVSUn4xXFBJQ0xPR0lDLkdJRgAASABUiGloZxdM
+iG9ZZgh2B2SJAgBkiQIAhxYAAAAA2QOXAnCIdz1/F2YIdgdkiQIAZIkCABQAdgcA
+AHYHZgiaiKRLOzb3vwgJAABHAAAAAAAAAAL5bwCfW8CIZwEAAKT4bwAmGPe/AAAA
+AFoQRQDsQvm/uBn3v+CIAAAo/m8AbRj3v59bwIgAAAAAwIhvWQAAAAACkPy/AAAA
+AL1ySABw+m8AFD/3vyEAAAD7Qfe/kJT8v+rN97+QlPy/AAAAANz7bwAAAAAA4hP3
+v18BAADFEve/oXEAAAAAAADgZPe/3PtvAAAAAAABAAAAnApFALoCbwAAAAAA3Ptv
+ACAAAADAgCG8dPlvAEDxDAAcAQAAqA1QAJGj978AAE0AxA5QAEDxDAAAAAAADABN
+AAAATQCoDVAAQAAAAAAAAADQBQAAAQUAAJz5bwBBpfe/AABNAFil978AAE0AQQAA
+AEEAAAAAAAAAyg1QAAAAAAAAAAAABI9DAMoNUAAcok4ArA1QAM4NUADKckgA////
+/wAAAACAj0MAyg1QACH5BAEAAAEALAAAAACFAlgBQAj/AAMIHEiwoMGDCBMqXMiw
+ocOHECNKnEixosWLGDNq3Mixo8ePIEOKHEmypMmTKFOqXMmypcuXMGPKnEnzI4Ca
+HG+W1IkzI0+RP3taDAqSqNCJRo8qXUoxKdOGTjtGfapwqkarVA9ixbg1K8GuXsMe
+BRuWbEWzWdFKVPuULUS3S28CmEu3rt27ePPqrRtAJ8+/YgMXhKuUsEPDQhEvVIyT
+cULHNCELngyU8mKTkmVmHmy56s7Oj0GLbjza4GbOpb9+Tj3wdGvWr/vaTSlXYFDX
+sK/m7ot5N27euX//Zjl8t/HiKocjp70atnDfxqOTXI5SOfTp10dSP+l3dnXgRLdL
+0Wcovrn27JWDm09dfrzl9ufXl36uHnt99/h1Ywdsvz9r+hHVZht4fPEHHG+AEQbg
+WwcKOJuBCb6moG3ecQeeVvlpNhRda/mX3lkcohbaZgs+VKFUXMk3lIie2ZThiyve
+F5+GG5Xo4ko2jgYfjGmdNSCFHEYoW2wPXmRdhw3yNeSPCA7YXZAxzhggk0U6SSGR
+BaboIYNJQmnlkgR66aNsSlroF5E8viSZgyF6t2ZvMobkWG1uKkmiiisKKKGdRaXp
+52EeoQXZkc7h2RRSfW4Z5ZSB//7paIuFGtpZjqJRCtqTIZrJpGqPfhennOiB+umN
+kXZq6qbswVnqh/9J+t6psO4oqqKVukqZpZMCmWlvZ1IJq62TEdoqrZcCK5isv9K4
+KqupEpurs68m+yiypErZrLXzGRsYpnMx12ts0jKbrbZi4RottjqG6yi1jZJblrte
+mXurun+yiyK8PUI7r77B0utvTv9CGrBp9pZV8MAIm5awwguz2PDBDScMcb4Ro7rw
+xBXTW6bEGyPc8cAfZxwxxiKXbLKWGnOapa6cfkngVycGWuXJNNd8rs3F4qzzzkyR
+rCrMmJLZpNAHFq3nk1qd1m3LPCuLlVU/Kd10YVPvW/W6uwJefdVzfknddlXIPfms
+9dgSk12Y12anrXaNa7ft9ttwxy333HTXbffdeOet99589+3334AH/nCosw6Lbq38
+Hiu4haNWe6246Sa+bUxylZm11mIfii9V8vYrebmL//w45IgfnrPpz4aO+taFj57o
+sq8b7lLlu2Yuu+ux494u7I6Pqzrpp69uNfCpE8/67/fy3nvkwnvevOIw0b400Wbb
+juTn72If7+ZtIW/88N87Hz70z0/ufe7oc8+o8slz6bCRKI//ftHxa64mmdNffrX1
+65cPuvbpgx8Alyf/wPPtDkS60tPQFIi/CSVwTkZqk4Qm6DIGxugu7TMRlVY2NATZ
+yUBjwiDA2EYnloFpeiM0YAbfAjaGzc8nojtMCy/jvzGtZYZMA9cBW8dC/WHIhSvE
+UQNfODVhxTCAweMhAWtoPybWT4UwTGHUeoU2tqkvLldsmYPQlEP9OBEhESrhtyz2
+RCgW8HZKLJ38/vfF7kVviCYkG//c18aeZXEsd0yMGVOIRiQWL41J9OPx9thE3e3Q
+d2vMXh2x+MYK+bCIhBMk+CQpPkD+kZA27OMSL7nJQQZRjZjMpCE/GchOTtKUlSQO
+HGO2v0iiknyJ3N4A3RjKRY2Sj7f0oiZJyclaQNIxl7oEZhlBSUlY+vJ6u+SlJ3GJ
+SEsu85gzYeW/pOkvamoMh9B80Rxrsk1uiqyb2XRmNUsGTmWFc1rf/GY5o7fEzv88
+cirW9OY559lLeqKQfvTMpyz1SUN++pOW9aJgB7foq6ippjsNag02N8TBWoZHoARN
+qEG1KFF8omqM0GwnzzT6T4dqk4sD7dLSUHhPoyUUTLSZWUdXShqWAtGlML1fTGdK
+05ra9KY4zalOd8rTnvr0p0ANqlCHStSiGvWoduPoD2dpR6YycpFUq6lSXyrOVL7S
+fFDFo1RdeUjmxZJiX+WcTadKRGWesqvEvCob8eetg+oQc1w1q1XRWkq6/vGRfeIP
+CP/h2ji7PjOYzSwmVmdK1i4Kdq1VNeZhFUnYuDLTq4kdbGQRC9PCvnWyjMXsPsMK
+0JhaloxqzexiN6tZsF7pOwa1IF/ZJ1fFhpa0o6VYPF0Ews82lbWPTatfz9payVbW
+sVbELWAhG1uxbrWvvaXsa01b3M7+Frm5rWtyRbtc49LUtkYMbHWdu93bKrStb7Wt
+VoU7XN1OF7bdfepsGwWhtmH3iOaNbj3l+1d+vjePYcNvS7Oqx+OSN4r/PaMwBaxd
+lt7XqVHlb34RPN7G7gev9A1uMiWswQKNdKRNOpoHqVfI2EqPaBIU4wS7BWHyEAy8
+F03bc/ba3P4N2JaAEpKQTkof4jM50Ika/paGf1Rjl9lwvSjS62WrdmAF75ez3i2t
+df8djCiC2bii1CsxVJJ2XhGJGMQeJPGQmwyzKk80U1rWa/5qDJfwQLBGf0EakHhc
+5WyyJbUCLShEUSZCCiMTyiGdqH7qXN5+6vhlCJ2xahnFZwBH8clDCuNu7QvcPs/X
+zsRNb4KZjEw1JzpMIMbwm+HbT0yv+dM7DnGHq/vlMS+QzKC2qAZnWeo0n5p2qd70
+YJajQERX78dyvrSM48xlHIM0x3PO9agXvdQ/BxrKMxZlc4X8pTBTMNlcBjLA9ire
+Br8YxpEmtm8lbe3nBteCej4zg/ur4GTXessE5nZBXR1ubdszeeeubZvvXOB5uzDU
+OnzTuJFdQcOm28CNNvS1hy2D3QjPdaVFRvJTFT5pJTu3pOeBs3sDPsyCQzq+Fz+d
+tEn4axVT/N8Wd3R9K/5ofybc4Ulu8cJRvnJvTzjjJRd4vQ3uWoBDF+YjB3nMSZ7z
+d99c5Lyl+bbdLVqIV0biazu5yhu+9G6re8Fw1BSbQds0pT/9yCxn+tXled2PYxvj
+QD+40JXFa/MA67znys62vVvuUqsTHb1vZ+7WIzNWr6cd7DJX+9iLTmuTorvqdif4
+zs8edJxbbeO6aW/SA9/rgTd+5oYX+z/dvnatx33JWXd62V8e9ppXXvOfJzelHf94
+vUfe83uHO8IZT2/Td37ooYf66CF/etinXu6X5y5Sd8/73UtZWr9PVvB/Nfzet6Ta
++04T8o1s/Kb7afnM/2jzLQ8ycqZz+qAPGPQZHlDscxPxncLLxcA/LfJ7XztGn2b6
+q7n+a25fb+8/P87K4u8x+QuV/r1GWpvuiXRLd1lOVWR/PoV/10NFBEVSbnVpG1R8
+AaJSAshTBDhND/hTEThOE9hTFThrWwE1QNN+0XSBGIhOVsZvwmZSYtaBHshQYuJR
+IyhjxpZDLhhS4BJRGegeNRh+AehLYIZhTlJrPJhAn6ZrQahQCMVhLNh1ILhTNwh8
+SaiEMOKDgPZqRDiFTBNqKSgzZdWEbZchXnNsCohnO7YpbHJS1eGAWoiEaHiG/jV7
+auhybfiGcBiHcjiHdFiHdniHeJiHesy4h3zYh374h4AYiII4iIRYiIZ4iIiYiIq4
+iIzYiI4YK3sRiZI4iZRYieK3E5aYiZq4iZKIiZz4iaCoiZ4YiqRYinlRdz+Xd3jH
+c4X3emS3eqnIipLnitSVeym3hbFIeLOoiiHHi4Pnc2b3db0oi6hXe6/YUZR3e5jn
+fLKXeaLnWaznYrTni2gneNUYTslojLUYe1jHjN14hRwXbHIUjb80jcRoe9ooS4X2
+YBJEdRtFjqsWjNbYitR4eAs1bR13a7kojL94d8Ooi67Vd635pjbZSIuqp4y6x41c
+x4areI7HmI64p5B0t4ak13oNyY/XaJH/CIycV4+76JDbiJC3uHkVKY2u55HFaJAR
+iYzwCCj7OI8fCZDoaHItOWUvWXoX6Y/9eE4FiZIz6ZMPqZLLiIvyCJMpCZQhCZFD
+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
+6qRe6qZ+6qie6qq+6qwK3uqu/uqwTocBAQA7
+
+------------i1j23JlE4GpvEEpvNNbk9F
+Content-Disposition: inline; filename=irq2irq9.gif
+Content-Type: image/gif; name=irq2irq9.gif
+Content-Location: http://www.beyondlogic.org/interrupts/irq2irq9.gif
+Content-Transfer-Encoding: Base64
+
+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
+cxM74Nk9zAYu3Bed4Aze4A7+igEBADs=
+
+------------i1j23JlE4GpvEEpvNNbk9F--

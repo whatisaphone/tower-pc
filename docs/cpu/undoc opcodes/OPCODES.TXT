@@ -1,0 +1,61 @@
+Undocumented OpCodes -- By Robert Collins 
+
+This page was last updated on 07/29/95.
+
+----------------------------------------------------------------------------
+
+Many years ago, I came across a pre-production Intel 80386 In-
+Circuit-Emulator (ICE). I didn't have much use for it, it was archaic, 
+used a UNIX interface; only communicated via serial terminal; and only 
+supported a 16 MHz 80386. Then one day, I desperately needed an 80386 
+ICE (all I had at the time was an 80486 ICE), and I thought I would hook 
+it up, to see if I could get it working. Much to my surprise, it worked. 
+My only complaint, was its user interface (terminal interface) was 
+cumbersome, it was slow, it lacked features, and was obsolete. Other 
+than that, it was great! So after I got used to it, I had some spare 
+time, and I got this great idea to attempt to tackle one of my favorite 
+problems -- searching for undocumented opcodes. Quickly I assembled some 
+source code with reserved opcodes in it. Much to my dismay, it 
+disassembled the opcodes, and displayed the list of their mnemonics. The 
+opcodes contained in this file, are the culmination of that work. The 
+mnemonics are those given by the ICE.
+
+This opcodes file used to be in one piece. I broke it up so I could 
+track what opcodes people are interested in. 
+
+----------------------------------------------------------------------------
+
+Get description of other opcodes:
+AAM:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAM.txt
+AAD:      ftp://ftp.x86.org/pub/x86/secrets/opcodes/AAD.txt
+CMOV:     ftp://ftp.x86.org/pub/x86/p6/opcodes/CMOV.txt
+FCMOV:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCMOV.txt
+FCOMI:    ftp://ftp.x86.org/pub/x86/p6/opcodes/FCOMI.txt
+ICEBP:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+INT01:    ftp://ftp.x86.org/pub/x86/secrets/opcodes/ICEBP.txt
+LOADALL:  ftp://ftp.x86.org/pub/x86/secrets/opcodes/LOADALL.txt
+RDPMC:    ftp://ftp.x86.org/pub/x86/p6/opcodes/RDPMC.txt
+SALC:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/SALC.txt
+UMOV:     ftp://ftp.x86.org/pub/x86/secrets/opcodes/UMOV.txt
+
+----------------------------------------------------------------------------
+
+Download this file -- OpCodes.ZIP 
+ftp://ftp.x86.org/pub/x86/dloads/OPCODES.ZIP 
+
+----------------------------------------------------------------------------
+
+(c) 1995, 1996 Intel Secrets(TM) home page. PGP key available. 
+
+"Intel Secrets" and "What Intel doesn't want you to know" are trademarks 
+of Robert Collins. 
+
+Pentium and Intel are trademarks of Intel Corporation. 386, 486, 586, 
+P6, and all other numbers are not!
+
+All other trademarks are those of their respective companies. See 
+Trademarks and Disclaimers for more info. 
+
+Robert Collins is a Senior Design Engineer and Manager of some sort of 
+Research in Dallas, TX. Robert may be reached via email at 
+rcollins@x86.org or via phone at (214) 491-7718. 

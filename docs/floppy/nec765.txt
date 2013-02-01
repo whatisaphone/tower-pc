@@ -1,0 +1,479 @@
+Ä [2] RU.HACKER (2:5000/2.4) ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ RU.HACKER Ä
+ Msg  : 1 of 4                                                                  
+ From : Cyril Antonov                       2:5030/32       13 Sep 93  20:40:00 
+ To   : All                                                                     
+ Subj : Controller Programming                                                  
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+YooHoo,All!
+
+============================================================================
+
+            NuKE-NuKE-NuKE-NuKE-NuKE-NuKE-NuKE-NuKE-NuKE-NuKE-NuKE
+            uK                                                  E-
+            KE  "Programming the NEC765 Floppy Disk Controller, -N
+            E-      and the DMA Chip to bypass the Int 13h      Nu
+            -N                                                  uK
+            Nu                       By                         KE
+            uK                     Dr. X                        E-
+            KE                                                  -N
+            E-NuKE-NuKE-NuKE-NuKE-NuKE-NuKE-NuKE-NuKE-NuKE-NuKE-Nu
+
+% The Challenge %
+~~~~~~~~~~~~~~~~~
+
+The challenge was started by Dr. X in order to try to access the disk media
+without using any DOS or Bios Interrupt 13h calls. Surely a _very_ difficult
+challenge indeed, nevertheless Dr. X has succeeded in doing so, and he will
+explain the theory behind his development. This scholar does deserve a
+`pat on the back' for his brain teaser work. Good work Dr. X, and welcome
+aboard.
+                         NuKE Members/Supporters
+
+% Programming the Floppy Disk Controller & DMA chip to bypass the Int 13h %
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The NEC 765 floppy disk controller chip controls floppy disk drives motors
+and heads. And it manages the flow of data to and from the disk sector(s).
+
+The FDC (Floppy Disk Controller) performs 15 operations in all, of which
+only three are discussed here. They are Seek, Read and Write.
+
+The FDC operates in three phases:
+
+  1) The command phase
+  2) The execution phase
+  3) The result phase
+
+a) The command phase  : When one or more bytes are sent to the Data Registers
+b) The execution phase: When the FDC undertake the command
+c) The result phase   : A number of status byte(s) are read from the Data
+                        Register(s)
+
+% I) The Ports %
+
+The FDC is operated through only three I/O (Input/Output) ports:
+3F2  - Digital Output Port
+3F4  - Status Register
+3F5  - Data Register
+
+  1. Digital Output Port (3F2)
+
+     Bits        Function
+     1-0         Drive # ; 00=A, 01=B, 10=C, 11=D
+     2           0=Reset the floppy disk controller (***)
+     3           1=Enable FDC interrupt and DMA access
+     7-4         1=Turn ON drive motors D to A (bit 4 = drive A)
+
+  Warning: This register is WRITE ONLY
+  (***) Do not set bit 2 to 0 at any time (recelebrate)
+
+  2. Data Register (3F5)
+
+     Operation     Byte #       Function
+     Seek          1            Code number (Fh)
+                   2            Head & Drive : 00000HDD (h=head, DD=drive)
+     Read Sector   1            Code number (66h)
+                   2            Head & Drive : 00000HDD (h=head, DD=drive)
+                   3            Track number
+                   4            Head number
+                   5            Sector number
+                   6            Bytes in sector (2=512)
+                   7            End of track (09)
+                   8            GAP Length
+                   9            Data Length
+     Write Sector  1            Code number (45h)
+                   2-9          Same as READ SECTOR (above)
+
+  Warning: You must be sure that the FDC is ready before you send or read a
+           a byte from the data register. Bits 7-6 of the status register
+           provide this information.
+
+  3. Status Register (3F4)
+
+     Bits        Function
+     3-0         1=Disk drive D-A in Seek Mode
+     4           1=FDC read or write command in progress
+     5           1=FDC is not in DMA mode
+     6           1=FDC data register is ready to send data
+                 0=FDC data register is ready to receive data
+     7           1=FDC ready to send or receive data
+
+  Warning: When a seek operation is complete, the FDC invokes a INT 6h
+           (the disk interrupt). When the interrupt occurs, the BIOS
+           interrupt handler sets the bit 7 of the seek status byte in
+           the BIOS Data Area located at 0:043E. This is the sole result of
+           the interrupt.
+
+% II) Initializing %
+
+Before initializing a channel, the program must send a code to the chip
+telling it whether it is reading from or writing to the Floppy Disk
+Controller. This one byte code is 46h for reading and 4Ah for writing.
+The code must be sent to each of two separate port addresses: 0E & 0C.
+After that, you can send the parameters to the Data Register (3F5),
+following the bellow steps:
+  1. Turn on the floppy disk (enable interrupts with a SLI first)
+     a) Out the code byte to the Digital Output Register (3F2)
+     b) Send 46h to read or 4Ah to write to each of two separate port
+       addresses 0B and 0Ch
+        (eg: Out 0B,46h
+             Out 0C,46h)
+
+  2. Then you _must_ perform a seek operation to the concerned Head
+     and Track;
+     a) Out the code for Seek operation (0F) to the FDC (3F5)
+     b) Out head & Drive code (00000HDDxB, H=head,DD=drive)
+     c) Out the track number
+     d) Wait for Int 6h
+
+  3. After that you can perform the read or write operation(s):
+     a) Calculate the address of the buffer (see the program at the end
+        of this Article)
+     b) Send the address to the DMA
+     c) Out the value 66h for read or 45h for write to the FDC (3F5)
+     d) Out the Head & Drive number
+     e) Out the Track number
+     f) Out the Head number
+     g) Out the Sector number
+     h) Out the Sector Code; get this information with INT 21h
+     i) Out End-of-Track   ; with AX=1E35h
+     j) Out the GAP length
+     k) Out the data length
+     l) Wait for INT 6h
+     m) Perform 7 INs from the Data Register (3F5) to get the status bytes.
+        (Refer to Part III)
+
+  4. Finally, turn off the motor(s):
+     a) Out the code byte to the Digital Output Register (3F2)
+
+% III) The Status Bytes %
+
+After a read or write operation the FDC gives you 7 status bytes:
+
+Byte #        Function
+  1           Status Byte 0
+  2           Status Byte 1
+  3           Status Byte 2
+  4           Track number
+  5           Head number
+  6           Sector number
+  7           Byte per sector code (0-3)
+
+  1. Status Byte 0
+
+     Bit #      Function
+     7-6        00=normal termination
+                01=execution began, could not complete
+                10=invalid command
+                11=failed because disk drive went offline
+     5          1=seek operation in progress
+     4          1=disk drive fault
+     3          1=disk drive not ready
+     2          number of selected head
+     1-0        number of selected drive
+
+  2. Status Byte 1
+
+     Bit #      Function
+     7          1=requested sector beyond last sector number
+     6          always 0
+     5          1=data transfer error
+     4          1=data overrun
+     3          always 0
+     2          1=cannot read or find sector
+     1          1=cannot write because of write protection tab
+     0          1=missing address mark in disk format
+
+  3. Status Byte 2
+
+     Bit #      Function
+     7          always 0
+     6          1=encountered delete-data address mark
+     5          1=CRC error in data
+     4          1=track identification problem
+     3          1=scan command condition satisfied
+     2          1=scan command condition NOT satisfied
+     1          1=bad track
+     0          1=missing address mark
+
+% IV) Read Procedure in ASM (for A86 assembler) %
+
+
+ Jmp  TheCode
+ Buffer Db 512 dup (0)         ; For the sector
+ StatusBuffer Db 7 Dup (7)     ; For the status bytes
+
+ TheCode Proc Near
+ ReadSector:
+ ; Turn ON the Motor
+   Sti
+   Mov Dx,03F2H
+   Mov Al,00101101xB    ; Set the Bits 0 , 2 ,3 , 4
+   Out Dx,Al
+ ; Wait for motor to come to speed (1/2 second)
+   Call Motor_Delay
+   Mov Cx,2000
+   Loop $
+ ; Begin the initialization of DMA Chip
+   Mov Al,46H     ; Code for Read Datas
+   Out 11,Al      ; Send Datas
+   Out 12,Al
+ ; Now , Calculate buffer address
+   Lea Ax,Buffer  ;
+   Mov Bx,Ds      ;
+   Rol Bx,4       ;
+   Push Bx        ;
+   And Bl,0FH     ;
+   Mov Dl,Bl      ;
+   Pop Bx         ;
+   Add Ax,Bx      ;
+   Jnc NoCarry    ;
+   Inc Dl         ;
+   NoCarry:       ;
+   Dec Al         ; justify
+   Out 4,Al       ; Send Low Byte of adress to the DMA controller
+   Mov Al,Ah      ;
+   Out 4,Al       ; Send High byte of the adress   //  //  //  //
+   Mov Al,Dl      ;
+   Out 81h,Al     ; Send Page number  (Page register)
+ ; Finish initialization
+   Mov Ax,511     ;
+   Out 5,Al       ; DMA controller
+   Mov Al,Ah      ;
+   Out 5,Al       ;
+   Mov Al,2       ;
+   Out 10,Al      ; DMA controller
+ ; Get pointer to disk base
+   Mov Al,1EH     ;
+   Mov Ah,35H     ;
+   Int 021H       ;
+ ; Send read parameters.
+   Mov Ah,066H    ; Code for single sector read
+   Call Out_Fdc   ; Send It
+   Mov  Ah,2      ; Head&Drive #
+   Call Out_FDC   ; Send It
+   Mov  Ah,1      ; Track Number
+   Call Out_FDC   ; Send It
+   Mov  Ah,0      ; Head #
+   Call Out_FDC   ; Send It
+   Mov  Ah,3      ; Sector #
+   Call Out_FDC   ; Send it
+   Mov  Ah,Es:[Bx]+3 ; Sector Size code (2=512 bytes)
+   Call Out_FDC   ; Send it
+   Mov  Ah,Es:[Bx]+4 ; End-of-track #
+   Call Out_FDC   ; Send It
+   Mov  Ah,Es:[Bx]+5 ; Gap length
+   Call Out_FDC   ; Send it
+   Mov  Ah,Es:[Bx]+6 ; Datas length
+   Call Out_FDC   ; Send
+   Call Wait_Interrupt ; Wait Int 6
+ ; Read the result bytes ..
+   Mov Cx,7
+   Lea Bx,StatusBuffer
+   Next:
+   Call In_FDC
+   Mov [BX],Al
+   Inc Bx
+   Loop Next
+ ; Turn OFF the motor
+   Mov Dx,03F2H
+   Mov Al,00001101xB   ; Turn Off the Drive B
+   Out Dx,Al
+   Ret                 ; Exit from the programm
+ Sector_REad Endp
+
+ Wait_interrupt Proc
+ ; Monitor the int 6 in bios status Byte
+   Mov Ax,40H
+   Mov Es,Ax
+   Mov Bx,3EH
+   Again:
+   Mov Dl,Es:[BX]
+   Test Dl,080H
+   Jz Again
+   And Al,127
+   Mov Es:[Bx],Dl
+   Ret
+ Wait_Interrupt EndP
+
+ Out_FDC proc near
+   Mov Dx,03F4H
+   Keep_Trying:
+   In  Al,Dx
+   Test Al,128
+   Jz  Keep_Trying
+   Inc Dx
+   Mov Al,Ah
+   Out Dx,Al
+   RET
+ Out_FDC EndP
+
+ In_FDC Proc Near
+   Mov Dx,03F4H
+   Keep_Trying2:
+   In  Al,Dx
+   Test Al,128
+   Jz  Keep_Trying2
+   Inc Dx
+   In  Al,Dx
+   Ret
+  In_FDC EndP
+
+  Motor_Delay Proc
+   Mov Ah,15           ; Perform Seek Operation
+   Call Out_FDC        ; Out
+   Mov Ah,2            ; Head&Drive
+   Call Out_FDC        ; Out
+   Mov Ah,1            ; track#
+   Call Out_FDC        ;
+   Call Wait_interrupt ;
+   Ret
+  Motor_Delay endp
+
+-------------------------------------------------------------------------------
+-
+ ; The bellow is yet, another example for reading the first few beginning tracks
+ ; but this one is for the Hard Disk
+ ; By X
+ ; Not `fully completed', but enough to get the point.
+
+ Jmp  TheCode
+ Buffer Db 512 dup (0)         ; For the sector
+ StatusBuffer Db 7 Dup (7)     ; For the status bytes
+
+ TheCode Proc Near
+ ReadSector:
+ ; Turn ON the Motor
+   Sti
+   Mov Dx,03F2H
+   Mov Al,00101101xB    ; Set the Bits 0 , 2 ,3 , 4
+   Out Dx,Al
+ ; Wait for motor to come to speed (1/2 second)
+   Call Motor_Delay
+   Mov Cx,2000
+   Loop $
+ ; Begin the initialization of DMA Chip
+   Mov Al,46H     ; Code for Read Data
+   Out 11,Al      ; Send Data
+   Out 12,Al
+ ; Now , Calculate buffer adress
+   Lea Ax,Buffer  ;
+   Mov Bx,Ds      ;
+   Rol Bx,4       ;
+   Push Bx        ;
+   And Bl,0FH     ;
+   Mov Dl,Bl      ;
+   Pop Bx         ;
+   Add Ax,Bx      ;
+   Jnc NoCarry    ;
+   Inc Dl         ;
+   NoCarry:       ;
+   Dec Al         ; justify
+   Out 4,Al       ; Send Low Byte of address to the DMA controller
+   Mov Al,Ah      ;
+   Out 4,Al       ; Send High byte of the address   //  //  //  //
+   Mov Al,Dl      ;
+   Out 81h,Al     ; Send Page number  (Page register)
+ ; Finish initialization
+   Mov Ax,511     ;
+   Out 5,Al       ; DMA controller
+   Mov Al,Ah      ;
+   Out 5,Al       ;
+   Mov Al,2       ;
+   Out 10,Al      ; DMA controller
+ ; Get pointer to disk base
+   Mov Al,1EH     ;
+   Mov Ah,35H     ;
+   Int 021H       ;
+ ; Send read parametres.
+   Mov Ah,066H    ; Code for single sector read
+   Call Out_Fdc   ; Send It
+   Mov  Ah,0      ; Head&Drive #
+   Call Out_FDC   ; Send It
+   Mov  Ah,12     ; Track Number
+   Call Out_FDC   ; Send It
+   Mov  Ah,0      ; Head #
+   Call Out_FDC   ; Send It
+   Mov  Ah,3      ; Sector #
+   Call Out_FDC   ; Send it
+   Mov  Ah,Es:[Bx]+3 ; Sector Size code (2=512 bytes)
+   Call Out_FDC   ; Send it
+   Mov  Ah,Es:[Bx]+4 ; End-of-track #
+   Call Out_FDC   ; Send It
+   Mov  Ah,Es:[Bx]+5 ; Gap length
+   Call Out_FDC   ; Send it
+   Mov  Ah,Es:[Bx]+6 ; Datas length
+   Call Out_FDC   ; Send
+   Call Wait_Interrupt ; Wait Int 6
+ ; Read the result bytes ..
+   Mov Cx,7
+   Lea Bx,StatusBuffer
+   Next:
+   Call In_FDC
+   Mov [BX],Al
+   Inc Bx
+   Loop Next
+ ; Turn OFF the motor
+   Mov Dx,03F2H
+   Mov Al,12
+   Out Dx,Al
+   Ret                 ; Exit from the programm
+ Sector_REad Endp
+
+ Wait_interrupt Proc
+ ; Monitor the int 6 in bios status Byte
+   Mov Ax,40H
+   Mov Es,Ax
+   Mov Bx,3EH
+   Again:
+   Mov Dl,Es:[BX]
+   Test Dl,080H
+   Jz Again
+   And Al,127
+   Mov Es:[Bx],Dl
+   Ret
+ Wait_Interrupt EndP
+
+ Out_FDC proc near
+   Mov Dx,03F4H
+   Keep_Trying:
+   In  Al,Dx
+   Test Al,128
+   Jz  Keep_Trying
+   Inc Dx
+   Mov Al,Ah
+   Out Dx,Al
+   RET
+ Out_FDC EndP
+
+ In_FDC Proc Near
+   Mov Dx,03F4H
+   Keep_Trying2:
+   In  Al,Dx
+   Test Al,128
+   Jz  Keep_Trying2
+   Inc Dx
+   In  Al,Dx
+   Ret
+  In_FDC EndP
+
+  Motor_Delay Proc
+   Mov Ah,15           ; Perform Seek Operation
+   Call Out_FDC        ; Out
+   Mov Ah,0            ; Head&Drive
+   Call Out_FDC        ; Out
+   Mov Ah,12           ; track#
+   Call Out_FDC        ;
+   Call Wait_interrupt ;
+   Ret
+  Motor_Delay endp
+==========================================================================
+
+ˆŒ•Ž,¨­â¥p¥á­®. Œ®¦¥â,ª®¬ã-­¨âì â®¦¥ ¯p¨£®¤¨âáï? :)
+
+CU in the next life,                   ³ Monday September 13 1993
+GhostRider                             ³ 20:40
+
+--- Tekkkno Freak 1.0+
+ * Origin: Amsterdam - COFFEESHOP! (2:5030/32)
+

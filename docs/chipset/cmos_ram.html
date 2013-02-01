@@ -1,0 +1,168 @@
+<HTML>
+<HEAD>
+<TITLE>CMOS RAM</TITLE>
+</HEAD>
+
+<BODY><PRE></PRE>
+
+<H2 ALIGN=Center>CMOS RTC - Real Time Clock and Memory (ports 70h & 71h)</H2>
+
+<PRE>
+
+<B>	Reg#			  Description</B>
+
+	 00  RTC seconds
+	 01  RTC seconds alarm
+	 02  RTC minutes
+	 03  RTC minutes alarm
+	 04  RTC hours
+	 05  RTC hours alarm
+	 06  RTC day of week
+	 07  RTC day of month
+	 08  RTC month
+	 09  RTC year
+	 0A  RTC Status register A:
+
+	    |7|6|5|4|3|2|1|0|  RTC Status Register A
+	     | | | | `---------- rate selection Bits for divider output
+	     | | | |		 frequency (set to 0110 = 1.024kHz, 976.562æs)
+	     | `-------------- 22 stage divider, time base being used;
+	     |			  (initialized to 010 = 32.768kHz)
+	     `-------------- 1=time update in progress, 0=time/date available
+	 
+	 0B  RTC Status register B:
+
+	    |7|6|5|4|3|2|1|0|  RTC Status Register B
+	     | | | | | | | `---- 1=enable daylight savings, 0=disable (default)
+	     | | | | | | `----- 1=24 hour mode, 0=12 hour mode (24 default)
+	     | | | | | `------ 1=time/date in binary, 0=BCD (BCD default)
+	     | | | | `------- 1=enable square wave frequency, 0=disable
+	     | | | `-------- 1=enable update ended interrupt, 0=disable
+	     | | `--------- 1=enable alarm interrupt, 0=disable
+	     | `---------- 1=enable periodic interrupt, 0=disable
+	     `----------- 1=disable clock update, 0=update count normally
+
+	 0C  RTC Status register C (read only):
+
+	    |7|6|5|4|3|2|1|0|  RTC Status Register C  (read only)
+	     | | | | `---------- reserved (set to 0)
+	     | | | `---------- update ended interrupt enabled
+	     | | `---------- alarm interrupt enabled
+	     | `---------- periodic interrupt enabled
+	     `---------- IRQF flag
+
+	 0D  RTC Status register D (read only):
+
+	    |7|6-0|  RTC Status Register D  (read only)
+	     |	`----- reserved (set to 0)
+	     `------ 1=CMOS RAM has power, 0=CMOS RAM has lost power
+
+	 0E  Diagnostic status byte:
+
+	    |7|6|5|4|3|2|1|0|  Diagnostic Status Byte
+	     | | | | | | `------ reserved
+	     | | | | | `------- 1=time is invalid, 0=ok (POST validity check)
+	     | | | | `-------- 1=fixed disk 0 failed initialization, 0=ok
+	     | | | `--------- 1=memory size doesn't match config info, 0=ok
+	     | | `---------- 1=invalid config info found, 0=ok (see below)
+	     | `----------- 1=config record checksum is bad, 0=ok
+	     `------------ 1=RTC lost power, 0=power state stable
+	     
+	 0F  Shutdown status byte:
+
+	       0  soft reset or unexpected shutdown
+	       1  shut down after memory size determination
+	       2  shut down after memory test
+	       3  shut down with memory error
+	       4  shut down with boot loader request
+	       5  JMP DWORD request with INT init
+	       6  protected mode test 7 passed
+	       7  protected mode test 7 failed
+	       8  protected mode test1 failed
+	       9  block move shutdown request
+	       A  JMP DWORD request without INT init
+
+	 10  Diskette drive type for A: and B:
+	     
+	    |7|6|5|4|3|2|1|0|  Diskette drive type for A: and B:
+	     | | | | `---------- second diskette type
+	     `----------------- first diskette type
+
+		0000  no drive installed
+		0001  DSDD 48 TPI drive
+		0010  DSQD 96 TPI drive
+		other values are reserved
+
+	 11  Reserved
+	 12  Fixed disk drive type for drive 0 and drive 1
+
+	    |7|6|5|4|3|2|1|0|  Diskette drive type for A: and B:
+	     | | | | `---------- second hard disk drive code (0000=no disk)
+	     `----------------- first hard disk drive code (0000=no disk)
+
+	 13  Reserved
+	 14  Equipment byte
+
+	    |7|6|5|4|3|2|1|0|  Equipment byte
+	     | | | | | | | `---- 1=diskette drives installed, 0=none
+	     | | | | | | `----- 1=math coprocessor installed, 0=none
+	     | | | | `-------- unused
+	     | | `--------- primary display
+	     `------------ number of diskette drives installed
+
+<B>	    Bits		       Bits</B>
+<B>	     54  Primary Display	76  Number of Drives</B>
+	     00  reserved		00  1 diskette drive
+	     01  40 column color	01  2 diskette drives
+	     10  80 column color	10  reserved
+	     11  monochrome		11  reserved
+
+	 15  LSB of system base memory in 1k blocks
+	 16  MSB of system base memory in 1k blocks
+	 17  LSB of total extended memory in 1k blocks
+	 18  MSB of total extended memory in 1k blocks
+	 19  Drive C extension byte (reserved AT)
+	 1A  Drive D extension byte (reserved AT)
+	 1B  13 bytes reserved
+	 2E  CMOS checksum of bytes 10h-20h (MSB)
+	 2F  CMOS checksum of bytes 10h-20h (LSB)
+	 30  LSB of extended memory size found above 1 megabyte during POST
+	 31  MSB of extended memory size found above 1 megabyte during POST
+	 32  Date century byte in BCD ( BIOS interface to read and set)
+	 33  Information flags (set during power-on)
+
+	    |7|6|5-0|  Information Flags
+	     | |  `----- reserved
+	     | `------- initial setup message flag
+	     `-------- 1=IBM 128k expansion installed, 0=none
+
+	 34  12 bytes reserved
+
+
+<B>	Programming Considerations:</B>
+
+	Write CMOS address to read or write to port 70h
+	Read/write port 71h to get/set data
+
+
+	- the information here is only applicable to AT and PS/2 systems
+	- INT 1A is used to read/set the Time of Day and Alarm.  To use the
+	  alarm, INT 4A must be a valid interrupt service routine.
+	- configuration settings are maintained using the Motorola MC146818
+	  Real Time Clock.  Each of this chips 64 memory registers is used
+	  for storage (0-3F).
+	- Bit 5 of the diagnostic (0Eh) status byte is set during a power
+	  on test.  This Bit is set if no floppy disks are found or the
+	  display doesn't match the system display switch setting.
+	- all addresses sent to port 70h have Bits 7&6 clear since Bit 7
+	  of port 70h is used to enable/disable NMI.  Setting this Bit 7
+	  enables NMI, clearing this Bit disables NMI.
+	- when masking the NMI through using port 70H, port 71H should be
+	  read immediately after or the RTC may be left in an unknown state.
+	  This wont affect the PS/2 watchdog timer or system channel timeout.
+
+	- see	<A HREF="int_1a.html">INT 1A</A>
+</PRE>
+
+</BODY>
+</HTML>

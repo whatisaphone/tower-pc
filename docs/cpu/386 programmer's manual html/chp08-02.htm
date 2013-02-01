@@ -1,0 +1,137 @@
+<html>
+<head>
+<title>
+8.2  I/O Instructions
+</title>
+<body>
+<a name="08-02"></a>
+Prev: <a href="chp08-01.htm">8.1  I/O Addressing</a><br>
+Next: <a href="chp08-03.htm">8.3  Protection and I/O</a>
+<hr>
+<h2>
+8.2  I/O Instructions
+</h2>
+<p>
+The I/O instructions of the 80386 provide access to the processor's I/O
+ports for the transfer of data to and from peripheral devices. These
+instructions have as one operand the address of a port in the I/O address
+space. There are two classes of I/O instruction:
+<p>
+<pre>
+  1.  Those that transfer a single item (byte, word, or doubleword) located
+      in a register.
+
+  2.  Those that transfer strings of items (strings of bytes, words, or
+      doublewords) located in memory. These are known as "string I/O
+      instructions" or "block I/O instructions".
+</pre>
+<p>
+<a name="08-02-01"></a>
+<h3>8.2.1  Register I/O Instructions</h3>
+<p>
+The I/O instructions IN and OUT are provided to move data between I/O ports
+and the EAX (32-bit I/O), the AX (16-bit I/O), or AL (8-bit I/O) general
+registers. IN and OUT instructions address I/O ports either directly, with
+the address of one of up to 256 port addresses coded in the instruction, or
+indirectly via the DX register to one of up to 64K port addresses.
+<p>
+IN (Input from Port) transfers a byte, word, or doubleword from an input
+port to AL, AX, or EAX. If a program specifies AL with the IN instruction,
+the processor transfers 8 bits from the selected port to AL. If a program
+specifies AX with the IN instruction, the processor transfers 16 bits from
+the port to AX. If a program specifies EAX with the IN instruction, the
+processor transfers 32 bits from the port to EAX.
+<p>
+OUT (Output to Port) transfers a byte, word, or doubleword to an output
+port from AL, AX, or EAX. The program can specify the number of the port
+using the same methods as the IN instruction.
+<p>
+<p>
+<a name="F-08-01"></a>
+<h3>Figure 8-1.  Memory-Mapped I/O</h3>
+<p>
+<pre>
+                MEMORY
+             ADDRESS SPACE                        I/O DEVICE 1
+           +---------------+                  +-------------------+
+           |               |                  | INTERNAL REGISTER |
+           |---------------| - - - - - - - - -|-+---------------+ |
+           |               |                  | |               | |
+           |---------------| - - - - - - - - -|-+---------------+ |
+           |               |                  +-------------------+
+           |               |
+           |               |
+           |               |
+           |               |                      I/O DEVICE 2
+           |               |                  +-------------------+
+           |               |                  | INTERNAL REGISTER |
+           |---------------| - - - - - - - - -|-+---------------+ |
+           |               |                  | |               | |
+           |---------------| - - - - - - - - -|-+---------------+ |
+           |               |                  +-------------------+
+           +---------------+
+</pre>
+<p>
+<a name="08-02-02"></a>
+<h3>8.2.2  Block I/O Instructions</h3>
+<p>
+The block (or string) I/O instructions INS and OUTS move blocks of data
+between I/O ports and memory space. Block I/O instructions use the DX
+register to specify the address of a port in the I/O address space. INS and
+OUTS use DX to specify:
+<p>
+<pre>
+  -  8-bit ports numbered 0 through 65535
+  -  16-bit ports numbered 0, 2, 4, . . . , 65532, 65534
+  -  32-bit ports numbered 0, 4, 8, . . . , 65528, 65532
+</pre>
+Block I/O instructions use either SI or DI to designate the source or
+destination memory address. For each transfer, SI or DI are automatically
+either incremented or decremented as specified by the direction bit in the
+flags register.
+<p>
+INS and OUTS, when used with repeat prefixes, cause block input or output
+operations. REP, the repeat prefix, modifies INS and OUTS to provide a means
+of transferring blocks of data between an I/O port and memory. These block
+I/O instructions are string primitives (refer also to Chapter 3 for more on
+string primitives). They simplify programming and increase the speed of data
+transfer by eliminating the need to use a separate LOOP instruction or an
+intermediate register to hold the data.
+<p>
+The string I/O primitives can operate on byte strings, word strings, or
+doubleword strings. After each transfer, the memory address in ESI or EDI is
+updated by 1 for byte operands, by 2 for word operands, or by 4 for
+doubleword operands. The value in the direction flag (DF) determines whether
+the processor automatically increments ESI or EDI (DF=0) or whether it
+automatically decrements these registers (DF=1).
+<p>
+INS (Input String from Port) transfers a byte or a word string element from
+an input port to memory. The mnemonics INSB, INSW, and INSD are variants
+that explicitly specify the size of the operand. If a program specifies
+INSB, the processor transfers 8 bits from the selected port to the memory
+location indicated by ES:EDI. If a program specifies INSW, the processor
+transfers 16 bits from the port to the memory location indicated by ES:EDI.
+If a program specifies INSD, the processor transfers 32 bits from the port
+to the memory location indicated by ES:EDI. The destination segment register
+choice (ES) cannot be changed for the INS instruction. Combined with the REP
+prefix, INS moves a block of information from an input port to a series of
+consecutive memory locations.
+<p>
+OUTS (Output String to Port) transfers a byte, word, or doubleword string
+element to an output port from memory. The mnemonics OUTSB, OUTSW, and OUTSD
+are variants that explicitly specify the size of the operand. If a program
+specifies OUTSB, the processor transfers 8 bits from the memory location
+indicated by ES:EDI to the the selected port. If a program specifies OUTSW,
+the processor transfers 16 bits from the memory location indicated by ES:EDI
+to the the selected port. If a program specifies OUTSD, the processor
+transfers 32 bits from the memory location indicated by ES:EDI to the the
+selected port. Combined with the REP prefix, OUTS moves a block of
+information from a series of consecutive memory locations indicated by
+DS:ESI to an output port.
+<p>
+<p>
+<hr>
+Prev: <a href="chp08-01.htm">8.1  I/O Addressing</a><br>
+Next: <a href="chp08-03.htm">8.3  Protection and I/O</a>
+</body>
+</html>

@@ -1,0 +1,44 @@
+#9 Imagine 128
+
+304pin chip
+
+
+REG+18h
+bit  6-7  Video memory. 0: 4Mb, 1: 8Mb, 2: 16Mb, 3: 32Mb
+      10
+
+REG+1Ch
+bit    2
+
+
+  **** The PCI Interface registers ****
+  Some of these may not be implemented. The ones marked with ; are in doubt
+
+Byte 00h W(R):  Vendor ID
+bit  0-15  105Dh for ??
+
+Byte 02h W(R):  Device ID
+bit  0-15  2309h for the Imagine 128
+
+Byte 10h D(R/W):  Base0 (MW0 AD)
+Bit     3  (R) Pre-fetchable. Set if memory is cacheable, clear if not.
+    22-31  Memory Base. Upper 10bits of the base address.
+
+Byte 14h D(R/W):  Base1 (MW1 AD)
+Bit 22-31  Memory Base. Upper 10bits of the base address.
+
+Byte 18h D(R/W):  Base2 (XYW AD(A))
+Bit 22-31  Memory Base. Upper 10bits of the base address.
+
+Byte 1Ch D(R/W):  Base3 (XYW AD(B))
+Bit 22-31  Memory Base. Upper 10bits of the base address.
+
+Byte 20h D(R/W):  Base4 (RBASE_G)
+Bit 16-31  Memory Base. Upper 10bits of the base address.
+
+Byte 30h D(R/W):  ROM Base
+Bit     0  ROM BIOS Decode. Set to enable BIOS access
+    15-31  BIOS Base Address. Upper 14-17 bits of the BIOS location. Depending
+           on the BIOS size in bits 11-14 the lowest 1/2/3 bits may be forced
+           to 0.
+

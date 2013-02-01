@@ -1,0 +1,485 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body bgcolor="#000040" text="#C0C0C0">
+
+<pre>
+
+</pre>
+
+<pre>		EMBR -- Extended Master Boot Record proposal
+
+</pre>
+
+<pre>							Thomas Kjoernes,</pre>
+
+<pre>							     22/07/1999
+
+</pre>
+
+<pre>	Disclaimer?</pre>
+
+<pre>	===========
+
+</pre>
+
+<pre>	Everybody, I spent a good hour typing all this in, so please don't</pre>
+
+<pre>	throw it away without even looking.
+
+
+</pre>
+
+<pre>	Please take a few minutes to read through this, try to find things</pre>
+
+<pre>	that are missing, problems that have not been considerred, things</pre>
+
+<pre>	that seem unclear or foolish, etc...
+
+
+
+</pre>
+
+<pre>	Past &amp; Present</pre>
+
+<pre>	==============
+
+</pre>
+
+<pre>	Just to clarify my current view on the MBR partitioning scheme,</pre>
+
+<pre>	it's possibilities and limitations:
+
+</pre>
+
+<pre>	This is what it does now:
+
+</pre>
+
+<pre>	- 4 partitions (excluding any extended DOS partitions)</pre>
+
+<pre>	- 32-bit LBA only</pre>
+
+<pre>	- Hopefully soon obsolete CHS addressing method</pre>
+
+<pre>	- Minimal possibilities for extensions, both in future capacity </pre>
+
+<pre>          increases and in system ID assignments.</pre>
+
+<pre>	- Already a lot of confusion going on about how things should</pre>
+
+<pre>	  be done; this applies to partitioning, ID assignments, and the</pre>
+
+<pre>	  magical 8GB CHS addressing limit.
+
+</pre>
+
+<pre>	This is what would have been nice:
+
+</pre>
+
+<pre>	- Clearer indication of what type of OS/data the partition is used</pre>
+
+<pre>	  for, useful for future needs; one example is IA32 vs, IA64.</pre>
+
+<pre>	- Being able to face the future and the larger disks capacities we </pre>
+
+<pre>	  will soon see, i.e 64-bit LBA addressing or more?</pre>
+
+<pre>	- Providing a generic way of letting the user choose which OS to</pre>
+
+<pre>	  start without having to put their data at risk by playing with</pre>
+
+<pre>	  a great variety of boot managers.</pre>
+
+<pre>	- Provide a way of suggesting drive ID's to the operating system,</pre>
+
+<pre>	  we all know how frustrating it is when drive letter assignments</pre>
+
+<pre>	  change from OS to OS, or when we add another HD.
+
+</pre>
+
+<pre>		</pre>
+
+<pre>	Compatibility</pre>
+
+<pre>	=============
+
+</pre>
+
+<pre>	For backwards compatibility with older software that expects an MBR,</pre>
+
+<pre>	I think we should still	keep it AND support it. The EMBR should only</pre>
+
+<pre>	come into need for newer software that wants to and knows how to</pre>
+
+<pre>	use it ;)
+
+</pre>
+
+<pre>	To achive this backwards compatibility issue, some rules needs to be</pre>
+
+<pre>	set for the old MBR as well. For instance, breaking the 8GB barrier</pre>
+
+<pre>	with the old MBR, how is/should this (be) done?
+
+
+
+</pre>
+
+<pre>	8GB barrier with MBR	</pre>
+
+<pre>	====================
+
+</pre>
+
+<pre>	In my opinion, the best way to break the 8GB limit with	the the old </pre>
+
+<pre>	MBR is to set the CHS fields to all FF's and use the LBA fields.
+
+</pre>
+
+<pre>	Software would recognize a hacked MBR by looking for:
+
+</pre>
+
+<pre>	Starting &amp; address:
+
+</pre>
+
+<pre>		Cylinder=1023</pre>
+
+<pre>		Head=255</pre>
+
+<pre>		Sector=63
+
+</pre>
+
+<pre>	The LBA fields would then be used to determine the actual addresses.</pre>
+
+<pre>	I'm not 100% sure, but I believe this is a fairly common practise</pre>
+
+<pre>	now? I have not yet observed or been able to confirm this myself ;)
+
+
+
+</pre>
+
+<pre>	Bootability</pre>
+
+<pre>	===========
+
+</pre>
+
+<pre>	One thing that has always annoyed me is that you cannot boot from</pre>
+
+<pre>	anything else that your primary harddrive and only from the current</pre>
+
+<pre>	active partition, without changing the active parititon using a very</pre>
+
+<pre>	user unfriendly thing like FDISK; or by buying an expensive boot</pre>
+
+<pre>	manager or using a free feature-less one.
+
+</pre>
+
+<pre>	Booting from alternative media has become a lot better and easier by</pre>
+
+<pre>	means of such things as our very own Phoenix Multiboot, but we still</pre>
+
+<pre>	have problems with drive letter assignments under OS'es such as any</pre>
+
+<pre>	Microsoft OS, MS-DOS, Windows 9x, Windows NT...</pre>
+
+<pre>	
+
+</pre>
+
+<pre>	How it can be solved</pre>
+
+<pre>	====================
+
+</pre>
+
+<pre>	Most of these issues can easily be solved by just replacing the old</pre>
+
+<pre>	MBR with a new scheme containing all the features we want. There is</pre>
+
+<pre>	one problem with this. Who is left with the task of designing a new</pre>
+
+<pre>	spec and who gets a chance of providing their input?
+
+</pre>
+
+<pre>	If you leave this task to a sepecific company or organization, you</pre>
+
+<pre>	will always end up with someone being disappointed. I'm putting this</pre>
+
+<pre>	together so that people can read it and come with their own ideas</pre>
+
+<pre>	without being afraid of being laughed at (as surely will happen to</pre>
+
+<pre>	me after this).
+
+</pre>
+
+<pre>	1)
+
+</pre>
+
+<pre>	Where do we place the EMBR structures?
+
+</pre>
+
+<pre>	- We could put the EMBR in the blocks following the old MBR, in the</pre>
+
+<pre>	  first few (usually unused) sectors just before the first partition.
+
+</pre>
+
+<pre>	- We could put the EMBR in a new paritition?
+
+</pre>
+
+<pre>	- We could put a signature and some extra field in the existing MBR</pre>
+
+<pre>	  preceeding the current partition entries.</pre>
+
+<pre>	</pre>
+
+<pre>	Example layout:
+
+</pre>
+
+<pre>	0000-01B1	Legacy master boot code
+
+</pre>
+
+<pre>	01B0-01BD	EMBR locator structure (12 bytes)
+
+</pre>
+
+<pre>		DWORD	Signature &quot;EMBR&quot;</pre>
+
+<pre>		QWORD	Root EMBR block LBA address</pre>
+
+<pre>		WORD	MBR Checksum
+
+</pre>
+
+<pre>	01BE-01CD	Legacy Entry #1</pre>
+
+<pre>	01CE-01DD	Legacy Entry #2</pre>
+
+<pre>	01DE-01ED	Legacy Entry #3</pre>
+
+<pre>	01EE-01FD	Legacy Entry #4
+
+</pre>
+
+<pre>	01FE-01FF	Magic Signature AA55</pre>
+
+<pre>	
+
+</pre>
+
+<pre>	2) What should the EMBR root block look like?
+
+</pre>
+
+<pre>	Reserving one block (sector? 512-bytes) only for EMBR is proably</pre>
+
+<pre>	enough, but keeping any future needs in mind doesn't hure, so why</pre>
+
+<pre>	not keep the possibility of &quot;chaining&quot; multiple EMBR's together?
+
+</pre>
+
+<pre>	Each EMBR should have fixed 512 byte size, or maybe it shouldn't?</pre>
+
+<pre>	Whatever happens, there should be some way of determining the size,</pre>
+
+<pre>	easily done by specifying it in the EMBR header, which follows:
+
+
+
+</pre>
+
+<pre>	EMBR Header Layout
+
+</pre>
+
+<pre>	Ofs   Type      Contents</pre>
+
+<pre>	----  --------  --------------------------------------------------</pre>
+
+<pre>	0000  DWORD     Signature, again; &quot;EMBR&quot;</pre>
+
+<pre>	0004  BYTE      Minor version</pre>
+
+<pre>	0005  BYTE      Major version</pre>
+
+<pre>	0006  WORD      Length of EMBR structure (512 bytes?)</pre>
+
+<pre>	0008  WORD      Partition Entry Size</pre>
+
+<pre>	000A  WORD      Partition Entry Count</pre>
+
+<pre>	000C  BYTE	Last booted entry (or 0 if none in this EMBR)</pre>
+
+<pre>	000D  BYTE	Reserved</pre>
+
+<pre>	000E  WORD	Bitmap of bootable entries?</pre>
+
+<pre>	0010  QWORD	Link to previous EMBR (0=NONE)</pre>
+
+<pre>	0018  QWORD	Link to next EMBR (0=NONE)</pre>
+
+<pre>	----  --------  --------------------------------------------------
+
+</pre>
+
+<pre>	The partition entry size and count fields must be assigned so they</pre>
+
+<pre>	do not exceed the limit of the EMBR structure. There may be better</pre>
+
+<pre>	and more flexible ways of doing this, any ideas?
+
+</pre>
+
+<pre>	The remaining 480 bytes might be assigned to 15 partition entries</pre>
+
+<pre>	each being 32 bytes long, in the following format:
+
+</pre>
+
+<pre>	Ofs   Type      Contents</pre>
+
+<pre>	----  --------  --------------------------------------------------</pre>
+
+<pre>	0000  DWORD	Partition or System ID</pre>
+
+<pre>	0004  DWORD	Parititon Flags</pre>
+
+<pre>	0008  QWORD	Partition Descriptor Block (64-bit LBA)</pre>
+
+<pre>	0010  QWORD	Partition Start (64-bit LBA)</pre>
+
+<pre>	0018  QWORD	Partition Block Count
+
+</pre>
+
+<pre>	The first field, might use values 00-FF as they are used today ;)</pre>
+
+<pre>	Any values from 00000100-FFFFFFFF might be used to assign new</pre>
+
+<pre>	OS types and filesystems.
+
+</pre>
+
+<pre>	The flags field can provide lots of useful information about the</pre>
+
+<pre>	partition, such as for example:
+
+</pre>
+
+<pre>	- BIOS or &quot;Boot Environment&quot; requirements.</pre>
+
+<pre>	- Processor requirements, specifically aimed at IA32/IA64 issues.</pre>
+
+<pre>	- Antyhing else???
+
+</pre>
+
+<pre>	I suggest using bit 31 to indicate a native IA64 OS, the boot image</pre>
+
+<pre>	pointed to by a PDB? would then be a pure IA64 image.
+
+</pre>
+
+<pre>	The last non-obvious field is the Partition Descriptor Block, does</pre>
+
+<pre>	PDB sound cute?
+
+</pre>
+
+<pre>	This block could contain further information about the partition,</pre>
+
+<pre>	haven't we all wanted a new generic boot sector layout that can be</pre>
+
+<pre>	shared by many OS'es. This could easily take away issues such as</pre>
+
+<pre>	drive/volume ID assignment problems.
+
+</pre>
+
+<pre>	The best use I can think of for a PDB, would be to store a general</pre>
+
+<pre>	ASCIIZ description string for the partition/OS and some statistics</pre>
+
+<pre>	information and possibly security.
+
+</pre>
+
+<pre>	Anyway, here's a proposed layout for the PDB:</pre>
+
+<pre>	</pre>
+
+<pre>	Ofs   Type      Contents</pre>
+
+<pre>	----  --------  --------------------------------------------------</pre>
+
+<pre>	0000  DWORD	Signature &quot;$PDB&quot;</pre>
+
+<pre>	0004  DWORD	Flags</pre>
+
+<pre>	0008  WORD	Offset of ASCIIZ menu selection string within PDB</pre>
+
+<pre>        000A  WORD	Offset of ASCIIZ Operating System name.</pre>
+
+<pre>        000C  DWORD	Reserved, or drive ID hints?</pre>
+
+<pre>	0010  QWORD	OS Boot Image starting LBA address (relative?)</pre>
+
+<pre>	0018  QWORD	OS Boot Image size in blocks (512 bytes?)</pre>
+
+<pre>        0020  ?????	Stores the ASCII strings mentioned above
+
+
+
+</pre>
+
+<pre>	It's only our imagination that can stop us from adding more useful</pre>
+
+<pre>	things to these structures.
+
+
+
+</pre>
+
+<pre>	Storing a description for the partition/OS points us towards a nice</pre>
+
+<pre>	and clean generic way of providing boot menus. A BIOS boot manager</pre>
+
+<pre>	could then let the user boot from a named device.
+
+</pre>
+
+<pre>	Any ideas/corrections/suggestions are welcomed!
+
+		thomas_kjoernes@hotmail.com
+
+
+
+
+</pre>
+
+<pre>	Best regards,</pre>
+
+<pre>	Thomas Kjoernes.</pre>
+</body>
+</html>

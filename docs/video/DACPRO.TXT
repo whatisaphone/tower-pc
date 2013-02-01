@@ -1,0 +1,173 @@
+Hoi Menno,
+
+Hier een docje dat ik al een tijdje heb over het programmeren van een DAC
+Het komt uit een boek, de naam weet ik niet meer. Ik hoop dat je er wat
+aan hebt.
+
+Wim - wim@dutmpw1.tudelft.nl
+
+---Cut Here -----------------------------------------------------------------
+
+Video Digital-to-Analog Converter (Video DAC)
+
+The video digital-to-analog converter (DAC) integrates the function of a color
+look-up table with three internal DACs for driving an analog display.
+
+The size of the color look-up table is 256 by 18 bits to allow the display of
+256 colors from a palette of 256K possible colors. Each RGB analog output is
+driven by a 6-bit DAC. Each register in the color look-up table contains 6
+bits each for the red, green, and blue DACs .
+
+Video Digital to Analog Converter (DAC) Addresses In Hex
+
+PEL Address (Write mode)  RW 03C8
+PEL Address (Read mode)   WO 03C7
+DAC State Register        RO 03C7
+PEL Data Register         RW 03C9
+PEL Mask                  RW 03C6  *)
+
+RO = Read Only, RW = Read / Write, WO = Write Only.
+
+*) This register must not be written to by application code or destruction
+of the color look-up table may occur.
+See also "Video DAC Programming Considerations" on page 4-117.
+
+Device Operation
+
+The PEL address inputs (PO - P7) and the blanking input are sampled on the
+rising edge of the PEL clock. After three further rising edges of the PEL
+clock, the analog outputs reflect the state of these inputs.
+
+During normal operation the PEL address inputs (PO - P7) are used as a pointer
+to one of the 256 internal registers (color look-up table). The value in each
+register is then, in turn, converted to an analog signal for each of the three
+analog outputs (red, green, blue). The blanking input can also be used to
+force the analog outputs to O volts. The blanking operation is independent of
+the state of the PEL address inputs.
+
+I/0 Controllers, Video DAC 4-115
+During system microprocessor accesses, the 8-bit PEL Address register acts as
+a pointer to the 256 internal registers. Each internal register is 18 bits
+wide; 6 bits each for red, green, and blue. The internal registers are
+accessible through the system microprocessor interface as described below.
+
+The system microprocessor interface is asynchronous with the video path. The
+timing of this interface is controlled by the 'write enable' and 'read enable'
+signals.
+
+Video DAC/System Microprocessor Interface
+
+The PEL Address register holds an 8-bit value that is used to address a
+location within the color look-up table. The PEL Address register may be
+written to at two different addresses to establish a read or write mode
+respectively. Once the PEL Address register has been written to and an access
+has been made to a location in the color-look up table, the PEL Address
+register automatically increments and further accesses may occur to successive
+locations.
+
+Each time the PEL Address register is written to at address hex 03C8 it
+identifies that a write sequence will occur. A write sequence consists of
+three successive byte writes to the Data register at address hex 03C9. The
+least-significant 6 bits of each byte are concatenated to form the value
+placed in the 18-bit Data register. The order is red byte first, then green,
+and finally blue. Once the third byte has been written, the value in the Data
+register is written to the location pointed to by the PEL Address register.
+The order of events for a write cycle is:
+
+1. Write to the PEL Address register at hex 03C8.
+
+2. Three bytes are written to the Data register at hex 03C9.
+
+3. The contents of the Data register are transferred to the location in the
+   color look-up table pointed to by the PEL Address register.
+
+4. The PEL Address register auto-increments by 1.
+
+5. Go to step 2.
+
+Each time the PEL Address register is written to at address hex 03C7 it
+identifies that a read sequence will occur. A read sequence consists of three
+successive byte reads from the Data register at address hex 03C9. The least
+significant 6 bits of each byte taken from the Data register contain the
+corresponding color value. The order is red byte first, then green, and
+finally blue. The order of events for a read cycle is:
+
+1. Write to the PEL Address register at hex 03C7.
+
+2. The contents of the location in the color look-up table pointed to by the
+   PEL Address register are transferred to the Data register.
+
+3. The PEL Address register auto-increments by one.
+
+4. Three bytes are read back from the Data register at hex 03C9.
+
+5. Goto step 2.
+
+If the PEL Address register is written to during either a read or write
+cycle, a mode is initialized and the unfinished cycle is aborted. The
+effects of writing to the Data register during a read cycle or reading
+from the Data register during a write cycle are undefined and may
+change the look-up table contents.
+
+A read from address hex 03C7 returns O's in bit positions O and 1, if
+the DAC is currently in a read mode. A read from address hex 03C7
+returns ones in bit positions O and 1, if the DAC is currently in a write
+mode.
+
+Reads from the PEL Address register at hex 03C8 or the State
+register at hex 03C7 do not interfere with read or write cycles and
+may take place at any time.
+
+Video DAC Programming Considerations
+
+1. As explained in "Video DAC/System Microprocessor Interface" on page 4-116,
+the effects of writing to the Data register during a read cycle or reading
+from the Data register during a write cycle are undefined and may change the
+look-up table contents. Therefore, the following sequence must be followed
+to ensure the color look-up table integrity during accesses to it:
+
+a. Write out address to the PEL Address register
+
+b. Disable Interrupts
+
+c. Write or read three bytes of data
+
+d. Go to step C. Repeat this step for the desired number of locations.
+
+e. Enable interrupts.
+
+Note: The above sequence assumes that any interrupting process will return
+the DAC in the correct mode (write or read). If this is not the case, the
+sequence shown below should be followed:
+
+a. Disable interrupts
+
+b. Write out address to PEL Address register
+
+c. Write or read three bytes of data
+
+d. Go to step b. Repeat this step for the desired number of locations.
+
+e. Enable interrupts.
+
+2. There is a timing requirement on the minimum amount of time that must
+separate the trailing edge of one Read or Write command to the DAC and the
+leading edge of the next Read or Write command. The minimum separation is
+240 nanoseconds. Software must ensure that the 240-nanosecond separation
+exists between two successive accesses to the DAC. Assembly language programs
+can meet this requirement by placing a JMP instruction between successive
+accesses to the DAC.
+
+3. To prevent "snow" on the screen, an application reading data from or
+writing data to the DAC's Data register should ensure that the BLANK input
+to the DAC is asserted. This can be accomplished either by restricting data
+transfers to retrace intervals (use Input Status register 1 to determine when
+retrace is occurring) or by using the Screen Off bit located in the Clocking
+Mode register of the Sequencer subsection.
+
+Note: BIOS provides read and write interfaces to the Video DAC.
+
+4. The Mask register (address hex 03C6) must not be written to by application
+code, or destruction of the color look-up table may result. This register is
+correctly initialized to hex FF by BIOS during a video mode set.
+

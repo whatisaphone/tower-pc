@@ -1,0 +1,403 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>Vesa BIOS Example. Page 1: </title>
+
+<h1>VESA BIOS </h1>
+<h4>Interrupts</h4>
+<p><tr><td colspan=2><hr></td></tr><p>
+
+The standard VGA BIOS used interrupt 10h for comminication with the software, with function
+numbers 00h to 07h. The extended BIOS now uses function 4Fh of the same interrupt. The standard
+BIOS should do nothing when given a function number on 4Fh. The new BIOS will return status
+information:<p>
+
+<ul><tt> 
+	AL == 4Fh: &nbsp&nbsp Function is supported<br>
+	AL /= 4Fh: &nbsp&nbsp Function is not supported<br>
+	AH == 00h: &nbsp&nbsp Function call was successful<br>
+	AH /= 00h: &nbsp&nbsp Function call was not successful<br>
+</tt></ul>
+
+The functions return their status information in the AX regester. If AL contains 4Fh, then the
+function is supported by the graphics card, otherwise you know that it is not. The sucess of
+the function is returned in AL. If it contains 00h then it was sucessful. You should treat all
+non zero codes here as failures. Later versions of the BIOS extension might define particular
+error codes.
+
+<p><tr><td colspan=2><hr></td></tr><p>
+
+<h4> Function 00h - Return SVGA Information </h4>
+You can use this function to query the graphics card about its capabilities.
+
+<pre>
+        Input:  AH = 4Fh
+                AL = 00h
+                ES:[DI] = Pointer to buffer
+
+        Output: AX = Status
+                all other registers left untouched
+</pre>
+
+The function fills a 256 byte buffer with data, pointed to by ES:[DI]. The structure of this
+buffer is:
+
+<pre>
+        TYPE DataBuffer
+           Signature         4 bytes		; 
+           VersionL          byte		; lower Version Number
+           VersionH          byte		; higher Version Number
+           OEMStringPtr      long word		; pointer to description string
+           CapableOf         long word		; 32 flags of graphics card capabilities
+           VidModePtr        long word		; Pointer to list of available modes
+           TotalMemory       word		; Memory available of card
+           Reserved          236 bytes		; --
+        END TYPE
+</pre>
+
+<h4> On return from the function:</h4>
+
+<font SIZE=+1>Signature:</font> This field should contain the characters "VESA" if the buffer
+	is a valid one.<p>
+
+<font SIZE=+1>VersionL:</font> This holds the least significant digit of the version number
+	of the BIOS.<br>
+<font SIZE=+1>VersionH:</font> This holds the most significant digit of the version number
+	of the BIOS. I.e. if the VersionL contained 2 and VersionH contained 1, then this would
+	be version 1.2 of the VESA BIOS.<p>
+
+<font SIZE=+1>OEMStringPtr:</font> Long pointer (segment: offset) to Origional Equipment Manufacturer string. This
+	points to an ASCIIZ string describing the Graphics Card. For example "Matrox Graphics Inc."
+	ASCIIZ means that the string contains standard ASCII characters, and will have a zero byte
+	to mark the end of the string.<p>
+
+<font SIZE=+1>CapableOf:</font> This is a set of 32 bits which indicate whether or not the card
+	if capable of certain functions. So far only the first bit had been defined:
+<pre>
+        bit 0 = DAC is switchable
+                  0 = DAC is fixed width, with 6-bits per primary color
+                  1 = DAC width is switchable
+        bits 1-31   = Reserved
+</pre>
+<p>
+
+<font SIZE=+1>VideoModePtr:</font> Long pointer to list of video modes supported by the graphics card.<br>
+	The Video Mode List is a list of Mode Numbers, each occupying one word, terminated by a
+	-1 (0FFFFh). To find out exactly what these modes are, their resolutions etc, see
+	Function 01h.<p>
+
+<font SIZE=+1>TotalMemory:</font> This field specifies the amount of memory available on the card
+	in 64Kb chunks.
+
+<p><tr><td colspan=2><hr></td></tr><p>
+
+<h4> Function 01h - Return SVGA Mode Information </h4>
+This function returns information about a specfic mode available on the graphics card. Having
+used Function 00h, and obtained your list of available graphics modes, you should pass them
+one at a time to this function, and it will tell you what each one is.<p>
+
+<pre>
+        Input:  AH = 4Fh        Super VGA support
+                AL = 01h        Return Super VGA mode information
+                CX = Super VGA video mode
+                     (mode number must be one of those returned by Function 0)
+                ES:DI = Pointer to 256 byte buffer
+
+        Output: AX = Status
+                (All other registers are preserved)
+</pre>
+
+Again you will need another 256 byte buffer for the function to fill with information:
+
+<pre>
+    TYPE ModeInfoBlock
+
+        ModeAttributes      word    	; mode attributes
+        WinAAttributes      byte    	; window A attributes
+        WinBAttributes      byte    	; window B attributes
+        WinGranularity      word    	; window granularity
+        WinSize             word    	; window size
+        WinASegment         word    	; window A start segment
+        WinBSegment         word    	; window B start segment
+        WinFuncPtr          long word   ; pointer to window function
+        BytesPerScanLine    word    	; bytes per scan line
+
+        XResolution         word    	; horizontal resolution
+        YResolution         word    	; vertical resolution
+        XCharSize           byte    	; character cell width
+        YCharSize           byte    	; character cell height
+        NumberOfPlanes      byte    	; number of memory planes
+        BitsPerPixel        byte    	; bits per pixel
+        NumberOfBanks       byte    	; number of banks
+        MemoryModel         byte    	; memory model type
+        BankSize            byte    	; bank size in kb
+        NumberOfImagePages  byte    	; number of images
+        Reserved            byte    	; reserved for page function
+
+        RedMaskSize         byte    	; size of direct color red mask in bits
+        RedFieldPosition    byte    	; bit position of LSB of red mask
+        GreenMaskSize       byte    	; size of direct color green mask in bits
+        GreenFieldPosition  byte    	; bit position of LSB of green mask
+        BlueMaskSize        byte    	; size of direct color blue mask in bits
+        BlueFieldPosition   byte    	; bit position of LSB of blue mask
+        RsvdMaskSize        byte    	; size of direct color reserved mask in bits
+        DirectColorModeInfo byte    	; Direct Color mode attributes
+        Reserved            216 bytes   ; remainder of ModeInfoBlock
+    END TYPE
+</pre>
+
+<p>
+
+<font SIZE=+1>ModeAttributes:</font> This word is a set of 16 flags. So far, only the first 5
+	have been defined. 
+<pre>
+        bit 0 = Mode supported ?
+                0 = This mode is not supported in hardware
+                1 = This mode is supported in hardware
+        bit 1 = 1 (Reserved)
+        bit 2 = Output functions supported by BIOS
+                0 = Output functions not supported by BIOS
+                1 = Output functions supported by BIOS
+        bit 3 = Monochrome/color mode
+                0 = Monochrome mode
+                1 = Color mode
+        bit 4 = Mode type
+                0 = Text mode
+                1 = Graphics mode
+
+        bits 5-15 = Reserved
+</pre>
+
+<p>
+
+<font SIZE=+1>WinAAttributes and WinBAttributes:</font> These two bytes, specify the attributes
+	of two memory access windows (see section on Memory banks & Windowing).
+
+<pre>
+        D0 = Is this window supported ?
+                0 = Window is not supported
+                1 = Window is supported
+        D1 = Window readable
+                0 = Window is not readable
+                1 = Window is readable
+        D2 = Window writeable
+                0 = Window is not writeable
+                1 = Window is writeable
+        D3-D7 = Reserved
+</pre>
+
+
+<font SIZE=+1>WinGranularity:</font> This field tells you how much freedom you have to move
+	the windows around in memory. The value returned here is the smallest boundary (in Kb)
+	on which you can place a window. You may be able to position a window every 4Kb, or
+	you may only be able to align them to 64Kb. <p>
+
+<font SIZE=+1>WinSize:</font> The size of the windows in Kb. (normally 64)<p>
+<font SIZE=+1>WinASegment & WinBSegment:</font> The segment address of the windows in memory.
+	(normally 0A000h)<p>
+
+<font SIZE=+1>WinFuncPtr:</font> Rather than use an interrupt to move the windows around, there
+	is often a procedure available which you can call directly. This is a much faster way
+	to move windows than using int 10. This field points to the procedure in memory. More
+	about how to use that later.<p>
+
+<font SIZE=+1>BytesPerScanLine:</font> The number of bytes in each logical scanline. This may
+	be larger than the number of pixels, since the virtual screen may be larger than the
+	visible screen.<p>
+
+<font SIZE=+1>XResolution & YResolution:</font> The resolution of the visible part of the screen.<p>
+<font SIZE=+1>XCharSize & YCharSize:</font> The size of the characters in pixels.<p>
+<font SIZE=+1>NumberOfPlanes:</font> In some modes, you cannot access all of the bits of a pixel
+	with one memory write, because the memory is split up into planes. In this case, the number
+	of planes will be more than 1. If you find a mode with more than one plane, leave it alone,
+	it's way too scarey. In nice modes, like VGA mode 13h (320x200 x 256), there is only one plane. 
+
+<font SIZE=+1>BitsPerPixel:</font> The number of bits allocated to each pixel. The number of
+	colours available will be 2^BitsPerPixel. So in 256 colour modes, there will be 8 bits,
+	and in 16.7M colour modes, there will be 24 bits.<p>
+
+<font SIZE=+1>RedMaskSize . . . BlueFieldPosition:</font> These fields describe the layout of the
+	bits in a 15, 16 or 24 bit colour mode. The MaskSizes specify the number of bits used for
+	each colour, and the FieldPositions specify where those bits should be placed. Lets have
+	an example.
+
+<p><center><img src="x_masks1.gif"></center><p>
+
+	This diagram shows the layout of the 16 bits in a pixel in 65536 colour mode.
+	The values would be set as follows:
+<pre>
+        RedMaskSize         = 5
+        RedFieldPosition    = 11
+        GreenMaskSize       = 6 
+        GreenFieldPosition  = 5 
+        BlueMaskSize        = 5 
+        BlueFieldPosition   = 0 
+</pre>
+
+<p><p>
+
+The rest of the information block will be set to zero.<p>
+
+<p><tr><td colspan=2><hr></td></tr><p>
+
+<h4> Function 02h - Set SVGA Mode </h4>
+
+This is a nice simple function. It switches the graphics card into the mode you want. Pass it the 
+mode number in the BX register. You can tell it not to clear the screen if you want, by setting
+the most significant bit of the mode number.<p>
+
+<pre>
+        Input:  AH = 4Fh        Super VGA support
+                AL = 02h        Set Super VGA video mode
+                BX = Video mode
+                     D0-D14 = Video mode
+                     D15 = Clear memory flag
+                           0 = Clear video memory
+                           1 = Don't clear video memory
+
+        Output: AX = Status
+                (All other registers are preserved)
+</pre>
+
+<p><tr><td colspan=2><hr></td></tr><p>
+
+<h4> Function 03h - Get SVGA Mode </h4>
+This is the function to use if you want to find out what mode the graphics card is currently in.
+You might want to do this if you were writing a screen capture routine or a popup TSR.
+<pre>
+        Input:  AH = 4Fh        Super VGA support
+                AL = 03h        Return current video mode
+
+        Output: AX = Status
+                BX = Current video mode
+                (All other registers are preserved)
+</pre>
+
+<p><tr><td colspan=2><hr></td></tr><p>
+
+<h4> Function 04h - Save SVGA State </h4>
+<p><p>
+
+<p><tr><td colspan=2><hr></td></tr><p>
+
+<h4> Function 05h - Window Control </h4>
+This function allows you to move the memory windows around, and determine their location.
+You can choose to move either window, by setting BL to 0 or 1. Note: the position you choose
+to place the window must be specified in granularity units. So be sure to use Function 01h, and
+remember the value of WinGranularity.<p>
+
+
+<h4>To set window position:</h4>
+
+<pre>
+        Input:  AH = 4Fh        Super VGA support
+                AL = 05h        Super VGA video memory window control
+                BH = 00h        Select Super VGA video memory window
+                BL = Window number
+                        0 = Window A
+                        1 = Window B
+                DX = Window position in video memory
+                     (in window granularity units)
+
+        Output: AX = Status
+</pre>
+
+<h4>To get window position:</h4>
+<pre>
+        Input:  AH = 4Fh        Super VGA support
+                AL = 05h        Super VGA video memory window control
+                BH = 01h        Return Super VGA video memory window
+                BL = Window number
+                        0 = Window A
+                        1 = Window B
+
+        Output: AX = Status
+                DX = Window position in video memory
+                     (in window granularity units)
+</pre>
+
+<p><tr><td colspan=2><hr></td></tr><p>
+
+<h4> Function 06h - Logical Scanine control </h4>
+This function allows you to control the width of the virtual screen.<p>
+
+<h4>Set scanline length</h4>
+<pre>
+        Input:  AH = 4Fh        Super VGA support
+                AL = 06h        Logical Scan Line Length
+                BL = 00h        Select Scan Line Length
+                CX = Desired width in pixels
+
+        Output: AX = Status
+                BX = Bytes Per Scan Line
+                CX = Actual Pixels Per Scan Line
+                DX = Maximum Number of Scan Lines
+</pre>
+
+<h4>Get scanline length</h4>
+<pre>
+        Input:  AH = 4Fh        Super VGA support
+                AL = 06h        Logical Scan Line Length
+                BL = 01h        Return Scan Line Length
+
+        Output: AX = Status
+                BX = Bytes Per Scan Line
+                CX = Actual Pixels Per Scan Line
+                DX = Maximum Number of Scan Lines
+</pre>
+
+<img src="x_mem1.gif" align=left>
+<br><p><p>
+
+Imagine the screen as being just the visible part of a much larger picture.
+The amount of that picture which you can see is defined by the X and Y Resolution of whatever
+mode you are in. The width of that picture is called the Logical Scanline Length. <p>
+
+The width of the virtual screen can be almost anything you like. From the X resolution of the
+screen to the maximum possible due to the amount of memory available on the graphics card.<br>
+You can in fact set the width to be less then the X resolution of the screen, but then you get
+funny results.<p>
+
+Function 07h lets you the move the visible part of the screen around, allowing you to perform
+very smooth scrolling and panning in SVGA.<br><br clear>
+
+<p><tr><td colspan=2><hr></td></tr><p>
+
+<h4> Function 07h - Scrolling / Panning </h4>
+
+<h4>Set Display Start</h4>
+<pre>
+        Input:  AH = 4Fh        Super VGA support
+                AL = 07h        Display Start Control
+                BH = 00h        Reserved and must be 0
+                BL = 00h        Select Display Start
+                CX = First Displayed Pixel in Scan Line
+                DX = First Displayed Scan Line
+
+        Output: AX = Status
+</pre>
+
+<h4>Get Display Start</h4>
+<pre>
+        Input:  AH = 4Fh        Super VGA support
+                AL = 07h        Display Start Control
+                BL = 01h        Return Display Start
+
+        Output: AX = Status
+                BH = 00h Reserved and will be 0
+                CX = First Displayed Pixel in Scan Line
+                DX = First Displayed Scan Line
+</pre>
+
+<img src="x_mem2.gif" align=left>
+
+This function allows you to set the pixel on the virtual screen which will be the top-left pixel
+of the physical screen. This effectively gives you the ability to scroll the screen around.<p>
+
+Pass the X-Coordinate in the CX register, and the Y-Coordinate in the DX register.<p><br><br clear>
+<br><p><p>
+		<center><img src="tape2.gif"></center><p>
+
+</body>
+</html>

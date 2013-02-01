@@ -1,0 +1,396 @@
+Avance Logic ALG Graphics Accelerator
+
+The ALG chips are VGA controllers with built in graphics coprocessor (COP).
+The ALG chips only works in AT and better systems as they uses 16 bit I/O
+ addresses.
+
+ALG2101  160pin  2Mb, 1280x1024x256c, 800x600x64k
+ALG2201  160pin  As 2101, but supports 24bit color
+ALG2228  160pin  2MB, 1280x1024x256c, 1024x768x32k/64k, 800x600x16m
+ALG2301  160pin  PCI version of ALG2228
+ALG2302
+ALG2064  64bit memory bus, integrates 24bit DAC & dual clock generator and
+         on-chip 32K ROM
+
+
+Support chips:
+
+
+ALG1101   16bit DAC, controlled via I/O pin
+ALG1201   15/16/24bit DAC
+ALG1301   As 1201, but with video functions
+ALG3102   Clock chip. Supplies 50.35, 56.6, 44.6, 72.2, 74.9, 65.1, 84.7,
+                  79.4, 25.175, 28.3, 44.6, 36.1, 57.1, 63.3, 49.9, 39.7
+
+
+3C0h index 15h (R/W):  Cursor Foreground
+bit  0-7  The HW cursor foreground color
+
+3C0h index 16h (R/W):  Cursor Background
+bit  0-7  The HW cursor background color
+Note: When updating index 15h and 16h it may be necessary to explicitly
+      preserve index 11h and 12h.
+
+3CEh index 09h (R/W):  Planar Pixel Index Register
+bit  0-2  Planar Pixel Index. Selects the pixel within the CPU Latch to be
+          read at 3CEh index 0Ah.
+
+3CEh index 0Ah (R/W):  Planar Pixel Register
+bit  0-3  Planar Pixel Data. A planar pixel can be read by:
+            Reading the video memory address containing the pixel, thus
+            loading the CPU latches.
+            Setting index 9 to the pixel number (0-7) within the byte.
+            Reading this register.
+
+3CEh index 0Bh (R/W):  Extended Function Register 1
+bit  0-1  Video Clock Division Control. Divides the video clock by:
+            (2101) 0: pass through, 1: 1.5, 2: 2, 3: 4
+            (2228) 0: pass through, 1: 2, 2: 4, 3: 4
+       2  DRAM Clock Select. If set the DRAM clock is selected from the video
+          clocks, if clear from SCLK. Only valid if 3CEh index 0Ch bit 6 is
+          set.
+     3-5  ??
+     6-7  DRAM Clock Division Control. Divides the DRAM clock by:
+            0: pass through, 1: 1.5, 2: 2, 3: 4
+
+3CEh index 0Ch (R/W):  Extended Function Register 2
+bit    0  Vertical Retrace Interrupt Polarity Control. If set the Vertical
+          Retrace Interrupt is active low, if clear active high.
+       1  16-bit Video Memory Access Enable. Set if access to video memory is
+          8bit, clear if 16bit.
+       2  16-bit BIOS ROM Access Enable. Set if access to the BIOS ROM is
+          8bit, clear if 16bit.
+       3  Building Character. If set enables patterned writes where the CPU
+          data is interpreted as a pattern (Color Expansion). 8 pixels are
+          written at a time. '1' bits in the pattern cause the pixel to be set
+          to the foreground color (3CEh index 0Dh) and '0' bits the background
+          color (3CEh index 0Eh).
+       4  8Maps Enable. (Packed modes only) If set 8maps are chained together
+          rather than the normal 4 (Chain4). If set the Display Start Address
+          (3d4h index Ch-Dh + 20h) and the Offset (3D4h index 13h) are in
+          units of 8 bytes. If clear in units of 4 bytes and the pixels are
+          doubled on the screen (Mode 13h).
+       5  Clock Select 2. Bits 0-1 are in 3C2h/3CCh bits 2-3
+       6  SCLK Selection Enable. If set enables 3CEh index 0Bh bit 2
+       7  If set turns display off ?
+
+3CEh index 0Dh (R/W):  Foreground Color Register
+bit  0-7  Used as foreground color in Color Expansion and fill color by the
+          Coprocessor. In planar modes only bits 0-3 are used.
+
+3CEh index 0Eh (R(W):  Background Color Register
+bit  0-7  Used as foreground color in Color Expansion and by the Coprocessor.
+          In planar modes only bits 0-3 are used.
+
+3CEh index 0Fh (R/W):  Extended Function Register 3
+bit    0  Polarity Control of CPU Latch Output to Function Block. If set the
+          output from the CPU Latch is inverted.
+       1  Polarity Control of Function Block output to Bit Mask Block. If set
+          the output from the Function Block is inverted
+       2  Set to enable the Read bank.
+       3  Address Mapping Control. If set 1MB of video memory can be mapped to
+          any 1MB bank in the first 16MB ?
+       4  ??
+       5  (2201 +)
+     6-7  ??
+
+3CEh index 10h (R/W):                                                   (2201+)
+bit  0-7  ??
+
+3CEh index 11h (R/W):                                                   (2201+)
+bit  0-7  ??
+
+3CEh index 1Fh (R/W):  Character ROM Extended Address Register           (2101)
+bit  0-1  ??
+       2  (2101 only) Clock Select 3. Bits 0-1 are in 3C2h/3CCh bits 2-3 and
+            bit 2 in 3CEh index 0Ch bit 6
+     3-7  ??
+
+3d4h index 19h (R/W):  CRTC Extended Registers 1
+bit    0  Interlace Control. Set in interlaced modes. In interlaced modes the
+          CRTC offset (3d4h index 13h) is for two scan lines.
+       1  High Resolution Address Support in Chain 4 Mode. If set MA14 and
+          MA15 wraps around, if clear MA12 and MA13 wraps around.
+          Should be set enables access to video memory above 256K.
+       2  Clock Lock. If set disables writes to 3C2h bits 2,3,6,7.
+       3  CRTC Timing Lock. If set disables writes to the CRTC timing
+          registers.
+       4  New Address Scheme. If set the CRTC uses non-wrapped addresses and
+          shifts them 0-2 bits left depending on sequencer mode.
+          SEt in HiColor modes, but does not controll the DAC mode.
+       5  Vertical Retrace Edge Control to load line address
+       6  VREB4. Bit 4 of the Vertical Retrace End Register (3d4h index 11h
+          bits 0-3). Only valid if bit 7 set.
+       7  VRC4EN. If set the Vertical Retrace Register (3d4h index 11h bits
+          0-3) is extended with bit 6 of this register.
+Note: This register can only be written when 3d4h index 1Ah bit 4 is set
+
+3d4h index 1Ah (R/W):  CRTC Extended Register 2
+bit    0  6845 Emulation Mode. If set forces the CRTC to 6845 mode.
+       1  EGA Emulation Mode. If set emulates the IBM EGA CRTC. Causes display
+          to wrap at 512K ?
+       2  (2228) Enable hardware cursor if set
+       4  Protect Hardware Configuration. If clear disables writes to 3d4h
+          index 19h, 1Dh and 3CEh index 0Bh and 0Fh. If set enables access to
+          all extended registers
+       5  If set causes color shifts ?
+     6-7  (R) Version Number. 1: ALG2201, 3: ALG2101, 2: ALG2228/ALG2301
+
+3d4h index 1Bh (R):  Configuration Register 1
+bits 0-7  Reserved.
+       2  Set for the ALG2228, clear for the ALG2201 & ALG2301 (this could
+          also be a bus ID (set for VESA, clear for PCI) or similar ??)
+
+3d4h index 1Ch (R/W):  Configuration Register 2
+bit    0  DRAM Configuration. 0: 4 256Kx4 (512K), 1: 8/16 256Kx4
+       1  Data Buffer Configuration. If clear the data bus is buffered with a
+          74LS245 (or similar), if set it is unbuffered.
+       2  3C3h/46E8h Select. If set the VGA Enable Port is at 3C3h, if clear
+          at 46E8h.
+       3  BIOS ROM Access Enabled if set
+       4  Reserved (0=MCA bus, 1=ISA bus)?
+       5  ROM Type. 0: 27128 (16K) ROM, 1: 27256 (32K) ROM.
+       7  -MCS16 Decoding Control. If set -MCS16 is decoded from LA17-23, if
+          clear from SA16-19
+Note: The contents of this register are latched from M02D0-7 on the falling
+      edge of the RESET signal.
+
+3d4h index 1Dh (R/W):  Configuration Register 3
+       0  Address Latch Enable. If set the address lines are latched
+          internally on the falling edge of ALE, if clear the internal latch
+          is transparent.
+       1  Write-per-bit. If set forces the Sequencer to support DRAM write-
+          per-bit operaton ?
+       3  Clock Select Pin Putput Enable. If set VCLK1, VCLK2 and VCLK3 are
+          output pins, if clear input pins.
+       4  Output Enable. If set enables all output pins, if clear all output
+          pins except -DATAENL, DIR, -DATAENH, RAS; CKS0, CKS1 and CKS2 are
+          tristated.
+       5  Slot Size Detection. Set if the slot is 16bit, clear if 8bit.
+       6  External Video. If set enables the P0-7, BLANK, PCLK, HSYNC and
+          VSYNC pins for video output, if clear tristates them.
+Note: The contents of this register are latched from M1D0-7 on the falling
+      edge of the RESET signal.
+Note: This register can only be written when 3d4h index 1Ah bit 4 is set
+
+3d4h index 1Eh (R/W):
+bit  0-1  Video memory. 0=256k, 1=512k, 2=1M, 3=2Mbytes.
+     6-7  Max Horizontal Frequency:  0=38kHz, 1=48kHz, 2=56kHz, 3=64kHz.
+
+3d4h index 1Fh (R/W):
+bit  0-1  Emulation. 0=VGA, 1=EGA, 2=CGA,3=MDA
+
+3d4h index 20h (R/W):
+bit  0-2  Display start address bit 16-18.
+Note: if 3CEh index Ch bit 4 is set, the display start is in units of 8 bytes,
+      rather than 4 as in std vga.
+
+3d4h index 21h (R/W):  Cursor X position
+bit  0-7  Bits 3-10 of the HW cursor X position. The lower bits are in index
+          25h.
+
+3d4h index 23h (R/W):  Cursor Y position
+bit  0-7  Bits 1-8 of the HW cursor Y position. The upper bits are in index
+          25h.
+Note: in non-interlaced modes (3d4h index 19h bit 0 is 0) the Y co-ordinate
+      should be multiplied by 2.
+
+3d4h index 25h (R/W):  Cursor control
+bit  0-1  Bit 9-10 of the HW cursor Y position. The lower bits are in index
+          23h
+     2-4  Bits 0-2 of the HW cursor X position. The upper bits are in index
+          21h
+       5  If set enables the HW cursor. To preserve the stability of the
+          cursor, this bit should be set with each update of this register.
+       6  Bit 0 of the HW cursor Y position. (see note on interlace).
+
+3d4h index 27h W(R/W):  Cursor Map address
+bit 0-10  The address in video memory where the HW cursor map starts.
+          In planar modes this address is in units of 256 bytes,
+          in packed modes in units of 1024 bytes.
+          The HW cursor is a 64x64 bitmap imposed on the display.
+          The cursor map is stored as a 64x64x2bit array, where each pixel is:
+             0: Background color (3C0h index 16h)
+             1: Foreground color (3C0h index 15h)
+             2: The screen data (transparent cursor).
+             3: Inverted screen data (XOR cursor)
+Note: in interlaced modes the cursor is shown double height.
+
+3d4h index 28h (R/W):  Vertical Extended reg
+bit    7  CRTC Offset bit 8. Bits 0-7 are in 3d4h index 13h
+Note: The extensions of the CRTC registers in this register are only
+      active if 3d4h index 19h bit 7 is set.
+
+3d4h index 2Ah (R/W):  Horizontal Extended reg                      (2201 +)
+bit    0  Horizontal Total bit 8. Bits 0-7 are in 3d4h index 00h
+       3  Horizontal Blanking ??.
+       4  ??
+       5  ??
+Note: The extensions of the CRTC registers in this register are only active
+      if 3d4h index 19h bit 7 is set.
+
+3D6h (R/W):  Read Address Register
+bit  0-4  64k Read bank number. If 3CEh index Fh bit 2 is set all reads use
+          this bank number, if clear all accesses use 3D7h.
+
+3D7h (R/W):  Read/Write Address Register
+bit  0-4  64k Bank number. If 3CEh index Fh bit 2 is clear all accesses use
+          this bank number, if set writes use this bank and reads use 3D6h.
+
+8280h W(R/W): Source address low
+bit 0-15  The lower 16 bits of the pixel address of the source area.
+
+8282h (R/W): Source address high
+bit  0-7  The upper 8 bits of the pixel address of the source area.
+          Calculated as (line no.)*(pixels per line)+(pixel no. in line).
+
+8284h W(R/W): Source area scanline width.
+bit 0-15  The number of pixels in a scanline at the source.
+
+8286h W(R/W): Destination address low.
+bit 0-15  Lower 16 bits of the pixel address of the destination area.
+
+8288h (R/W): Destination Address high.
+bit  0-7  The upper 8 bits of the pixel address of the destination area.
+          Calculated as (line no.)*(pixels per line)+(pixel no. in line).
+
+828Ah W(R/W): Destination area scanline width
+bit 0-15  Number of pixels in a scanline at the destination.
+
+828Ch W(R/W): Width of op.
+bit 0-15  Width of the blit area in pixels.
+
+828Eh W(R/W): Height of op.
+bit 0-15  Number of lines in the blit area.
+
+8290h (R/W):
+bit  0-5  7 If moving towards higher co-ordinates, 1 if moving towards lower.
+          0 (or don't care) for line draws
+       6  If set drawing only happens within the rectangle defined by
+          8294h-9Ah.
+          X co-ordinate must be >= 8294h and <=8296h.
+          Y co-ordinate must be >= 8298h and <=829Ah.
+
+8292h W(R/W):
+bit  0-7  always 0Dh ???
+       8  (Line Draw) If set the final position is to the left of the start
+       9  (Line Draw) If set the final position is above the start
+      10  (Line Draw) If set (Delta X) and (Delta Y) are swapped when
+          calculating the Bresenham constants in 82A2h-A6h.
+      11  ??
+      12  Set if moving towards lower co-ordinates, clear if not.
+
+8294h W(R/W):  Clipping left
+bit 0-15  If 8290h bit 6 is set drawing only happens if the X-co-ordinate is
+           >= this value
+
+8296h W(R/W):  Clipping right
+bit 0-15  If 8290h bit 6 is set drawing only happens if the X-co-ordinate is
+           <= this value
+
+8298h W(R/W):  Clipping top
+bit 0-15  If 8290h bit 6 is set drawing only happens if the Y-co-ordinate is
+           >= this value
+
+829Ah W(R/W):  Clipping bottom
+bit 0-15  If 8290h bit 6 is set drawing only happens if the Y-co-ordinate is
+           <= this value
+
+829Ch W(R/W): Start X co-ordinate
+bit 0-15  Starting X co-ordinate of the destination area.
+
+829Eh W(R/W): Start Y co-ordinate
+bit 0-15  Starting Y co-ordinate of the destination area
+
+82A0h W(R/W):
+bit 0-15  Always set to 0 ??
+
+82A2h W(R/W):  Bresenham Constant 1
+bit 0-15  The Bresenham Constant 1 used for line drawing
+          Calculated as  2*(Delta Y). If 8292h bit 10 is set 2*(Delta X) is
+          used.
+
+82A4h W(R/W):  Bresenham Constant 2
+bit 0-15  The Bresenham Constant 2 used for line drawing
+          Calculated as  2*((Delta Y) - (Delta X)). If 8292h bit 10 is set
+          (Delta Y) and (Delta X) are swapped in the calculation.
+
+82A6h W(R/W):  Bresenham Error Term
+bit 0-15  The Bresenham Error Term used for line drawing.
+          Calculated as  2*(Delta Y) + (Delta X). If 8292h bit 10 is set
+          (Delta Y) and (Delta X) are swapped in the calculation.
+
+82A8h W(R/W):
+bit 0-15  (Line draw) Pattern mask. Only the set bits are drawn.
+
+82AAh (R/W): COP status/instruction
+bit  0-3  (R) When 0 the COP is free.
+     0-7  (W) Graphics instruction:
+               1: Fill rectangle
+               2: Copy rectangle
+               4: ?
+               8: Line draw
+
+82B0h
+
+82BAh (R):  Status??
+bit    7  Set if busy ?
+
+82BCh
+
+82C0h
+
+82C8h W(R/W):
+bit
+
+82CAh W(R/W):
+82CCh W(R/W):
+
+
+
+
+ID Avance Logic chip:
+
+  old:=rdinx($3d4,$1A);
+  clrinx($3d4,$1A,$10);            {Disable extensions}
+  if not testinx($3d4,$19) then
+  begin
+    setinx($3d4,$1A,$10);          {Enable extensions}
+    if testinx($3d4,$19) and testinx2($3d4,$1A,$3F) then
+       Avance Logic AL2101 !!
+  end;
+  wrinx($3d4,$1A,old);
+
+
+
+  Video modes:
+
+    20h  T   132   25  16
+    21h  T   132   30  16
+    22h  T   132   43  16
+    23h  T   132   60  16
+    24h  T    80   30  16
+    25h  T    80   43  16
+    26h  T    80   60  16
+    27h  G   960  720  16  PL4
+    28h  G   512  512 256  P8
+    29h  G   640  400 256  P8
+    2Ah  G   640  480 256  P8
+    2Bh  G   800  600  16  PL4
+    2Ch  G   800  600 256  P8
+    2Dh  G   768 1024  16  Pl4
+    2Eh  G   768 1024 256  P8
+    2Fh  G  1024  768   4
+    30h  G  1024  768  16  PL4
+    31h  G  1024  768 256  P8
+    33h  G  1024 1024 256  P8
+    36h  G  1280 1024  16  PL4
+    37h  G  1280 1024 256  P8
+    40h  G   320  200 64k  P16
+    41h  G   512  512 64k  P16
+    42h  G   640  400 64k  P16
+    43h  G   640  480 64k  P16
+    44h  G   800  600 64k  P16
+    45h  G  1024  768 64k  P16
+    48h  G   640  480 16m  P24
+    49h  G   800  600 16m  P24

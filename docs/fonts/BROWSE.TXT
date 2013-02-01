@@ -1,0 +1,23 @@
+I needed a way to browse thru all of these fonts and figured that you would 
+too; so I wrote browse.bat and display.bat.  
+
+To use browse.bat, just run it with the filespec of the font files you'd like 
+to see.  For example, if you want to see what the Old English fonts look like 
+type this: 
+
+browse old*.*
+
+Yossi Gil's utilities do almost all of the work but they don't quite do all 
+that is necessary.  Browse.bat cycles thru all of the files you specify with 
+the argument by using a FOR statement and display.bat clears the screen, 
+displays all of the font's characters, displays the font's name and waits for 
+you to press a key.  Display.bat is just serves as a container for all of 
+these commands since a FOR statement can only take one command in its DO 
+clause. 
+
+Have fun with these and don't forget to get my program, BIGTXT20, so you can 
+make banners with your favorite font!  Look for BIGTXT20 in the screen 
+directory of your local Simtel archive mirror. 
+
+William Luitje
+luitje@m-net.arbornet.org or luitje@m-net.ann-arbor.mi.us

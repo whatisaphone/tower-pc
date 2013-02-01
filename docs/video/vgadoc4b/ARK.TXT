@@ -1,0 +1,301 @@
+ARK Logic
+
+ARK1000VL  160pin  original version. No PCI support ?
+ARK1000PV          PCI bus version of 1000VL
+ARK2000PV  208pin  64bit memory interface. 16bit path to DAC
+
+3C4h index 10h (R/W):
+bit 0-1  Should be set to 3 to access all of video memory
+    2-3  Set to 3 to enable memory mapped engine regs at A800h, 0 to disable
+      4  Set to enable the Linear frame buffer
+      5  ?
+      6  (1000) Video Memory Size. 0: 1MB, 1: 2MB
+    6-7  (2000) Video Memory Size. 0: 1MB, 1: 2MB, 2: 4MB, 3: 8MB
+
+3C4h index 11h (R/W):  Video Clock Select
+bit 0-1  Giant Shift Register Mode.
+      0  ??
+      1  If set pixels are doubled horizontally
+    2-3  Accelerator pixel size. 1: 8bit, 2: 15/16bit, 3: (2000) 32bit
+      4  Causes lockup ??
+      5 ??
+    6-7  Clock Select bit 2-3. Bits 0-1 are in 3C2h/3CCh bits 2-3.
+
+3C4h index 12h (R/W):
+bit 0-1  Size of the linear frame buffer. 0: 64Kb, 1: 1Mb, 2: 2Mb, 3: 4Mb
+      2  Set in high res text modes, clear in all other modes
+    3-7  ??
+
+3C4h index 13h W(R/W):
+bit 0-15  Linear Address of Aperture bits 16-31.
+
+3C4h index 15h (R/W):
+bit 0-4  Write Bank in 64K units
+
+3C4h index 16h (R/W):
+bit 0-4  Read Bank in 64K units
+
+3C4h index 17h (R/W):
+bit 0-2  Pixels per scanline ?. 0: 640, 1: 800, 2: 1024, 4: 1280
+
+3C4h index 18h (R/W):
+bit 0-2  (1000) Display FIFO threshold level (0-7).
+         (2000) Display FIFO threshold level bits 1-3. The display FIFO is
+           32 levels deep on the 2000PV. Bits 0 & 4 of the threshold are in
+           bits 5&7 of this register.
+      3  If set enables the full 8 level display FIFO
+      5  (2000) Display FIFO threshold level bit 4.
+      7  (2000) Display FIFO threshold level bit 0.
+
+3C4h index 19h (R/W):
+bit 0-7  ??
+      7  Set for VESA bus, clear for PCI bus.
+
+3C4h index 1Ah (R/W):
+bit 0-7 Scratch ??
+
+3C4h index 1Bh (R/W):
+bit 0-7 Scratch ??
+
+3C4h index 1Ch (R/W):
+bit 0-1  Clock ??
+      2  Blanks display if set ?
+    3-4  Pixel type: 0: 16c planar (or text), 1: 8bpp, 2: 15/16bpp, 3: 24bpp
+    5-7 ??
+
+3C4h index 1Dh (R/W):
+bit   0  Set to enable access to extended registers.
+
+3C4h index 1Eh (R/W):
+bit 0-7 Scratch ??
+
+3C4h index 1Fh (R/W):
+bit 0-7 Scratch ??
+
+
+3C4h index 20h (R/W):
+bit   0  If set horizontally enlarges the cursor by a factor of 2 (15/16bpp).
+      1  If set horizontally enlarges the cursor by a factor of 3 (24/32bpp).
+      2  Set for 64x64 cursor, clear for 32x32 cursor.
+      3  Enable the hardware cursor if set
+      4  Selects Windows style cursor if clear, X11 style if set ?
+
+3C4h index 21h (R/W):
+bit 0-3  Cursor X position bits 8-11, lower 8 bits are in index 22h
+
+3C4h index 22h (R/W):
+bit 0-7  Cursor X position bits 0-7, upper 4 bits are in index 21h
+
+3C4h index 23h (R/W):
+bit 0-3  Cursor Y position bits 8-11, lower 8 bits are in index 24h
+
+3C4h index 24h (R/W):
+bit 0-7  Cursor Y position bits 0-7, upper 4 bits are in index 23h
+
+3C4h index 25h (R/W):
+bit 0-5  Selects the location of the hardware cursor map in video memory.
+          63 = last 256 bytes of 2Mb video memory
+         The cursor definition map is a 32x32 or 64x64 bitmaps stored as a
+         a sequence of 16bit words, each word defines 8 pixels. Bits 0 & 8
+         defines the leftmost pixel, bits 7 & 15 the rightmost.
+         Low bit:    High bit:     Result (Windows):
+            0            0         Cursor Color 1
+            1            0         Screen data
+            0            1         Cursor Color 0
+            1            1         Inverse screen (XOR cursor)
+
+3C4h index 26h (R/W):  "Cursor Color 0 low"
+bit 0-7  Cursor Color 0. Palette index in palette modes, in direct color modes
+         the low byte of the 2 or 3 bytes pixel.
+
+3C4h index 27h (R/W):  "Cursor Color 0 middle"
+bit 0-7  The 2nd byte of the 2 or 3 bytes Color 0 pixel
+
+3C4h index 28h (R/W):  "Cursor Color 0 high"
+bit 0-7  The high byte of the 3 bytes Color 0 pixel in 24bit modes
+
+3C4h index 29h (R/W):  "Cursor Color 1 low"
+bit 0-7  Cursor color 1. Palette index in palette modes, in direct color modes
+         the low byte of the 2 or 3 bytes pixel.
+
+3C4h index 2Ah (R/W):  "Cursor Color 1 middle"
+bit 0-7  The 2nd byte of the 2 or 3 bytes Color 1 pixel
+
+3C4h index 2Bh (R/W):  "Cursor Color 1 high"
+bit 0-7  The high byte of the 3 bytes Color 1 pixel in 24bit modes
+
+3C4h index 2Ch (R/W):
+bit 0-5  Cursor X Hotspot.
+
+3C4h index 2Dh (R/W):
+bit 0-5  Cursor Y Hotspot.
+
+3CBh (R):
+bit  0-3  Number of FIFO slots free ??
+       6  Set when engine busy ??
+
+3d4h index 29h (R/W):
+bit 0-2  ??
+
+3d4h index 30h
+bit   0  If set ??
+    1-2
+
+3d4h index 31h (R/W):
+bit   0  Causes wraps if set ?
+      1  ??
+      2  If set doubles each scan line vertically
+    3-4  ??
+      5  If set causes a one pixel shift to the right.
+
+3d4h index 40h (R/W):  Extended Horizontal CRTC Timings
+bit 0-2  Display Start Address bit 16-18. Bits 0-15 are in 3d4h index 0Ch,0Dh
+      3  ?
+      4  Vertical Retrace Start bit 10. Bits 0-7 are in 3d4h index 10h.
+      5  Vertical Blank Start bit 10. Bits 0-7 are in 3d4h index 15h.
+      6  Vertical Display End bit 10. Bits 0-7 are in 3d4h index 12h.
+      7  Vertical Total bit 10. Bits 0-7 are in 3d4h index 06h.
+
+3d4h index 41h (R/W):  Extended Vertical CRTC Timings
+bit   3  CRTC Offset bit 8. Bits 0-7 are in 3d4h index 13h.
+      4  Horizontal Retrace Start bit 8. Bits 0-7 are in 3d4h index 04h
+      5  Horizontal Blank Start bit 8. Bits 0-7 are in 3d4h index 02h
+      6  Horizontal Display End bit 8. Bits 0-7 are in 3d4h index 01h
+      7  Horizontal Total bit 8. Bits 0-7 are in 3d4h index 00h.
+
+3d4h index 42h (R/W):  Interlace Retrace
+bit 0-7  In interlaced modes should be ~half of Horizontal Total.
+
+3d4h index 43h (R/W):
+bit 0-1  Same as index 40h bit 0-1 ??
+      2
+      3  If set display wraps at 256K
+    4-7  ??
+
+3d4h index 44h (R/W):  VGA Enhancement Register
+bit   0  Disables RAMDAC access
+      1  ??
+      2  If set the display is interlaced
+    3-7  ??
+
+3d4h index 45h (R/W):
+bit 0-3  ??
+
+3d4h index 46h (R/W):  Pixel Clock Control
+bit   2  (2000) If set 16 bits are sent to the DAC per pixel clock
+    3-5  ??
+      6  Inverts the pixel clock if set.
+      7  ??
+
+3d4h index 50h (R):
+bit 3-7  Chip ID. 11h for the 1000VL, 12h for the 1000PV, 13h for the 2000PV
+
+
+
+  The ARK can memory map the accelerator registers at A8000h:
+
+M+00h W():
+
+M+02h W():
+bit  0-?  Drawing Style. 0: Solid, 1: Dashed, 2: Dotted, 3: DotDash,
+           4: DashDotDot
+
+M+08h W():
+bit  0-?  Fill Color ??
+
+M+0Ah W():
+
+M+18h W():
+bit 8-11  ROP. 0: Black (0), 1: Dest AND Src, 2: Src AND (NOT Dest), 3: Src,
+           4: Dest AND (NOT Src), 5: Dest, 6: Dest XOR Src, 7: Src OR Dest,
+           8: NOT (Src OR Dest), 9: NOT (Dest XOR Src), 10: NOT Dest, 11: Src
+          OR (NOT Dest), 12: NOT Src, 13: Dest AND (NOT Src), 14: NOT (Dest
+          XOR Src), 15: White (1)
+
+M+1Ah W()
+bit 0-15  Set to FFFFh ?? Write mask ??
+
+M+50h W():  Bresenham Error Term.
+bit  0-?   2*min(deltaX,deltaY)-max(deltaX,deltaY)
+
+M+54h W():  Bresenham Constant 1
+bit  0-?   2*min(deltaX,deltaY)
+
+M+56h W():  Bresenham Constant 2
+bit  0-?   2*min(deltaX,deltaY)-2*max(deltaX,deltaY)
+
+M+58h W():
+bit 0-15  Cliping Rect - Left Border. Lowest X coordinate drawn
+
+M+5Ah W():
+bit 0-15  Cliping Rect - Top Border. Lowest Y coordinate drawn
+
+M+5Ch W():
+bit 0-15  Cliping Rect - Right Border. Highest X coordinate drawn
+
+M+5Eh W():
+bit 0-15  Cliping Rect - Bottom Border. Highest Y coordinate drawn
+
+M+60h W():
+
+M+62h W():
+
+M+68h W():
+
+M+6Ch W():
+bit  0-2  X index into 8x8 pattern ?
+     3-5  Y index into 8x8 pattern ?
+     6-   ??
+    9-10  Both set ??
+      or ?
+bit 0-15  Starting Source X coordinate
+
+M+6Eh W():
+bit 0-15  Starting Source Y coordinate
+
+M+70h W():
+bit 0-15  Starting X coordinate
+
+M+72h W():
+bit 0-15  Starting Y coordinate
+
+M+74h W():
+bit  0-?  For line draw: Number of pixels drawn, for BitBlts the area width in
+          pixels (-1 ?)
+
+M+76h W():
+bit  0-?  For BitBlts the number of lines in the blt area (-1 ?)
+
+M+7Ch D():
+bit   16  Linedraw: Set if abs(deltaY) < deltaX
+      17  Linedraw: Set if EndY < StartY
+      18  Linedraw: Set if EndX < StartX
+      21  Set for Line draw
+      24  Set for ?? source
+      28  Set for linedraw
+      29  Set for BitBlt
+bit 4 or 26 set if source is a Pattern ??
+bit 8,9,12 or 23 set if source data is from CPU ??
+
+  Modes:
+
+  24h  T   132   25   16  ()
+  26h  T   132   43   16  ()
+  27h  T   132   50   16  ()
+  31h  G   800  600   16  PL4
+  32h  G  1024  768   16  PL4
+  33h  G  1280 1024   16  PL4
+  40h  G   640  480  256  P8
+  41h  G   800  600  256  P8
+  42h  G  1024  768  256  P8
+  43h  G  1280 1024  256  P8
+  44h  G  1600 1280  256  P8
+  4Fh  G   640  400  256  P8
+  50h  G   640  480  32K  P15
+  51h  G   800  600  32K  P15
+  52h  G  1024  768  32K  P15
+  54h  G   640  480  64K  P16
+  55h  G   800  600  64K  P16
+  56h  G  1024  768  64K  P16
+  58h  G   640  480  16M  P24
+  59h  G   800  600  16M  P24

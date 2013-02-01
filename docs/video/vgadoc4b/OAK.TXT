@@ -1,0 +1,566 @@
+   OAK Technologies. OTI.
+
+   OTI-O37C  100pin. has 256K or 512K.
+   OTI-O67   144pin  has 256K or 512K.
+   OTI-O77   144pin  allows 1MB and up to 1024x768 in 256 colors.
+   OTI-O87   160pin  allows 2MB and has BitBlt functions
+   OTI-O107  Also known as the "Spitfire" OTI 64107 or OTI 64105 (diff?)
+
+OAK-037, 067 and 077:
+
+3DEh (R/W):  Index register                                            (37-77)
+bit 0-4  Index to the OAK extended registers at 3DF.
+    5-7  (R) Chip version.  0=OAK-037C, 2=OAK-067, 5=OAK-077, 7=OAK-057
+Note: Has anyone seen an 057 ????
+
+3DEh (R/W):  Index register                                            (83/87)
+bit 0-7  Index to the OAK extended registers at 3DF.
+
+3DEh index 00h (R):  Product Number                                    (83/87)
+bit   1  Set for OTI-083, Clear for OTI-087
+
+3DEh index 02h (R/W):  Status Register                                 (83/87)
+bit   0  (R) Status. 0: 286, 1: 386/486
+    1-2  Memory Size. 0: 256K, 1: 512K, 2: 1MB, 3: 2MB
+
+3DEh index 03h (R/W):  Oak Test Register                               (83/87)
+bit   5  ?? (Causes vertical stripes)
+      7  ??
+
+3DEh index 04h (R/W):  Local Bus Control                               (83/87)
+bit   2  Set if using Zero Wait States for the VESA Local BUS interface.
+      4
+
+3DEh index 05h (R/W):  Video Memory Mapping                            (83/87)
+bit   0  Enable Oak Address Mapping. 0: A000/B800, 1: Linear Aperture
+      1  DMA Address Disable. 0: Normal, 1: Disable DMA to video memory
+    2-3  Memory Address Aperture Select. Selects the size of the aperture
+           0: 256K aperture, 1: 512K, 2: 1MB, 3: 2MB
+    4-7  Starting Address. If bit 0 is set select the location of the linear
+         aperture. 0: at 0MB, 1: at 1MB ... Fh: at 15 MB.
+
+3DEh index 06h (R/W):  Clock Select                                    (83/87)
+bit 0-3  Clock select bits 0-3. Bits 0-1 are the same as 3C2h bits 2-3 and
+         bit 2 is the same 3DEh index 0Dh bit 5.
+      4  ?? (Display reset ??)
+
+3DEh index 07h (R):  Configuration Register 1                          (83/87)
+bit 1-2  Bus type. 0: VLB motherboard, 1: VESA VLB slot, 2: ISA motherboard
+           3: ISA 16bit slot
+
+3DEh index 08h (R):  Configuration Register 2                          (83/87)
+bit 2-3  DAC type. 0: Bt476, SC11487, IMSG174 or similar, 1: MU9c1715
+           2: Bt484 or similar (32bit pixelport)
+
+3DEh index 09h (R/W):  Scratch Register 1
+bit   0  Set if 24bit DAC available ?
+
+3DEh index 0Ah (R/W):  Scratch Register 2
+
+3DEh index 0Bh (R/W):  Scratch Register 3
+bit   6  Clear if VESA monitor timings (Jumper )
+      7  Clear if non-interlaced monitor timings
+
+3DEh index 0Ch (R/W):  CRT Control
+bit 0-2  (37-77) If set locks some registers ?
+      3  I/O write test ?
+      6   ?
+
+3DEh index 0Dh (R/W):  Oak Miscellaneous
+bit 2-3  (37-77) Should be set to enable access to memory above 256k
+          Hm, bits 0-3 may indicate the Display FIFO depth ??
+      4  For 16 color modes should be set to enable access for memory above
+         256K, should be clear in all other modes !!!
+      5  Clock Select bit 2. Bits 0-1 are in 3C2h/3CCh
+    6-7  (77) Video memory. 0: 256K, 1,3: 1MB, 2: 512K
+      7  (37-67) 512K if set, 256 if clear
+
+3DEh index 0Eh (R/W):  Backwards Compatibility
+bit   2  Force interlaced mode if set ???
+      6  If set repeats scanline 2 ad infinitum ??
+      7  VGA mode if set
+
+3DEh index 0Fh (R):  NMI Data Cache
+
+3DEh index 10h (R):  Dip Switch Read
+
+3DEh index 11h (R/W):  Segment
+bit 0-3  Read segment
+    4-7  Write segment
+
+3DEh index 12h (R):  Configuration
+
+3DEh index 13h (R/W):  Bus Control
+
+3DEh index 14h (R/W):  Oak Overflow
+bit   0  Bit 10 of the VTotal Register (3d4h index 6)
+      1  Bit 10 of the Vertical Display End Register (3d4h index 12h)
+      2  Bit 10 of the Vertical Retrace Start Register (3d4h index 10h).
+      3  Display Start Address bit 16. Bits 0-15 are in 3d4h index Ch,Dh
+      4  Cursor Location Address bit 16. Bits 0-15 are in 3d4h index Eh,Fh.
+      7  Set to enable Interlace display.
+
+3DEh index 15h (R/W):  HSYNC/2 Start
+bit 0-7  How far into the scanline the odd frame should start in interlaced
+         modes. Usually half the VTotal value.
+
+3DEh index 16h (R/W):  OTI Overflow Register 2                          (77 +)
+bit   3  Display Start Address bit 17. Bits 0-15 are in 3d4h index Ch,Dh
+          and bit 16 in 3DEh index 14h bit 3.
+      4  Cursor Location Address bit 17. Bits 0-15 are in 3d4h index Eh,Fh.
+
+3DEh index 17h (R/W):  Extended CRTC Register                          (83/87)
+bit 0-2  Display Start Address bit 16-18. Bits 0-15 are in 3d4h index Ch,Dh
+         Note that bit 0 of this register is also at 3DEh index 3 and bit 1 at
+         3DEh index 16h bit 3.
+
+3DEh index 18h (R/W):  EEPROM Control
+bit   2  Clock Select??
+
+3DEh index 19h (R/W):  Extended Color Palette Address
+
+3DEh index 20h (R/W):  FIFO Depth                                      (83/87)
+bit 0-3  FIFO depth. If the number of entries in the Display FIFO reaches this
+         level (or less) a screen data fetch will start. Low values gives
+         better performance, but might disturb the display.
+
+3DEh index 21h (R/W):  Mode Select                                     (83/87)
+bit 0-1  Divides the video clock by. 0: 1, 1: 2, 2: 3, 3: 3
+      2  Clear in mode 13h, set in all other 256color modes
+
+3DEh index 22h (R/W):  Feature Select                                  (83/87)
+bit   0  Enable contents addressable latch ?
+    2-3  Both set to enable bitblt ??
+      4  Enable 64bit CPU Latch if set
+      5  CPU Latch Swap. If set swaps the high and low Latch.
+
+3DEh index 23h (R/W):  Extended Read Segment                           (83/87)
+bit 0-4  Read segment in units of 64K
+
+3DEh index 24h (R/W):  Extended Write Segment                          (83/87)
+bit 0-4  Write segment in units of 64K
+
+3DEh index 25h (W):  Extended Common Read/Write                        (83/87)
+bit 0-4  Combined read/write segment. Writing to this register will set both
+         the Read (index 23h) and Write Segment (index 24h) registers
+
+3DEh index 30h (R/W):  Color Expansion Control Register                (83/87)
+bit   0  Enable Color Expansion if set
+      1  Color Expansion Mode Select. 0: Packed pixel, 1: Planar.
+      2  Select Pattern Register. If set the Color Pattern Register (3DEh
+         index 33h) is used to select foreground and background, if clear the
+         CPU data select foreground and background.
+      3  Pixel Mask Enable. If set
+      4  Pixel Mask Ordering. If set bit 7 corresponds to pixel 0, if clear
+         bit 7 corresponds to pixel 0.
+
+3DEh index 31h (R/W):  Foreground Color                                (83/87)
+bit 0-7  Foreground color for Color Expansion.
+
+3DEh index 32h (R/W):  Background Color                                (83/87)
+bit 0-7  Background color for Color Expansion.
+
+3DEh index 33h (R/W):  Color Pattern Register                          (83/87)
+bit 0-7  If Color Expansion is enabled (3DEh index 30h bit 0 is set) and 3DEh
+         index 30h bit 2 is set this register is used to select foreground and
+         background during writes.
+
+3DEh index 34h (R/W):  Word Mode Pixel Mask                            (83/87)
+bit 0-7  Pixel Mask. If Color Expansion is enabled (3DEh index 30h bit 0 is
+         set) and Pixel Mask is enabled (3DEh index 30h bit 3 is set) each bit
+         controls writing to a plane (in planar mode) or a pixel (in packed
+         mode).
+
+3DEh index 35h (R/W):  CPU Latch Index                                 (83/87)
+bit 0-2  Selects which of the 8 bytes in the 64bit CPU Latch can be read or
+         written at index 36h
+
+3DEh index 36h (R/W):  CPU Latch Data                                  (83/87)
+bit 0-7  The 64bit CPU Latch can be read or written through this register.
+         The CPU Latch Index Register (3DEh index 35h) selects the byte that
+         is accessed.
+
+3DEh index 40h (R/W):  HC Horizontal Start High                        (83/87)
+
+3DEh index 41h (R/W):  HC Horizontal Start Low                         (83/87)
+
+3DEh index 42h (R/W):  HC Vertical Start High                          (83/87)
+
+3DEh index 43h (R/W):  HC Vertical Start Low                           (83/87)
+The cursor is stored as a 64x64 2bits/pixel bitmap. Each line is 16 bytes,
+first 8 bytes (64bits) of 'A' data, then 8 bytes of 'B' data.
+           'A'      'B'
+            0        0     Transparent (screen data)
+            0        1     Foreground color
+            1        0     Inverted screen data (Pixel is inverted)
+            1        1     Background color
+
+3DEh index 44h (R/W):  HC Horizontal Preset                            (83/87)
+bit 0-5  Number of pixels to skip on the right side of the cursor.
+
+3DEh index 45h (R/W):  HC Vertical Preset                              (83/87)
+bit 0-5  Number of lines to skip at the bottom of the cursor.
+
+3DEh index 47h 3(R/W):  HC Start Address                               (83/87)
+bit 0-16  Address of the Hardware Cursor Map in units of 8 bytes.
+
+3DEh index 4Ah (R/W):  HC Foreground Color                             (83/87)
+
+3DEh index 4Bh (R/W):  HC Background Color                             (83/87)
+
+3DEh index 4Ch (R/W):  HC Control Register                             (83/87)
+bit   0  Enable Hardware Cursor if set
+      1  Display Selection. 0: Overscan, 1: Show over Overscan
+      2  Data Format of Cursor. 0: bit 0 first, 1: bit 7 first
+      3  Blink Rate Enabled if set
+    4-5  Blink Rate. 0: 4 frames/sec, 1: 8 f/s, 2: 16 f/s, 3: 32 f/s
+
+
+
+  Oak OTI 64105/7:
+
+3DEh index 2 (R/W):  Status
+3DEh index 3 (R/W):  OTI Test Register 1
+3DEh index 4 (R/W):  OTI Test Register 2
+3DEh index 6 (R/W):  Clock Select/Scratch
+3DEh index 7 (R):  Configuration Register 1
+3DEh index 8 (R):  Configuration Register 2
+bit 3-4  ROM Size. 0: 32K, 1: 64K, 2: 128K, 3: 256K
+
+3DEh index 9 (R):  Configuration Register 3
+3DEh index 0Ch (R/W):  I2C Control
+3DEh index 0Dh (R):  Dip Switch Read
+3DEh index 0Eh (R/W):  EPROM Control
+3DEh index 0Fh (R/W):  Power Saving
+3DEh index 10h (R/W):  Local Bus Control
+3DEh index 11h (R/W):  Compatible Segment
+3DEh index 13h (R/W):  ISA Bus Control
+3DEh index 14h (R/W):  Memory Mapping
+3DEh index 15h (R/W):  Memory & I/O Map Enable
+bit   6  Enable Graphic Memory Response if set
+      7  Enable Memory Mapped I/O if set
+
+3DEh index 19h (R/W):  Configuration/Aux/DAC Address
+bit 0-3  Selects the address of the Configuration/DAC/Auxiliary registers at
+         2x00h-2xFFh where x is the value in this field. 2x00h-2x3Fh for (PCI)
+         Configuration registers, 2x80h-2x9Fh for DAC registers and 2xA0h-
+         2xBFh for auxiliary registers
+      4  Enables decoding of the DAC registers at 2x80h-2x9Fh if set
+      5  Enables decoding of the auxiliary registers at 2xA0h-2xBFh if set.
+
+3DEh index 20h (R/W):  FIFO Depth
+3DEh index 21h (R/W):  Mode Select
+3DEh index 22h (R/W):  Feature Select
+bit   5  Enable write mode 4 which bypasses the ALU and barrel shifter. Only
+         used for planar modes.
+
+3DEh index 23h (R/W):  Extended Read Segment
+3DEh index 24h (R/W):  Extended Write Segment
+3DEh index 25h (R/W):  Extended Common Read/Write Segment
+3DEh index 26h (R/W):  RASn Control
+3DEh index 27h (R/W):  CASn Control
+3DEh index 28h (R/W):  Refresh Control
+3DEh index 29h (R/W):  Hardware Window Arbitration
+3DEh index 30h (R/W):  OTI CRT Overflow
+bit   3  CRT Offset bit 9. Bits 0-7 are in 3d4h index
+
+3DEh index 31h (R/W):  CRT Start Address High
+bit 0-6  Display Start Address bit 16-22. Bits 0-15 are in 3d4h index Ch,Dh
+
+3DEh index 32h (R/W):  HSYNC/2 Start
+3DEh index 33h (R/W):  CRT Address Compatibility
+3DEh index 38h (R/W):  Pixel Interface
+bit 0-3  Pixel Mode. Controls the routing of display data.
+           0:  VGA, 8bit DAC path. Routed through the attribute controller
+           1:  4bpp, 8bit DAC path (2 pixels per DAC operation?).
+           2:  8/16/24bpp, 8bit DAC path
+           3:  16bpp, 16bit DAC path
+           4:  8bpp, 16bit DAC path (2 pixels per DAC operation?).
+           5:  16bpp, 16bit DAC path
+           6:  32bpp, 16bit DAC path
+           7:  24bpp, 24bit DAC path
+           8:  32bpp, 24bit DAC path
+      4  Color Ordering. In 16bpp and 24bpp (also 32bpp?) modes controls the
+         order of the red and blue components. If set the blue part comes
+         first (low bits) and the red last, if clear red comes first.
+    5-6  Bits/pixel. 0: 8bpp, 1: 16bpp, 2: 24bpp, 3: 32bpp
+
+3DEh index 80h W(R/W):  HC/HW Horizontal Position Start
+3DEh index 82h W(R/W):  HC/HW Vertical Position Start
+3DEh index 84h (R/W):  HC Horizontal Preset/HW Width Low
+bit 0-5  (HC)
+    0-7  (HW) Low 8bits of the HW width. Upper bits are in index 85h
+
+3DEh index 85h (R/W):  HW Width High
+bit 0-?  High bits of the HW width. Low bits are in index 84h. This value is
+         the number of doublewords (4bytes) in each line.
+
+3DEh index 86h (R/W):  HC Vertical Preset Low/HW Height Low
+3DEh index 87h (R/W):  HW Height High
+3DEh index 88h 3(R/W):  HC Start Address
+3DEh index 8Ch 4(R/W):  HC Color 0
+bit 0-31  Cursor color 0. Same format as the current display
+
+3DEh index 90h 4(R/W):  HC Color 1
+bit 0-31  Cursor color 1. Same format as the current display
+
+3DEh index 94h (R/W):  HC Control Register
+bit   0  Enable Hardware Cursor (HC) if set
+      1  HC display is over overscan if set, under if clear
+      2  HC Data format. Motorola if set, Intel if clear
+      3  HC Blink enabled if set
+    4-5  Blink Rate. 0: 4frames on+off, 1: 8f, 2: 16f, 3: 32f
+
+3DEh index 96h (R/W):  HW Control
+bit   0  Select Hardware Window (HW) or Hardware Cursor (HC). 0: HC, 1: HW
+    1-2  Horizontal Scaling Factor. 0: None, 1: /2, 2: /4, 3: /8
+    3-4  Vertical Scaling Factor. 0: None, 1: /2, 2: /4, 3: /8
+      5  Select odd/even lines for scaling. 0: even, 1: odd
+      6  YUV or RGB for scaling. 0: data from Multimediaport is YUV, 1: RGB
+      7  Enable Mask Map for Multimedia Port
+
+3DEh index 98h 3(R/W):  HW Mask Map Start
+3DEh index 9Ch 3(R/W):  HW Start Address
+3DEh index 9Fh (R/W):  HW Address Offset
+
+3DEh index F0h (R/W):  Scratch Register 0
+3DEh index F1h (R/W):  Scratch Register 1
+3DEh index F2h (R/W):  Scratch Register 2
+3DEh index F3h (R/W):  Scratch Register 3
+3DEh index F4h (R/W):  Scratch Register 4
+3DEh index F5h (R/W):  Scratch Register 5
+3DEh index F6h (R/W):  Scratch Register 6
+3DEh index F7h (R/W):  Scratch Register 7
+
+2x00h W(R):  Vendor ID
+bit 0-15  104Eh for Oak
+
+2x02h W(R):  Device ID
+bit 0-15  0107h for the Oak-107
+
+2x04h W(R/W):  System Bus Command Register
+bit    0  I/O Space. If set the device is allowed to respond to I/O accesses.
+       1  Memory Space. If set the device is allowed to respond to memory
+          accesses.
+       3  Special Cycle. If set the device is allowed to monitor special
+          cycles.
+       5  VGA Palette Snoop. Clear for normal DAC  operation, set to enable
+          special DAC snoop mode where the DAC does not respond to writes.
+       6  Parity Error. If set the device responds to parity errors, if clear
+          ignores them.
+       7  Wait Cycle Control. If set enables address/data stepping.
+       8  System Error Driver. If set the Error driver reports address parity
+          errors, if clear it is disconnected.
+       9  Back to Back Cycle. If set there is no delay between bus cycles.
+
+2x??h W(R):  System Bus State
+bit    7  (R) Fast back-to-back. Fast back-to-back supported if set
+       8  Bus Master
+    9-10  (R) Device Select Timing. Timing of DEVSEL#. 0: fast, 1: medium,
+            2: slow
+      11  Device Target-abort. Set if the VGA issues a target abort
+      12  Received Target-abort. Set if the VGA as master receives a target
+          abort.
+      13  Master Abort Status. Set if the VGA as master issues a master abort.
+
+2x08h (R):  Revision ID
+2x??h D():  Class Code Register
+bit 0-23  0 for non-VGA devices, 30000h for VGA compatible devices ??
+
+2x??h (R):  Programming Interface
+2x??h (R/W):  Cache Line Size
+2x??h (R):  Header Type
+2x??h (R/W):  Built-In Self Test
+2x10h D(R/W):  Memory Mapped I/O Base Address
+bit    0  (R) Memory or I/O. 0: Memory mapped, 1: I/O mapped
+     1-2  (R) Locatable area. 0: Anywhere in 32bit address space, 1: Below
+           1MB, 2: anywhere in 64bit address space.
+       3  (R) Pre-fetchable. Set if memory is cacheable, clear if not.
+     4-7  (R) Address space size. 0: 256 bytes
+    8-31  Memory-Mapped I/O Base. Upper 24bits of the base address
+
+2x14h D(R/W):  Graphics Memory Base Address
+bit    0  (R) Memory or I/O. 0: Memory mapped, 1: I/O mapped
+     1-2  (R) Locatable area.  0: Anywhere in 32bit address space, 1: Below
+           1MB, 2: anywhere in 64bit address space.
+       3  (R) Pre-fetchable. Set if memory is cacheable, clear if not.
+    4-19  (R) Address space size. 0: >= 1MB
+   20-22  (PCI) (R) Address block size. Always 0
+   20-22  (VL,ISA) Address block size. Bits 20-22 of the Base address
+   23-31  Base Address. Upper 9 bits of the base address.
+
+2x??h D(R/W):  Extended I/O Base Address
+bit    0  (R) Memory or I/O. 0: Memory mapped, 1: I/O mapped
+       3  (R) Pre-fetchable. Set if memory is cacheable, clear if not.
+     4-7  (R) Address space size. 0: 256bytes
+    8-31  Base Address. Upper 24 bits of the base address.
+
+2x30h (R/W):  BIOS ROM Base Address
+bit    0  (R/W) BIOS ROM Decode enabled if set
+   11-14  (R) ROM BIOS Min Size. If clear ROM BIOS is min. 32K
+   15-17  ROM BIOS size. Bits 15-17 of the base address. Depending on the size
+          of the ROM (see Configuration Register 2 - 3DEh index 8 bits 3-4)
+          some of these bits may be Read only and 0.
+             3DEh index 8 bits 3-4:     Bit15    Bit16    Bit17    ROM Size:
+                           0             R/W      R/W      R/W        32K
+                           1             R/W      R/W      R(0)       64K
+                           2             R/W      R(0)     R(0)      128K
+                           3             R(0)     R(0)     R(0)      256K
+   18-31  ROM BIOS Address. Upper 14 bits of the base address.
+
+2x3Ch (R/W):  Interrupt Line
+2x??h (R):  Interrupt Pin
+2x??h (R):  Minimum Grant
+2x??h (R):  Maximum Latency
+
+
+
+M+10h (R/W):  Co-Processor Status
+bit 0-1  (R) Map that needs data next. 0: Pattern, 1: Mask, 2: Source, 3: Dest
+      2  If set the map writing, if clear reading
+      3  (R) Map Status Valid
+      4  If set increase address for next access, if clear reset to map start
+      5  If set advance to next line, if clear stay on current line
+      7  (R) Co-Processor busy if set
+
+M+11h (R/W):  Co-Processor Control
+bit   0  Select CINT interrupt source. VGA interrupt or Co-Processor interrupt
+      1  Enable Master Mode. 0: CPU assisted, 1: Bus Master
+      4  Interrupt Status. Interrupt pending if set. Write 0 to clear
+      5  Terminate Co-Processor operation if set
+      6  Enable Turbo Co-Processor data path. If set removes extra datapath
+         delay (1 clock).
+
+M+12h (R/W):  Pixel Map Select
+M+14h D(R/W):  Pixel Map n Base
+M+18h W(R/W):  Pixel Map n Width
+M+1Ah W(R/W):  Pixel Map n Height
+M+1Ch (R/W):  Pixel Map n Format
+bit 0-2  Bits per pixel. 0: 1bpp, 3: 8bpp, 4: 16bpp, 5: 32bpp
+      3  Set for Motorola format, clear for Intel format
+      7  Set if the map is in system memory, clear if in video memory
+
+M+20h W(R/W):  Bresenham Error Term
+M+24h W(R/W):  Bresenham K1
+M+28h W(R/W):  Bresenham K2
+M+2Ch D(R/W):  Direction Steps
+M+48h (R/W):  ROP
+M+4Ah (R/W):  Destination Color Compare Condition
+bit 0-2  Condition.
+           0:  Always true (disable update)
+           2:  Dest == color
+           4:  Dest != color
+           6:  Always false (enable update)
+
+M+4Ch D(R/W):  Destination Color Compare Value
+M+50h D(R/W):  Pixel Bit Mask
+M+58h D(R/W):  Foreground Color
+M+5Ch D(R/W):  Background Color
+M+60h W(R/W):  Operation Dimension 1
+M+62h W(R/W):  Operation Dimension 2
+M+6Ch W(R/W):  Mask Map Origin X Offset
+M+6Eh W(R/W):  Mask Map Origin Y Offset
+M+70h W(R/W):  Source X Pointer
+M+72h W(R/W):  Source Y Pointer
+M+74h W(R/W):  Pattern X Pointer
+M+76h W(R/W):  Pattern Y Pointer
+M+78h W(R/W):  Destination X Pointer
+M+7Ah W(R/W):  Destination Y Pointer
+M+7Ch D(R/W):  Pixel Operations Register
+bit  0-2  Direction
+     4-5  Drawing Mode
+     6-7  Mask Pixel Map
+   12-15  Pattern Pixel Map
+   16-19  Destination Pixel Map
+   20-23  Source Pixel Map
+   24-27  Co-Processor Function Control
+   28-29  Foreground Source
+   30-31  Background Source
+
+
+Note: the co-processor is clearly modeled on the IBM XGA.
+
+  ID Oak VGA:
+
+  if testinx2($3DE,$D,$38) then
+  begin
+    { We have an OAK }
+    if testreg2($3DE,$23,$1F) then
+      if (rdinx($3DE,0) and 2)=0 then _OAK_087
+                                 else _OAK_083
+    else
+      case inp($3DE) div 32 of
+        0:_OAK_037C
+        2:_OAK_067
+        5:_OAK_077
+        7:_OAK_057
+      end;
+  end;
+
+
+  Modes:
+
+  (OTI 067/077/087)
+
+  4Eh  T    80   60  16  (8x8)      Not all 067's
+  4Fh  T   132   60  16  (8x8)
+  50h  T   132   25  16  (8x14)
+  51h  T   132   43  16  (8x8)
+  52h  G   800  600  16  PL4
+  53h  G   640  480 256  P8
+  54h  G   800  600 256  P8
+  55h  G  1024  768   4  PL1/2?
+  56h  G  1024  768  16  PL4
+  57h  G   768 1024   4  ??
+  58h  G  1280 1024  16  PL4
+  59h  G  1024  768 256  P8     OTI-077/87 only
+  5Ah  G   640  480 64k  P16    OTI-077 w/Sierra
+  5Bh  G   640  400 32k  P15    OTI-077 w/Sierra
+  5Ch  G   640  480 32k  P15    OTI-077 w/Sierra
+  5Dh  G   800  600 32k  P15
+  5Eh  G  1280 1024 256  P8
+  5Fh  G   640  480 16m  P24
+  60h  G   800  600 64k  P16
+  61h  G   640  400 256  P8
+
+Note that the OAK-087 BIOS version 1.01B does not set the DAC mode of the
+HiColor modes correctly.
+
+
+  (OTI037C "UNIQUE" VGA)
+
+  50h  T   132   25  16  (8x14)
+  51h  T   132   43  16  (8x8)
+  52h  G   800  600  16  PL4
+
+
+  (OTI037C with NEL Electronics BIOS)
+
+  50h  G   640  480  16  PL4
+  51h  T    80   30      (16x9)
+  52h  G  1024  480  16  PL4
+  53h  T    80   25      (16x8)
+  54h  T   132   43      (8x8)
+  55h  T   132   25      (14x8)
+  56h  T   132   43      (8x9)
+  57h  T   132   25      (14x9)
+  58h  T    80   43      (8x8)
+  59h  T    80   43      (8x9)
+  5Ah  T    80   60      (8x8)
+  5Bh  G   800  600  16  PL4
+  5Ch  T   100   37      (16x8)
+  5Dh  T   100   75      (8x8)
+  5Eh  G   800  600  16  PL4
+  6Ah  G   800  600  16  PL4
+  6Bh  T   100   37      (16x8)
+
+----------10FF-----------------------------------
+INT 10 - VIDEO - OAK VGA BIOS v1.02+ - SET EMULATION
+        AH = FFh
+        AL = Emulation
+               43h  CGA emulation
+               45h  EGA emulation
+               4Dh  Hercules emulation
+               56h  VGA emulation
+        ES:DI -> signature string "Calamity"
+Switches to the desired emulation

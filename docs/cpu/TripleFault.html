@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>Triple Faulting the CPU</TITLE>
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.0Gold (Win95; I) [Netscape]">
+</HEAD>
+<BODY>
+
+<H1>Triple Faulting the CPU</H1>
+
+<P>
+<HR></P>
+
+<H2>*** We owe our thanks ***</H2>
+
+<H4>A word of warning to all of you people who have known how to do this
+for years, and now read this and think of yourself as really cool. Triple-faulting
+the CPU to trigger a SHUTDOWN cycle was the brain-child of Intel. Just
+look in the first edition of the 80286 Programmer's Reference Manual --
+Appendix -A and you will find it there. IBM took the next logical step
+and included circuitry in the IBM-AT which would assert RESET when a triple-fault
+was detected. Even though Intel gave this to IBM on a silver-platter, and
+IBM put in the RESET circuitry, the IBM software engineers didn't connect
+the dots, and realize that this could be very useful for getting out of
+protected mode. Instead, IBM put in that kludgy keyboard controller command
+to assert RESET to get out of protected mode. Then one day, a friend of
+mine (Mike Meisner of MR BIOS) was having a problem with this new Intel
+AboveBoard which had the new 80386 on it. This board plugged into an ISA
+slot, but had a cable which converted the 80386 bus signals to 80286-compatible
+signals. Mike didn't want to use the keyboard controller to get out of
+protected mode, because he knew it was very slow. So he noticed the triple-fault
+method mentioned in the Intel manual, and tried it on the 80286. Much to
+his surprise, it was much faster than the keyboard controller. Now the
+problem was the AboveBoard. This board didn't propogate the shutdown cycle
+to the 80286 bus. So working with a collegue, (Rhod Williams), Mike and
+Rhod connected all of the dots and gave us the following elegant RESET
+technique. Mike is now the sole proprietor of Microid Research (MR BIOS).
+Rhod Williams is now a director of Engineering at Phoenix Technologies.</H4>
+
+<P>
+<HR></P>
+
+<P>If the processor encounters an exception while trying to invoke an exception
+handler, a DOUBLE FAULT exception occurs. This can rarely occur, but is
+possible. For example, if the invocation of an exception causes the stack
+to overflow, then this would cause a double fault. This is a bad example
+of a double fault, because the same condition that caused the double fault
+obviously still persists, and the CPU will fail to invoke the double fault
+exception handler. When this happens, the CPU will triple fault and cause
+a SHUTDOWN cycle to occur. This special cycle should be interpreted by
+the motherboard hardware, who then pulls RESET, which ultimately resets
+the CPU and the computer.</P>
+
+<P>Triple faulting the CPU can be useful for testing purposes, and in production
+code. Generating a triple fault is useful for test purposes to test that
+the special SHUTDOWN cycle is recognized by the hardware, and appropriately
+resets the CPU. In production code, triple faulting the CPU is an effective
+way to force the CPU out of protected mode. Since the 80286 has no way
+of exiting protected mode, IBM defined a keyboard controller command to
+reset the system. Unfortunately the keyboard controller responds slowly
+to the command and the reset takes many hundred micro-seconds. Triple faulting
+the CPU is about 1/3 faster than using the keyboard controller method (your
+mileage may vary depending on how and where you drive).</P>
+
+<P>Understanding how to triple fault the CPU leads to writing elegant assembly
+language code that will take both the 80286 and 80386 (and above) out of
+protected mode in the manner best suited to each. Unlike the example stated
+above, there is a very elegant way to triple fault the '286, while simply
+returning the '386 from protected mode in its native manner. To do this,
+we need to first generate a DOUBLE FAULT, and guarantee that its generation
+will cause the desired TRIPLE FAULT. Easy! Load the interrupt descriptor
+table register (IDTR) with a value whose limit=0. Then generate an interrupt!
+Loading IDTR with a value whose limit=0, will guarantee that the invocation
+of ANY interrupt will triple fault the CPU. The CPU won't be able to service
+the first interrupt because the limit is too small. This itself causes
+an interrupt -- DOUBLE FAULT. Since the same condition still persists,
+a TRIPLE FAULT occurs, and resets the CPU. How do you do this in practice?
+
+<HR></P>
+
+<P>View source code for elegant reset:<BR>
+<A HREF="../ftp/source/3fault/reset.asm">ftp:://ftp.x86.org/pub/x86/source/3fault/reset.asm</A></P>
+
+<P>Download entire source code archive for Elegant Reset:<BR>
+<A HREF="../ftp/dloads/RESET.ZIP">ftp://ftp.x86.org/pub/x86/dloads/RESET.ZIP</A></P>
+
+<P><A HREF="ProductivityEnhancements.html#3FaultPtr">Back to Productivity
+Enhancements</A></P>
+
+<P><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/bighand_left.gif" ALT="Return to the" VSPACE=14 BORDER=0 HEIGHT=48 WIDTH=64></A><A HREF="http://www.x86.org/"><IMG SRC="http://www.x86.org/gifs/gohome.gif" ALT="Intel
+Secrets home page" BORDER=0></A>
+<img src="http://www.x86.org/Count.cgi?ft=0|frgb=69;139;50;tr=0|trgb=0;0;0|wxh=15;20|md=6|dd=C|st=1532481|sh=0|df=Total.html.dat" border=0  align=abscenter width=0 height=0>
+
+<HR><BR>
+<ADDRESS>&copy; 1991-1999 <b><font color="#FF0000">Intel Secrets Web Site</font></b> and Robert Collins. <A HREF="http://pgp5.ai.mit.edu/pks-commands.html#extract">PGP
+key available</A>.<BR>
+<BR>
+<FONT SIZE=-2>Make no mistake!<BR>
+</FONT>This web site is proud to provide superior information and service
+without any affiliation to Intel Corporation.<BR>
+<BR>
+&quot;<B><FONT COLOR="#FF0000">Intel Secrets</FONT></B>&quot;, &quot;<B><FONT COLOR="#FF0000">What
+Intel doesn't want you to know</FONT></B>&quot; <B><FONT COLOR="#FF0000">and
+anything with a dropped e in it</FONT></B>, are phrases that infuriate
+Intel Corporation.</ADDRESS>
+
+<ADDRESS><BR>
+Pentium, Intel, and the letter "I" are registered trademarks of Intel Corporation. 386, 486, 586, P6,
+all other letters, and all other numbers <B><FONT COLOR="#FF0000">are not!<BR>
+</FONT></B>All other trademarks are those of their respective companies.
+See <A HREF="http://www.x86.org/Trademarks.html">Trademarks and Disclaimers</A>
+for more info.<BR>
+<BR>
+Robert Collins works somewhere in the United States of America. Robert
+may be <A HREF="http://www.x86.org/Contact.html">reached via email or telephone</A>.</ADDRESS>
+
+
+</BODY>
+</HTML>

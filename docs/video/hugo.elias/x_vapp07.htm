@@ -1,0 +1,50 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title>Vesa BIOS Example. Page 1: </title>
+
+<h1>VESA BIOS Example</h1>
+<h4>Page 7: Scrolling</h4>
+<p><tr><td colspan=2><hr></td></tr><p>
+
+OK, this is nice and easy. What we're going to do is to scroll the screen in a big circle
+so that the physical screen just touches each edge of the logical screen.<p>
+
+The formula for moving in a circle, as if you need telling, is:
+<pre>
+	X = sin(angle) * xradius + xcenter
+	Y = cos(angle) * yradius + ycenter
+</pre>
+<p>
+
+I am assuming that we were able to set the Logical screen width to twice that of the X
+resolution, and that the variable MaxScans has been set from page 5.<br>
+So, first calculate the size of the circle to move in:
+
+<pre>
+	xcenter = (Xresoluion - LogicalWidth) / 2
+	xradius = (Xresoluion - LogicalWidth) / 2
+
+	ycenter = (Yresoluion - MaxScans) / 2
+	yradius = (Yresoluion - MaxScans) / 2
+</pre>
+
+Now, make the screen scroll in a full circle in steps of 0.1 of a degree.
+
+<pre>
+for angle=0 to 720 in steps of 0.1
+begin loop
+	
+	AX = 4F07h
+	BX = 0
+	CX = sin(angle) * xradius + xcenter
+	DX = cos(angle) * yradius + ycenter
+	
+	call int 10h
+
+end loop
+</pre>
+
+</body>
+</html>

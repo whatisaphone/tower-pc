@@ -1,0 +1,2258 @@
+Working                                            X3T10
+Document                                                  1120
+
+
+
+                                                    Revision 1p
+                                             September 19, 1995
+
+
+
+
+Information Technology -
+AT Attachment Packet Interface
+(ATAPI)
+
+
+This is an internal working document of X3T10, a Technical
+Committee of Accredited Standards Committee X3. As such, this is
+not a completed standard and has not been approved. The contents
+may be modified by the X3T10 Technical Committee. The contents
+are actively being modified by X3T10. This document is made
+available for review and comment only.
+
+Permission is granted to members of X3, its technical committees,
+and their associated task groups to reproduce this document for
+the purposes of X3 standardization activities without further
+permission, provided this notice is included. All other rights
+are reserved. Any commercial or for-profit replication or
+republication is prohibited.
+
+
+
+
+
+
+ASC X3T10 Technical Editor:
+                                   Thomas D. Hanan
+                                   Western Digital Corporation
+                                   8105 Irvine Center  Drive
+                                   Irvine, Ca   92718
+                                   USA
+                                   
+                                   Tel:     714 932-7472
+                                   Fax:    714 932-7312
+                                   Email: hanan_t@a1.wdc.com
+                                   
+                                   
+
+
+
+                                                 Reference number
+                                             ISO/IEC ***** : 199x
+                                               ANSI X3.*** - 199x
+                 Printed December, 3, 1995 9:53AM
+                                                                 
+Other Points of Contact:
+
+X3T10 Chair                             X3T10 Vice-Chair
+John B. Lohmeyer                        Lawrence J. Lamers
+Symbios Logic,Inc.                      Adaptec, Inc.
+1635 Aeroplaza Drive                         691 S. Milpitas
+Blvd.
+Colorado Springs, CO 80916                   Milpitas, CA 95035
+Tel: 719-573-3362                       Tel: 408-957-7817
+Fax: 719-573-3037                       Fax: 408-957-7193
+Email: john.lohmeyer@hmpd.com                     Email:
+ljlamers@aol.com
+
+X3 Secretariat
+Lynn Barra
+Administrator Standards Processing
+X3 Secretariat
+1250 Eye Street, NW  Suite 200
+Washington, DC 20005
+Tel: 202-626-5738                       Email:
+LBARRA@ITIC.NW.DC.US
+Fax: 202-638-4922
+
+ATA Reflector
+Internet address for subscription to the ATA reflector:
+majordomo@dt.wdc.com
+Send email to above account and include in BODY of text, on a
+line by itself the following:
+     "subscribe ata [your email address]"
+Internet address for distribution via ATA reflector:
+ata@dt.wdc.com
+
+ATA Anonymous FTP Site
+fission.dt.wdc.com
+ATAPI directory is:  "/pub/ata"
+
+X3T10 Bulletin Board
+719-574-0424
+
+Document Distribution
+Global Engineering
+15 Inverness Way East
+Englewood, CO   80112-5704
+Tel: 303-792-2181 or  800-854-7179
+Fax: 303-792-2192
+
+
+                            ABSTRACT
+
+The standard for AT Attachment Interface with Extensions (ATA-2)
+has been completed, but as the popularity of the interface has
+increased, its application area has grown outside the originally
+intended purpose. This draft proposed standard is based upon the
+AT Attachment Interface with Extensions (ATA-3). This document
+is a stand alone document, separate from that document.  The AT
+Attachment Packet Interface (ATAPI) standard is intended to
+broaden the ATA scope and application area and take advantage of
+the huge installed BIOS (Basic Input/Output System) base, and
+software.
+
+This standard defines a SCSI Like packet interface protocol for
+use with the ATA protocol defined in ATA-3.
+
+The ATAPI standard shall maintain a high degree of
+compatibility with the AT Attachment with Extensions (ATA-3)
+while providing documentation for new capabilities.  This
+standard is not intended to require changes to presently
+installed devices or existing software. It is intended that this
+standard would be used to provide additional capabilities.
+
+The proposed ATAPI standard involves evolutionary expansion of
+the draft AT Attachment with Extensions standard to provide
+additional capabilities. The nature of the proposed project is
+to enable the attachment of devices other than disk drives to the
+physical AT Attachment interface as defined in the ATA-3
+standard. This insures that current investments in AT
+Attachment are provided with more stability in the face of
+technological developments. It is likely that any isolated
+negative impacts would occur in any case through non-standard
+evolution or revolution.
+
+
+
+
+                        PATENT STATEMENT
+
+CAUTION: The developers of this standard have requested that
+holders of patents that may be required for the implementation of
+the standard, disclose such patents to the publisher. However,
+neither the developers nor the publisher have undertaken a patent
+search in order to identify which, if any, patents may apply to
+this standard.
+
+As of the date of publication of this standard and following
+calls for the identification of patents that may be required for
+the implementation of the standard, no such claims have been
+made.
+
+
+                         Change History
+                                
+Rev 0.2 -> Rev 0.3, Aug 20, 1995
+1.   Remove bottom 4 Bullet Items from Section 3.5.1
+2.   Remove section 3.5.2.1
+3.   Remove bottom 2 bullets from section 4.6
+4.   Change Bit 0 of Status registers from ERROR to CHECK.
+5.   Move BIOS & ATAPI Driver Compatibility section to Annex A
+6.   Add ATAPI device should wait until SRST is cleared by the
+     host before completing their SRST sequence. to Annex A 6.2.1
+     SRST Initialization Sequence
+7.   Change Draft Standard to Standard
+8.   Remove Proposal
+9.   Remove last Two Lines of last paragraph of ABSTRACT.
+10.  Change 0xnn to 0nnh for Hex.
+11.  Remove DASP & PDIAG sequence from SRST in ATAPI
+     Implementation of ATA SRST.
+
+
+
+Rev 0.3 -> Rev 1, Sep 19, 1995
+1.   Global search and replacement of Will, May and Could.
+2.   Global search and replacement of SERVICE with DSC.
+3.   Global search and replacement of CoD with C/D-.
+4.   Global search and replacement of EXECUTE DIAGNOSTICS with
+     EXECUTE DRIVE DIAGNOSTICS.
+5.   Capitalize Commands.
+6.   Replace section 2.2 Signal Conventions with ATA-3 text.
+7.   Move Abbreviations to their own section.
+8.   Move section 3.5.2 Redundant Command Functionality to
+     Informative Annex.
+9.   Clean up DRQ & BSY sequencing.
+10.  Delete 2nd paragraph of section 4.10.1 Release.
+11.  Move Note to bottom of figure 4.
+12.  Remove item 11 from section 4.11.
+13.  Add SERVICE to header in section 5.7.
+14.  Change note 1 in table 9 from superscript to (1) and make
+     note part of table graphics.
+15.  Remove note from description of bit 4 in table 10.
+16.  Change Sense Key to ATAPI Sense Key in table 11.
+17.  See change bars and revision 0.3 for additional changes.
+
+
+Table of Contents
+
+1. SCOPE                                                        1
+
+2. CONVENTIONS                                                  3
+     2.1 DOCUMENT CONVENTIONS                                   3
+     2.2 SIGNAL CONVENTIONS                                     3
+     2.3 DEFINITIONS                                            3
+          2.3.1 ATA (AT ATTACHMENT)                             3
+          2.3.2 CHS (CYLINDER-HEAD-SECTOR)                      3
+          2.3.3 COMMAND PACKET (CP)                             3
+          2.3.4 DATA BLOCK                                      3
+          2.3.5 DMA (DIRECT MEMORY ACCESS)                      3
+          2.3.6 FIELD                                           3
+          2.3.7 INVALID                                         4
+          2.3.8 LBA (LOGICAL BLOCK ADDRESS)                     4
+          2.3.9 LOGICAL BLOCK                                   4
+          2.3.10 LUN                                            4
+          2.3.11 MANDATORY                                      4
+          2.3.12 ONE                                            4
+          2.3.13 OPTIONAL                                       4
+          2.3.14 PAGE                                           4
+          2.3.15 PIO (PROGRAMMED INPUT/OUTPUT)                  4
+          2.3.16 SAM                                            4
+          2.3.17 RESERVED                                       4
+          2.3.18 STATUS                                         4
+          2.3.19 VS (VENDOR SPECIFIC)                           4
+          2.3.20 ZERO                                           5
+     2.4 SYMBOLS AND ABBREVIATIONS                              5
+
+3. ATAPI OVERVIEW                                               6
+     3.1 ATA SIGNAL UTILIZATION                                 6
+     3.2 ATA COMMAND UTILIZATION                                6
+     3.3 ATA COMPATIBILITY                                      6
+     3.4 PACKET TYPES                                           7
+     3.5 HOW SCSI IS USED BY ATAPI                              9
+          3.5.1 DIFFERENCES FROM THE SCSI STANDARD              9
+          3.5.2 REDUNDANT COMMAND FUNCTIONALITY (TASK FILE VS.
+          PACKET)                                              10
+               3.5.2.1 ATAPI IDENTIFY DRIVE VS. INQUIRY        10
+               3.5.2.2 INITIALIZE DRIVE PARAMETERS AND SET
+               FEATURES VS. MODE SENSE AND MODE SELECT         10
+
+4. ATAPI PROTOCOL                                              10
+     4.1 INITIALIZATION                                        10
+     4.2 PACKET COMMAND                                        10
+     4.3 STATUS REGISTER UTILIZATION FOR PACKET COMMANDS       11
+     4.4 BYTE COUNT REGISTER (CYLINDER LOW/HIGH) USAGE FOR PACKET
+     COMMANDS                                                  11
+     4.5 SECTOR COUNT (ATAPI INTERRUPT REASON) REGISTER USAGE
+     FOR PACKET COMMANDS                                       12
+     4.6 IMMEDIATE COMMAND OPERATION                           13
+     4.7 FLOW OF PACKET COMMAND, PIO DATA IN TO HOST           14
+     4.8 FLOW OF PACKET COMMAND WITH PIO DATA OUT FROM THE HOST16
+     4.9 FLOW OF NON-OVERLAP DMA DATA COMMANDS                 18
+     4.10 OVERLAPPED COMMAND OPERATION                         20
+          4.10.1 RELEASE                                       21
+          4.10.2 USING THE DSC COMMAND (A2H)                   22
+          4.10.3 LEGAL TRANSITIONS                             23
+          4.10.4 ATAPI OVERLAP WITH ONLY ONE ATAPI PERIPHERAL  25
+          4.10.5 TASK FILE OWNERSHIP                           27
+          4.10.6 ERROR HANDLING WITH OVERLAPPED COMMANDS       27
+     4.11 FLOW OF OVERLAPPED COMMANDS WITH DATA TRANSFER FROM
+     HOST TO DEVICE                                            28
+     4.12 FLOW OF OVERLAPPED COMMANDS WITH DATA TRANSFER FROM
+     DEVICE TO HOST                                            31
+     4.13 FLOW OF NON-DATA COMMANDS                            35
+     4.14 TIMING OF NON-OVERLAP PACKET COMMAND                 36
+     4.15 TIMING OF NON-OVERLAP DATA AND STATUS TRANSFER       37
+     4.16 CONTROL SIGNAL TIMING REQUIREMENTS AND RELATIONSHIPS 38
+
+5. ATAPI TRANSPORT MECHANISM                                   39
+     5.1 RESET CONDITIONS                                      39
+          5.1.1 POWER ON OR HARDWARE RESET                     39
+     5.2 ATAPI SOFT RESET COMMAND AND PROTOCOL                 39
+     5.3 ATAPI IMPLEMENTATION OF ATA SRST                      41
+     5.4 PHYSICAL CONNECTION                                   42
+     5.5 SINGLE DEVICE CONFIGURATIONS                          42
+     5.6 REGISTER MAPPING                                      43
+     5.7 ATAPI REGISTER MAP (PACKET COMMAND)                   43
+
+6. ANNEX A - BIOS AND ATAPI DRIVER COMPATIBILITY               49
+     6.1 RESET MASTER/SLAVE DIAGNOSTICS SEQUENCE               49
+     6.2 SRST INITIALIZATION SEQUENCE                          49
+     6.3 SPECIAL HANDLING OF ATA READ AND IDENTIFY DRIVE
+     COMMANDS                                                  49
+     6.4 ATAPI AWARE BIOS AND DRIVER CONSIDERATIONS            50
+     6.5 DEFAULT TIMING                                        50
+     
+List of Figures
+FIGURE 1 - PACKET COMAND WITH PIO DATA IN TO HOST              15
+FIGURE 2 - PACKET COMMAND WITH PIO DATA OUT FROM HOST          17
+FIGURE 3 - PACKET COMMAND WITH DMA DATA                        19
+FIGURE 4 - STATE DIAGRAM, OVERLAPPED OPERATION, LEGAL
+           TRANSACTIONS                                        24
+FIGURE 5 - ATAPI OVERLAP COMMAND SEQUENCE                  ERROR!
+FIGURE 6 - ATAPI OVERLAP, ONE ATA DEVICE AND ONE ATAPI DEVICE  26
+FIGURE 7 - PACKET COMMAND WITH PIO DATA IN FROM HOST           30
+FIGURE 8 - PACKET COMMAND WITH PIO DATA IN TO HOST             33
+FIGURE 9 - TIMING OF COMMAND PACKET TRANSFER                   35
+FIGURE 10 - TIMING OF DATA AND STATUS TRANSFER                 36
+FIGURE 11 - ATA SRST SEQUENCE                              ERROR!
+
+List of Tables
+1 GENERIC COMMAND AND STATUS USAGE FOR ATAPI DEVICES            7
+2 BYTE COUNT REGISTER USAGE                                    12
+3 REGISTERS AFTER THE SERVICE COMMAND                          22
+4 LEGAL OVERLAP TRANSACTIONS                                   23
+5 REGISTERS CONTROLLED BY BSY & DRQ                            27
+6 PREFERRED DRIVE CONNECTION                                   42
+7 SHADOW REGISTERS                                             42
+8 SHADOWING FOR SINGLE DRIVE CONFIGURATIONS                    43
+9 I/O PORT FUNCTIONS/SELECTION ADDRESS (COMPATIBILITY MODEL)   44
+10 ATAPI STATUS REGISTER (ATA STATUS REGISTER)                 45
+11 ATAPI ERROR REGISTER (ATA ERROR REGISTER)                   45
+12 ATAPI FEATURE REGISTER (ATA FEATURE REGISTER)               46
+13 ATAPI BYTE COUNT REGISTER (ATA CYLINDER HIGH/LOW REGISTER)  46
+14 ATAPI INTERRUPT REASON REGISTER (ATA SECTOR COUNT REGISTER) 47
+15 ATAPI DRIVE SELECT REGISTER (ATA DRIVE / HEAD SELECT
+   REGISTER)                                                   47
+16 ATAPI DEVICE CONTROL REGISTER (ATA DEVICE CONTROL REGISTER) 48
+
+
+1.   Scope
+This document is intended to be used with the ATA-3 document. Its
+purpose is to describe the operation of the ATA Packet Interface
+Transport Mechanism (ATAPI-TM) and ATA Packet Interface Transport
+Protocol (ATAPI-TP). It indicates areas within the ATA document
+which are modified for operation of Packet Interface Protocols n
+the ATA environment. Both mandatory and optional specifications
+are presented.
+In the event of a conflict between the ATA-3 document and
+this document, the interpretation of this document shall prevail
+only if this document acknowledges that a conflict exists between
+the documents.
+This document provides a description for the ATAPI Transport
+Protocol (ATAPI-TP) and ATAPI Transport Mechanism (ATAPI-TM).
+Command sets for specific devices such as CD-ROM and Tape are
+defined in separate documents referencing this standard.
+
+
+Interconnects
+
+
+                                
+
+
+
+
+
+                    Intentionally Left Blank
+
+2.   Conventions
+
+
+2.1n  Document Conventions
+Certain words and terms used in this document have specific
+meaning beyond the normal English meaning. These words and terms
+are defined either in this section or in the text where they
+first appear. Names of signals, commands, statuses, and sense
+keys are in all uppercase (e.g. ATAPI IDENTIFY DEVICE). Lower
+case is used for words having the normal English meaning.
+Fields containing only one bit are usually referred to as the
+<name> bit instead of the <name> field. Numbers that are not
+immediately followed by a lower case b or h are decimal (nnh for
+Hexadecimal, where nn refers to two hexadecimal digits 0-9, A-F.)
+
+
+2.2  Signal Conventions
+
+Signal names are shown in all upper case letters.
+
+All signals are either high active or low active signals. A dash
+character (-) at the end of a signal name indicates it is a low
+active signal. A low active signal is true when it is below ViL,
+and is false when it is above ViH. No dash at the end of a
+signal name indicates it is a high active signal. A high active
+signal is true when it is above ViH, and is false when it is
+below ViL.
+
+Asserted means that the signal is driven by an active circuit to
+its true state.
+
+Negated means that the signal is driven by an active circuit to
+its false state.
+
+Released means that the signal is not actively driven to any
+state. Some signals have bias circuitry that pull the signal to
+either a true state or false state when no signal driver is
+actively asserting or negating the signal. These cases are noted
+under the description of the signal, and their released state is
+stated.
+
+Control signals that may be used for two mutually exclusive
+functions are identified with their two names separated by a
+colon e.g. SPSYNC:CSEL can be used for either the Spindle Sync
+(SPSYNC) or the Cable Select (CSEL) functions.
+
+
+
+2.3  Definitions
+
+2.3.1     Command Packet (CP)
+Command Packet is the structure used to communicate commands
+from a host computer to an ATAPI device.
+
+2.3.2     Data Block
+This term describes a data transfer, and is typically a single
+sector, except when declared otherwise by use of the Set Multiple
+command.
+
+2.3.3     DMA (Direct Memory Access)
+DMA is a means of data transfer between peripheral and host
+memory without processor intervention.
+
+2.3.4     Field
+A field is a group of one or more contiguous bits.
+
+2.3.5     Ignore
+Information in this field or bit shall not be used by the
+receiving device.
+
+
+2.3.6     Invalid
+Invalid refers to an illegal (reserved) or unsupported field or
+code value.
+
+2.3.7     Logical Block
+A Logical Block is a unit of data supplied or requested by a host
+computer.
+
+2.3.8     Mandatory
+Mandatory indicates that a referenced item is required to claim
+compliance with this standard.
+
+2.3.9     One
+One represents a true signal value or a true condition of a
+variable.
+
+2.3.10    Optional
+Optional describes features which are not required by the
+standard. However, if any feature defined by the standard is
+implemented, it shall be done in the same way as defined by the
+standard. Describing a feature as optional in the text is done to
+assist the reader. If there is a conflict between text and tables
+on a feature described as optional, the table shall be accepted
+as being correct.
+
+2.3.11    Page
+Several commands use regular parameter structures that are
+referred to as pages. These pages are identified with a value
+known as a page code.
+
+2.3.12    Shall
+Describes a mandatory requirement of the standard.
+
+2.3.12    Should
+Describes a recommendation within the standard..
+
+2.3.13    Reserved
+Reserved bits, fields, bytes, and code values are set aside for
+future standardization. Their use and interpretation may be
+specified by future extensions to this or other standards. A
+reserved bit, field, or byte shall be set to zero, or in
+accordance with a future extension to this standard.  The
+recipient shall not check reserved fields.
+
+2.3.14    Status
+Status is one byte of information sent from the ATAPI device to
+the host computer upon completion of each command.
+
+2.3.15    Vendor Specific - VS
+The term, VS, is used to describe bits, bytes, fields, code
+values and features which are not described in this standard, and
+may be used in a way that varies among vendors.
+
+2.3.15    Zero
+Zero is a false signal value or a false condition of a variable.
+
+
+2.4  Symbols and Abbreviations
+
+2.4.1     ATA (AT Attachment)
+ATA defines a compatible register set and a 40-pin connector and
+its associated signals.
+
+2.4.2     AWG
+American Wire Gauge
+
+2.4.3     CHS (Cylinder-Head-Sector)
+This is an ATA term defining the address translation  of the
+drive as being by physical address. This form of addressing is
+not used by ATAPI Devices.
+
+2.4.4     LBA (Logical Block Address)
+The LBA defines the address translation of the drive by the
+linear mapping of sectors from 0 to n.
+
+2.4.5     LSB
+Least significant bit
+
+2.4.6     LUN
+Logical Unit Number.
+
+2.4.7     MSB
+Most significant bit
+
+2.4.8     PIO (Programmed Input/Output)
+PIO is a means of data transfer that requires the use of the host
+processor.
+
+2.4.9     SAM
+SCSI Architectural Model. X3T10/994D
+
+2.4.10
+AWG   American Wire Gauge
+LSB   Least significant bit
+LUN   Logical unit number
+MSB   Most significant bit
+
+3.   ATAPI Overview
+The purpose of the ATAPI is to provide a more extensible and
+general purpose interface than the ATA Task file.
+Although a device attached to the ATAPI Interface utilizes
+the ATA Host Hardware and Task File, the logical interface
+differs  slightly  and needs to  support  additional
+capabilities. The Mass Storage devices connected to the ATA make
+use of eight registers (Task File) that contain the command and
+all parameters needed for operation. However, eight registers is
+not enough to pass all the needed information for commanding
+other peripheral types. To remedy this, the ATAPI Device receives
+its commands through the use of an ATAPI PACKET command,
+in addition to the normal ATA protocol. The ATAPI PACKET command
+complements the existing ATA commands. The ATAPI Device shall
+support all of the ATA specified protocol, including the Reset
+Master/Slave Diagnostic Sequence, Diagnostic Command, and Command
+Abort for unsupported Commands. The ATAPI Device shall also
+support both the Master and Slave modes of operation.
+
+
+3.1  ATA Signal Utilization
+ATAPI Devices utilize the signals and timing definition from
+the ATA-3 Standard.
+
+3.2  ATA Command Utilization
+The ATA Task File concept does not contain enough bytes to
+support some of the command structures of non-disk peripherals,
+so a new command called Packet Command has been added to allow
+a Packet to be sent to the Device. The Packet data  be
+transferred by writing multiple times to the Data Register. No
+random access to the register file in the Peripheral can be done.
+This technique reduces the number of register addresses needed,
+but not the actual space needed. Although all the commands for
+the ATAPI Device could be sent via this packet protocol, some of
+the existing ATA commands and the full ATA command protocol
+are necessary for the existing drivers to operate correctly.
+The ATAPI Devices therefore support some existing ATA commands
+in addition to the new ATAPI PACKET command, so that there are
+minimal changes to the drivers. This minimal set of ATA commands
+is different than the minimum as defined in the ATA standard,
+but should be sufficient for normal operation.
+
+3.3  ATA Compatibility
+There are several backward compatibility issues with the ATA
+commands, and therefore the ATAPI Devices respond to the
+existing ATA Reset Master/Slave Diagnostic Sequence, but not the
+Identify Drive or Read commands. This allows the BIOS and
+older drivers to ignore the Device and not confuse data with
+normal ATA Drive format data. All unsupported ATA commands shall
+be Aborted, and not executed. As with aborted commands in ATA, an
+interrupt is generated to signal the completion with an
+aborted error status.
+
+3.4 Packet Types
+To allow for generic packet transfer and the connection of SCSI
+like peripherals, there shall exist a minimum set of information
+that is exchanged. This information shall generically support the
+following:
+  -    Command Packet (Always padded to number of bytes identified
+       in byte 0 of the identify drive data.
+       00 = 12 bytes, 01 = 16 bytes)
+  -    Command Parameter Data (e.g. Write Data etc.)
+  -    Command Response Data (e.g. Read Data etc.)
+  -    Status. The Status will be presented using the ATAPI Status
+       Register (redefinition of the ATA Status Register).
+
+
+
+Table 1 - Generic Command and Status Usage for ATAPI Devices
+
+    Command     Used Code         Error Register           Status Register
+                          BBK UNC IDNF ABRT TK0NF AMNF DRDY DWF DSC CORR CHECK
+
+ ACKNOWLEDGE     N    DBh               V                                  V
+ MEDIA CHANGE
+ BOOT - POST-    N    DCh               V                                  V
+ BOOT
+ BOOT - PRE-     N    DDh               V                                  V
+ BOOT
+ CHECK POWER     M    E5h               V               V    V   V         V
+ MODE
+ DOOR LOCK       O    DEh               V     V         V        *         V
+ DOOR UNLOCK     O    DFh               V               V                  V
+ MEDIA EJECT     N    EDh               V               V        V         V
+ EXECUTE DRIVE   M    90h       Special Drive                              V
+ DIAGNOSTICS                  Diagnostic Errors
+ FORMAT TRACK    O1   50h           V   V           V   V    V             V
+ IDENTIFY DRIVE  N    ECh               V                                  V
+ IDLE            O    E3h               V           V   V    V             V
+ IDLE IMMEDIATE  M    E1h               V           V   V    V             V
+ INITIALIZE      N2   91h               V                                  V
+ DRIVE PARMS
+ NOP             M    00h               V           V                      V
+ ATAPI PACKET    M    A0h      Contains Packet               V             V
+                               Command Status
+ ATAPI IDENTIFY  M    A1h               V               V    V   V         V
+ DEVICE
+ ATAPI SOFT      M    08h
+ RESET
+ SERVICE         O    A2h               V               V                  V
+ READ BUFFER     N    E4h               V                                  V
+ READ DMA        N    C8h               V                                  V
+ (W/RETRY)
+ READ DMA        N    C9h               V                                  V
+ (WO/RETRY)
+ READ LONG       N2   22h               V                                  V
+ (W/RETRY)
+ READ LONG       N2   23h               V                                  V
+ (WO/RETRY)
+ READ MULTIPLE   N    C4h               V                                  V
+ READ SECTOR(S)  N2   20h               V                                  V
+ (W/RETRY)
+ READ SECTOR(S)  N2   21h               V                                  V
+ (WO/RETRY)
+ READ VERIFY     N2   40h               V                                  V
+ SECTOR(S)
+ (W/RETRY)
+ READ VERIFY     N2   41h               V                                  V
+ SECTOR(S)
+ (WO/RETRY)
+ RECALIBRATE     O1   1xh               V     V         V    V   V         V
+ SEEK            N    7xh               V                                  V
+ SET FEATURES    M    EFh               V           V   V    V             V
+ SET MULTIPLE    N    C6h               V           V   V    V             V
+ MODE
+ SLEEP           M    E6h               V           V   V    V             V
+ STANDBY         O    E2h               V           V   V    V             V
+ STANDBY         M    E0h               V           V   V    V             V
+ IMMEDIATE
+ WRITE BUFFER    N    E8h               V                                  V
+ WRITE DMA       N    CAh               V                                  V
+ (W/RETRY)
+ WRITE DMA       N    CBh               V                                  V
+ (WO/RETRY)
+ WRITE LONG      N2   32h               V                                  V
+ (W/RETRY)
+ WRITE LONG      N2   33h               V                                  V
+ (WO/RETRY)
+ WRITE MULTIPLE  N    C5h               V                                  V
+ WRITE SAME      N    E9h               V                                  V
+ WRITE           N2   30h               V                                  V
+ SECTOR(S)
+ (W/RETRY)
+ WRITE           N2   31h               V                                  V
+ SECTOR(S)
+ (WO/RETRY)
+ WRITE VERIFY    N    3Ch               V                                  V
+ INVALID                                V           V   V    V             V
+ COMMAND CODE
+
+V = Valid on this command
+M = Mandatory and shall be supported by ATAPI Devices, as
+specified by the ATA Standard
+O = Optional for use by an ATAPI Device
+N = Not supported by ATAPI Devices (shall be Aborted by the ATAPI Device)
+
+Dark Shading = New ATAPI Commands
+Light Shading = existing ATA Commands
+Shaded = Commands are utilized by the ATAPI Devices
+
+1.  Although this command is Optional for ATAPI, the ATA
+Standard specifies it as Mandatory.
+2.  This command is specified as Mandatory for ATA, but shall
+NOT be supported by ATAPI Devices.
+
+3.5 How SCSI is Used by ATAPI
+Although an ATAPI Device utilizes many of the actual packet
+definitions from the SCSI standard, it does NOT use most other
+features of the normal SCSI Protocol. Thus there are no Phases,
+no Messages, no multiple host support and no SCSI Hardware.
+
+3.5.1 Differences from the SCSI Standard
+Some of the major differences from the SCSI Standard:
+  -  Status uses the ATAPI description, rather than a Data
+     Byte passed at the end of the command.
+  -  The ATAPI Device is the slave during operation rather than
+     having the master view of a SCSI Peripheral.
+  -  No messages are supported.
+
+An ATAPI Device makes use of many of the Standard SCSI Command
+Block definitions and Commands, but some of the commands that
+would normally be supported by a SCSI Device are not supported for
+various reasons. These commands are:
+  -  Reserve and release; as there is only one Host allowed, this
+     is not needed.
+  -  Send and receive diagnostics; the ATA EXECUTE DRIVE DIAGS
+     command replaces these commands.
+  -  Change definitions; as there is no SCSI, this command  is
+     nonsensical.
+  -  Copy  /  Copy  and  Verify;  no  device  to  device  data
+     transfers so this command can't be implemented.
+  -  Compare; no shared bus, so this command can't be implemented.
+
+
+4.   ATAPI Protocol
+
+The ATAPI Device is commanded by two methods, the original ATA
+Commands utilizing the Task File and the new Packet Command
+method. For both methods, the devices using this interface shall
+be programmed by the host computer to perform commands and return
+status to the host at command completion. When more than one
+Device is daisy chained on the interface, commands are written in
+parallel to all peripherals, and for ATA commands except the
+Execute Drive Diagnostics command, only the selected Device (DRV
+bit in the Drive/Head ATA Register) executes the command. On an
+Execute Drive Diagnostics command addressed to Device 0, both
+devices shall execute the command, and Device 1 shall post its
+status to Device 0 via PDIAG-.
+The Protocol for ATAPI centers around the usage of a new ATA
+Command called Packet Command. All the normal ATA rules and
+protocol are used to issue the Packet Command, but once the
+command has been issued, a new set of rules applies:
+1. The interpretation of the DRQ bit in the Status Register shall
+   be used along with the Interrupt Reason Registers to determine
+   the actual Interrupt Type.
+2. The actual command for the Device to execute is sent as a
+   packet via the data register, and not the Task File.
+3. Command arguments are supplied by the Command Packet as well
+   as from the Task File.
+4. A Byte Count is used to determine the amount of data the Host
+   shall transfer at each DRQ Interrupt.
+5. The ATAPI Features Register is used to indicate when DMA
+   is used rather than by using different opcodes.
+6. The final status is presented to the Host as a new interrupt
+   after the last data has been transferred, rather than along
+   with the last block of data.
+
+These new rules (protocol) only apply from after the issuance of
+the Packet Command, until the Completion Status has been read by
+the Host. After the Completion Status has been read, the Task
+File Register definitions and Protocol revert to the standard ATA
+definition.
+
+
+4.1  Initialization
+The ATAPI Device responds just as defined in the ATA Standard.
+The DASP and PDIAG signals are utilized following any reset
+condition, except the ATAPI RESET command.
+
+
+4.2  PACKET Command
+The Packet Command is issued exactly as normal ATA commands, by
+initializing the Task File Registers, setting the Drive Selection
+Bit and writing the Command byte into the Command Register. With
+normal ATA commands a DRQ (Optional Interrupt) would be generated
+to indicate that the data for the command could be transferred
+to/from the Device. With the Packet Command, the first DRQ
+indicates that the Command Packet Data shall be written to the
+Device. Once the Command Packet has been sent, the command
+proceeds as a normal ATA command would. The Command Packet bytes
+shall always be transferred via PIO and never using DMA.
+ATA Packet Commands can be issued regardless of the state of the
+DRDY Status Bit.
+If while polling BSY the device remains in a state where it
+cannot accept a command for more than 5 seconds, the Host shall
+time out and reset the device.
+
+4.3
+Status Register Utilization for Packet Commands
+
+D7     D6      D5     D4     D3      D2     D1     D0       
+BSY    DRDY    DMA    DSC    DRQ     CORR   Reser- CHECK   Read
+              READY                          ved
+
+
+4.4  Byte Count Register (Cylinder Low/High) Usage for Packet
+Commands
+
+D7     D6     D5      D4     D3      D2     D1     D0       
+                    Byte Count (Bits 0-7)                  R/W
+                    Byte Count (Bits 8-15)                 R/W
+
+This register is used to control the number of bytes the Host
+shall transfer at each DRQ. It is only used for the command
+parameter data being transferred via PIO and never for DMA or
+Command Packet bytes.
+Since the length of data that is actually transferred to and from
+an ATAPI Device using PIO is controlled by the Host, and since
+the ATAPI Device needs to be able to control the number of bytes
+transferred, an additional capability was needed. By using the
+Byte Count Register, a capability to transfer a variable number
+of bytes has been created. In ATAPI the Device indicates to the
+Host the number of bytes that shall be transferred on each DRQ
+Interrupt. Before transferring data, the Host shall read the 16-
+bit Byte Count Register, and comply with the length requested.
+Both the ATAPI Device and the Host have their own byte
+counts and transfer until those counts go to zero. For some
+commands, such as Mode Sense, the Host does not know the amount
+of data that be transferred, and shall rely on the Byte
+Count supplied by the Device to transfer the correct amount of
+data.
+A further capability of the Byte Count Register is for the Host
+to signal to the ATAPI Device the maximum amount of data it can
+take in a single PIO DRQ or DMA DMARQ packet and/or the preferred
+packet size. For all commands that require data be transferred to
+the host, the Host shall set the Byte Count Register to the
+desired length before issuing the Packet Command. This length
+shall be used by the ATAPI Device as the maximum size for each
+PIO or DMA data packet. The Device can choose to transfer packets
+smaller than those set by the host in the Byte Count Register.
+For all commands that can transfer all the data in one DRQ
+Interrupt, the Byte Count shall contain the total data length.
+When a Read command is being processed, the ATAPI Device may wish
+to send all the data that is available in its buffers on just one
+DRQ Interrupt, with the limitation that only 65535 bytes may be
+transferred at one time.
+
+Table 2 - Byte Count Register Usage
+
+    Operation       Usage (PIO)          Usage (Non-Overlapped DMA)
+     
+ Send Command       Is used as a         Command Packet is
+ Packet             parameter to the     always sent via
+                    Packet Command and   Programmed I/O and not
+                    is not used to       DMA.
+                    control the Packet
+                    transfer.
+ Parameters to the  As a parameter to    The Device can ignore
+ Packet Command     any Packet Command   the byte count, as the
+ (Task File         that transfer        actual transfers are
+ Contents)          parameter data, the  controlled via the
+                    Byte Count is used   ATAPI Device and not
+                    by the Host to       the Host.
+                    communicate the
+                    maximum / preferred
+                    amount of data to be
+                    transferred on each
+                    DRQ.
+ Parameter Data     At each DRQ the      The ATAPI Device can
+ from the Device    count contains the   request data
+ to the Host (e.g.  number of bytes that transfer whenever it
+ data from a Read,  the Host shall       wishes, and as such
+ or Inquiry         transfer from the    the Byte Count shall
+ command)           Device.              not be used.
+ Parameter Data     At each DRQ the      The ATAPI Device can
+ from the Host to   count contains the   transfer data whenever
+ the Device (e.g.   number of bytes that it wishes, and as such
+ data for a Write,  the Host shall       the Byte Count shall
+ or Mode Select     transfer to the      not be used.
+ command)           Device.
+
+If the Device requests more data be transferred than required by
+the command protocol, the Host shall pad when sending data to the
+Device, extra data when reading data from the Device.
+The only permissible time for an actual Odd Byte Count value be
+on the Last DRQ, Intermediate DRQs shall contain even byte counts.
+The peripheral is not responsible for padding the data. Only the
+specific amount of data specified by the host byte count shall be
+transferred.
+
+
+4.5 Sector Count (ATAPI Interrupt Reason) Register Usage for
+Packet Commands
+
+D7     D6     D5     D4     D3     D2      D1     D0       
+           Reserved                RELEASE IO     C/D-      Read
+
+The Interrupt Reason Register contains an expanded definition of
+the ATA DRQ Status. When the DRQ is presented in the ATAPI Status
+Register for an ATAPI Packet Command, then the contents of this
+register indicate if Packet Command or User Data shall be
+transferred and, if so, the direction of the transfer.
+
+4.6  Immediate Command Operation
+Immediate ATAPI PACKET commands return Completion Status immediately,
+with the actual execution of the command continuing. When the actual
+completion of the seek operation of immediate ATAPI PACKET
+commands has occurred, the Device shall set the DSC bit in the
+Status Register.
+- Immediate  ATAPI PACKET commands that report completion
+  before  the  actual completion (e.g., CD-ROM Seek, Play  Audio,
+  etc.) shall respond by queuing the new command.
+- New ATAPI PACKET commands received while a
+  previous packet command is still executing shall cause both
+  commands to be aborted with an error, Check Condition.
+- If an Immediate ATAPI PACKET  command is executing when
+  the device is issued an SRST the DSC bit shall not be cleared
+  with the rest of the status register. Instead the functionality
+  of the DSC bit shall be maintained.
+
+4.7 Flow of Packet Command, PIO Data In to Host
+This class of packet commands includes commands such as Inquiry,
+Read etc. Execution includes the transfer of some unknown number
+of data bytes from the Device to the host.
+1.  The host Polls for BSY=0, DRQ=0 then initializes the task file
+    by writing the required parameters to the Features, Byte
+    Count, and Drive/Head registers.
+2.  The host writes the Packet Command code (A0h) to the Command
+    Register.
+3.  The Device sets BSY, before the next system read of the status
+    register, and prepares for Command Packet transfer.
+4.  When the Device is ready to accept the Command Packet, the
+    Device sets C/D- and clears IO, BSY prior to asserting DRQ.
+    Some Devices assert INTRQ following the assertion of DRQ.
+5.  After detecting DRQ, the host writes the 12 bytes (6 words) of
+    Command to the Data Register.
+6.  The Device(1) clears DRQ (when the 12th byte is written), (2)
+    sets BSY, (3) reads Features and Byte Count requested by the
+    host system, (4) prepares for data transfer.
+7.  When data is available, the Device:(1) places the byte count
+    of  the data available into the Cylinder High and  Low
+    Registers, (2) sets IO and clears C/D-, (3) sets DRQ and
+    clears BSY, (4) sets INTRQ.
+8.  After detecting INTRQ, the host reads the DRQ bit in the
+    Status Register to determine how it shall proceed with the
+    command. If DRQ=0 then the device has terminated the command.
+    If DRQ=1 then the host shall read the data (number of bytes
+    specified in the Cylinder High/Low Registers) via the Data
+    Register. In response to the Status Register being read, the
+    Device negates INTRQ for both cases.
+9.  The Device clears DRQ. If transfer of more data is required,
+    the Device sets BSY before clearing DRQ and the above
+    sequence is repeated from step 7.
+10. When the Device is ready to present the status, the Device
+    places the completion status into the Status Register, sets
+    C/D-, IO, DRDY, DRQ  and clears BSY, prior  to
+    asserting INTRQ.
+11. After detecting INTRQ, DRQ cleared and BSY cleared,
+    the host reads the Status Register and if necessary, the Error
+    Register for the command completion status.
+
+The DRQ signal is used by the device to indicate when it is ready
+to transfer data, and is cleared after (during) the last byte of
+data to be transferred. This applies for both Command Packet as
+well as normal read/write data.
+
+
+Figure 1 - Packet Comand with PIO Data In to Host
+
+4.8 Flow of Packet Command with PIO Data Out from the Host
+This class includes commands such as Mode Select, Write etc.
+Execution includes the transfer of some known number of data
+bytes from the Host to the Device.
+1.  The host Polls for BSY=0, DRQ=0 then initializes the task file
+    by writing the required parameters to the Features, Byte
+    Count, and Drive/Head registers.
+2.  The host writes the Packet Command code (A0h) to the Command
+    Register.
+3.  The Device sets BSY, before the next system read of the status
+    register, and prepares for Command Packet transfer.
+4.  When the Device is ready to accept the Command Packet, the
+    Device sets C/D- and clears IO, BSY prior to asserting DRQ.
+    Some Devices will assert INTRQ following the assertion of DRQ.
+    DRQ may be set before or after BSY has been de-asserted;
+    however, DRQ is will not be visible to the host until BSY=0.
+5.  After detecting DRQ, the host writes the 12 bytes (6 words) of
+    Command to the Data Register.
+6.  The Device(1) clears DRQ (when the 12th byte is written), (2)
+    sets BSY, (3) reads Features and Byte Count requested by the
+    host system, (4) prepares for data transfer.
+7.  When ready to transfer data, the Device:(1) sets the byte
+    count (Cylinder High and Low Registers) to the amount of data
+    that the Device wishes to be sent, (2) clears IO and C/D-,
+    (3) sets DRQ and clears BSY, (4) sets INTRQ. The Byte Count
+    would normally be set to the number of bytes requested by the
+    contents of the register at the receipt of the command, but
+    may be any amount that the Device can accommodate in its
+    buffers at this time.
+8.  After detecting INTRQ, the host reads the DRQ bit in the
+    Status Register to determine how it shall proceed with the
+    command. If DRQ=0 then the device has terminated the command.
+    If DRQ=1 then the host shall write the data (number of bytes
+    specified in the Cylinder High/Low Registers) via the Data
+    Register. In response to the Status Register being read, the
+    Device negates INTRQ for both cases.
+9.  The Device clears DRQ. If transfer of more data is required,
+    the Device sets BSY before clearing DRQ and the above sequence
+    is repeated from step 7.
+10. When the Device is ready to present the status, the Device
+    places the completion status into the Status Register, sets
+    C/D-, IO, DRDY, DRQ and clears BSY, prior to asserting INTRQ.
+11. After detecting INTRQ, DRQ cleared and BSY cleared, the host
+    reads the Status Register and if necessary, the Error Register
+    for the command completion status. The Device clears DRQ and
+    sets BSY. If transfer of more data is required, the above
+    sequence is repeated from step 7.
+10. When the Device is ready to present the status, the Device
+    places the completion status into the Status Register, sets
+    C/D-, IO, DRDY and clears BSY, DRQ, prior to asserting INTRQ.
+11. After detecting INTRQ & DRQ=0 the host reads the Status
+    Register and if necessary, the Error Register for the command
+    completion status.
+
+The DRQ signal is used by the device to indicate when it is ready
+to transfer data, and is cleared after (during) the last byte of
+data to be transferred. This applies for both Command Packet as
+well as normal read/write data.
+
+
+
+
+
+
+Figure 2 - Packet Command with PIO Data Out from Host
+
+4.9 Flow of Non-Overlap DMA Data Commands
+This  class includes commands such as Read, Write etc.  Execution
+includes the transfer of some unknown number of data bytes.
+1. The  host Polls for BSY=0, DRQ=0 then initializes the task file
+   by  writing  the  required parameters  to  the  Features,  Byte
+   Count,   and   Drive/Head  registers.  The   host   must   also
+   initializes  the  DMA  engine which will services  the  Devices
+   requests.
+2. The  host  writes the Packet Command code (A0h) to the  Command
+   Register.
+3. The Device sets BSY and prepares for Command Packet transfer.
+4. When  the  Device  is ready to accept the Command  Packet,  the
+   Device sets C/D- and clears IO, BSY prior to asserting  DRQ.
+   Some Devices will assert INTRQ following the assertion of DRQ.
+5. After detecting DRQ, the host writes the 12 bytes (6 words)  of
+   Command to the Data Register.
+6. The  Device(1) clears DRQ (when the 12th byte is written),  (2)
+   sets  BSY, (3) reads Features and Byte Count requested  by  the
+   host system, (4) prepares for data transfer.
+7. When   ready  to  transfer  data,  the  Device  transfers   via
+   DMARQ/DMACK any amount that the Device can accommodate  or  has
+   in  its buffers at this time. This continues until all the data
+   has been transferred.
+8. When  the  Device  is ready to present the status,  the  Device
+   places  the  completion status into the Status  Register,  sets
+   C/D-, IO, DRDY, DRQ  and clears BSY, prior to asserting INTRQ.
+9. After  detecting INTRQ, DRQ cleared and BSY cleared,  the  host
+   reads  the Status Register and if necessary, the Error Register
+   for the command completion status.
+
+
+
+Figure 3 - Packet Command with DMA Data
+
+
+4.10 Overlapped Command Operation
+ATAPI  devices  reporting  support for  Overlapped  commands  are
+capable of improving system performance by releasing the ATA  bus
+to  another  device before completing a command in progress.  The
+host system can enable this feature by setting the OVERLAP bit in
+the  Feature Register when it issues an ATAPI Packet command. The
+device  uses  the  RELEASE  bit in  the  ATAPI  Interrupt  Reason
+register  to  notify the host that it has released  the  ATA  bus
+before it has completed the command in progress.
+- Releasing the ATA bus to another device is at the discretion
+  of  the device processing an Overlapped command. Devices should
+  only  Release the ATA Bus, before a command has completed, when
+  the host willdoes  not need to service an Interrupt or DRQ from
+  the device for more than the time specified in words 71 and 72 of
+  the devices identify drive data. This is typically the cases for
+  seeks on mechanically slower devices such as CD-ROM and Tape.
+- When the host detects a Release from a device to which it
+  has  sent an overlapped command, the DRV bit may be changed  to
+  select another device and issue a command.
+- Changing the DRV bit while BSY or DRQ are set may cause the
+  currently selected device to abort any command in progress.
+- The  normal  protocol for Non-Overlapped commands  requires
+  that  the  command complete before the host can select  another
+  device. This means that the host willis  not be able to  access
+  the  Overlapped  device again until the non  overlapped  device
+  completes any command the host may issue to it.
+- To ensure fairness between slower Overlapped and faster Non-
+  Overlapped devices sharing the same ATA channel, can be achieved
+  by the host should polling the slower Overlapped device's
+  DSCSERVICE bit before issuing each new command to the faster non-
+  Overlapped device.
+- When the host detects that the DSCSERVICE bit in the ATAPI
+  STATUS Register is set, a Service (A2h) command shall be issued
+  before any task file registers besides ATAPI STATUS are valid.
+- Once  the  Service (A2h) command has successfully completed
+  the host may service the device's interrupt as if the device were
+  the only device on the ATA Bus.
+- Slower Overlapped devices may release control of the ATA bus
+  several times while processing an overlapped command.
+- When  DMA data is to be transferred, the protocol  sequence
+  used for PIO iswill be followed. When data is to be transferred a
+  Service Interrupt shall be generated. No data shall  be
+  transferred until the Service (A2h) command has been received by
+  the Device.
+- The number of bytes that shall be transferred is
+  specified in the BYTE COUNT Register after the Service (A2h)
+  command has been processed. After the specified number of bytes
+  is transferred the ATA bus shall either be released or held busy
+  until data or status are available.
+- At the completion of data transfer, if the Device shall
+  Release the ATA Bus, BSY shall be cleared in less than 5ms.
+
+4.10.1 Release
+One  of  the  capabilities that is the foundation for  Overlapped
+operation is Release. There are three different forms of  release
+used in this specification, after the receipt of a Command, after
+transferring  some  data  and after the receipt  of  the  Service
+Command.
+This  standard  allows  the  device to  implement  these  release
+operations either in the Firmware or in Hardware. Each  of  these
+release  points has its own complexities. For example before  the
+Task  File  Registers  can be released after  the  receipt  of  a
+command,  the  Command and parameter information must  be  saved.
+Once  the  release  is performed the contents of  the  Task  File
+Registers  can  no  longer  be  used  by  the  Device.   Although
+automatically saving the task file when DRV is changed would seem
+a  simple  solution, it requires unnecessary changes to  existing
+ATAPI device VLSI. which prevent F/W versions of a protocol  from
+being implemented before automating the protocol for speed.
+The  device shall consistently unload the information in the Task
+File  Registers. Although holding the BSY longer  in  some  cases
+would  most  likely  be  acceptable  from  a  system  performance
+standpoint,  forcing the driver to poll for  varying  lengths  of
+time  is not. This specification forces the device to report  the
+typical  length of time that the device will requires  to  unload
+and  then Release the Task File Registers. Further to reduce  the
+length  of  time  that  the Driver would have  to  poll  for  the
+release,   this   standard  defines  an  Interrupt   on   Release
+Capability.
+The Interrupt on Release capability is enabled by the Host Driver
+using a SET FEATURES Command. To assist the Driver in determining
+if  the  Interrupt should be enabled the IDENTIFY  DRIVE  Command
+returns  the length in microseconds that the device will uses  to
+Release  for both an Overlapped Command and the Service  Command.
+The  Driver  can  then  make  its  own  decision  to  enable  the
+interrupt.  Thus if the Device reports 1000 ms, the Driver  could
+decide  that  it  wants  to  poll and not  enable  the  interrupt
+(Unlikely).
+The  Release  after the transfer of data shall  be  performed  by
+hardware for all data transfer operations and as such there is no
+Interrupt generated after the release when transferring data.
+The  Release after the Service Command shall only occur after the
+parameters  for  the  Interrupt are loaded  into  the  Task  File
+Registers.  Thus for a hardware implementation of  this  Release,
+there  should  exist  a  separate set of  information  for  these
+parameters  e.g. Byte Count, Interrupt Reason, Status.  Note,  in
+the  future,  acceleration of the Service Command  willis  become
+very  important  to  the  overall system performance  when  using
+overlap.  It  is  highly recommended that the  time  required  to
+perform the Release after the SELECTION Command is less than 5ms.
+
+4.10.2 Using the Service Command (A2h)
+The  Arbitration of the Task File Registers is performed by logic
+outside  of  the  Devices attached to the ATA  Cable.  The  basic
+premise  is  that the Device releases the use of  the  Task  File
+Registers  when it is processing the command and no longer  needs
+the  registers. This of course makes it difficult  to  place  the
+arguments  for the Interrupt into the registers as the device  no
+longer  owns  them. The Service command allows the host  to  give
+control of the task file registers back to the device so that the
+correct  parameters  can  be placed into them.  These  parameters
+include the Byte Count, and Interrupt Reason.
+When  an  overlapped command requests service the Host Driver  is
+responsible for determining which device should be serviced,  and
+then issuing the Service Command. This causes the device to place
+information  on  the reason for the service into  the  Task  File
+registers.
+
+Table 3 - Registers after the Service Command
+
+Addresses  Register          Contents
+
+  1F0      Data              
+  1F1      Error Register    If the Status indicates an
+                             Error then this is Valid
+  1F1      Reserved for ATA  Reserved and not used by this
+           Tag               Specification.
+  1F2      Interrupt Reason  Contains IO and C/D-
+  1F3      Tag for Command   Reserved for future use as Tag
+                             for the command requiring
+                             Service
+  1F4      ATAPI Byte Count  Number of bytes that need to
+           LSB               be transferred, both for PIO
+                             or for DMA
+  1F5      ATAPI Byte Count
+           MSB
+  1F6      Drive Select      Same before and after Service
+  1F7      Status            DRQ along with IO, C/D- and
+                             Release determine the reason
+                             for the Service Request
+  3F0      Floppy A Status   Unused
+  3F1      Floppy B Status   Unused
+  3F2      Unused            Unused
+  3F3      Floppy ID / Tape  Unused
+           Control
+  3F4      Floppy            Unused
+           Controller Status
+  3F5      Floppy Data       Unused
+           Register
+  3F6      Alternate Status  Same as Status register
+  3F7      Change / Drive    Same before and after
+           Address           Service
+                                
+4.10.3 Legal Transitions
+
+Table 4 - Legal Overlap Transactions
+
+State From      State To  Reason      Sequence          Notes
+
+Idle            Cmd       Host Issues BSY=1,       
+                Packet    A0h         C/D-=1, IO=0,
+                                      DRQ=1, BSY=0
+
+Cmd Packet      Release   Command ok, BSY=1, DRQ=0,     The time
+                          but no data RELEASE=1,        required by
+                          is ready to C/D-=0, IO=0,     the Device to
+                          be          BSY=0, INTRQ=1    perform the
+                          transferred if Interrupt on   Release is
+                                      Release After     specified in
+                                      Command Packet    Word 71 of the
+                                      is enabled        Identify Drive
+                                                        Data
+
+Cmd Packet      Data      Command ok  BSY=1, DRQ=0,     The assertion
+                Transfer  and Data is C/D-=0, IO=1/0,   of DRQ shall
+                          ready to be RELEASE=0,        occur within
+                          Sent/       DRQ=1, BSY=0,     the time
+                          Received    INTRQ=1           specified in
+                                                        word 71 of the
+                                                        Identify Drive
+                                                        Data
+
+Data Transfer   Release   # of bytes  RELEASE=1, DRQ=0  The Release
+                          specified   (BSY stays=0,     shall occur
+                          by the Byte C/D- & IO stay    within 5ms
+                          Count       the same)         after
+                          Register                      transferring
+                          has been                      the last word
+                          transferred                   of data
+
+Data Transfer   Data      # of bytes  BSY=1, DRQ=0,     The assertion
+                Transfer  specified   Byte Count = new  of DRQ shall
+                          by the Byte count (C/D- & IO  occur within
+                          Count       stay the same),   5ms after
+                          Register    DRQ=1, BSY=0,     transferring
+                          has been    INTRQ=1           the last word
+                          transferred                   of data from
+                                                        the previous
+                                                        data transfer
+
+Release         Service   Data or     DSCSERVICE=1,     Requests that
+                          Status is   DMA READY=0/1,    the Host
+                          ready for   INTRQ=1           Arbitrate and
+                          the Host                      Issue the
+                                                        Service
+                                                        Command.
+
+Service         Data      Service     BSY=1, IO=1/0,    
+                Transfer  Command     C/D-=0, Byte
+                          issued and  Count=x, DRQ or
+                          Data can be DMARQ=1 (DMA
+                          transferred READY stays the
+                                      same), BSY=0,
+                                      INTRQ=1 if
+                                      Interrupt on
+                                      Service
+                                      Completion is
+                                      enabled
+
+Service         Status    Service     BSY=1, IO=1,      This is not a
+                          Command     C/D-=1,           recommended
+                          issued and  RELEASE=0,        transition.
+                          Status is   DRQ=0, BSY=0,     After
+                          available   INTRQ=1 if        transferring
+                                      Interrupt on      the data the
+                                      Service           device should
+                                      Completion is     set BSY until
+                                      enabled           the status is
+                                                        available
+
+Data Transfer   Status    # of bytes  BSY=1,            BSY shall be
+                          specified   RELEASE=0, DRQ    set within 5ms
+                          by the Byte or DMARQ=0,       after
+                          Count       C/D-=1, IO=1,      transferring
+                          Register    BSY=0, INTRQ=1    the last word
+                          has been                      of data if
+                          transferred                   status willis
+                                                        not be
+                                                        available
+                                                        within the 5ms
+                                                        window
+                                
+                                
+
+
+
+Figure 4   -  State Diagram, Overlapped Operation, Legal Transactions
+Note: Release to Service path is optional and NOT recomended.
+
+4.10.4 ATAPI Overlap with only one ATAPI Peripheral
+-      ATAPI  Drive  Releases  the  Task  File  Ownership   after
+       acceptance of an ATAPI command.
+-      Overlap  Mode  is  enabled on each command  via  the  ATAPI
+       Features Register.
+-      Overlapped  Commands are issued to an  ATA  (Legacy)  Drive
+       while an ATAPI Command is still processing.
+-      Interrupts are generated from the selected device only. Thus
+       the Driver must always select the Overlap capable device  when
+       there is no active command to a Legacy Device.
+-      Device uses Interrupt & DSCSERVICE Status to gain Host's
+       attention. DSCSERVICE Status set when any service is needed.
+-      Driver uses the A2h (Service) Command to give control of the
+       Task File Registers back to the Device after an Interrupt and
+       Sensing the DSCSERVICE status bit.
+-      The Interrupt Reason RELEASE Status bit is used to indicate
+       a Release Interrupt.
+
+
+
+
+
+Figure 5 - ATAPI Overlap Command Sequence
+
+
+Figure 6 - ATAPI Overlap, One ATA Device and One ATAPI Device
+
+4.10.5 Task File ownership
+When BSY or DRQ is set, the Task File Registers are owned by  the
+Device,  otherwise the Registers are owned by the Host. When  the
+Device  does  not own the Registers, it shall not write  to  into
+them.  Table  5 - Registers Controlled by BSY & DRQ on page 27
+shows which of the ATA Registers are considered part of the Owned
+Task File Registers. Logic conventions are:  A = signal asserted,
+N = signal negated, x = does not matter which it is.
+
+               Dark Gray are registers where ownership is
+               controlled by BSY & DRQ.
+               Light Gray are Registers that are not defined for
+               use by ATA.
+
+
+Table 5 - Registers Controlled by BSY & DRQ
+
+         Addresses                          Functions
+ CS1FX   CS3FX   DA2  DA1  DA0    Read (DIOR-)    Write (DIOW-)
+ 
+   A       N      0    0    0                 Data
+   A       N      0    0    1    Error Register     Features
+   A       N      0    1    0   ATAPI Interface Reason / Sector
+                                             Count
+   A       N      0    1    1            Sector Number
+   A       N      1    0    0   ATAPI Byte Count LSB / Cylinder
+                                              Low
+   A       N      1    0    1   ATAPI Byte Count MSB / Cylinder
+                                              High
+   A       N      1    1    0             Drive Select
+   A       N      1    1    1        Status          Command
+   N       A      0    0    0   Floppy A Status      Unused
+   N       A      0    0    1   Floppy B Status      Unused
+   N       A      0    1    0        Unused      Floppy Digital
+                                                     Output
+   N       A      0    1    1   Floppy ID / Tape    RESERVED
+                                    Control
+   N       A      1    0    0        Floppy         RESERVED
+                                   Controller
+                                     Status
+   N       A      1    0    1         Floppy Data Register
+   N       A      1    1    0   Alternate Status Device Control
+   N       A      1    1    1    Change / Drive      Unused
+                                    Address
+
+
+
+4.10.6    Error Handling with Overlapped Commands
+An  issue can arise because overlapped commands are enabled on  a
+Command by Command basis. If an overlapped command is in progress
+and  a  non-overlapped command is then received, the Device  must
+aborts   without status on any outstanding overlapped  or  queued
+command(s).
+In  overlapped  operation  there iswill be  intermediate  command
+status,  as  well  as  the final command completion  status.  The
+intermediate  status is supplied to indicate if the  command  was
+accepted. If the command is not accepted, then there wilis  l  be
+no further status supplied. The intermediate status is the status
+at  the  point  that the device releases the Task File  registers
+back  to  the  host,  prior to executing the command.  Thus  this
+status can only relate to the validity of the command and not any
+command execution.
+4.11 Flow of Overlapped Commands with Data Transfer From Host to
+     Device
+This  class  of commands includes commands such as  Mode  Select,
+Write etc. Execution includes the transfer of some unknown number
+of data bytes from the Host to the Device.
+1.  The  host Polls for BSY=0, DRQ=0 then initializes the task file
+    by  writing  the  required parameters  to  the  Features,  Byte
+    Count,  and Drive/Head registers. The OVERLAP bit in the  ATAPI
+    FEATURES Register mustshall  be set (1).
+2.  The  host  writes the Packet Command code (A0h) to the  Command
+    Register.
+3.  The  Device sets BSY, before the next system read of the status
+    register, and prepares for Command Packet transfer.
+4.  When  the  Device  is ready to accept the Command  Packet,  the
+    Device  sets  C/D- and clears RELEASE,  IO,  BSY  prior  to
+    asserting  DRQ.  Some Devices will assert INTRQ  following  the
+    assertion of DRQ.
+5.  After detecting DRQ, the host writes the 12 bytes (6 words)  of
+    Command to the Data Register.
+6.  The  Device(1)  clears DRQ (when the 6th word is written),  (2)
+    sets  BSY, (3) reads Features and Byte Count requested  by  the
+    host system, (4) prepares for either Release of the ATA Bus  or
+    Data Transfer.
+7.  If  the Device has NOT been previously commanded to generate an
+    interrupt  after accepting the Packet Command Data, the  Device
+    may  optionally  not  release the ATA Bus.  In  this  case  the
+    device  must  moves directly from accepting the Command  Packet
+    Data  to  Data Transfer (Step 12. below) with DRQ=1,  C/D-=0
+    and IO = 0. This must also be done within the time reported  by
+    the  Identify Drive Data Command Data. If the Device  has  been
+    commanded to generate an interrupt after processing the  Packet
+    Command, the Device shall always release the ATA Bus.
+8.  The  Device  (1)  sets  the RELEASE bit  in  the  ATAPI  STATUS
+    Register, (2) clears IO, C/D-, DRQ, (3) clears BSY.  If  the
+    Device  has been previously commanded to generate an  interrupt
+    when  releasing  the ATA Bus after receiving a Packet  Command,
+    the Device shall set INTRQ (1).
+9.  Released State.
+    At this point the Host is free to select the other Device and
+    Issue Commands.
+    When the Host is Not issuing new commands to the Non
+    Overlapped Device it  should select the Overlap Device
+    allowing it to interrupt. To promote fairness for overlapping
+    devices which release the ATA bus, the host should select the
+    overlapped device between each command issued to the non
+    overlapped device.
+10. When the Device is ready to accept data, the Device (1) sets
+    the  DSCSERVICE Bit in the ATAPI STATUS Register, (2) sets DRQ,
+    (3) sets INTRQ.
+11. After detecting INTRQ, the Host shall read the ATAPI STATUS
+    Register  to  determine if the selected  device  is  requesting
+    service.  If there is an overlapped command active on the  non-
+    selected  device, the Host shall change the DRV  Bit  and  read
+    the  ATAPI  STATUS  Register to determine if  service  is  also
+    needed  on  the  non-selected Device. When the  state  of  both
+    Device's  SERVICE bits are known the Host shall select  one  of
+    the  Devices, that is requesting service, and issue the Service
+    (A2h)  Command.  The Host shall employ some fairness  technique
+    in choosing which Device will be serviced.
+12. When  the Device receives the SERVICE Command or if  moving
+    directly from Packet Command Data to Data Transfer, the  Device
+    (1)  places  the  byte  count of the data  available  into  the
+    Cylinder  High  and  Low  Registers, (2)  clears  SERVICE,  (3)
+    clears  IO  and C/D-, (4) sets DRQ and clears  BSY.  If  the
+    Device  has been previously commanded to generate an  interrupt
+    when done processing the SERVICE Command, the Device shall  set
+    INTRQ (1).
+13. After detecting INTRQ or that BSY has been cleared, the host
+    reads  the DRQ bit in the Status Register to determine  how  it
+    will  proceeds with the command. If DRQ= 0 then the device  has
+    either  released  the  ATA Bus or terminated  the  command.  If
+    DRQ=1  then  the  host shall write the data  (number  of  bytes
+    specified  in  the Cylinder High/ Low Registers) via  the  Data
+    Register.  In response to the Status Register being  read,  the
+    Device negates INTRQ for both cases.
+14. If no more data is to be transferred, proceed to step 17.
+15. The  Device  (1) leaves BSY cleared, (2)  clears  DRQ.  The
+    RELEASE  Bit shall have been set at the beginning of  the  last
+    data  transfer.  The IO and C/D- bits shall  remain  in  the
+    same  state  as  for a normal data transfer, this distinguishes
+    the Release from a Status state.
+16. The above sequence is repeated from step 9.
+17. The Device clears DRQ and sets BSY.
+18. The  Device  places the completion status into  the  Status
+    Register,  sets  C/D-, IO, DRDY, clears  RELEASE,  BSY,  and
+    DRQ, prior to asserting INTRQ.
+19. After  detecting INTRQ & DRQ=0, the host reads  the  Status
+    Register  and if necessary, the Error Register for the  command
+    completion status. If the Host detects that the RELEASE Bit  or
+    that  both  IO  and C/D- are not set this is  not  a  status
+    state but a release state and should proceed accordingly.
+
+
+Figure 7 - Packet Command with PIO Data In from Host
+
+4.12 Flow of Overlapped Commands with Data Transfer From Device to
+Host
+This class includes commands such as Inquiry, Read etc. Execution
+includes  the transfer of some unknown number of data bytes  from
+the Device to the host.
+1.  The  host Polls for BSY=0, DRQ=0 then initializes the task file
+    by  writing  the  required parameters  to  the  Features,  Byte
+    Count,  and Drive/Head registers. The OVERLAP bit in the  ATAPI
+    FEATURES Register shallmust be set (1).
+2.  The  host  writes the Packet Command code (A0h) to the  Command
+    Register.
+3.  The  Device sets BSY, before the next system read of the status
+    register, and prepares for Command Packet transfer.
+4.  When  the  Device  is ready to accept the Command  Packet,  the
+    Device  sets  C/D-  and clears RELEASE,  IO,  BSY  prior  to
+    asserting  DRQ.  Some Devices will assert INTRQ  following  the
+    assertion of DRQ.
+5.  After detecting DRQ, the host writes the 12 bytes (6 words)  of
+    Command to the Data Register.
+6.  The  Device(1)  clears DRQ (when the 6th word is written),  (2)
+    sets  BSY, (3) reads Features and Byte Count requested  by  the
+    host system, (4) prepares for either Release of the ATA Bus  or
+    Data Transfer.
+7.  If  the Device has NOT been previously commanded to generate an
+    interrupt  after accepting the Packet Command Data, the  Device
+    may  optionally  not  release the ATA Bus.  In  this  case  the
+    device  shall  move directly from accepting the Command  Packet
+    Data  to  Data Transfer (Step 12. below) with DRQ=1,  C/D-=0
+    and  IO  =  0.  This  shallmust also be done  within  the  time
+    reported  by  the  Identify Drive Data  Command  Data.  If  the
+    Device  has  been  commanded  to generate  an  interrupt  after
+    processing the Packet Command, the Device shall always  release
+    the ATA Bus.
+8.  The  Device  (1)  sets  the RELEASE bit  in  the  ATAPI  STATUS
+    Register, (2) clears IO, C/D-, DRQ, (3) clears BSY.  If  the
+    Device  has been previously commanded to generate an  interrupt
+    when  releasing  the ATA Bus after receiving a Packet  Command,
+    the Device shall set INTRQ (1).
+9.  Released State.
+    At  this point the Host is free to select the other Device  and
+    Issue  Commands. When the Host is Not using the Non  Overlapped
+    Device it selects the Overlap Device allowing it to interrupt.
+10. When the Device is ready to accept data, the Device (1) sets
+    the  DSCSERVICE Bit in the ATAPI STATUS Register, (2) sets DRQ,
+    (3) sets INTRQ.
+11. After detecting INTRQ, the Host shall read the ATAPI STATUS
+    Register  to  determine if the selected  device  is  requesting
+    service.  If there is an overlapped command active on the  non-
+    selected  device, the Host shall change the DRV  Bit  and  read
+    the  ATAPI  STATUS  Register to determine if  service  is  also
+    needed  on  the  non-selected Device. When the  state  of  both
+    Device's  DSCSERVICE bits are known the Host shall  select  one
+    of  the  Devices,  that is requesting service,  and  issue  the
+    Service  (A2h)  Command. The Host shall  employ  some  fairness
+    technique in choosing which Device will isbe serviced.
+12. When  the Device receives the Service Command or if  moving
+    directly from Packet Command Data to Data Transfer, the  Device
+    (1)  places  the  byte  count of the data  available  into  the
+    Cylinder  High  and Low Registers, (2) clears  DSCSERVICE,  (3)
+    clears  IO  and C/D-, (4) sets DRQ and clears  BSY.  If  the
+    Device  has been previously commanded to generate an  interrupt
+    when done processing the Service Command, the Device shall  set
+    INTRQ (1).
+13. After detecting INTRQ or that BSY has been cleared, the host
+    reads  the DRQ bit in the Status Register to determine  how  it
+    will  proceeds with the command. If DRQ= 0 then the device  has
+    either  released  the  ATA Bus or terminated  the  command.  If
+    DRQ=1  then  the  host  shall read the data  (number  of  bytes
+    specified  in  the Cylinder High/ Low Registers) via  the  Data
+    Register.  In response to the Status Register being  read,  the
+    Device negates INTRQ for both cases.
+14. If no more data is to be transferred, proceed to step 17.
+15. The  Device  (1) leaves BSY cleared, (2)  clears  DRQ.  The
+    RELEASE  Bit shall have been set at the beginning of  the  last
+    data  transfer.  The IO and C/D- bits shall  remain  in  the
+    same  state  as  for a normal data transfer, this distinguishes
+    the Release from a Status state.
+16. The above sequence is repeated from step 9.
+17. The Device clears DRQ and sets BSY.
+18. The  Device  places the completion status into  the  Status
+    Register,  sets  C/D-, IO, DRDY, clears  RELEASE,  BSY,  and
+    DRQ, prior to asserting INTRQ.
+19. After  detecting INTRQ & DRQ=0, the host reads  the  Status
+    Register  and if necessary, the Error Register for the  command
+    completion status. If the Host detects that the RELEASE Bit  or
+    that  both  IO  and C/D- are not set this is  not  a  status
+    state but a release state and should proceed accordingly.
+
+The DRQ signal is used by the device to indicate when it is ready
+to  transfer data, and is cleared after (during) the last byte of
+data  to be transferred. This applies for both Command Packet  as
+well as normal read/write data.
+The RELEASE Bit is used to signal that the Drive has released the
+ATA Bus. The RELEASE Bit shall be qualified by the host with both
+BSY  and DRQ cleared. If either BSY or DRQ is set, then the value
+in the RELEASE bit is undefined.
+
+
+
+
+
+Figure 8 - Packet Command with PIO Data In to Host
+
+
+
+4.13  Flow of Non-data Commands
+This  class  includes commands such as Seek,  etc.  Execution  of
+these commands involves no data transfer.
+1. The  host Polls for BSY=0, DRQ=0 then initializes the task file
+   by  writing  the  required parameters  to  the  Features,  Byte
+   Count, and Drive/Head registers.
+2. The  host  writes the Packet Command code (A0h) to the  Command
+   Register.
+3. The Device sets BSY and prepares for Command Packet transfer.
+4. When  the  Device  is ready to accept the Command  Packet,  the
+   Device sets C/D- and clears IO, BSY prior to asserting  DRQ.
+   Some Devices will assert INTRQ following the assertion of DRQ.
+5. After detecting DRQ, the host writes the 12 bytes (6 words)  of
+   Command to the Data Register.
+6. The Device sets BSY and executes the command.
+7. When  the  Device  is ready to present the status,  the  Device
+   places  the  completion status into the  Status  Register,  and
+   sets  IO, C/D-, DRDY and clears BSY, DRQ, prior to asserting
+   INTRQ.
+8. After  detecting INTRQ, the host reads the Status Resister for
+   the command completion status.
+
+4.14 Timing of Non-Overlap Packet Command
+
+  
+  
+  
+  Figure 9 - Timing of Command Packet Transfer
+  
+4.15 Timing of Non-Overlap Data and Status Transfer
+
+
+  
+  
+  
+  Figure 10 - Timing of Data and Status Transfer
+
+4.16 Control Signal Timing Requirements and Relationships
+The  order  that the signals change shall adhere to the following
+conditions:
+1. Upon  receiving the A0h ATAPI Packet Command the  Device  shall
+   have  BSY  asserted until the next host access  of  the  Status
+   Register  where  the  device can guarantee that  C/D-=1  and
+   IO=0.
+2. The  Device shall not assert DRQ until C/D- and IO are valid
+   for  the  command  or  data packet to be  transferred  and  the
+   device is ready to perform that transfer.
+3. DRQ may be set before or after BSY has been deasserted.
+4. The  Device  shall  clear BSY and set DRQ within  the  time-out
+   specified by the CMD DRQ Type.
+5. Devices  reporting CMD DRQ Type Accelerated  shall  de-assert
+   DRQ  within  5us of the last word transferred for a command  or
+   data packet.
+6. Devices  reporting  a  CMD  DRQ Type other  than  Accelerated
+   shall  de-assert  DRQ,  before asserting INTRQ,  following  the
+   last word transferred for a command or data packet.
+
+Implementer's Note:  Early ATAPI Devices reporting CMD DRQ  Types
+other  than Accelerated may not be able to de-assert DRQ before
+the  next  INTRQ. Host systems should therefore  wait  until  the
+device asserts INTRQ before testing DRQ following the transfer of
+the last data word in a command or data packet.
+
+
+
+5.   ATAPI Transport Mechanism
+The  Transport  Mechanism provides for the  hardware  support  to
+connect the host computer to the Peripheral.
+
+
+5.1  Reset Conditions
+There  are three types of Reset Condition to which ATAPI  Devices
+shall respond:
+  -  Power  On Reset or Hardware Reset: the Device executes  a
+     series  of electrical circuitry diagnostics and sets default
+     values,  as  well  as executing the Master Slave  Diagnostic
+     Protocol.
+  -  ATAPI Soft Reset: ATAPI Devices shall reset the interface
+     circuitry according to the Set Features requirement upon receipt
+     of the ATAPI Soft Reset Command.
+  -  ATA SRST: ATAPI Devices shall provide the normal ATA PDIAG/
+     DASP  sequence and initialize the task file with  the  ATAPI
+     signature upon detection of SRST. No actual reset of the ATAPI
+     device will occur, no commands that may be active arewill be
+     aborted or stopped.
+The  Reset  Conditions above are listed in order  of  precedence.
+That  is,  Power On or Hardware Reset shall take precedence  over
+ATAPI  Soft  Reset, which shall take precedence  over  ATA  SRST,
+which shall take precedence over all other conditions.
+
+5.1.1     Power On or Hardware Reset
+Each ATAPI Device, as it is powered on, shall perform appropriate
+internal reset operations, and internal test operations.
+ATAPI Devices upon detection of reset, shall:
+1. Clear all Commands and I/O operations in progress.
+2. Return to Devices default configuration.
+3. Perform the DASP / PDIAG sequence.
+4. Return  any  ATAPI Device operating modes to their  appropriate
+   initial  conditions, similar to those conditions that would  be
+   found  after  a  normal power-on reset. MODE SELECT  conditions
+   shall  be  restored to their last saved values if saved  values
+   have  been  established. MODE SELECT conditions  for  which  no
+   values  have  been  saved shall be returned  to  their  default
+   values.
+5. Initialize  the Task File Registers as follows: Status  =  00h,
+   Error  = 01h, Sector Count = 01h, Sector Number = 01h, Cylinder
+   Low  =  14h, Cylinder High =EBh and Drive/Head = 00h.  A  value
+   other  than  00 in the status register prior to the receipt  of
+   the  first  ATAPI Command Packet from the host  may  cause  the
+   ATAPI  Device to be incorrectly identified by the  host  as  an
+   ATA  compatible  disk  drive. BSY =  0,  following  any  Reset,
+   indicates  to the Host that the registers within the Task  File
+   have been initialized.
+
+
+5.2  ATAPI Soft Reset Command and Protocol
+ATA  specifies a mandatory software reset capability  because  it
+provides  a  recovery mechanism from a class of errors/problems
+that  are recoverable in no other way. The current DEVICE drivers
+invoke  this  feature  at  some point  in  their  error  recovery
+procedures today.
+The  ATA  software reset mechanism, SRST, (bit 2  in  the  Device
+Control  Register)  cannot  be used for  ATAPI  Devices,  because
+resets  issued by the ATAPI driver would also reset any  attached
+hard disk and vice versa.
+For  a software reset to be useful, it shallmust be able to bring
+the  drive's  microprocessor back from a busy or hung  condition,
+allowing  issuance of a diagnostic or some other  command.  Since
+the  microprocessor  is the destination of the  reset,  we  can't
+depend  on  it as part of the reset path. Therefore,  ATAPI  Soft
+Reset  shall  be  detected/decoded by  the  interface  controller
+circuitry and be routed back to the microprocessor as a  hardware
+signal.
+Upon detection of the ATAPI Reset command, shall:
+1. Set  BSY. When the reset sequence in the Device is complete the
+   BSY  bit usy status willis be cleared. This iswill be the  only
+   status returned to the host by the ATAPI Soft Reset command.
+2. Initialize the task file with the same information as  after  a
+   Power  On  Reset.  See  section 5.1.1 Power On or Hardware Reset
+   on  page 39 for a description of the initialization sequence,
+   with the exception of the DRV bit which shall remain unchanged.
+
+5.3 ATAPI Implementation of ATA SRST
+The  ATA  software reset mechanism, SRST, (bit 2  in  the  Device
+Control  Register)  cannot  be used for  ATAPI  Devices,  because
+resets  issued by the ATAPI driver would also reset any  attached
+hard  disk and vice versa. To solve this ATAPI defines  an  ATAPI
+Soft  Reset  command using a reserved ATA opcode which  could  be
+decoded by the interface controller hardware.
+To maintain Master / Slave compatibility with ATA disk drives and
+prevent detection of ATAPI Devices by non ATAPI-aware BIOS, ATAPI
+Devices  shall  implement the following upon receipt  of  an  ATA
+SRST:
+1. Follow  the  SRST Sequence defined in Error! Reference  source
+   not  found. on page Error! Bookmark not defined., and not  the
+   sequences shown in the ATA Specification.
+2. Initialize  the  task file with Status = 00h or  10h,  Error  =
+   01h,  Sector Count = 01h, Sector Number = 01h, Cylinder  Low  =
+   14h, Cylinder High =EBh and Drive/Head = 00h
+3. The  functionality of the DRDY and DSC bits shall  be  restored
+   on the first command following an SRST.
+4. Continue executing commands or play operations.
+5. Leave Mode settings or Set Feature settings unchanged.
+6. If  a  selected ATAPI Device detects SRST while its own DRQ  or
+   BSY is set (1), then the command in progress shall be stopped.
+
+
+
+5.4 Physical Connection
+The  ATAPI  Devices  are selected by the  Address  field  in  the
+DeviceSelect  Register. When the ATAPI Device is  attached  along
+with  an ATA Mass Storage Device, the ATAPI Device should be  set
+as Device 1 and respond as a Slave.
+
+Table 6 - Preferred Device Connection
+
+     Primary Cable           Secondary Cable            
+  Drive 0     Drive 1      Drive 0     Drive 1   Notes
+
+    ATA                                          Normal, no
+                                                 ATAPI
+    ATA                     ATAPI                Disk and ATAPI
+                                                 for enhanced
+                                                 IDE system
+    ATA        ATAPI                             Legacy IDE
+                                                 System with
+                                                 only one cable
+    ATA                     ATAPI       ATAPI    Enhanced IDE
+                                                 with CD-ROM
+                                                 and a tape
+
+
+
+5.5  Single Device Configurations
+There  can be either one or two drives attached to the ATA Cable,
+and  thus four configurations are possible. Even though there are
+four possible configurations, only three of them are recommended.
+An   ATAPI   Peripheral  shall  detect  each   of   these   three
+configurations  and  respond according  to  Table 7 -  Shadow
+Registers on page 42.
+There  are  configurations where there may be only one Master  or
+Slave  present  on the cable. In this case there  is  will  be  a
+Shadowing  of  the registers for the non-existent  device.  The
+following table shows the actions to take.
+
+          Table 7 - Shadow Registers
+
+Jumper ->  DRV Bit  Configuration  Action
+
+ Master       0     Don't Care     Drive Bus
+              1     Slave          Float Bus
+                    Present
+              1     Slave Not      Shadow
+                    Present
+ Slave        0     Master         Float Bus
+                    Present
+              0     Master Not     This is not a
+                    Present        recommended
+                                   configuration.
+                                   Float Bus
+              1     Don't Care     Drive Bus
+ CSEL=M               Same as Master DRV=0
+                      Same as Master DRV=1
+ CSEL=S               Same as Master DRV=0
+                      Same as Master DRV=1
+
+		      
+  Table 8 - Shadowing for Single Device Configurations
+
+       Drive 0         Drive 1 (Non-existent Slave) Use of
+Register Description              the Register
+
+                  Control Block Registers
+
+Alternate ATAPI       This may be either be a complete
+Status                duplicate of the Device 0 Status
+                      (Shadowed) or Some of the bits are
+                      explicitly for Device 1 (e.g. CHECK)
+Device Control        Writing to this register writes to
+                      Device 0's Device Control Register
+
+                  Command Block Register
+		  
+Data                  Should not be used for the non-
+                      existent slave
+ATAPI Error Register  This may be either be a complete
+                      duplicate of the Device 0 ATAPI Error
+                      Register or the Register is
+                      explicitly for Device 1 (Not
+                      Shadowed)
+ATAPI Features        Writing to this register writes to
+                      Device 0's ATAPI Features Register
+ATAPI Interrupt       
+Reason Register
+ATAPI Byte Count      These are an exact duplicate of
+Register (bits 0-7)   Device 0's register. Implementer's
+                      Note: As the Signature is placed in
+                      these Registers, both Device 0, and
+                      the non-existent Device 1   will have
+                      an ATAPI Signature after a reset
+                      condition. To detect that Device 1
+                      does not exist will requires a
+                      command be issued to Device 1 and
+                      detecting the Abort.
+ATAPI Byte Count      
+Register (bits 8-15)
+Device Select         Writing to this register writes to
+                      Device 0's Device Select Register
+ATAPI Status          This may be either be a complete
+                      duplicate of the Device 0 Status
+                      (Shadowed) or Some of the bits are
+                      explicitly for Device 1 (e.g. CHECK)
+ATA Command           Commands to Device 1 are will be
+                      aborted. Implementer's Note: The
+                      Error bit will isneed to be set to
+                      abort a command to Device 1, if the
+                      Status and Alternate Status Registers
+                      are complete shadows of Device 0's
+                      Register, changing the DRV bit and
+                      reading the Status Register will also
+                      show an error condition that does not
+                      exist. It is recommended that the
+                      ERROR bit not be shadowed, but a
+                      separate bit for the non-existent
+                      drive 1.
+                                
+Implementer's  Note:  Device 0 (Master) is able to  determine  if
+Device  1  (Slave)  is present, but Device 1 can't  determine  if
+Device  0  is present. Device 1 will sees the Slave drive  assert
+the    DASP   signal   during   the   Reset   procedure,    which
+indicatingindicates that the Slave is present.
+
+5.6  Register Mapping
+Communication  to  or from the Devices is through  I/O  Registers
+that  route  the  input  or  output data  to  or  from  registers
+(selected)  by  a code on signals from the host (CS1FX-,  CS3FX-,
+DA2, DA1, DA0, DIOR- and DIOW-).
+
+
+5.7  ATAPI Register Map  ( PACKETp (Packet / SERVICE Commands )
+Logic conventions are:   A = signal asserted, N = signal negated,
+x = does not matter which it is.
+
+Table 9 - I/O Port Functions/Selection Address (Compatibility Model)
+
+         Addresses                        Functions
+
+ CS1FX   CS3FX  DA2 DA1  DA0    Read (DIOR-)     Write (DIOW-)
+
+                                   Control Block Registers
+
+   N       A     0   0    0    Floppy A Status       Unused
+   N       A     0   0    1    Floppy B Status       Unused
+   N       A     0   1    0        Unused        Floppy Digital
+                                                     Output
+   N       A     0   1    1   Floppy ID / Tape      RESERVED
+                                   Control
+   N       A     1   0    0   Floppy Controller     RESERVED
+                                   Status
+   N       A     1   0    1         Floppy Data Register
+   N       A     1   1    0   Alternate ATAPI    Device Control
+                                   Status
+   N       A     1   1    1      Note(1)            Not Used
+
+                                   Control Block Registers
+
+   A       N     0   0    0                  Data
+   A       N     0   0    1      ATAPI Error     ATAPI Features
+                                  Register
+   A       N     0   1    0    ATAPI Interrupt       Unused
+                               Reason Register
+   A       N     0   1    1       Reserved for SAM TAG Byte
+   A       N     1   0    0   ATAPI Byte Count Register (bits 0-7)
+   A       N     1   0    1   ATAPI Byte Count Register (bits 8-15)
+   A       N     1   1    0             Device Select
+   A       N     1   1    1   ATAPI Status      ATA Command
+
+(1) This register is obsolete. It is recommended that a device not
+respond to a read of this address. If a device does not respond,
+it shall not drive the DDF signal.
+
+1.This register is obsolete. It is recommended that a device  not
+  respond  to  a  read  of this address. If  a  device  does  not
+  respond, it shall not drive the DDF signal.
+
+
+With  the exception of the Data Register, all the ATAPI registers
+are  referenced  using  Byte (8 Bit) Read and  Writes.  The  Data
+Register is ALWAYS referenced as a 16 bit word.
+
+Table 10 - ATAPI Status Register (ATA Status Register)
+
+D7     D6     D5      D4      D3     D2      D1     D0       
+BSY    DRDY   DMA     DSCSER- DRQ    CORR    Reser- CHECK   Read
+              READY   VICE                   ved
+
+DRDY,  DSC, CORR and CHECK shall only be valid at the end of  the
+completion of the command.
+
+Bit 7 BSY           Busy is set whenever the drive has access
+                    to the Command Block.
+Bit 6 DRDY          Indicates that the drive is capable of
+                    responding to an ATA command.
+Bit 5 DMA READY     This bit indicates that the device is
+                    ready to start a DMA data transfer. It is
+                    used to communicate to the overlap capable
+                    PCI DMA logic that this service interrupt
+                    is going to transfer data via DMA. Note
+                    that this bit is used for Device Fault
+                    (DF) when Overlap operation is not enabled.
+Bit 4 DSCSERVICE    This bit signals that the device is
+                    requesting service or interrupt. It is set
+                    when the interrupt is requested and does
+                    not clear until the Service (A2h) command
+                    is issued. Note that this bit is used for
+                    the DSC function when the overlap function
+                    is not enabled.
+Bit 3 DRQ           Data Request - Indicates that the device
+                    is ready to transfer a word or byte of
+                    data between the host and the drive. The
+                    information in the ATAPI Interrupt Reason
+                    is alsowill also be valid during a Packet
+                    Command when the DRQ is set.
+Bit 2 CORR          Indicates if a Correctable Error occurred.
+Bit 0 CHECK         Indicates that an error occurred during
+                    execution of the previous command. The
+                    bits in the Error Register contains the
+                    Sense Key and Code.
+
+
+
+Table 11 - ATAPI Error Register (ATA Error Register)
+
+D7     D6     D5      D4     D3      D2     D1     D0       
+    ATAPI Sense Key          MCR     ABRT   EOM    ILI     Read
+
+Bits   ATAPI  Sense The ATAPI sense key areis defined in Annex
+7-4    Key          C??.
+Bit 3  MCR          Media Change Requested, is used and defined
+                    as in the ATA Standard.
+Bit 2  ABRT         Aborted Command, is used and defined as in
+                    the ATA Standard.
+Bit 1  EOM          End Of Media Detected.
+Bit 0  ILI          Illegal Length Indication.
+
+Table 12 - ATAPI Feature Register (ATA Feature Register)
+
+D7     D6     D5      D4     D3      D2     D1      D0       
+                Reserved                    OVERLAP DMA    Write
+                                
+Bit 7- Reserved     Reserved for future enhancement.
+2
+Bit 0  DMA          Any   data   for  the  Command   iswill   be
+       (Optional)   transferred via the DMA interface. Note this
+                    does not apply for the Command Packet.
+Bit 1  OVERLAP      The  device  may release the ATA bus  before
+       (Optional)   this  command has completed. Release of  the
+                    ATA bus is at the discretion of the device.
+
+
+Table 13 - ATAPI Byte Count Register (ATA Cylinder High/Low
+Register)
+
+D7      D6     D5      D4     D3     D2      D1     D0      
+                Byte Count (Bits 0-7)                      R/W
+                Byte Count (Bits 8-15)                     R/W
+
+The Byte Count is used for PIO only. The count shall be set prior
+to  the  issuance of the Packet Command. The count  contains  the
+total transfer size for commands that transfer only one group  of
+data  (e.g.  Mode  Sense  / Select, Inquiry)  For  commands  that
+require  multiple DRQ Interrupts (e.g. Read, or Write) the  count
+is  set  to  the desired transfer size. When any data  is  to  be
+transferred,  the ATAPI Device will sets the Byte  Count  to  the
+amount  of  data that the Host shall transfer and then issue  the
+DRQ Interrupt. The contents of this register shall not change
+during the DRQ.
+
+Table 14 - ATAPI Interrupt Reason Register (ATA Sector Count
+Register)
+
+D7     D6     D5      D4     D3      D2      D1     D0       
+           Reserved                  RELEASE IO     C/D-   Read
+
+Bit 0  C/D-         Command or Data. When this bit is zero  then
+                    the  information being transferred  is  user
+                    data, when one then the data is Command.
+Bit 1  IO           Direction for the Information transfer,
+                    where in to the Host is indicated by a
+                    value of one and out to the device is zero.
+
+                    IO   DRQ  C/D-
+                    0    1    1    Command - Ready to Accept
+                                   Command Packet Bytes
+                    1    1    1    Message (Future) - Ready to
+                                   Send Message data to Host
+                    1    1    0    Data To Host- Send command
+                                   parameter data (e.g. Read
+                                   Data) to the host
+                    0    1    0    Data From Host - Receive
+                                   command parameter data (e.g.
+                                   Write Data) from the host
+                    1    0    1    Status - Register contains
+                                   Completion Status
+Bit 2  RELEASE      Release indicates that the device has
+                    released the ATA bus before completing the
+                    command in progress.
+
+Table 15  - ATAPI Device Select Register (ATA Drive / Head
+Select Register)
+
+D7     D6     D5      D4     D3      D2     D1     D0       
+1      Reser- 1       DRV      Reserved for SAM LUN       R/W
+       ved
+
+Bit 4  DRV          This bit selects either Device 0 (DRV=0) or
+                    1 (DRV=1).
+
+Table 16 - ATAPI Device Control Register (ATA Device Control
+Register)
+
+D7     D6     D5      D4     D3      D2     D1     D0       
+        Reserved             1       SRST   nIEM   0     Write
+
+Bit 2  SRST          This  bit is the Software Reset. The  ATAPI
+                     Device shall follow the reset sequence  for
+                     SRST  defined  in 6.3 ATAPI Implementation
+                     of  ATA  SRST on page 59. There is also  a
+                     new  reset  capability  for  ATAPI  Devices
+                     utilizing  a RESET COMMAND (see  5.2
+                     ATAPI  Soft Reset Command and Protocol on   page
+                     39).
+Bit 1  nIEN          This bit enables/disables the interrupt  to
+                     the  host.  When nIEN=0 and the  device  is
+                     selected, INTRQ shall be enabled through  a
+                     tri-state  buffer.  When  nIEN=1   or   the
+                     device  is  not selected, the INTRQ  signal
+                     shall be in a high impedance state
+
+6. Annex A - BIOS and ATAPI Driver Compatibility
+This  section discusses the ATA features and functions that shall
+be  provided by the ATA Device to allow the BIOS and driver to be
+content.
+
+
+6.1  Reset Master/Slave Diagnostics Sequence
+A  Reset  Master/Slave Diagnostics Sequence with  a  Good  Status
+shall  be  provided or the BIOS shall not continue. When  the
+ATAPI  device is the slave device, and it does not respond  after
+the  Reset  or  Diagnostic Commands, the Master Device  shall
+return  an Error Condition to the Host Computer and all shall
+die.
+
+
+6.2  SRST Initialization Sequence
+The  SRST  bit in the ATAPI Device Control Register  (See  Table
+16  -  ATAPI  Device  Control Register  (ATA  Device  Control
+Register) on page 48) shall NOT be used by the ATAPI  Driver.
+Instead the ATAPI Device Driver shall  reset  the ATAPI  Device
+utilizing  the  ATAPI  Soft  Reset  command   (see 5.2 ATAPI Soft
+Reset Command and Protocol on page 39). Resetting the ATAPI Device
+using the ATA SRST would also reset any ATA hard drive attached,
+and if there are separate Drivers  for  an  IDE and an ATAPI device,
+each driver  would be resetting the others peripheral without the
+other  driver  being aware  of  the  reset. ATAPI device should
+wait until SRST is cleared by the host before completing their SRST
+sequence. After  Receipt of an ATAPI Packet Command there are
+several differences from the ATA Specification:
+A  value  other  than  00h in the status register  prior  to  the
+receipt of the first ATAPI Command Packet from the host may cause
+ATAPI Devices to be incorrectly identified by pre-ATAPI host BIOS
+as an ATA-compatible disk drive.
+Initializing  the task file upon receipt of an SRST  should  work
+since only immediate commands shall be executing when an  ATA
+disk  driver  issues  an SRST. To prevent interruption  of  ATAPI
+immediate  commands  which  have  not  finished  executing,   the
+function  of  the  DSC  bit  (i.e.  command  complete)  shall  be
+maintained.  On  a warm boot the BIOS and/or drivers  may  see  a
+status  of  00h  or 10h, depending on whether  or  not  an  ATAPI
+immediate command completed at the same time the system performed
+the WARM BOOT.
+The  signature  placed in the task file following an  SRST  shall
+remain  until the ATAPI device receives its first ATAPI  command,
+i.e.,  the  ATAPI device shall look NOT READY (DRDY=0).  This
+shall  not  affect the ATAPI device drivers ability  to  send
+ATAPI  commands to the ATAPI device since it is not  required  to
+wait  for  DRDY=1.  However, it shall prevent  ATA-compatible
+drivers, such as those performing power management, from  sending
+commands  to an ATAPI device until the ATAPI device has  received
+its  first  ATAPI command: ATAPI Packet Command,  ATAPI  Identify
+Device, ATAPI Soft Reset.
+ATAPI  drivers  wishing  to  use ATA  power  management  commands
+shallmust  poll  DRDY and, if it is not set, they shallmust  also
+look  at the Cylinder registers for the ATAPI signature.  If  the
+signature is present, the ATAPI driver shallmust issue the  ATAPI
+device an ATAPI command, re-enabling DRDY, before it can issue an
+ATA Power management command. Operating systems wishing to use  a
+common  ATA power management driver shallmust also be changed  to
+perform  this detection and recovery sequence, if they intend  to
+power-manage ATAPI devices.
+
+
+6.3  Special Handling of ATA Read and Identify Drive Commands
+ATAPI drivers shall not issue SRST since it may corrupt the state
+of  ATA IDE drives sharing the same cable. Instead, ATAPI drivers
+shall  use  the ATAPI Soft RESET command to initialize  an  ATAPI
+device. Note that ATAPI commands shall not be issued to a  device
+which  has  not  already been identified as an ATAPI  device.  In
+order to provide ATAPI drivers with the ability to force a device
+to  initialize its ATAPI signature (Cylinder High = EBh, Cylinder
+Low = 14h) without issuing an SRST, ATAPI devices shall abort the
+ATA Read and Identify Drive commands and initialize the task file
+with the ATAPI signature before clearing BSY.
+
+
+6.4  ATAPI aware BIOS and Driver Considerations
+Pre-ATAPI  BIOS shall not detect or configure ATAPI  devices.
+Some of these BIOS are capable of configuring ATA hard disks  for
+ATA  Mode  3 IOCHRDY operation. This places a special  burden  on
+ATAPI  drivers  to  detect the presence of any  ATA  disk  drives
+sharing the same port address and configure the ATAPI device  for
+a compatible mode of operation.
+Note  that  a  special  IDE port configuration  driver  must  be,
+provided  by the IDE card manufacturer, is necessary to configure
+the  cards proprietary IDE configuration control registers. These
+proprietary  IDE card drivers should be loaded before  the  ATAPI
+driver.
+During  ATAPI  device detection, ATAPI device drivers  or  ATAPI-
+aware  BIOS should verify that Status=00h (Not BSY, Not RDY)  and
+that the ATAPI signature Cylinder High = EBh, Cylinder Low =  14h
+are  present. If an ATAPI device is detected, then issue an ATAPI
+Identify Command to complete the ATAPI detection protocol and re-
+enable  the task file (DRDY=1). If the device is ready to  accept
+an ATA command, but no ATAPI signature is detected, then issue an
+ATA  Read  or Identify Drive command to the device to  force  the
+ATAPI device to initialize its signature. Then wait for BSY=0 and
+re-verify the presence of the ATAPI signature. If there is  still
+no ATAPI signature present, do not configure the device.
+ATAPI-aware  BIOS  and drivers should give special  attention  to
+managing  configurations where ATAPI drivers share  an  IDE  port
+address  (Cable) with ATA IDE drives and their drivers.  ATA  IDE
+drivers  frequently issue SRSTs to manage errors thereby  causing
+ATAPI devices to clear DRDY as part of their SRST ATAPI signature
+initialization sequence. If the ATAPI driver already  knows  that
+the  device  it wishes to issue an ATAPI command to is  an  ATAPI
+device, then it need not take special action since issuing any of
+the ATAPI commands which do not require DRDY=1, shall restore
+the  ATAPI device's ability to accept ATA commands. If,  however,
+the  ATAPI  driver  wishes to issue an ATA command  to  an  ATAPI
+device  which  has received an SRST from an ATA  IDE  driver,  it
+should issue the ATAPI device an ATAPI Soft Reset to restore  the
+ATAPI device's ability to accept ATA commands.
+Note  that  Newer  BIOS  detect the presence  of  a  Device (see
+3.3  ATA Compatibility on  page 6) by using the IDENTIFY DRIVE
+command, but older BIOS use configuration information from outside
+the IDE/ATA interface. It  has also been discovered that very old
+BIOS may issue an  ATA READ  command  to  detect  the presence  of
+an  ATA  IDE  drive.
+Therefore,  the  ATA READ and IDENTIFY DRIVE  commands  shall  be
+aborted  by ATAPI Devices. It has also been discovered that  some
+BIOS look at the status register to detect the presence of an ATA
+drive.
+Implementer's  Note:   Implementers of ATAPI  drivers  which  are
+intended  to  share a single cable with a disk  and  disk  driver
+should  ensure that the device has completed any issued  commands
+prior to changing the DRV bit.
+
+
+6.5  Default Timing
+ATAPI  devices  compatible with this specification shall  support
+ATA  mode 3 timing without requiring the host system to configure
+the  ATAPI device using any set features commands. ATAPI  devices
+must therefore either be fast enough to always supply data at the
+maximum  rate  allowed  by Mode 3 or the  ATAPI  device  must  be
+shipped with IORDY enabled.
+ATAPI   devices   shall   revert  to  their   default   interface
+configuration on a Power On Reset or a Hardware Reset.
+Implementer's Note:  A Non-Overlapped low-speed drive, Mode  0-2,
+may  affect  system performance when sharing the same cable  with
+hard  disk  drives  capable of mode 3  or  faster  data  transfer
+timing.
+
+
+6.6  Special Considerations for ATAPI
+
+6.6.1     Redundant Command Functionality (Task File vs. Packet)
+The  SCSI  Standard  has  provided some  commands  that  the  ATA
+Standard  also  provides. It is the intent of  this  standard  to
+allow  all the functionality to exist, by utilizing only  Command
+Packets.  This allows existing SCSI like drivers to  continue  to
+issue packets for all operation, and have some lower level driver
+convert  them  to  the  ATAPI protocol. Unfortunately  there  are
+existing  low  level drivers that would like to continue  to  use
+some non data transfer ATA Task File commands.
+
+6.6.1.1   ATAPI Identify Drive vs. Inquiry
+The  ATAPI  IDENTIFY DRIVE command has information that  the  low
+level   drivers   use   to   perform   ATA   interface   hardware
+configuration.  Information  in the  Identify  Drive  data  shall
+continue to look exactly as the ATA Identify Drive data does  for
+compatibility reasons. As the information in the Inquiry  Command
+cannot  be  returned  by the ATAPI Identify  Drive  Command,  the
+Inquiry  Command  shall  be supported for  use  by  higher  level
+drivers.
+
+6.6.1.2   Initialize Drive Parameters and Set Features vs. Mode
+Sense and Mode Select
+The INITIALIZE DRIVE PARAMETERS command does not contain a method
+to  provide non ATA device configuration information,  and  shall
+not  be  used; instead, the Mode Select and Mode Sense  from  the
+SCSI  standard shall be supported. The combination of Mode Select
+and Set Features commands contain all the necessary functionality
+and is most compatible with the existing BIOSes and OS Drivers.

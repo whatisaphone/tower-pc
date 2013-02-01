@@ -1,0 +1,456 @@
+<html>
+<body>
+
+<body bgcolor=#999999 text=#000000 link="#0000ff" vlink="#000099" background="paper.jpg">
+<title></title>					
+											
+<center>
+<h1>The Super VGA Graphics Card</h1>
+</center>
+
+<DD>The Super VGA Graphics Card is a step up from the plain old VGA. It offers both increased resolution
+and in some modes, a larger number of colours on screen at once. If you are programming in Real
+Mode on a PC, it can be a bit inconvenient, however, since I have never done any programming in
+Protected Mode, you will have to wait till I can ask my friend about programming it in a flat
+memory model.<br>
+This document describes VESA specification version 1.2. <p>
+
+<center><img src="tape2.gif"></center><p>
+
+<h2> The basics:</h2><p>
+
+
+<table border=1 width=45% align=left>
+
+<tr>
+  <td align=left width="50%" ><font SIZE=+1>Resolution</font></td>
+  <td width="25%" ><font SIZE=+1>Colours</font></td>
+  <td width="25%" ><font SIZE=+1>Memory Required</font></td>
+</tr>
+
+<tr>
+  <td>640 x 400</td>
+  <td>256</td>
+  <td>250Kb</td>
+</tr>
+
+<tr>
+  <td>640 x 480</td>
+  <td>256</td>
+  <td>300Kb</td>
+</tr>
+
+<tr>
+  <td>800 x 600</td>
+  <td>256</td>
+  <td>469Kb</td>
+</tr>
+
+<tr>
+  <td>1024 x 768</td>
+  <td>256</td>
+  <td>768Kb</td>
+</tr>
+
+<tr>
+  <td>1280 x 1024</td>
+  <td>256</td>
+  <td>1.28Mb</td>
+</tr>
+
+<tr>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>640 x 400</td>
+  <td>65536</td>
+  <td>500Kb</td>
+</tr>
+
+<tr>
+  <td>640 x 480</td>
+  <td>65536</td>
+  <td>600Kb</td>
+</tr>
+
+<tr>
+  <td>800 x 600</td>
+  <td>65536</td>
+  <td>930Kb</td>
+</tr>
+
+<tr>
+  <td>1024 x 768</td>
+  <td>65536</td>
+  <td>1.5Mb</td>
+</tr>
+
+<tr>
+  <td>1280 x 1024</td>
+  <td>65536</td>
+  <td>2.5Mb</td>
+</tr>
+
+<tr>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>640 x 400</td>
+  <td>16.7 million</td>
+  <td>750Kb</td>
+</tr>
+
+<tr>
+  <td>640 x 480</td>
+  <td>16.7 million</td>
+  <td>900Kb</td>
+</tr>
+
+<tr>
+  <td>800 x 600</td>
+  <td>16.7 million</td>
+  <td>1.4Mb</td>
+</tr>
+
+<tr>
+  <td>1024 x 768</td>
+  <td>16.7 million</td>
+  <td>2.25Mb</td>
+</tr>
+
+<tr>
+  <td>1280 x 1024</td>
+  <td>16.7 million</td>
+  <td>3.75Mb</td>
+</tr>
+</table>
+
+<DD>The VESA specification of the SVGA graphics card has many different modes available. As you can
+see from the table, some of these modes require quite a lot of graphics memory.<p>
+
+<DD>There are many different chipsets used by graphics cards, which would make it very inconvenient
+to program fpr them all. The VESA specification makes it easy to program for any graphics card
+which supports it, and most do. You can quickly and easily identify the make of the card, how
+much memory it has, and what modes it is capable of.<p>
+
+<DD>You can ask the BIOS for all this information by calling interrupts, as well as set any graphics
+mode.<br>
+<DD>The other thing I have found is that the BIOS does not seem to support printing text to screens
+with more than 256 colours. This means that you will have to write your own routines to do this
+trivial task. I will try and explain how to do this later.<p>
+
+<DD>Be warned. Programming the SVGA card requires some knowlage of interrupts, data structures, and
+some assembler can really help.<br clear>
+
+		<center><img src="tape2.gif"></center><p>
+
+<DD>I will start by explaining the structure of the video memory when in the various modes. I
+suggest you have a look at the page on programming the VGA card if you are not familiar with
+it.<p>
+
+<h2>Memory Banks:</h2>
+<DD>One thing you may have noticed is that, although the graphics modes require several hundred Kb
+of memory, the PC only lets you write to 64Kb of graphics memory, starting at segment A000h.
+This is of course a problem, and is solved by bank switching.<p>
+
+
+<img src="banks.gif" align=left>
+<DD>The graphics memory is split up into several banks of 64Kb each. To access some graphics memory,
+you first need to tell the graphics card which bank you want access to. <p>
+
+<DD>The diagram shows memory split up into discrete banks (ie the banks are 65536 bytes apart).
+However, this is not always the case. Some graphics cards allow you to address banks 4096 bytes
+apart. I will explain this in more detail later, but all you need to know for now is that you
+cannot address all the memory at once.<p>
+
+<DD>One more important thing to keep in mind is that the end of a bank does not always come at the
+end of a scanline. This can be inconvenient, but there are easy and efficient ways to get
+round the problem.
+<br clear>
+<p>
+
+<h2>Windowing</h2>
+<DD>This has nothing to do with Microsoft Windows. This is how you access the banks. The graphics
+card lets you access different portions of its memory by allowing you to move a window around
+its memory.<p>
+
+<img src="x_window.gif" align=left>
+<DD>The BIOS may provide you with up to 2 windows, called A and B. They may be either readable or
+writable or both. Often, though, one will be readable, the other writable. You can move these
+windows around the memory. The picture shows them in arbitary places in memory, but often, you
+will only be able to move them in 4Kb or 64Kb steps. <p>
+
+<DD>This is, of course, very annoying if you want to draw something very big to the screen, or
+something that crosses a window boundary. In these cases, you will have to draw it in more
+than one step. i.e. draw the first part, then move the window, then draw the next part. <p>
+
+<DD>This gets even more inconvenient if you want to draw large circles. An optimised circle drawing
+routing will plot eight pixels at once. This is not possible in this case, because, chances
+are, the pixels will be in different windows.<p>
+
+<br><br clear>
+<p>
+
+<DD>The end of a window will not fall at the end of a scanline unless the screen width is a power
+of 2. Again, this is seriously pissing off when drawing sprites. I will explain about getting
+round this later.
+
+<p>
+
+
+		<center><img src="tape2.gif"></center><p>
+
+<b><font SIZE=+2>256 colour modes (8 - bit):</font></b><br>
+
+<DD>These modes are very similar to the normal VGA 256 colour mode. Every pixel on the screen is
+represented by one byte. This allows 256 colours to be displayed on the screen at once, selected
+from a palette of 262,144.<p>
+
+<b><font SIZE=+2>32768 colour modes (15 - bit):</font></b><br>
+<DD>There is a real difference between the 8 bit and 15 bit modes. The 15 bit mode allows you to
+directly specify the red, green and blue content of every pixel. You no longer have to set up
+a palette, and you are not restricted to a limited selection of 256 colours. <p>
+
+<DD>Although this is called a 15 bit mode, every pixel has 2 bytes assigned to it for convenience,
+and the most significant bit (bit 15) is unused. 
+
+<center><img src="x_rgb15.gif"></center>
+
+<DD>Each colour is assigned 5 bits. So every pixel can have a choice of 32 levels of red green and
+blue. Giving a total of 32768 colours.<p>
+
+<b><font SIZE=+2>65536 colour modes (16 - bit):</font></b><br>
+
+<DD>This is the same as the 15 bit mode except for the face that the green value is assigned one
+more bit.
+
+<center><img src="x_rgb16.gif"></center>
+
+Giving 65536 colours.<p>
+
+<b><font SIZE=+2>16.7 million colour modes (24 - bit):</font></b><br>
+<DD>In this mode, each pixel is assigned 3 bytes. One each for red, green and blue. This lets you
+specify 256 levels of each, giving a total of 16777216 different colours. Thats more colours
+than there are pixels on screen.
+
+		<center><img src="tape2.gif"></center><p>
+
+
+<h2>Getting Started:</h2>
+
+<DD>Ok, here I will explain how to go about setting up the data structures and calling the
+interrupts necessary to set up the SVGA card. I am going to have to assume that you know
+about structures and interrupts because this is not really the place to explain such things.<p>
+
+<a href="x_svga_i.htm">Extended VGA BIOS Interrupt list</a>
+
+<br>
+<p><tr><td colspan=2><hr></td></tr><p>
+<p>
+
+<center><h1>An Example Program</h1></center>
+<p>
+
+<DD>Right, now you know all that, (don't bother learning it all off by heart), Its time to see an
+example of all this in action, as it were. <p>
+
+<DD>This example application will be a bare-bones kind of thing. Not really doing anything useful.
+I will write most of it in English and pseudo code, with some small bits of it in Assembler
+maybe.<p>
+For clarity, I am going to split the program up on several different pages, listed below.<p>
+
+
+<h4> What will this program do? </h4>
+0. <a href="x_vapp00.htm">Data Structures for the application.</a><br>
+1. <a href="x_vapp01.htm">Detect to see if a VESA BIOS is present.</a><br>
+2. <a href="x_vapp02.htm">Look for all the colour modes, and ask the user to choose a resolution.</a><br>
+3. <a href="x_vapp03.htm">Save the state of the video card.</a><br>
+4. <a href="x_vapp04.htm">Switch to that resolution.</a><br>
+5. <a href="x_vapp05.htm">Set the virtual screen to be twice the screen width.</a><br>
+6. <a href="x_vapp06.htm">fill the screen with random pixels.</a><br>
+7. <a href="x_vapp07.htm">Scroll and pan around the screen a bit.</a><br>
+8. <a href="x_vapp08.htm">Restore the screen to its former state.</a><br>
+
+
+<p><tr><td colspan=2><hr></td></tr><p>
+
+<center><h1>Some of the finer points</h1></center>
+<DD>I'm sitting here in the computer room, writing this document, and listening to Radio 1. (that's
+an English radio station for those of you on far away bits of this planet). They're playing
+the Alabama 3, Live! If you haven't heard them they are so cool. Kind of Acid Blues, really
+mellow, but funky at the same time. There's nothing like it.<p>
+
+<DD>Enough of the useless banter. On with the information. OK, so now you know how to setup and
+use a SVGA screen. That's not all there is to it though. As they say, it's not what you do, its
+how you do it. There are many ways to use the above functions and procedures. I have't really
+had much practice with this, so my advice will be limited. No doubt many of you will be able to
+figure out far superior methods and algorithms, but here are a few tips.
+
+<h3>1. Avoid Bank Switching</h3>
+ok, so you're not surprised. Bank switching takes time. If you are going to be writing lots of
+individual pixels to the screen, say in a star field, there are many ways to avoid excessive
+bank switching. <p>
+
+Try to write all the pixels in one bank before switching to the next. ie, write all those
+pixels in bank 0, then switch to bank 1 and write all the pixels in that bank. <br>
+If this is not possible, then keep a record of the current bank and don't switch if you
+don't need to.<p>
+
+The VESA specification says this:<br>
+
+<blockquote><i>
+The organization of most software algorithms which perform video operations
+consists of a pair of nested loops: and outer loop over rows or scan lines and
+an inner loop across the row or scan line.  The latter is the proverbial inner
+loop, which is the bottle neck to high performance software.<p>
+
+If a target rectangle is large enough, or poorly located, part of the required
+memory may be with within the video memory mapped into the CPU address space and
+part of it may not be addressable by the CPU without changing the mapping.  It
+is desirable that the test for remapping the video memory is located outside of
+the inner loop.<p>
+
+If the granularity is equal to the length of the CPU address space, i.e. the
+least significant address bit of the hardware mapping function is more
+significant than the most significant bit of the CPU address, then the inner
+loop will have to contain the test for crossing the end or beginning of the CPU
+address space.  This is because if the length of the CPU address space (which is
+the granularity in this case) is not evenly divisible by the length of a scan
+line, then the scan line at the end of the CPU address will be in two different
+video memory which cannot be mapped into the CPU address space simultaneously.
+
+</i></blockquote>
+
+<DD>OK, so that's a bit of a mouthfull. However what they say is only partly true. Indeed, if
+the end of a bank occurs in the middle of a scan line, it can make things a little bit
+inconvenient, but it should never be necessary to check if the end of the bank has been reached
+after every pixel write. <p>
+
+<DD>It may be a little hard to visualise exactly what is happening here, so I think a picture is
+in order.<p>
+<center><img src="bankzoom.gif" width=516 height=242></center>
+<p>
+
+<DD>Right, so the big stripy thing is meant to be a representation of the screen, showing the
+banks. If you look closely, you can see that the end of the banks fall somewhere in the middle
+of the scanlines. <p>
+
+<DD>Now, lets say that we wanted to fill in that rectangle which falls right over that bank
+boundrary. The VESA specification reckons that, as we plot each pixel, we have to check to see
+if we have crossed into the next bank, and, if so, switch.<p>
+
+<DD>This is not so. Imagine you were the rectangle filling routine, you personally. And you
+were going to fill in the rectangle. You would be smart about it wouldn't you? So the algorithm
+can be made smart.<p>
+
+<DD>So the filling would be done a scanline at a time. Now, if the end of the bank does not
+occur in any particular scanline, then there is absolutely no point in checking while it is
+being drawn. If it does occur, then why not fill up to the bank boundary, switch bank, then
+continue filling.<p>
+
+<DD>A good way to keep track of all these banks is to keep an array specifying which bank
+each scanline is in, and, if it crosses a bank boundrary, at which X-coordinate this happens.
+The array should have as many elements as there are scan lines in the entire virtual screen.
+When you are writing to the screen, a scan line at a time, you need two inner loops, one to
+handle lines which do not cross a boundary, and one which handles lines which do.<p>
+
+The format of this array would be as follows:
+<pre>
+structure BankArray
+    integer BankNum		; The bank the first pixel on the scanline
+				; resides in
+    integer Boundary		; the last pixel in the scan line which
+				; resides in that bank. If there is no boundary
+				; then set this value to the Logical screen width
+end structure
+
+array BankArray(0 to NumScanLines-1)
+</pre>
+<p>
+
+um, I think an example would be in order:<p>
+
+<DD>OK, so i'll take the standard example. The screen is in 640x480 256 colour mode. The banks
+are 65536 bytes, and the window granularity is also 65536 bytes, so each bank occupies
+102.4 scanlines.<p>
+
+The first 102 scanlines reside entirely inside bank 0.
+<pre>
+   BankArray.Banknum(i) = 0
+   BankArray.Boundary(i) = 0		;0 meaning that no bank change happens
+</pre>
+
+The 103rd scanline (number 102) crosses a bank boundary. Its 257th pixel (number 256) resides
+in bank 1:
+<pre>
+   BankArray.Banknum(102) = 0
+   BankArray.Boundary(102) = 255	;last pixel on this line in bank 0
+</pre>
+
+Before the filling algorithm writes to a scanline, it should check to see if either of the two X 
+coordinates are greater than BankArray.Boundary(i). <br>
+If they are not, then fill normally.<br>
+If they are both larger, then switch to the next bank and fill normally.<br>
+If they are on either side of the boundary, then it should fill up to the boundary, switch bank,
+and continue the rest of the fill.<p>
+
+I think it's time for a little pseudocode to make things clearer. I can't guarantee that this
+code works. I just wrote it off the top of my head. Please tell me if you spot a mistake.<br>
+
+<pre>
+Procedure FillRectangle (x, y, xsize, ysize, colour)
+   ScreenPointer = y * LogicalWidth + x
+   SwitchBank(BankArray.BankNum(y))
+
+   loop y from y to (y+ysize-1)
+
+      ; is there a bank boundary on this line ?
+      if BankArray.BankBoundary(y) > 0 then
+
+ 	; does it happen before the rectangle ?
+	if BankArray.BankBoundary(y) <= x then
+	  switch bank to BankArray.BankNum(y)
+	  ScreenPointer = x - BankArray.BankBoundary(y)
+	  ; draw this line
+	  write xsize bytes to the screen
+	end if
+
+
+	; does it happen in the rectangle ?
+	if (BankArray.BankBoundary(y) > x) and (BankArray.BankBoundary(y) < x+xsize-1) then
+	  ; draw the first part of this line
+          write (BankArray.BankBoundary(y)-x) bytes to the screen
+	  switch bank to BankArray.BankNum(y)
+	  ScreenPointer = 0				; the begining of the new bank
+	  ; draw the rest of this line
+	  write xsize-(BankArray.BankBoundary(y)-x) bytes to the screen	  
+  	  ScreenPointer = ScreenPointer + 640-xsize	; next line
+	end if
+
+ 	; does it happen after the rectangle ?
+	if BankArray.BankBoundary(y) > x+xsize-1 then
+	  ; draw this line
+	  write xsize bytes to the screen
+	  switch bank to BankArray.BankNum(y)
+  	  ScreenPointer = ScreenPointer + 640-xsize - 65536
+	end if
+
+      ; No bank boundary on this line
+      else
+	; otherwise, just keep drawing
+	write xsize bytes to the screen			; write the colour
+	ScreenPointer = ScreenPointer + 640-xsize	; next line
+      end if	
+   end loop
+
+end FillRectangle
+</pre>
+
+</body>
+</html>

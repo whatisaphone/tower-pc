@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>
+Chapter 12  Debugging
+</title>
+<body>
+Prev: <a href="chp11-02.htm">11.2  General Multiprocessing</a><br><br>
+Next: <a href="chp12-01.htm">12.1  Debugging Features of the Architecture</a>
+<hr>
+<h2>
+Chapter 12  Debugging
+</h2>
+<hr>
+<p>
+The 80386 brings to Intel's line of microprocessors significant advances in
+debugging power. The single-step exception and breakpoint exception of
+previous processors are still available in the 80386, but the principal
+debugging support takes the form of debug registers. The debug registers
+support both instruction breakpoints and data breakpoints. Data breakpoints
+are an important innovation that can save hours of debugging time by
+pinpointing, for example, exactly when a data structure is being
+overwritten. The breakpoint registers also eliminate the complexities
+associated with writing a breakpoint instruction into a code segment
+(requires a data-segment alias for the code segment) or a code segment
+shared by multiple tasks (the breakpoint exception can occur in the context
+of any of the tasks). Breakpoints can even be set in code contained in ROM.
+<p>
+<ul>
+<li><a href="chp12-01.htm#12-01">12.1  Debugging Features of the Architecture</a>
+<li><a href="chp12-02.htm#12-02">12.2  Debug Registers</a>
+<li>    <a href="chp12-02.htm#12-02-01">12.2.1  Debug Address Registers (DR0-DR3)</a>
+<li>    <a href="chp12-02.htm#12-02-02">12.2.2  Debug Control Register (DR7)</a>
+<li>    <a href="chp12-02.htm#12-02-03">12.2.3  Debug Status Register (DR6)</a>
+<li>    <a href="chp12-02.htm#12-02-04">12.2.4  Breakpoint Field Recognition</a>
+<li><a href="chp12-03.htm#12-03">12.3  Debug Exceptions</a>
+<li>    <a href="chp12-03.htm#12-03-01">12.3.1  Interrupt 1 -- Debug Exceptions</a>
+<li>        <a href="chp12-03.htm#12-03-01-01">12.3.1.1  Instruction Addrees Breakpoint</a>
+<li>        <a href="chp12-03.htm#12-03-01-02">12.3.1.2  Data Address Breakpoint</a>
+<li>        <a href="chp12-03.htm#12-03-01-03">12.3.1.3  General Detect Fault</a>
+<li>        <a href="chp12-03.htm#12-03-01-04">12.3.1.4  Single-Step Trap</a>
+<li>        <a href="chp12-03.htm#12-03-01-05">12.3.1.5  Task Switch Breakpoint</a>
+<li>    <a href="chp12-03.htm#12-03-02">12.3.2  Interrupt 3 -- Breakpoint Exception</a>
+<p>
+<li><a href="chp12-02.htm#F-12-01">Figure 12-1.   Debug Registers</a>
+<p>
+<li><a href="chp12-02.htm#T-12-01">Table  12-1.   Breakpoint Field Recognition Examples</a>
+<li><a href="chp12-03.htm#T-12-02">Table  12-2.   Debug Exception Conditions</a>
+</ul><hr>
+Prev: <a href="chp11-02.htm">11.2  General Multiprocessing</a><br><br>
+Next: <a href="chp12-01.htm">12.1  Debugging Features of the Architecture</a>
+</body>
+</html>

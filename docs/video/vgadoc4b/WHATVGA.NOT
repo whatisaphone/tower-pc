@@ -1,0 +1,123 @@
+This file contains my notes on some of the functions and features of video
+cards in general and the implemantation of WHATVGA in specific.
+
+
+Accessing video memory:
+  Standard VGA uses the 128K address space at A0000h-BFFFFh (B0000h-B7FFFh or
+  B8000h-BFFFFh for text modes, A0000h-AFFFFh for graphics modes and with an
+  option to use all 128K). As the 16color modes use a planar system where
+  several (typically 4) bytes are located at the same address the 64K space
+  at A0000h-AFFFFh can address the entire 256K bytes on the original VGA.
+  The problem is with mode 13h which does not use the planar system. On the
+  original VGA there is no "good" way to access all of memory in mode 13h.
+  Two work arounds are known: 1) Enable A0000h-BFFFFh (rather than the default
+  A0000h-AFFFFh) to access 128K, 2) Set the memory access) to planar mode but
+  keep the attribute controller in packed pixel mode. This is the basis for
+  the various "Mode X" implementations giving 360x200, 360x400 and similar
+  resolutions, of course drawing requires switching planes as pixel 0,1,2&3
+  are now in 4 separate planes. Both methods probably fails on some clones.
+
+  The usual way to access video memory is through a window (often called bank).
+  A bank register controls which part of video memory can be accessed in the
+  window. The size and location of the window and the granularity of the bank
+  register depends on the chipset. Some chipsets supports two windows, either
+  as two separate windows, or by having separate read and write bank registers
+  so that copying from one location to another within the window area can
+  actualy copy from any location of video memory to another (This is what is
+  referred to as "Read/Write banks" in WHATVGA).
+
+  The VESA VBE interface is a very general implementation of the above,
+  supporting 1 or 2 banks with separate size, location and read/write status.
+
+  Another way of accessing video memory is to have it mapped as a contigous
+  block (usually called linear aperture). This block must be mapped above
+  system memory as most (=all) memory controllers (and operating systems) will
+  insist on mapping RAM as a solid block from 1M upwards. For ISA systems the
+  aperture must be mapped in the first 16MB which can seriously limit the
+  amount of RAM that can be in the system (often 12 or 14MB).
+  VESA bus systems often fail to implement some of the address pins in the
+  A26-A31 range, thus memory (on the bus) may be limited to 64 or 128Mb.
+  Note that motherboard VGAs are not limited by the external bus system!
+  Some chipsets (including all PCI systems) can map the aperture at a
+  programmable location while others maps at a fixed location (often because
+  the address is decoded by external logic with the result input to the VGA on
+  a single pin - Tseng ET4000, Cirrus CL-GD542x among others).
+
+  Using the linear aperture requires a way to access memory above 1Mb, either
+  via INT 15h, AH=87h or one of the memory extender interfaces (VCPI, DPMI..)
+
+
+DAC access:
+  Usually the DAC registers are accessed at the 4 I/O address 3C6h-3C9h (VGA)
+  or 2E8h-2EBh (8514/A, ATI Mach8/32).
+  Most newer DACs uses (upto) 8 or 16 addresses and thus requires 1 or 2 extra
+  address lines. One way is to use one or two of the upper address lines
+  (A10-A15), since most I/O cards only decodes A0-A9 for I/O cycles.
+  This method is used with most older Compaq and Weitek cards, but is not
+  used much now because it doesn't fit well with the PCI configuration.
+  The other method is to use one or two I/O pins on the VGA chip controlled
+  from a register.
+
+  The standard DAC registers (3C6h-3C9h) corresponds to the DAC registers
+  REG02,REG03,REG00 and REG01. The strange order comes from the fact that the
+  two lower address bits (A0 and A1) are connected directly to the RS0 and RS1
+  lines on the DAC and external logic ensure that the DAC chip select is only
+  active for the addresses 3C6h to 3C9h. Specifically:
+    I/O addr   A1(RS1)  A0(RS0)   DAC Chip Select   DAC Reg#
+      3C5h        0        1           No              ---
+      3C6h        1        0           Ok             REG02
+      3C7h        1        1           Ok             REG03
+      3C8h        0        0           Ok             REG00
+      3C9h        0        1           Ok             REG01
+      3CAh        1        0           No              ---
+
+  There are systems where DAC access is through memory mapped registers.
+  Matrox, the newer Weiteks and the ATI Mach64 (optional) are examples.
+  A specific address corresponds to each of the 4/8/16/32 DAC addresses,
+  so that each access to this address causes a read or write of the
+  corresponding DAC address.
+
+  The setDACpage/clearDACpage rutines works perfectly with the I/O based DAC
+  systems, whether they use upper address bits or VGA I/O bits, and they
+  interface easily to the various register and index rutines (wrinx...).
+
+  However for the memory mapped DAC systems the rd/wr/clr/mod/setDACreg
+  rutines must be used, consequently all the DAC rutines should (and will
+  eventually) be changed to the *DACreg rutines.
+
+  In standard VGA systems the DAC palette has 256 entries of 18bits (6bits
+  per basic color - Red, Green and Blue) allowing for 256 colors out of 256K.
+  Some DACs have (or can be configured for) 8bits per basic color, I.e. 256
+  entries of 24bits allowing 256 colors out of 16M colors.
+
+  Some DACs can do Gamma Correction in Hi/True color modes, where the bits for
+  each basic color (Red, Green and Blue) are passed through the palette before
+  reaching the DAC. This allows you to use non-linear color scales to correct
+  color misrepresentation in the monitor, and of course also allows some of the
+  palette manipulation tricks usually reserved for palette modes (how does
+  flashing 24bit color sound ?).
+
+
+
+Display Start Address:
+  The Display Start Address controls where in video memory the displayed
+  image starts (I.e. where the first pixel is located).
+  Standard VGA has 16bits in 3d4h index 0Ch and 0Dh, most all SVGA chipsets
+  have some extra bits.
+  The first problem is the resolution, usually this is 4 bytes in packed
+  modes (PK4 and >=256 colors), 1byte in planar (16 color VGA) modes (remember
+  there are 4 planes for each byte) and 2 bytes in text modes (again there are
+  4 planes per two bytes visible), however some chipsets have modes where
+  the resolution is different, typically 8 bytes in packed modes.
+  The other problem is how to scroll single pixels horizontally. As seen above
+  the Display Start Address is usually in units of 4 (packed) or 8 (planar)
+  pixels. Standard VGA has the pixel PEL register (3C0h index 13h) for single
+  pixel scrolling which also works for extended modes on most chipsets, but
+  there are some chipsets where this does not work for extended modes.
+  If single pixel horizontal scrolling does not work the screen will appear
+  to scroll in "jumps" of 2/4/8/16 pixels depending on chipset, mode and
+  bits per pixel which is annoying but not really a problem, however in 24bit
+  modes (P24 modes, NOT P32) which uses 3 bytes per pixel this will cause
+  dramatic color shifts when scrolling horizontally as the programmed starting
+  address is in multipla of 4 (or 8) bytes, but the pixels start on every
+  3rd byte

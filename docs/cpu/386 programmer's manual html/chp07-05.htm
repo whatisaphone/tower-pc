@@ -1,0 +1,171 @@
+<html>
+<head>
+<title>
+7.5  Task Switching
+</title>
+<body>
+<a name="07-05"></a>
+Prev: <a href="chp07-04.htm">7.4  Task Gate Descriptor</a><br>
+Next: <a href="chp07-06.htm">7.6  Task Linking</a>
+<hr>
+<h2>
+7.5  Task Switching
+</h2>
+<p>
+The 80386 switches execution to another task in any of four cases:
+<p>
+<pre>
+  1.  The current task executes a JMP or CALL that refers to a TSS
+      descriptor.
+
+  2.  The current task executes a JMP or CALL that refers to a task gate.
+
+  3.  An interrupt or exception vectors to a task gate in the IDT.
+
+  4.  The current task executes an IRET when the NT flag is set.
+</pre>
+JMP, CALL, IRET, interrupts, and exceptions are all ordinary mechanisms of
+the 80386 that can be used in circumstances that do not require a task
+switch. Either the type of descriptor referenced or the NT (nested task) bit
+in the flag word distinguishes between the standard mechanism and the
+variant that causes a task switch.
+<p>
+To cause a task switch, a JMP or CALL instruction can refer either to a TSS
+descriptor or to a task gate. The effect is the same in either case: the
+80386 switches to the indicated task.
+<p>
+An exception or interrupt causes a task switch when it vectors to a task
+gate in the IDT. If it vectors to an interrupt or trap gate in the IDT, a
+task switch does not occur. Refer to Chapter 9 for more information on the
+interrupt mechanism.
+<p>
+Whether invoked as a task or as a procedure of the interrupted task, an
+interrupt handler always returns control to the interrupted procedure in the
+interrupted task. If the NT flag is set, however, the handler is an
+interrupt task, and the IRET switches back to the interrupted task.
+<p>
+A task switching operation involves these steps:
+<p>
+<ol>
+<li>  Checking that the current task is allowed to switch to the designated
+      task. Data-access privilege rules apply in the case of JMP or CALL
+      instructions. The DPL of the TSS descriptor or task gate must be less
+      than or equal to the maximum of CPL and the RPL of the gate selector.
+      Exceptions, interrupts, and IRETs are permitted to switch tasks
+      regardless of the DPL of the target task gate or TSS descriptor.
+
+<li>  Checking that the TSS descriptor of the new task is marked present
+      and has a valid limit. Any errors up to this point occur in the
+      context of the outgoing task. Errors are restartable and can be
+      handled in a way that is transparent to applications procedures.
+
+<li>  Saving the state of the current task. The processor finds the base
+      address of the current TSS cached in the task register. It copies the
+      registers into the current TSS (EAX, ECX, EDX, EBX, ESP, EBP, ESI,
+      EDI, ES, CS, SS, DS, FS, GS, and the flag register). The EIP field of
+      the TSS points to the instruction after the one that caused the task
+      switch.
+
+<li>  Loading the task register with the selector of the incoming task's
+      TSS descriptor, marking the incoming task's TSS descriptor as busy,
+      and setting the TS (task switched) bit of the MSW. The selector is
+      either the operand of a control transfer instruction or is taken from
+      a task gate.
+
+<li>  Loading the incoming task's state from its TSS and resuming
+      execution. The registers loaded are the LDT register; the flag
+      register; the general registers EIP, EAX, ECX, EDX, EBX, ESP, EBP,
+      ESI, EDI; the segment registers ES, CS, SS, DS, FS, and GS; and PDBR.
+      Any errors detected in this step occur in the context of the incoming
+      task. To an exception handler, it appears that the first instruction
+      of the new task has not yet executed.
+</ol>
+Note that the state of the outgoing task is always saved when a task switch
+occurs. If execution of that task is resumed, it starts after the
+instruction that caused the task switch. The registers are restored to the
+values they held when the task stopped executing.
+<p>
+Every task switch sets the TS (task switched) bit in the MSW (machine
+status word). The TS flag is useful to systems software when a coprocessor
+(such as a numerics coprocessor) is present. The TS bit signals that the
+context of the coprocessor may not correspond to the current 80386 task.
+Chapter 11 discusses the TS bit and coprocessors in more detail.
+<p>
+Exception handlers that field task-switch exceptions in the incoming task
+(exceptions due to tests 4 thru 16 of Table 7-1) should be cautious about
+taking any action that might load the selector that caused the exception.
+Such an action will probably cause another exception, unless the exception
+handler first examines the selector and fixes any potential problem.
+<p>
+The privilege level at which execution resumes in the incoming task is
+neither restricted nor affected by the privilege level at which the outgoing
+task was executing. Because the tasks are isolated by their separate address
+spaces and TSSs and because privilege rules can be used to prevent improper
+access to a TSS, no privilege rules are needed to constrain the relation
+between the CPLs of the tasks. The new task begins executing at the
+privilege level indicated by the RPL of the CS selector value that is loaded
+from the TSS.
+<p>
+<p>
+<a name="T-07-01"></a>
+<h3>Table 7-1. Checks Made during a Task Switch</h3>
+<p>
+<p>
+<pre>
+Test     Test Description                   Exception
+NP = Segment-not-present exception, GP = General protection fault, TS =
+Invalid TSS, SF = Stack fault   Error Code Selects
+
+  1      Incoming TSS descriptor is         NP           Incoming TSS
+         present
+  2      Incoming TSS descriptor is         GP           Incoming TSS
+         marked not-busy
+  3      Limit of incoming TSS is           TS           Incoming TSS
+         greater than or equal to 103
+
+             -- All register and selector values are loaded --
+
+  4      LDT selector of incoming           TS           Incoming TSS
+         task is valid
+  5      LDT of incoming task is            TS           Incoming TSS
+         present
+  6      CS selector is valid
+</pre>Validity tests of a selector check that the selector is in the proper
+table (eg., the LDT selector refers to the GDT), lies within the bounds of
+the table, and refers to the proper type of descriptor (e.g., the LDT
+selector refers to an LDT descriptor).<pre>
+                                            TS           Code segment
+  7      Code segment is present            NP           Code segment
+  8      Code segment DPL matches           TS           Code segment
+         CS RPL
+  9      Stack segment is valid
+</pre>Validity tests of a selector check that the selector is in the proper
+table (eg., the LDT selector refers to the GDT), lies within the bounds of
+the table, and refers to the proper type of descriptor (e.g., the LDT
+selector refers to an LDT descriptor).<pre>
+                                            GP           Stack segment
+ 10      Stack segment is present           SF           Stack segment
+ 11      Stack segment DPL = CPL            SF           Stack segment
+ 12      Stack-selector RPL = CPL           GP           Stack segment
+ 13      DS, ES, FS, GS selectors are       GP           Segment
+         valid
+</pre>
+Validity tests of a selector check that the selector is in the proper
+table (eg., the LDT selector refers to the GDT), lies within the bounds of
+the table, and refers to the proper type of descriptor (e.g., the LDT
+selector refers to an LDT descriptor).
+<pre>
+ 14      DS, ES, FS, GS segments            GP           Segment
+         are readable
+ 15      DS, ES, FS, GS segments            NP           Segment
+         are present
+ 16      DS, ES, FS, GS segment DPL         GP           Segment
+         . CPL (unless these are
+         conforming segments)
+</pre>
+<p>
+<hr>
+Prev: <a href="chp07-04.htm">7.4  Task Gate Descriptor</a><br>
+Next: <a href="chp07-06.htm">7.6  Task Linking</a>
+</body>
+</html>

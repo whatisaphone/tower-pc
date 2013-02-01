@@ -1,0 +1,899 @@
+<html>
+<head>
+<title>
+17.3.L  'L' Instructions 
+</title>
+<body>
+<a name="17-03-L"></a>
+Prev: <a href="chp17-j3.htm">17.3.J  'J' Instructions </a><br>
+Next: <a href="chp17-m3.htm">17.3.M  'M' Instructions </a>
+<hr>
+<h2>
+17.3.L  'L' Instructions 
+</h2>
+<p>
+<a name="17-03-LAHF"></a>
+<h3>LAHF -- Load Flags into AH Register</h3>
+<p>
+<pre>
+Opcode  Instruction   Clocks   Description
+
+9F      LAHF          2        Load: AH = flags SF ZF xx AF xx PF xx CF
+</pre>
+<p>
+Operation
+<p>
+AH <- SF:ZF:xx:AF:xx:PF:xx:CF;
+<p>
+<b>Description</b>
+<p>
+LAHF transfers the low byte of the flags word to AH. The bits, from
+MSB to LSB, are sign, zero, indeterminate, auxiliary, carry,
+indeterminate, parity, indeterminate, and carry.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-LAR"></a>
+<h3>LAR -- Load Access Rights Byte</h3>
+<p>
+<pre>
+Opcode        Instruction      Clocks      Description
+</pre>
+0F  02 /r     LAR r16,r/m16    pm=15/16    r16 <- r/m16 masked by FF00
+0F  02 /r     LAR r32,r/m32    pm=15/16    r32 <- r/m32 masked by 00FxFF00
+<p>
+<p>
+<b>Description</b>
+<p>
+The LAR instruction stores a marked form of the second doubleword of
+the descriptor for the source selector if the selector is visible at the
+CPL (modified by the selector's RPL) and is a valid descriptor type. The
+destination register is loaded with the high-order doubleword of the
+descriptor masked by 00FxFF00, and ZF is set to 1. The x indicates that the
+four bits corresponding to the upper four bits of the limit are undefined in
+the value loaded by LAR. If the selector is invisible or of the wrong type,
+ZF is cleared.
+<p>
+If the 32-bit operand size is specified, the entire 32-bit value is loaded
+into the 32-bit destination register. If the 16-bit operand size is
+specified, the lower 16-bits of this value are stored in the 16-bit
+destination register.
+<p>
+All code and data segment descriptors are valid for LAR.
+<p>
+The valid special segment and gate descriptor types for LAR are given
+in the following table:
+<p>
+<pre>
+Type   Name                     Valid/Invalid
+
+  0    Invalid                  Invalid
+  1    Available 80286 TSS      Valid
+  2    LDT                      Valid
+  3    Busy 80286 TSS           Valid
+  4    80286 call gate          Valid
+  5    80286/80386 task gate    Valid
+  6    80286 trap gate          Valid
+  7    80286 interrupt gate     Valid
+  8    Invalid                  Invalid
+  9    Available 80386 TSS      Valid
+  A    Invalid                  Invalid
+  B    Busy 80386 TSS           Valid
+  C    80386 call gate          Valid
+  D    Invalid                  Invalid
+  E    80386 trap gate          Valid
+  F    80386 interrupt gate     Valid
+</pre>
+<b>Flags Affected</b>
+<p>
+ZF as described above
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS,
+ES, FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+#PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 6; LAR is unrecognized in Real Address Mode
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode
+<p>
+<p>
+<a name="17-03-LEA"></a>
+<h3>LEA -- Load Effective Address</h3>
+<p>
+Opcode  Instruction  Clocks  Description
+<p>
+<pre>
+8D  /r  LEA r16,m    2       Store effective address for m in register r16
+8D  /r  LEA r32,m    2       Store effective address for m in register r32
+8D  /r  LEA r16,m    2       Store effective address for m in register r16
+8D  /r  LEA r32,m    2       Store effective address for m in register r32
+</pre>
+<p>
+Operation
+<p>
+IF OperandSize = 16 AND AddressSize = 16
+THEN r16 <- Addr(m);
+ELSE
+<pre>
+   IF OperandSize = 16 AND AddressSize = 32
+   THEN
+      r16 <- Truncate_to_16bits(Addr(m));   (* 32-bit address *)
+   ELSE
+      IF OperandSize = 32 AND AddressSize = 16
+      THEN
+         r32 <- Truncate_to_16bits(Addr(m));
+      ELSE
+         IF OperandSize = 32 AND AddressSize = 32
+         THEN  r32 <- Addr(m);
+         FI;
+      FI;
+   FI;
+FI;
+</pre>
+<b>Description</b>
+<p>
+LEA calculates the effective address (offset part) and stores it in the
+specified register. The operand-size attribute of the instruction
+(represented by OperandSize in the algorithm under "Operation" above) is
+determined by the chosen register. The address-size attribute (represented
+by AddressSize) is determined by the USE attribute of the segment containing
+the second operand. The address-size and operand-size attributes affect the
+action performed by LEA, as follows:
+<p>
+Operand Size  Address Size  Action Performed
+<p>
+<pre>
+    16            16        16-bit effective address is calculated and
+                            stored in requested 16-bit register
+                            destination.
+
+    16            32        32-bit effective address is calculated. The
+                            lower 16 bits of the address are stored in
+                            the requested 16-bit register destination.
+
+    32            16        16-bit effective address is calculated. The
+                            16-bit address is zero-extended and stored
+                            in the requested 32-bit register destination.
+
+    32            32        32-bit effective address is calculated and
+                            stored in the requested 32-bit register
+                            destination.
+</pre>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#UD if the second operand is a register
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 6 if the second operand is a register
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode
+<p>
+<p>
+<a name="17-03-LEAVE"></a>
+<h3>LEAVE -- High Level Procedure Exit</h3>
+<p>
+Opcode  Instruction  Clocks  Description
+<p>
+<pre>
+C9      LEAVE        4       Set SP to BP, then pop BP
+C9      LEAVE        4       Set ESP to EBP, then pop EBP
+</pre>
+<p>
+Operation
+<p>
+IF StackAddrSize = 16
+THEN
+   SP <- BP;
+ELSE (* StackAddrSize = 32 *)
+   ESP <- EBP;
+FI;
+IF OperandSize = 16
+THEN
+   BP <- Pop();
+ELSE (* OperandSize = 32 *)
+   EBP <- Pop();
+FI;
+<p>
+<b>Description</b>
+<p>
+LEAVE reverses the actions of the ENTER instruction. By copying the
+frame pointer to the stack pointer, LEAVE releases the stack space used
+by a procedure for its local variables. The old frame pointer is popped
+into BP or EBP, restoring the caller's frame. A subsequent RET
+instruction removes any arguments pushed onto the stack of the exiting
+procedure.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#SS(0) if BP does not point to a location within the limits of the current
+stack segment
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode
+<p>
+<p>
+<a name="17-03-LGDT"></a>
+<h3>LGDT/LIDT -- Load Global/Interrupt Descriptor Table Register</h3>
+<p>
+<pre>
+Opcode       Instruction      Clocks        Description
+
+0F  01 /2    LGDT m16&32      11            Load m into GDTR
+0F  01 /3    LIDT m16&32      11            Load m into IDTR
+</pre>
+<p>
+Operation
+<p>
+IF instruction = LIDT
+THEN
+<pre>
+   IF OperandSize = 16
+   THEN IDTR.Limit:Base <- m16:24 (* 24 bits of base loaded *)
+   ELSE IDTR.Limit:Base <- m16:32
+   FI;
+ELSE (* instruction = LGDT *)
+   IF OperandSize = 16
+   THEN GDTR.Limit:Base <- m16:24 (* 24 bits of base loaded *)
+   ELSE GDTR.Limit:Base <- m16:32;
+   FI;
+FI;
+</pre>
+<b>Description</b>
+<p>
+The LGDT and LIDT instructions load a linear base address and limit
+value from a six-byte data operand in memory into the GDTR or IDTR,
+respectively. If a 16-bit operand is used with LGDT or LIDT, the
+register is loaded with a 16-bit limit and a 24-bit base, and the
+high-order eight bits of the six-byte data operand are not used. If a 32-bit
+operand is used, a 16-bit limit and a 32-bit base is loaded; the high-order
+eight bits of the six-byte operand are used as high-order base address bits.
+<p>
+The SGDT and SIDT instructions always store into all 48 bits of the
+six-byte data operand. With the 80286, the upper eight bits are undefined
+after SGDT or SIDT is executed. With the 80386, the upper eight bits
+are written with the high-order eight address bits, for both a 16-bit
+operand and a 32-bit operand. If LGDT or LIDT is used with a 16-bit
+operand to load the register stored by SGDT or SIDT, the upper eight
+bits are stored as zeros.
+<p>
+LGDT and LIDT appear in operating system software; they are not used
+in application programs. They are the only instructions that directly load
+a linear address (i.e., not a segment relative address) in 80386 Protected
+Mode.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the current privilege level is not 0; #UD if the source operand
+is a register; #GP(0) for an illegal memory operand effective address in
+the CS, DS, ES, FS, or GS segments; #SS(0) for an illegal address in
+the SS segment; #PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH; Interrupt 6 if the source operand is a
+register
+<p>
+<pre>
+---------------------------------------------------------------------------
+Note:
+  These instructions are valid in Real Address Mode to allow
+  power-up initialization for Protected Mode
+---------------------------------------------------------------------------
+</pre>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-LGS"></a>
+<h3>LGS/LSS/LDS/LES/LFS -- Load Full Pointer</h3>
+<p>
+<pre>
+Opcode      Instruction      Clocks   Description
+
+C5  /r      LDS r16,m16:16   7,p=22   Load DS:r16 with pointer from memory
+C5  /r      LDS r32,m16:32   7,p=22   Load DS:r32 with pointer from memory
+0F  B2 /r   LSS r16,m16:16   7,p=22   Load SS:r16 with pointer from memory
+0F  B2 /r   LSS r32,m16:32   7,p=22   Load SS:r32 with pointer from memory
+C4  /r      LES r16,m16:16   7,p=22   Load ES:r16 with pointer from memory
+C4  /r      LES r32,m16:32   7,p=22   Load ES:r32 with pointer from memory
+0F  B4 /r   LFS r16,m16:16   7,p=25   Load FS:r16 with pointer from memory
+0F  B4 /r   LFS r32,m16:32   7,p=25   Load FS:r32 with pointer from memory
+0F  B5 /r   LGS r16,m16:16   7,p=25   Load GS:r16 with pointer from memory
+0F  B5 /r   LGS r32,m16:32   7,p=25   Load GS:r32 with pointer from memory
+</pre>
+<p>
+Operation
+<p>
+CASE instruction OF
+<pre>
+   LSS: Sreg is SS; (* Load SS register *)
+   LDS: Sreg is DS; (* Load DS register *)
+   LES: Sreg is ES; (* Load ES register *)
+   LFS: Sreg is FS; (* Load FS register *)
+   LGS: Sreg is DS; (* Load GS register *)
+ESAC;
+IF (OperandSize = 16)
+THEN
+   r16 <- [Effective Address]; (* 16-bit transfer *)
+   Sreg <- [Effective Address + 2]; (* 16-bit transfer *)
+   (* In Protected Mode, load the descriptor into the segment register *)
+ELSE (* OperandSize = 32 *)
+   r32 <- [Effective Address]; (* 32-bit transfer *)
+   Sreg <- [Effective Address + 4]; (* 16-bit transfer *)
+   (* In Protected Mode, load the descriptor into the segment register *)
+FI;
+</pre>
+<b>Description</b>
+<p>
+These instructions read a full pointer from memory and store it in the
+selected segment register:register pair. The full pointer loads 16 bits
+into the segment register SS, DS, ES, FS, or GS. The other register loads 32
+bits if the operand-size attribute is 32 bits, or loads 16 bits if the
+operand-size attribute is 16 bits. The other 16- or 32-bit register to be
+loaded is determined by the r16 or r32 register operand specified.
+<p>
+When an assignment is made to one of the segment registers, the
+descriptor is also loaded into the segment register. The data for the
+register is obtained from the descriptor table entry for the selector
+given.
+<p>
+A null selector (values 0000-0003) can be loaded into DS, ES, FS, or
+GS registers without causing a protection exception. (Any subsequent
+reference to a segment whose corresponding segment register is loaded
+with a null selector to address memory causes a #GP(0) exception. No
+memory reference to the segment occurs.)
+<p>
+The following is a listing of the Protected Mode checks and actions taken in
+the loading of a segment register:
+<p>
+IF SS is loaded:
+<pre>
+   IF selector is null THEN #GP(0); FI;
+   Selector index must be within its descriptor table limits ELSE
+      #GP(selector);
+   Selector's RPL must equal CPL ELSE #GP(selector);
+   AR byte must indicate a writable data segment ELSE #GP(selector);
+   DPL in the AR byte must equal CPL ELSE #GP(selector);
+   Segment must be marked present ELSE #SS(selector);
+   Load SS with selector;
+   Load SS with descriptor;
+IF DS, ES, FS, or GS is loaded with non-null selector:
+   Selector index must be within its descriptor table limits ELSE
+      #GP(selector);
+   AR byte must indicate data or readable code segment ELSE
+      #GP(selector);
+   IF data or nonconforming code
+   THEN both the RPL and the CPL must be less than or equal to DPL in
+      AR byte;
+   ELSE #GP(selector);
+   Segment must be marked present ELSE #NP(selector);
+Load segment register with selector and RPL bits;
+Load segment register with descriptor;
+IF DS, ES, FS or GS is loaded with a null selector:
+   Clear descriptor valid bit;
+</pre>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS,
+ES, FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+the second operand must be a memory operand, not a register; #GP(0)
+if a null selector is loaded into SS; #PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+The second operand must be a memory operand, not a register; Interrupt
+13 if any part of the operand would lie outside of the effective address
+space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-LLDT"></a>
+<h3>LLDT -- Load Local Descriptor Table Register</h3>
+<p>
+<pre>
+Opcode      Instruction      Clocks   Description
+
+0F  00 /2   LLDT r/m16       20       Load selector r/m16 into LDTR
+</pre>
+<p>
+Operation
+<p>
+LDTR <- SRC;
+<p>
+<b>Description</b>
+<p>
+LLDT loads the Local Descriptor Table register (LDTR). The word
+operand (memory or register) to LLDT should contain a selector to the
+Global Descriptor Table (GDT). The GDT entry should be a Local Descriptor
+Table. If so, then the LDTR is loaded from the entry. The descriptor
+registers DS, ES, SS, FS, GS, and CS are not affected. The LDT field in the
+task state segment does not change.
+<p>
+The selector operand can be 0; if so, the LDTR is marked invalid. All
+descriptor references (except by the LAR, VERR, VERW or LSL
+instructions) cause a #GP fault.
+<p>
+LLDT is used in operating system software; it is not used in application
+programs.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the current privilege level is not 0; #GP(selector) if the
+selector operand does not point into the Global Descriptor Table, or if the
+entry in the GDT is not a Local Descriptor Table; #NP(selector) if the
+LDT descriptor is not present; #GP(0) for an illegal memory operand
+effective address in the CS, DS, ES, FS, or GS segments; #SS(0) for an
+illegal address in the SS segment; #PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 6; LLDT is not recognized in Real Address Mode
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode (because the instruction is
+not recognized, it will not execute or perform a memory reference)
+<p>
+Note
+<p>
+The operand-size attribute has no effect on this instruction.
+<p>
+<p>
+<a name="17-03-LMSW"></a>
+<h3>LMSW -- Load Machine Status Word</h3>
+<p>
+<pre>
+Opcode      Instruction      Clocks   Description
+
+0F  01 /6   LMSW r/m16       10/13    Load r/m16 in machine status word
+</pre>
+<p>
+Operation
+<p>
+MSW <- r/m16; (* 16 bits is stored in the machine status word *)
+<p>
+<b>Description</b>
+<p>
+LMSW loads the machine status word (part of CR0) from the source
+operand. This instruction can be used to switch to Protected Mode; if so,
+it must be followed by an intrasegment jump to flush the instruction
+queue. LMSW will not switch back to Real Address Mode.
+<p>
+LMSW is used only in operating system software. It is not used in
+application programs.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the current privilege level is not 0; #GP(0) for an illegal
+memory operand effective address in the CS, DS, ES, FS, or GS
+segments; #SS(0) for an illegal address in the SS segment; #PF(fault-code)
+for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+Notes
+<p>
+The operand-size attribute has no effect on this instruction. This
+instruction is provided for compatibility with the 80286; 80386 programs
+should use MOV CR0, ... instead.
+<p>
+<p>
+<a name="17-03-LOCK"></a>
+<h3>LOCK -- Assert LOCK# Signal Prefix</h3>
+<p>
+Opcode  Instruction  Clocks  Description
+<p>
+<pre>
+F0      LOCK         0       Assert LOCK# signal for the next instruction
+</pre>
+<p>
+<b>Description</b>
+<p>
+The LOCK prefix causes the LOCK# signal of the 80386 to be asserted
+during execution of the instruction that follows it. In a multiprocessor
+environment, this signal can be used to ensure that the 80386 has
+exclusive use of any shared memory while LOCK# is asserted. The
+read-modify-write sequence typically used to implement test-and-set on the
+80386 is the BTS instruction.
+<p>
+The LOCK prefix functions only with the following instructions:
+<p>
+<pre>
+BT, BTS, BTR, BTC                   mem, reg/imm
+XCHG                                reg, mem
+XCHG                                mem, reg
+ADD, OR, ADC, SBB, AND, SUB, XOR    mem, reg/imm
+NOT, NEG, INC, DEC                  mem
+</pre>
+An undefined opcode trap will be generated if a LOCK prefix is used
+with any instruction not listed above.
+<p>
+XCHG always asserts LOCK# regardless of the presence or absence of
+the LOCK prefix.
+<p>
+The integrity of the LOCK is not affected by the alignment of the
+memory field. Memory locking is observed for arbitrarily misaligned
+fields.
+<p>
+Locked access is not assured if another 80386 processor is executing an
+instruction concurrently that has one of the following characteristics:
+<p>
+<pre>
+  -  Is not preceded by a LOCK prefix
+
+  -  Is not one of the instructions in the preceding list
+
+  -  Specifies a memory operand that does not exactly overlap the
+     destination operand. Locking is not guaranteed for partial overlap,
+     even if one memory operand is wholly contained within another.
+</pre>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#UD if LOCK is used with an instruction not listed in the "Description"
+section above; other exceptions can be generated by the subsequent
+(locked) instruction
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 6 if LOCK is used with an instruction not listed in the
+"Description" section above; exceptions can still be generated by the
+subsequent (locked) instruction
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+#UD if LOCK is used with an instruction not listed in the "Description"
+section above; exceptions can still be generated by the subsequent (locked)
+instruction
+<p>
+<p>
+<a name="17-03-LODS"></a>
+<h3>LODS/LODSB/LODSW/LODSD -- Load String Operand</h3>
+<p>
+<pre>
+Opcode  Instruction   Clocks   Description
+
+AC      LODS m8       5        Load byte [(E)SI] into AL
+AD      LODS m16      5        Load word [(E)SI] into AX
+AD      LODS m32      5        Load dword [(E)SI] into EAX
+AC      LODSB         5        Load byte DS:[(E)SI] into AL
+AD      LODSW         5        Load word DS:[(E)SI] into AX
+AD      LODSD         5        Load dword DS:[(E)SI] into EAX
+</pre>
+<p>
+Operation
+<p>
+IF AddressSize = 16
+THEN use SI for source-index
+ELSE (* AddressSize = 32 *)
+<pre>
+   use ESI for source-index;
+FI;
+IF byte type of instruction
+THEN
+   AL <- [source-index]; (* byte load *)
+   IF DF = 0 THEN IncDec <- 1 ELSE IncDec <- -1; FI;
+ELSE
+   IF OperandSize = 16
+   THEN
+      AX <- [source-index]; (* word load *)
+      IF DF = 0 THEN IncDec <- 2 ELSE IncDec <- -2; FI;
+   ELSE (* OperandSize = 32 *)
+      EAX <- [source-index]; (* dword load *)
+      IF DF = 0 THEN IncDec <- 4 ELSE IncDec <- -4; FI;
+   FI;
+FI;
+source-index <- source-index + IncDec</pre>
+<p>
+<b>Description</b>
+<p>
+LODS loads the AL, AX, or EAX register with the memory byte, word,
+or doubleword at the location pointed to by the source-index register.
+After the transfer is made, the source-index register is automatically
+advanced. If the direction flag is 0 (CLD was executed), the source index
+increments; if the direction flag is 1 (STD was executed), it decrements.
+The increment or decrement is 1 if a byte is loaded, 2 if a word is loaded,
+or 4 if a doubleword is loaded.
+<p>
+If the address-size attribute for this instruction is 16 bits, SI is used
+for the source-index register; otherwise the address-size attribute is 32
+bits, and the ESI register is used. The address of the source data is
+determined solely by the contents of ESI/SI. Load the correct index value
+into SI before executing the LODS instruction. LODSB, LODSW, LODSD are
+synonyms for the byte, word, and doubleword LODS instructions.
+<p>
+LODS can be preceded by the REP prefix; however, LODS is used more typically
+within a LOOP construct, because further processing of the data moved into
+EAX, AX, or AL is usually necessary.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS,
+ES, FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+#PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 13 if any part of the operand would lie outside of the effective
+address space from 0 to 0FFFFH
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode; #PF(fault-code) for a page
+fault
+<p>
+<p>
+<a name="17-03-LOOP"></a>
+<h3>LOOP/LOOPcond -- Loop Control with CX Counter</h3>
+<p>
+<pre>
+Opcode   Instruction  Clocks  Description
+</pre>
+E2  cb   LOOP rel8    11+m    DEC count; jump short if count <> 0
+E1  cb   LOOPE rel8   11+m    DEC count; jump short if count <> 0 and ZF=1
+E1  cb   LOOPZ rel8   11+m    DEC count; jump short if count <> 0 and ZF=1
+E0  cb   LOOPNE rel8  11+m    DEC count; jump short if count <> 0 and ZF=0
+E0  cb   LOOPNZ rel8  11+m    DEC count; jump short if count <> 0 and ZF=0
+<p>
+<p>
+Operation
+<p>
+IF AddressSize = 16 THEN CountReg is CX ELSE CountReg is ECX; FI;
+CountReg <- CountReg - 1;
+IF instruction <> LOOP
+THEN
+<pre>
+   IF (instruction = LOOPE) OR (instruction = LOOPZ)
+   THEN BranchCond <- (ZF = 1) AND (CountReg <> 0);
+   FI;
+   IF (instruction = LOOPNE) OR (instruction = LOOPNZ)
+   THEN BranchCond <- (ZF = 0) AND (CountReg <> 0);
+   FI;
+FI;
+</pre>
+IF BranchCond
+THEN
+<pre>
+   IF OperandSize = 16
+   THEN
+      IP <- IP + SignExtend(rel8);
+   ELSE (* OperandSize = 32 *)
+      EIP <- EIP + SignExtend(rel8);
+   FI;
+FI;
+</pre>
+<b>Description</b>
+<p>
+LOOP decrements the count register without changing any of the flags.
+Conditions are then checked for the form of LOOP being used. If the
+conditions are met, a short jump is made to the label given by the operand
+to LOOP. If the address-size attribute is 16 bits, the CX register is used
+as the count register; otherwise the ECX register is used. The operand
+of LOOP must be in the range from 128 (decimal) bytes before the
+instruction to 127 bytes ahead of the instruction.
+<p>
+The LOOP instructions provide iteration control and combine loop index
+management with conditional branching. Use the LOOP instruction by
+loading an unsigned iteration count into the count register, then code the
+LOOP at the end of a series of instructions to be iterated. The
+destination of LOOP is a label that points to the beginning of the
+iteration.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) if the offset jumped to is beyond the limits of the current code
+segment
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<a name="17-03-LSL"></a>
+<h3>LSL -- Load Segment Limit</h3>
+<p>
+<pre>
+Opcode       Instruction      Clocks      Description
+</pre>
+0F  03 /r    LSL r16,r/m16    pm=20/21    Load: r16 <- segment limit,
+<pre>
+                                          selector r/m16 (byte granular)
+0F  03 /r    LSL r32,r/m32    pm=20/21    Load: r32 <- segment limit,
+                                          selector r/m32 (byte granular)
+0F  03 /r    LSL r16,r/m16    pm=25/26    Load: r16 <- segment limit,
+                                          selector r/m16 (page granular)
+0F  03 /r    LSL r32,r/m32    pm=25/26    Load: r32 <- segment limit,
+                                          selector r/m32 (page granular)
+</pre>
+<p>
+<b>Description</b>
+<p>
+The LSL instruction loads a register with an unscrambled segment limit,
+and sets ZF to 1, provided that the source selector is visible at the CPL
+weakened by RPL, and that the descriptor is a type accepted by LSL.
+Otherwise, ZF is cleared to 0, and the destination register is unchanged.
+The segment limit is loaded as a byte granular value. If the descriptor
+has a page granular segment limit, LSL will translate it to a byte limit
+before loading it in the destination register (shift left 12 the 20-bit
+"raw" limit from descriptor, then OR with 00000FFFH).
+<p>
+The 32-bit forms of this instruction store the 32-bit byte granular limit
+in the 16-bit destination register.
+<p>
+Code and data segment descriptors are valid for LSL.
+<p>
+The valid special segment and gate descriptor types for LSL are given
+in the following table:
+<p>
+<pre>
+Type   Name                      Valid/Invalid
+
+  0    Invalid                   Invalid
+  1    Available 80286 TSS       Valid
+  2    LDT                       Valid
+  3    Busy 80286 TSS            Valid
+  4    80286 call gate           Invalid
+  5    80286/80386 task gate     Invalid
+  6    80286 trap gate           Invalid
+  7    80286 interrupt gate      Invalid
+  8    Invalid                   Valid
+  9    Available 80386 TSS       Valid
+  A    Invalid                   Invalid
+  B    Busy 80386 TSS            Valid
+  C    80386 call gate           Invalid
+  D    Invalid                   Invalid
+  E    80386 trap gate           Invalid
+  F    80386 interrupt gate      Invalid
+</pre>
+<b>Flags Affected</b>
+<p>
+ZF as described above
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS,
+ES, FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+#PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 6; LSL is not recognized in Real Address Mode
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode
+<p>
+<p>
+<a name="17-03-LTR"></a>
+<h3>LTR -- Load Task Register</h3>
+<p>
+<pre>
+Opcode       Instruction    Clocks    Description
+
+0F  00 /3    LTR r/m16      pm=23/27  Load EA word into task register
+</pre>
+<p>
+<b>Description</b>
+<p>
+LTR loads the task register from the source register or memory location
+specified by the operand. The loaded task state segment is marked busy.
+A task switch does not occur.
+<p>
+LTR is used only in operating system software; it is not used in
+application programs.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#GP(0) for an illegal memory operand effective address in the CS, DS,
+ES, FS, or GS segments; #SS(0) for an illegal address in the SS segment;
+#GP(0) if the current privilege level is not 0; #GP(selector) if the object
+named by the source selector is not a TSS or is already busy;
+#NP(selector) if the TSS is marked "not present"; #PF(fault-code) for
+a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+Interrupt 6; LTR is not recognized in Real Address Mode
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+Same exceptions as in Real Address Mode
+<p>
+Notes
+<p>
+The operand-size attribute has no effect on this instruction.
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-j3.htm">17.3.J  'J' Instructions </a><br>
+Next: <a href="chp17-m3.htm">17.3.M  'M' Instructions </a>
+</body>
+</html>

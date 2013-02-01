@@ -1,0 +1,40 @@
+WITHFONT: Run program on EGA/VGA with a given font. Ver 1.5. Apr 16 1993
+Copyright (c) 1991-93 by Yossi Gil, P.O.Box 3148, Jerusalem, ISRAEL. 
+Email: yogi@cs.technion.ac.il
+
+  Usage: WITHFONT fontfile command [arg(s)]
+         WITHFONT fontfile [ [-bN fontfileN] ... ]  [ -c ] command [arg(s)]
+
+Will run 'command' on 'args' using a text-mode font loaded from 'fontfile'.
+WITHFONT looks for 'fontname' in the current directory and then in all the
+directories listed in the FONTPATH environment variable. Multiple directories
+in FONTPATH are separated by ';' chars. The 'fontfile' name should be of the
+form *.fYY, where YY is the font height in pixels (a 2 digit number in the
+range 04-32). If the font height cannot be determined from the file name,
+then it is set to the file size divided by 256. All fonts loaded must be of
+the same height. The font load will not be effected by 'command' changing
+the video mode. WITHFONT cures some of MS-DOS 3.3+ CodePage braindamage.
+
+EXAMPLES  withfont old-engl.f14 charset              (Load and examine font)
+          withfont cp862.f16 hebedit hebfile         (Edit using Heb. chars)
+          withfont cp437.f16 -b1 tex-math.f16 view      (Load banks 0 and 1)
+
+FLAGS    -h   Display this help screen       -c   Next argument is command
+         -H   Display another help screen    -bN  Load next file to bank N
+         -?   Display all help information
+
+EXIT CODES       255   Error occured while WITHFONT executed
+                 254   WITHFONT couldn't parse its command line parameters
+                 0     WITHFONT and 'command' terminated successfully
+                 Other 'command' exit code
+
+BUGS             o     Executed command should not go TSR.
+                 o     Internal commands ('DIR' and such) will not be located
+                 o     Does not work on adapters other than EGA/VGA
+
+SEE ALSO
+             _, loadfont, dumpfont, charset, breakcpi
+
+COPYING POLICY Copy freely for private use. Usage as part of any commercial
+  package is under the same restrictions as of Rhaul Dehsi ZOO program. If
+  you cannot obtain ZOO, you cannot use 'withfont' commercially.

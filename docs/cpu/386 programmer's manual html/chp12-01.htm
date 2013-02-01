@@ -1,0 +1,78 @@
+<html>
+<head>
+<title>
+12.1  Debugging Features of the Architecture
+</title>
+<body>
+<a name="12-01"></a>
+Prev: <a href="chp12-00.htm">Chapter 12  Debugging</a><br>
+Next: <a href="chp12-02.htm">12.2  Debug Registers</a>
+<hr>
+<h2>
+12.1  Debugging Features of the Architecture
+</h2>
+<p>
+The features of the 80386 architecture that support debugging include:
+<p>
+Reserved debug interrupt vector
+<p>
+Permits processor to automatically invoke a debugger task or procedure when
+an event occurs that is of interest to the debugger.
+<p>
+Four debug address registers
+<p>
+Permit programmers to specify up to four addresses that the CPU will
+automatically monitor.
+<p>
+Debug control register
+<p>
+Allows programmers to selectively enable various debug conditions
+associated with the four debug addresses.
+<p>
+Debug status register
+<p>
+Helps debugger identify condition that caused debug exception.
+<p>
+Trap bit of TSS (T-bit)
+<p>
+Permits monitoring of task switches.
+<p>
+Resume flag (RF) of flags register
+<p>
+Allows an instruction to be restarted after a debug exception without
+immediately causing another debug exception due to the same condition.
+<p>
+Single-step flag (TF)
+<p>
+Allows complete monitoring of program flow by specifying whether the CPU
+should cause a debug exception with the execution of every instruction.
+<p>
+Breakpoint instruction
+<p>
+Permits debugger intervention at any point in program execution and aids
+debugging of debugger programs.
+<p>
+Reserved interrupt vector for breakpoint exception
+<p>
+Permits processor to automatically invoke a handler task or procedure upon
+encountering a breakpoint instruction.
+<p>
+These features make it possible to invoke a debugger that is either a
+separate task or a procedure in the context of the current task. The
+debugger can be invoked under any of the following kinds of conditions:
+<p>
+<pre>
+  -  Task switch to a specific task.
+  -  Execution of the breakpoint instruction.
+  -  Execution of every instruction.
+  -  Execution of any instruction at a given address.
+  -  Read or write of a byte, word, or doubleword at any specified address.
+  -  Write to a byte, word, or doubleword at any specified address.
+  -  Attempt to change a debug register.
+</pre>
+<p>
+<hr>
+Prev: <a href="chp12-00.htm">Chapter 12  Debugging</a><br>
+Next: <a href="chp12-02.htm">12.2  Debug Registers</a>
+</body>
+</html>

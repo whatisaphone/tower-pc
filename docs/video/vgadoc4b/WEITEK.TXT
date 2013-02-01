@@ -1,0 +1,786 @@
+Weitek
+
+  W5086
+  W5186    1MB, BitBlt, Line draw
+  W5286    As W5186 + Color expansion and fills
+
+  Power9000    Max 2MB. Not VGA compatible, but VGA chip can be added.
+               Accelerates 8bit operations.
+  Power9001    PCI version of the Power9000
+  Power9100    New version with a W5286 like VGA part built in. can handle
+                8MB and accelerates 8/16/32bit operations
+
+
+
+  Power9130    Video accelerator
+
+
+W5x86 series:
+
+
+3C0h index 15h (R/W):  Overscan Color High
+
+3C4h (R/W):  Sequencer Index Register
+bit  0-2  Sequencer index bits 0-2
+       3  (W5086,W5186) Enable additional registers. If set enables registers
+           at 300h, 301h, 30Ah, 320h and 32Ah
+       4  Sequencer index high bit
+
+3C4h index  5  (W):  Control Register 0
+bit    2  SRS17. CRTC Display Start Address bit 16. Bits 0-15 are in 3d4h
+          index 0Ch,0Dh
+       6  BO. Bit Order. If clear bit 0 is displayed first (VGA)
+       7  DVSAE. Dual Video Start Address/Offset Enable
+
+3C4h index  6  (W):  Control Register 1
+bit    3  BSE. Special Text Attributes. If set the text attributres are
+          defined as follows:
+          bit  0  Color 0 (Half bright in monochrome)
+               1  Underline
+               2  Reverse Video
+               3  Blinking
+               4  Bold
+               5  Struck Through
+               6  Color 1
+               7  Color 2
+       6  GHAE. Graphics Accelerator Enable. 0: Halt, 1: Enable
+
+3C4h index 07h (R):  Revision Register
+Bit  0-2  Revision Level.
+     5-7  Chip ID. 1: W5186, 2: W5286 or P9100  (0: W5086 ???)
+
+3C4h index 10h (R):  User Bits
+bit  0-3  Manufacturer information. Read from straps at power-up.
+     4-7  Always returns 9 for the W5186, 5 for the W5286 & P9100.
+
+3C4h index 10h (W):  I/O Base
+bit  0-7  Defines the upper 8 bits of the I/O base address. Default is 3 to
+          map the registers at 3xxh
+
+3C4h index 11h (R/W):  Miscellaneous
+bit    5  Clear to enable extensions
+       6  Clear to enable bank addressing
+Note: to update this register, first it must be read and the value
+      rewritten twice, then the changed value can be written
+
+3C4h index 12h (R/W):  Output Control
+bit  5-6  3 for 640x480, 1 for 800x600, 0 else
+     6-7  (W5286) Memory. 0: 256K, 1: 512K, 2: 1MB
+       7
+
+3C4h index 13h (R/W):  Memory Base
+bit  0-3  Base Memory address. Defines the location of the 1MB Linear Aperture
+          in units of 1MB.
+
+3CDh (R/W):  Bank Register
+bit  0-3  Write Bank
+     4-7  Read bank
+
+3CEh (R/W):  Graphics Controller Index Register
+bit  0-3  Index
+       7  (R) Graphics Engine Busy if set
+
+3CEh index 09h (R/W):  GHA Queue Base Address
+bit  0-7  Base address of the Instruction Queue in units of 1KB (?). The
+          Graphics engine uses a 4KByte Instruction Queue of 256 16byte
+          instructions. Each instruction has this format:
+          Byte  Bit  Description
+           00h  0-3  Plane Mask. Each bit set enables writing in the
+                     corresponding plane
+                  4  Sync. If set the instruction is delayed until Vertical
+                     Retrace occurs
+                5-7  Opcode. 0: Short BitBLT, 1: Long BitBLT, 2: Short Screen
+                     Move, 3: Long Screen Move, 4: Steep Line Draw, Flat Line
+                     Draw, 6: Block Move, 7: NOP
+           01h  0-7  Start Mask. Each bit set enables writing to the
+                     corresponding bits in the first byte of each scanline
+           02h 0-15  (BitBLT) Horizontal Total. The width of the blit area in
+                      bytes (-1)
+           02h 0-15  (Linedraw) Line Decrement. The amount to subtract from
+                      the error term when moving parallel to the minor axis
+           04h  0-3  Source Inversion Mask. Each bit if set causes source data
+                     from the corresponding plane to be inverted before
+                     applying the operation in Byte 05h (Color Plane Logical
+                     Operation).
+                4-7  Destination Inversion Mask. Each bit if set causes
+                     destination data from the corresponding plane to be
+                     inverted before applying the operation in Byte 05h (Color
+                     Plane Logical Operation).
+           05h  0-3  Color Plane Logical Operation 0 (LOP0)
+                4-7  Color Plane Logical Operation 1 (LOP1)
+                     The logical operation for each plane is controlled by one
+                     bit from LOP0 and one from LOP1
+                     LOP1  LOP0  Operation
+                      0     0     Store (NOP)
+                      0     1     AND
+                      1     0     OR
+                      1     1     XOR
+           06h  0-7  End Mask. Each bit set enables writing to the
+                     corresponding bits in the last byte of each scanline
+           07h  0-7  Vertical Total. Height of the blit area in scanlines.
+                     Bits 8-9 are in Byte 0Dh bits 6-7.
+           08h 0-15  Destination Address. The offset from start of display
+                     memory in bytes. Bits 16-17 are in Byte 0Dh bits 1-2
+           0Ah 0-15  (BitBLT) Source Address. The offset from start of display
+                      memory in bytes. Bits 16-17 are in Byte 0Fh bits 1-2.
+           0Ah 0-15  (Linedraw) Line Initial Error. The Initial Error Term
+           0Ch  0-7  Destination Pitch. The number of bytes in each scanline
+                     at the destination. This is a 9bit two's complement value
+                     (Bit 8 is in Byte 0Dh bit 0). Use a negative value if DIR
+                     (Byte 0Fh bit 7) is set
+           0Dh    0  Destination Pitch bit 8. Bits 0-7 are in Byte 0Ch
+                1-2  Destination Address bits 16-17. Bits 0-15 are in Bytes
+                      08h,09h
+                3-5  Rotate Count. Number of bits to right-shift
+                6-7  Vertical Total bits 8-9. Bits 0-7 are in Byte 07h
+           0Eh  0-7  (BitBLT) Source Pitch. The number of bytes in each
+                      scanline at the source. This is a 9bit two's complement
+                      value (Bit 8 is in Byte 0Fh bit 0). Use a negative value
+                      if DIR (Byte 0Fh bit 7) is set
+           0Eh  0-7  (Linedraw) Line Increment. The amount to add to the
+                      error term when moving parallel to the major axis
+           0Fh  0-5  (Linedraw) Line Increment bits 8-13. Bits 0-7 are in Byte
+                       0Eh
+                  0  (BitBLT) Source Pitch bit 8. Bits 0-7 are in Byte 0Eh
+                1-2  (BitBLT) Source Address bit 16-17. Bits 0-15 are in Byte
+                       0Ah, 0Bh
+                3-4  (BitBLT) Expansion Source. Selects the plane that holds
+                      the source for the expansion.
+                  5  (BitBLT) Expansion enable. If set color expansion is
+                      enabled
+                  6  Interrupt Disable. If clear an interrupt is generated
+                     when the current instruction completes
+                  7  Direction. If set the destination and source are
+                     processed right-to-left and bottom-to-top
+
+3CEh index 0Ah (R/W):  GHA Queue Tail Pointer
+bit  0-7  Points to the entry in the Instruction Queue where we put the next
+          instruction. First write the instruction to this position, then
+          increment this register
+
+3CEh index 0Bh (R/W):  GHA Queue Execution Pointer
+bit  0-7  Points to the currently (or most recently) executing instruction in
+          the Instruction Queue.
+
+3CEh index 0Ch (W):  Extended Graphics
+bit    2  Set in extended 256 color modes
+
+3CEh index 0Dh (R/W):  GHA Bit Mask                                     (5286)
+bit  0-7  Each bit enables updating the corresponding bit in each byte
+
+3CEh index 0Eh W(R/W):  BCOLOR                                          (5286)
+bit 0-15  Background color for color expansion.
+
+3d4h index 19h (R/W):  Interlace
+
+3d4h index 1Ah (R/W):  Serial Start Address High
+bit  0-7  Bits 8-15 of the Start Address of the second frame buffer
+
+3d4h index 1Bh (R/W):  Serial Start Address Low
+bit  0-7  Bits 0-7 of the Start Address of the second frame buffer
+
+3d4h index 1Ch (R/W):  Serial Offset
+bit  0-7  CRTC Offset for the second frame buffer
+
+3d4h index 1Dh (R/W):  Total Characters Per Line
+bit  0-7  Number of character clocks displayed per line for the second frame
+          buffer
+
+
+ID Weitek VGA:
+
+  old:=rdinx(SEQ,$11);
+  outp(SEQ+1,old);
+  outp(SEQ+1,old);
+  outp(SEQ+1,inp(SEQ+1) or $20);
+  if not testinx(SEQ,$12) then
+  begin
+    x:=rdinx(SEQ,$11);
+    outp(SEQ+1,old);
+    outp(SEQ+1,old);
+    outp(SEQ+1,inp(SEQ+1) and $DF);
+    if testinx(SEQ,$12) and tstrg($3CD,$FF) then
+    begin
+      _Weitek chip_
+    end;
+  end;
+  wrinx(SEQ,$11,old);
+
+
+Video Modes:
+
+0054h  T   132   43
+0055h  T   132   25
+0056h  T   132   43  4color
+0057h  T   132   25  4color
+0058h  G   800  600   16c  PL4
+0059h  G   800  600   16c  PL4
+005Ah  G  1280 1024   16c  PL4
+005Ch  G   800  600  256c  P8
+005Dh  G  1024  768   16c  PL4
+005Eh  G  1024  768  256c  P8
+005Fh  G   640  480  256c  P8
+0064h  T   132   60
+0065h  T   132   50
+0066h  T   132   60   4c
+0067h  T   132   50   4c
+0068h  T    80   60
+0069h  G   640  480   16m  P24
+006Ah  G   800  600   16c  PL4
+006Ch  G   640  480  32Kc  P15
+006Dh  G   800  600  32Kc  P15
+006Eh  G   640  480  64Kc  P16
+006Fh  G   800  600  64Kc  P16
+
+
+
+Power 9000/9100:
+The Power 9000 and 9100 have different memory and register layouts.
+Also the different brands of Power9000/9100 boards all have different
+Linear Aperture addresses, DAC access and special registers
+
+The registers and video memory of the Power 9000 are mapped in a 4MB linear
+memory block staring at M (typically 20000000h, 80000000h or A0000000h):
+
+M+000000h - M+0FFFFFh  (1MB) Non-Power 9000 use
+M+100000h - M+1FFFFFh  (1MB) Registers. The registers are 32bit and internally
+                             stored in Big Endian format. Bits 16-18 of the
+                             address are used to access the register with
+                             different combinations of bit, byte and halfword
+                             (16bit) swaps:
+                              +00000h
+                              +10000h  Swap bits
+                              +20000h  Swap bytes
+                              +30000h  Swap bytes and bits
+                              +40000h  Swap Halfwords
+                              +50000h  Swap Halfwords and bits
+                              +60000h  Swap Halfwords and bytes
+                              +70000h  Swap Halfwords, bytes and bits
+                             Bits 13-15 of the address appears to be ignored.
+M+200000h - M+3FFFFFh  (2MB) Video memory
+
+The Power9100 has a more compact register layout where the registers are in
+one 32Kbyte block, accessible either at A000h or in the Linear Aperture.
+Swapping of bits/bytes/halfword are controlled from a register.
+
+The registers below are shown as M+xxxh, where M+xxxh is the Power9100 address
+(even if the register does not exist for the Power9100). The corresponding
+Power9000 address can be found as:
+    Power9100           Power9000
+  0000h - 1FFFh     100000h - 101FFFh
+  2000h - 3FFFh     180000h - 181FFFh
+  4000h - 7FFFh        No match
+The swap flags are added to the Power9000 address in bits 16-18 (see above).
+
+
+
+3C4h index 12h (R/W):
+bit 0-1  Base Address. 0: None, 1: A0000000h, 2: 20000000h, 3: 80000000h
+      2  Should be 0
+      3  Should be 1
+      4  P9000 Enabled if set, disable if clear
+      5  HSync polarity. Positive if clear, negative if set
+      6  VSync polarity. Positive if clear, negative if set
+      7  W5186 (or other VGA) Enabled if set, disabled if clear
+
+3CDh (R/W):  Bank Register:                                            (Viper)
+bit 0-5  Bank number. Maps a 64K block of the 4MB linear block at A000h, thus:
+           00h - 0Fh  Maps 64K of the non-Power 9000 block
+           10h - 1Fh  Maps a 64K Register block
+           20h - 3Fh  Maps 64K of the Video memory
+Note: This register only exists in the Viper (non-PCI versions) and is
+      implemented by external logic.
+
+XXXXh (R/W):  PCI Bank Register                                    (Viper PCI)
+bit 1-6  Bank number. Maps a 64K block of the 4MB linear block at A000h, thus:
+           00h - 0Fh  Maps 64K of the non-Power 9000 block
+           10h - 1Fh  Maps a 64K Register block
+           20h - 3Fh  Maps 64K of the Video memory
+Note: This register only exists in the Viper PCI systems and is (probably?)
+      implemented by external logic.
+      The Base address for this register is found from Offset 14h in the PCI
+      configuration space.
+
+9100h (R/W):  "PCI index register"                                      (9100)
+bit 0-7  Selects the offset into the 256byte PCI configuration space accessed
+         at 9104h. This allows access to the PCI configuration space even in
+         non-PCI systems.
+
+9104h (R/W):  "PCI data register"                                       (9100)
+bit 0-7  Each access to this register reads or writes the byte from the PCI
+         configuration space selected by 9100h. This allows access to the PCI
+         configuration space even in non-PCI systems.
+
+M+0004h D(R/W):  System Configuration Register
+bit   0-2  Power 9000 version number. Always 0 on the 9100
+        9  Pixel writes go to buffer 1 if set, buffer 0 if clear
+       10  Pixel reads go to buffer 1 if set, buffer 0 if clear
+       11  If set swaps bits within each 32 bit DWORD when accessing display
+           memory (similar to the bit swap for register accesses)
+       12  If set swaps bytes within each 32 bit DWORD when accessing display
+           memory (similar to the byte swap for register accesses)
+       13  If set swaps halfwords within each 32 bit DWORD when accessing
+           display memory (similar to the halfword swap for register accesses)
+    14-22  The width of a scanline in pixels is determined by adding the
+           result of the three 3bit fields (Bits 14-16, 17-19 and 20-22).
+           Each field selects: 0: 0, 1: 32, 2: 64, 3: 128, 4: 256, 5: 512,
+             6: 1024, 7: 2048.   Thus a width of 1280 is achieved by having
+           one field with 0, one with 4 and one with 6 (0+256+1024 = 1280).
+       23  Must be 0
+       24  If set the Frame Buffer Controller has double load, normal if clear
+       25  Must be 0
+    26-28  (9100) Pixel Size. 0: 8bpp, 1: 16bpp, 2: 24bpp
+    29-20  (9100) Shift3. Fourth subfield for the scanline width in bits 14-22
+
+M+0008h D(R/W):  Interrupt Register
+bit     0  The drawing engine is idle if set, busy if clear
+        1  Must be set on writes for bit 0 to be updated. Reads as 1
+        2  If set a pick is done
+        3  Must be set on writes for bit 2 to be updated. Reads as 1
+        4  If set a vertical blanking has occured
+        5  Must be set on writes for bit 4 to be updated. Reads as 1
+Note: The interrupt status bits (Bits 0,2,4) are sticky, once the condition
+      has occured they remain set until cleared by a write. If an interrupt
+      status bit (Bits 0,2,4) is set an interrupt will be generated if allowed
+      by the Interrupt Enable register (M+0000Ch).
+
+M+000Ch D(R/W):  Interrupt Enable
+bit     0  If set allows interrupt when the drawing engine goes idle
+        1  Must be set on writes for bit 0 to be updated. Reads as 1
+        2  If set allows interrupt when a pick occurs
+        3  Must be set on writes for bit 2 to be updated. Reads as 1
+        4  If set allows interrupt when vertical blanking occurs
+        5  Must be set on writes for bit 4 to be updated. Reads as 1
+        6  If set allows interrupts as specified by bits 0,2 and 4, if clear
+           all interrupts are disabled
+        7  Must be set on writes for bit 6 to be updated. Reads as 1
+
+M+0010h D(R/W):  Alternate Read Bank                                    (9100)
+bit 16-22  Read bank. Selects the 64K block accessed by reading at Axxxxh
+
+M+0014h D(R/W):  Alternate Write Bank                                   (9100)
+bit 16-22  Write bank. Selects the 64K block accessed by writing to Axxxxh
+
+
+M+0104h D(R):  Horizontal Counter (hrzc)
+bit  0-11  The currently displayed pixel in DDOTCLK clocks from the start of
+           Horizontal Retrace (Falling edge of HSYNC-).
+
+M+0108h D(R/W):  Horizontal Length (hrzt)
+bit  0-11  The total number of DDOTCLK clocks in a scanline including blanking
+.          and retrace
+
+M+010Ch D(R/W):  Horizontal Sync Rising Edge (hrzsr)
+bit  0-11  The HSYNC- pulse width in number of DDOTCLK clocks.
+
+M+0110h D(R/W):  Horizontal Blank Rising Edge (hrzbr)
+bit  0-11  The number of DDOTCLK clocks from the start of horizontal retrace
+           (Falling edge of HSYNC-) to the end of blanking (Rising edge of
+           HBLNK-)
+
+M+0114h D(R/W):  Horizontal Blank Falling Edge (hrzbf)
+bit  0-11  The number of DDOTCLK clocks from the start of the horizontal
+           retrace (Falling edge of HSYNC-) to the start of blanking (Falling
+           edge of HBLNK-)
+
+M+0118h D(R/W):  Horizontal Counter Preload Value (prehrzc)
+bit  0-11  The value to load into the Horizontal Counter (M+100104h) when an
+           internal or external HSYNC- is received to allow synchronisation
+           with an external source. Should be set to 0 if external sync is not
+           used.
+
+M+011Ch D(R):  Vertical Counter (vrtc)
+bit  0-11  The currently displayed line number
+
+M+0120h D(R/W):  Vertical Length (vrtt)
+bit  0-11  The total number of lines in a frame including blanking and retrace
+
+M+0124h D(R/W):  Vertical Sync Rising Edge (vrtsr)
+bit  0-11  The width of the Vertical Sync (VSYMC-) pulse in scanlines
+
+M+0128h D(R/W):  Vertical Blank Rising Edge (vrtbr)
+bit  0-11  The number of scanlines from the start of Vertical Retrace (Falling
+           edge of VSYNC-) to the end of Vertical Blanking (Rising edge of
+           VBLNK-)
+
+M+012Ch D(R/W):  Vertical Blank Falling Edge (vrtbf)
+bit  0-11  The number of scanlines from the start of Vertical Retrace (Falling
+           edge of VSYNC-) to the start of Vertical Blanking (Falling edge of
+           VBLNK-)
+
+M+0130h D(R/W):  Vertical Counter Preload Value (prevrtc)
+bit  0-11  The value to load into the Vertical Counter (M+18011Ch) when an
+           internal or external VSYNC- is received to allow synchronization
+           with external video sources. Should be set to 0 if external sync is
+           not used.
+
+M+0134h D(R):  Screen Repaint Address (sraddr)
+bit  0-11  The next VRAM row address to load into the VRAM. This is bits 10-21
+           of the linear memory address. When Vertical Blanking starts this
+           register is set to 0 (or the start address of the second buffer).
+
+M+0138h D(R/W):  Screen Repaint Timing Control (srtctl)
+bit   0-2  QSF counter position. Selects which bit in the QSF counter register
+           (M+013Ch) causes the next row address transfer.
+           Typical values:
+            Memory    1 DDOTCLK     1 DDOTCLK
+            Config:   = 4 dots      = 8 dots
+               1           4             3
+               2           4             3
+               3           5             4
+               4           5             4
+               5           6             5
+        3  Set to select buffer 1 for display, clear to select buffer 0
+        4  Set to select Restricted (HBLNK- reload) mode, clear to select
+           normal (split shift) mode.
+        5  Set for normal operation, clear for Blanks asserted
+        6  Set to select Composite synchronization, clear to select separate
+           synchronization
+        7  Set to select internal HSYNC-, clear to select external HSYNC-
+        8  Set to select internal VSYNC-, clear to select external VSYNC-
+
+M+013Ch D(R):  QSF Counter (qsfcounter or sraddr_inc?)
+bit 0-11  Counts DDOTCLK pulses within the current VRAM page, Ie. which bits
+          are shifted out of the VRAMs
+Note: The sraddr_inc and qsfcounter register appears to be the same, but the
+      documentation leaves some doubt
+
+M+0184h D(R/W):  Memory Configuration (mem_config)
+bit   0-2  Frame buffer VRAM configuration:
+             0: Memory Config 1. 8 256Kx4 VRAMs in 1 bank and  1 1Mpixel
+                buffer
+             1: Memory Config 2. 8 128Kx8 VRAMs in 2 interleaved banks and
+                 1 1Mpixel buffer
+             2: Memory Config 3. 16 256Kx4 VRAMs in 2 interleaved banks and
+                 1 2Mpixel buffer
+             3: Memory Config 4. 16 256Kx4 VRAMs in 2 interleaved banks and
+                 2 1Mpixel buffers
+             4: Memory Config 5. 32 256Kx4 VRAMs in 4 interleaved banks and
+                 2 2Mpixel buffers
+
+M+0188h D(R/W):  Refresh Period (rfperiod)
+bit   0-9  The max time between memory refreshes in SYSCLK periods
+
+M+018Ch D(R):  Refresh Counter (rfcount)
+bit   0-9  This register is decremented on each SYSCLK until it reaches 0,
+           when a refresh request is made and the register is reloaded from
+           the Refresh Period Register (M+0188h).
+
+M+0190h D(R/W):  RAS Low Maximum (rlmax)
+bit   0-9  The maximum time the RAS- signal can be asserted in SYSCLK periods
+
+M+0194h D(R):  RAS low count (rlcur)
+bit   0-9  When RAS- is asserted this register is loaded with the value in the
+           RAS Low Maximum register (M+0190h) and then decremented on each
+           SYSCLK until either RAS- is deasserted, or it reaches 0 in which
+           case a refresh sequence is started.
+
+M+198h W(?):                                                            (9100)
+bit 12-15  Number of FIFo slots free ??
+Note: Apparently the IBM RGB525 DAC requires a read or write of this register
+      for the last write to a DAC register at 200h-23Ch takes effect ?
+
+M+200h - M+23Ch D(R/W):  DAC regs 0-15                                  (9100)
+bit   0-7  Each access to one of these registers causes a read or write of
+           the corresponding DAC register (200h is REG00, 210h is REG04...)
+           The IBM RGB525 DAC apparently requires a read or write of M+198h
+           after a write to a DAC register ? Usually the same value is
+           repeated in all four bytes (bits 0-7, 8-15, 16-23 and 24-31) ?
+
+M+2000h D(R):  Status Register
+bit     0  If set the source coordinates for a quad draw straddle the clipping
+           window
+        1  If set the source coordinates for a quad draw are entirely inside
+           the clipping window
+        2  If set the source coordinates for a quad draw are entirely outside
+           the clipping window
+        3  If set the requested quad is concave
+        4  If set an exception was encountered for a quad command, the
+           operation cannot be performed and must be done in software
+        5  If set an exception was encountered for a blit command, the
+           operation cannot be performed and must be done in software
+        6  If set an exception was encountered for a pixel command, the
+           operation cannot be performed and must be done in software
+        7  If set a pick was detected. (This is a copy of the pick bit in the
+           interrupt register (M+0008h bit 2)).
+       30  If set the drawing engine is busy
+       31  If set a Quad or Blit operation can not be started
+
+M+2004h D(R):  Blit command
+Note: Reading this register issues a Blit command using X[0]/Y[0] as the upper
+      left corner of the source, X[1]/Y[1] as the lower right corner of the
+      source, X[2]/Y[2] as the upper left corner of the destination and
+      X[3]/Y[3] as the lower right corner of the destination. The source and
+      destination areas must be the same size. If the destination is out of
+      range bit 5 of the Status Register (M+2000h) is set and the operation
+      must be done in software.
+      Bit 31 of the Status Register (M+2000h) should be tested before a Quad
+      operation is issued.
+
+M+2008h D(R):  Quad command
+Note: Reading this register issues a Quad command using X[0-3],Y[0-3] as
+      coordinates. If the Quad defined by the coordinates id concave or one
+      (or more) of the coordinates is out of range bit 4 of the Status
+      Register (M+2000h) is set and the operation must be done in software.
+      Bit 31 of the Status Register (M+2000h) should be tested before a Quad
+      operation is issued.
+
+M+200Ch D(W):  Pixel8 command
+
+M+2014h D(W):  Next_pixels command
+
+M+2080h - M+20FCh D(W):  Pixel1
+Note: Writing to this register starts a Pixel1 command of (n+1) pixels,
+      where n is bits 2-6 of the address written to.
+
+M+2184h D(R):  Out of range (OOR) Register
+bit     0  Set if y[0] is out of range
+        1  Set if y[1] is out of range
+        2  Set if y[2] is out of range
+        3  Set if y[3] is out of range
+        4  Set if x[0] is out of range
+        5  Set if x[1] is out of range
+        6  Set if x[2] is out of range
+        7  Set if x[3] is out of range
+
+M+218Ch D(R/W):  Cindex
+bit   0-1  Selects one of the 4 X/Y coordinate register sets.
+
+M+2190h D(R/W):  Window Offset Register
+bit  0-15  Y-offset of current window
+    16-31  X-offset of current window
+
+M+2194h D(R):  Parameter Engine Window Minimum Register
+bit  0-12  Minimum Y value (top line). Pixels above this line are not drawn
+    16-28  Minimum X value (left edge). Pixels left of this are not drawn
+Note: This register can be read and written at M+2220h
+
+M+2198h D(R):  Parameter Engine Window Maximum Register
+bit  0-12  Minimum Y value (bottom line). Pixels below this line are not drawn
+    16-28  Minimum X value (right edge). Pixels right of this are not drawn
+Note: This register can be read and written at M+2224h
+
+M+21A0h D(R):  Yclip
+bit     0  Set if Y[0] > the window maximum (M+2224h)
+        1  Set if Y[1] > the window maximum (M+2224h)
+        2  Set if Y[2] > the window maximum (M+2224h)
+        3  Set if Y[3] > the window maximum (M+2224h)
+        4  Set if Y[0] < the window minimum (M+2220h)
+        5  Set if Y[1] < the window minimum (M+2220h)
+        6  Set if Y[2] < the window minimum (M+2220h)
+        7  Set if Y[3] < the window minimum (M+2220h)
+
+M+21A4h D(R):  Xclip
+bit     0  Set if X[0] > the window maximum (M+2224h)
+        1  Set if X[1] > the window maximum (M+2224h)
+        2  Set if X[2] > the window maximum (M+2224h)
+        3  Set if X[3] > the window maximum (M+2224h)
+        4  Set if X[0] < the window minimum (M+2220h)
+        5  Set if X[1] < the window minimum (M+2220h)
+        6  Set if X[2] < the window minimum (M+2220h)
+        7  Set if X[3] < the window minimum (M+2220h)
+
+M+21A8h D(R):  Xedge_lt
+bit     0  Set if X[0] > X[2]
+        1  Set if X[1] > X[3]
+        2  Set if X[3] > X[0]
+        3  Set if X[2] > X[3]
+        4  Set if X[1] > X[2]
+        5  Set if X[0] > X[1]
+
+M+21ACh D(R):  Xedge_gt
+bit     0  Set if X[0] < X[2]
+        1  Set if X[1] < X[3]
+        2  Set if X[3] < X[0]
+        3  Set if X[2] < X[3]
+        4  Set if X[1] < X[2]
+        5  Set if X[0] < X[1]
+
+M+21B0h D(R):  Yedge_lt
+bit     0  Set if Y[0] > Y[2]
+        1  Set if Y[1] > Y[3]
+        2  Set if Y[3] > Y[0]
+        3  Set if Y[2] > Y[3]
+        4  Set if Y[1] > Y[2]
+        5  Set if Y[0] > Y[1]
+
+M+21B4h D(R):  Yedge_gt
+bit     0  Set if Y[0] < Y[2]
+        1  Set if Y[1] < Y[3]
+        2  Set if Y[3] < Y[0]
+        3  Set if Y[2] < Y[3]
+        4  Set if Y[1] < Y[2]
+        5  Set if Y[0] < Y[1]
+
+M+2200h D(R/W):  Foreground Color (fground)                             (9000)
+bit   0-7  The foreground color used in drawing
+
+M+2200h D(R/W):  Color 0                                                (9100)
+bit  0-31  Color0. For 8bpp modes repeat bits 0-7 in bits 8-15, 16-23 and
+             24-31, for 15/16bpp modes repeat bits 0-15 in bits 16-31.
+
+M+2204h D(R/W):  Background Color (bground)
+bit   0-7  The background color used in drawing
+
+M+2204 D(R/W):  Color 1                                                 (9100)
+bit  0-31  Color1. For 8bpp modes repeat bits 0-7 in bits 8-15, 16-23 and
+             24-31, for 15/16bpp modes repeat bits 0-15 in bits 16-31.
+
+M+2208h D(R/W):  Plane Mask (pmask)
+bit   0-7  Each bit enables the corresponding plane in the frame buffer if set
+
+M+220Ch D(R/W):  Draw mode (draw_mode)
+bit     0  If set selects buffer 1 for all drawing operations, if clear
+           selects buffer 0
+        1  Must be set on writes for bit 0 to be updated. Reads as 1
+        2  If set suppresses all writes and sets the picked bit in the
+           Interrupt Register (M+0008h bit 2)
+        3  Must be set on writes for bit 2 to be updated. Reads as 1
+
+M+2210h D(R/W):  Pattern Origin X (Pat_originx)
+bit   0-3  X origin of the pattern
+
+M+2214h D(R/W):  Pattern Origin Y (Pat_originy)
+bit   0-3  Y origin of the pattern
+
+M+2218h D(R/W):  Raster Register (raster)
+bit   0-7  (9100) The minterm to use for raster operations.
+     0-15  (9000) The minterm to use for raster operations.
+       13  (9100) Solid Color Disable. If set Solid Color is disabled and
+            Patterns enabled, if clear Solid Color is disabled and Patterns
+            are disabled.
+       14  (9100) Pattern Depth. 0: 2color, 1: 4color
+       15  (9100) Pixel1 Transparent. Enable Pixel1 transparent mode if set
+       16  If set Quad draw mode is Oversize mode, if clear X11 mode
+       17  If set enables the pattern (M+2280h - M+229Ch) for Quad draw
+           operations, if clear disables the pattern by forcing it to all 1's
+
+M+221Ch D(R/W):  Pixel8 Register (pixel8_reg)
+bit  0-7?  Excess data from the last pixel8 operation.
+
+M+2220h D(R/W):  Window Minimum Register (w_min)
+bit  0-12  Minimum Y value (top line). Pixels above this line are not drawn
+    16-28  Minimum X value (left edge). Pixels left of this are not drawn
+
+M+2224h D(R/W):  Window Maximum Register (w_max)
+bit  0-12  Minimum Y value (bottom line). Pixels below this line are not drawn
+    16-28  Minimum X value (right edge). Pixels right of this are not drawn
+
+M+2238h D(R/W):  Color2                                                 (9100)
+bit  0-31  Color2. For 8bpp modes repeat bits 0-7 in bits 8-15, 16-23 and
+             24-31, for 15/16bpp modes repeat bits 0-15 in bits 16-31.
+
+M+223Ch D(R/W):  Color 3                                                (9100)
+bit  0-31  Color3. For 8bpp modes repeat bits 0-7 in bits 8-15, 16-23 and
+             24-31, for 15/16bpp modes repeat bits 0-15 in bits 16-31.
+
+M+2280h D(R/W):  Pattern 0/1 Register                                   (9000)
+
+M+2280h D(R/W):  Pattern 0                                              (9100)
+
+M+2284h D(R/W):  Pattern 2/3 Register                                   (9000)
+
+M+2284h D(R/W):  Pattern 1                                              (9100)
+
+M+2288h D(R/W):  Pattern 4/5 Register                                   (9000)
+
+M+2288h D(R/W):  Pattern 2                                              (9100)
+
+M+228Ch D(R/W):  Pattern 6/7 Register                                   (9000)
+
+M+228Ch D(R/W):  Pattern 3                                              (9100)
+
+M+2290h D(R/W):  Pattern 8/9 Register                                   (9000)
+
+M+2290h D(R/W):  Software 0                                             (9100)
+
+M+2294h D(R/W):  Pattern 10/11 Register                                 (9000)
+
+M+2294h D(R/W):  Software 1                                             (9100)
+
+M+2298h D(R/W):  Pattern 12/13 Register                                 (9000)
+
+M+2298h D(R/W):  Software 2                                             (9100)
+
+M+229Ch D(R/W):  Pattern 14/15 Register                                 (9000)
+
+M+229Ch D(R/W):  Software 3                                             (9100)
+
+M+22A0h D(R/W):  Byte Window Min                                        (9100)
+
+M+22A4h D(R/W):  Byte Window Max                                        (9100)
+
+M+3000h - M+31FFh D(R/W):  Device Coordinate Registers
+bit  0-31  (Adr bit 3-4 = 1)  32bit X coordinate
+     0-31  (Adr bit 3-4 = 2)  32bit Y coordinate
+     0-15  (Adr bit 3-4 = 3)  16bit Y coordinate
+    16-31  (Adr bit 3-4 = 3)  16bit X coordinate
+Note: When these registers are accessed the lower bits of address selects the
+      X/Y register and the form used as follows:
+      Address bits:
+        0-2  Should be 0
+        3-4  Selects the data: 1: 32bit X value, 2: 32bit Y value,
+               3: Y in lower 16 bits and X in upper 16 bits
+          5  If set the data (X/Y) is window relative (only valid for writes),
+             if clear the data is absolute
+        6-7  Selects the X/Y coordinate register:
+              0: X[0]/Y[0], 1: X[1]/Y[1], 2: X[2]/Y[2], 3: X[3]/Y[3]
+Note: On the Power9000 these registers can probably also be accessed at
+      address:  M+3400h - M+35FFh (M+181400h - M+1815FFh in Power9000 terms)
+      as bit 10 of the address is not decoded
+
+M+3200h - M+33FFh D(W):  Meta-Coordinate Pseudo regs
+bit  0-31  (Adr bit 3-4 = 1) 32bit X coordinate
+     0-31  (Adr bit 3-4 = 2) 32bit Y coordinate
+     0-15  (Adr bit 3-4 = 3) 16bit Y coordinate
+    16-31  (Adr bit 3-4 = 3) 16bit X coordinate
+Note: For these registers the data written is the coordinate(s) and the lower
+      bits of the address specify the drawing operation:
+      Address bits:
+         0-2  Should be 0
+         3-4  Selects the interpretation of the data written to the register.
+                1: 32bit X value, 2: 32bit Y value, 3: Y in lower 16 bits and
+                    X in upper 16 bits
+           5  If set the coordinate is relative to the previous one, if clear
+              it is relative to the window offset
+         6-8  Type of operation. 0: Point, 1: Line, 2: Triangle,
+               3: Quadrilateral, 4: rectangle
+Note: On the Power9000 these registers can probably also be accessed at
+      address:  M+3600h - M+37FFh (M+181600h - M+1817FFh in Power9000 terms)
+      as bit 10 of the address is not decoded
+
+4386-9h  DAC
+8386-9h  DAC
+C386-9h  DAC
+
+
+PCI Configuration space:
+Byte 41h   Bit 2 Set to access the DAC registers at A000h
+           Bit 3 Set to access the graphics engine registers at A000h
+
+
+
+
+Memory Locations:
+ 0:0487h   (9100)  Bit 4.  Set for IBM RGB525 DAC, clear for Bt485 DAC
+ 0:0489h   (9100)  Bit 5.  Set for 4MB video memory, clear for 2MB
+
+----------1DAA-------------------------------
+INT 10 - VIDEO - Diamond Get System Info (Viper Pro)
+        AX = 1DAAh
+        BX = FDECh
+Return: BX = CEDFh  if Viper Pro (Weitek P9100)
+        AL = Memory Type:
+               01h:  1MB  8 128Kx8
+               02h:  2MB  8 256Kx8 or 16 256Kx4
+               04h:  4MB
+               10h:  1MB  8 256Kx4
+        AH = Bits 0-3 = DAC type:
+                          0: Normal 8bit DAC
+                          1: Sierra 15/16bit DAC
+                          2: MUSIC MU9c1880/Diamond SS24
+                          3: Brooktree Bt485
+                          7: IBM RGB525
+                    4 = VGA chip. 0: Weitek 5x86, 1: Oak OTI-087
+                    5 = Bus type: 0: VLB bus, 1: PCI bus.
+        SI:DI -> Viper BIOS string

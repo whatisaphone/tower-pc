@@ -1,0 +1,32 @@
+new in 186:
+- pusha/popa
+- push immed
+- ins/outs
+- enter/leave/bound
+- multiply immed (just imul?)
+- shift/rotate by immed
+
+new in 386:
+- lss, lfs, lgs
+- long-displacement jcc's
+- single-bit instructions
+- bit scan
+- double-shift instructions
+- byte set on condition
+- movsx/movzx
+- generalized multiply
+- mov to/from cr's tr's and dr's
+
+differences between 8086 and 386:
+- divide exceptions: 8086 - cs:ip = next instr ::: 386 - cs:ip = offending instr
+- push sp: 8086 - pushes incremented sp ::: 386 - pushes original sp
+- masking shifts and rotates: 8086 doesn't mask, 386 masks to 31 bits
+- 8086 - no instruction length limit ::: 386 - exception 13 on instructions longer than 15 bytes :::
+- 8086 - can cross offset of 0xffff ::: 386 - raises exception 12 for ss' access and exception 13 for other segs
+- 8086 - cs:ip can execute across 0xffff boundary ::: 386 - exception 13 raised
+- something about lock prefix?
+- 8086 - IDIV of quotient 0x80/0x8000 = exception 0 ::: 386 - IDIV of quotient 0x80/0x8000 successful
+- 8086 - flags[12..15] = 1 ::: 386 - flags[15] = 0, flags[12..14] = value loaded into it
+- 386 - upon NMI, NMI interrupt is masked until IRET
+- 386 - cs:ip on coprocessor exception = points to prefix. ::: 8086 - cs:ip on coproc excep points to ESC byte
+- new exceptions: 5-8,12,13

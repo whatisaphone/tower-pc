@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tower", "Tower\Tower.vcproj", "{68889DCC-2CE5-4921-9D31-863896F98503}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D1ABC250-6BB2-488C-9768-53E05EC7B569} = {D1ABC250-6BB2-488C-9768-53E05EC7B569}
+		{1EAB8651-BE87-4146-A69A-4EE44FEFB856} = {1EAB8651-BE87-4146-A69A-4EE44FEFB856}
+		{8C4CD94A-8E60-4D23-988F-31DC09DC207C} = {8C4CD94A-8E60-4D23-988F-31DC09DC207C}
+		{2F9B6DAC-9AE8-479F-B84B-CC4439AF714B} = {2F9B6DAC-9AE8-479F-B84B-CC4439AF714B}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Piston", "..\Piston\Piston.vcproj", "{7A8D76F5-9AA7-49C2-81CD-122ABED31FB3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B6E143FA-AF5A-48F9-84DC-97831B68BF67}"
+	ProjectSection(SolutionItems) = preProject
+		TowerGlobals.h = TowerGlobals.h
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hle", "Hle\Hle.vcproj", "{2F9B6DAC-9AE8-479F-B84B-CC4439AF714B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Vga", "Vga\Vga.vcproj", "{D1ABC250-6BB2-488C-9768-53E05EC7B569}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "x86", "x86\x86.vcproj", "{1EAB8651-BE87-4146-A69A-4EE44FEFB856}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Chipset", "Chipset\Chipset.vcproj", "{8C4CD94A-8E60-4D23-988F-31DC09DC207C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68889DCC-2CE5-4921-9D31-863896F98503}.Debug|Win32.ActiveCfg = Debug|Win32
+		{68889DCC-2CE5-4921-9D31-863896F98503}.Debug|Win32.Build.0 = Debug|Win32
+		{68889DCC-2CE5-4921-9D31-863896F98503}.Release|Win32.ActiveCfg = Release|Win32
+		{68889DCC-2CE5-4921-9D31-863896F98503}.Release|Win32.Build.0 = Release|Win32
+		{7A8D76F5-9AA7-49C2-81CD-122ABED31FB3}.Debug|Win32.ActiveCfg = LIB Debug|Win32
+		{7A8D76F5-9AA7-49C2-81CD-122ABED31FB3}.Debug|Win32.Build.0 = LIB Debug|Win32
+		{7A8D76F5-9AA7-49C2-81CD-122ABED31FB3}.Release|Win32.ActiveCfg = LIB Release|Win32
+		{7A8D76F5-9AA7-49C2-81CD-122ABED31FB3}.Release|Win32.Build.0 = LIB Release|Win32
+		{2F9B6DAC-9AE8-479F-B84B-CC4439AF714B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2F9B6DAC-9AE8-479F-B84B-CC4439AF714B}.Debug|Win32.Build.0 = Debug|Win32
+		{2F9B6DAC-9AE8-479F-B84B-CC4439AF714B}.Release|Win32.ActiveCfg = Release|Win32
+		{2F9B6DAC-9AE8-479F-B84B-CC4439AF714B}.Release|Win32.Build.0 = Release|Win32
+		{D1ABC250-6BB2-488C-9768-53E05EC7B569}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D1ABC250-6BB2-488C-9768-53E05EC7B569}.Debug|Win32.Build.0 = Debug|Win32
+		{D1ABC250-6BB2-488C-9768-53E05EC7B569}.Release|Win32.ActiveCfg = Release|Win32
+		{D1ABC250-6BB2-488C-9768-53E05EC7B569}.Release|Win32.Build.0 = Release|Win32
+		{1EAB8651-BE87-4146-A69A-4EE44FEFB856}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1EAB8651-BE87-4146-A69A-4EE44FEFB856}.Debug|Win32.Build.0 = Debug|Win32
+		{1EAB8651-BE87-4146-A69A-4EE44FEFB856}.Release|Win32.ActiveCfg = Release|Win32
+		{1EAB8651-BE87-4146-A69A-4EE44FEFB856}.Release|Win32.Build.0 = Release|Win32
+		{8C4CD94A-8E60-4D23-988F-31DC09DC207C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8C4CD94A-8E60-4D23-988F-31DC09DC207C}.Debug|Win32.Build.0 = Debug|Win32
+		{8C4CD94A-8E60-4D23-988F-31DC09DC207C}.Release|Win32.ActiveCfg = Release|Win32
+		{8C4CD94A-8E60-4D23-988F-31DC09DC207C}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

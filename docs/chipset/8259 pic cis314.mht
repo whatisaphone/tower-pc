@@ -1,0 +1,567 @@
+Content-Type: multipart/related; start=<op.mhtml.1214610624784.d64f4645790d919c@192.168.0.5>; boundary=----------nRXINw2Zhxwzt7zxsPbsvu
+Content-Location: http://www.cs.sun.ac.za/~lraitt/doc_8259.html
+Subject: =?utf-8?Q?Computer=20Science=20314=20-=208259=20Interrupt=20Controller?=
+MIME-Version: 1.0
+
+------------nRXINw2Zhxwzt7zxsPbsvu
+Content-Disposition: inline; filename=doc_8259.html
+Content-Type: text/html; charset=iso-8859-1; name=doc_8259.html
+Content-Id: <op.mhtml.1214610624784.d64f4645790d919c@192.168.0.5>
+Content-Location: http://www.cs.sun.ac.za/~lraitt/doc_8259.html
+Content-Transfer-Encoding: 8bit
+
+<HTML>
+<HEAD>
+<TITLE>Computer Science 314 - 8259 Interrupt Controller</TITLE>
+<LINK REL="stylesheet" MEDIA="screen" HREF="style.css" TYPE="text/css">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" BACKGROUND="background.jpg">
+  <H1 ALIGN=LEFT>The 8259 Programmable Interrupt Controller</H1>
+
+  <H2>Introduction</H2>
+    One of the main tasks of operating systems entails the management of
+    resources. These resources may include various devices used for both input
+    and output. Two major techniques exist whereby devices can be managed.
+    The first technique is called <I>polling</I> and requires that the
+    system interrogates (polls) each device separately to determine if the
+    device requires servicing. Once every device has been polled, a new iteration
+    is started and the devices are polled again. This method is not very effective
+    because the system spends a large amount of processing time polling devices that
+    may not require any servicing.
+    <P>
+    The second technique is based on <I>interrupts</I> and allows a system to
+    service devices on demand (asynchronously), thereby increasing the time available to
+    perform other processing tasks. A device that requires servicing will initiate
+    an interrupt signal causing the system to stop its current task (after the processor
+    has completed the current instruction) and transfer control to the service routine 
+    associated with the interrupt request. Control is transferred back to the interrupted task 
+    once the service routine has completed its task.
+    <P>
+    Most <I>personal computers</I> (PCs) contain an 8259A <I>programmable interrupt
+    controller</I> (PIC) to manage the interrupt signals received from devices. A single
+    8259A PIC can handle 8 separate interrupts and multiple PICs can be cascaded to handle up to 
+    64 interrupts. The original IBM PC/XT contained a single PIC, but engineers soon
+    realized that a secondary controller was needed to accommodate all the new devices being
+    developed for PCs. Today, most PCs contain two interrupt controllers, with the secondary 
+    controller chained (cascaded) unto the first controller (on most PCs, the secondary controller
+    is chained to the second interrupt line of the primary controller) making it unavailable
+    to other devices. 
+    
+  <H2>Communicating with the 8259A</H2>
+    Communication with the 8259A is facilitated by sending various commands over the bus
+    to the two I/O ports (port A and port B) of the controller. Port A and B of the
+    primary controller is located at I/O addresses <CODE>20H</CODE> and <CODE>21H</CODE>
+    respectively. Port A and B of the secondary controller can be accessed at I/O
+    addresses <CODE>A0H</CODE> and <CODE>A1H</CODE>.
+    
+  <H2>Initializing the 8259A</H2>
+    The 8259A PIC is initialized by sending a sequence of <I>initialization control words</I>
+    (ICWs) to the controller. ICW-1 must be sent to port A while ICW-2, ICW-3 and ICW-4
+    are sent to port B. <B>Systems containing more than one PIC must send ICWs to both
+    the primary and secondary controllers.</B>
+    
+    <H5>ICW-1</H5>
+      <TABLE BORDER=0 CELLSPACING=2 WIDTH=50%>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">7</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">6</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">5</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">4</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">3</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">2</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">1</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">0</TD>
+	</TR>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">1</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">LTIM</TD>  <TD ALIGN=CENTER BGCOLOR="#DED5D3">ADI</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">SNGL</TD>  <TD ALIGN=CENTER BGCOLOR="#DED5D3">IC4</TD>	  
+	</TR>
+      </TABLE>
+      <P>
+      <UL>
+        <LI> Bits 7..5 are used for the interrupt vector address when operating the PIC in
+             MCS-80/85 mode and should always be set to 0 when working on an 80x86 system. 
+	<LI> Bit 4 must be set to 1 and indicates that the controller is being initialized.
+	<LI> If LTIM is set (LTIM=1), the controller operates in Level Triggered mode
+	     as opposed to Edge Triggered. The controller is usually initialized with
+	     LTIM = 0 when operating on 80x86 systems.
+	<LI> If ADI is set, the CALL address interval is set to 4, otherwise it is set to
+	     8. This field can be ignored for non MCS-80/85 systems that does not require
+	     that an automatic CALL operation code is sent to the processor. By convention, 
+	     this field is always cleared on 80x86 based systems.
+	<LI> Setting SGNL indicates that there is only a single controller present. Clearing
+	     SGNL allows cascading. ICW-3 must be sent to the controller if SGNL is cleared.
+	<LI> Setting IC4 indicates that the controller should expect to receive ICW4
+	     during the initialization process.	
+      </UL>
+      
+    <H5>ICW-2</H5>
+      <TABLE BORDER=0 CELLSPACING=2 WIDTH=50%>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">7</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">6</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">5</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">4</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">3</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">2</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">1</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">0</TD>
+	</TR>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">A15/T7</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">A14/T6</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">A13/T5</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">A12/T4</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">A11/T3</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">A10</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">A9</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">A8</TD>	  
+	</TR>
+      </TABLE>
+      <P>
+      <UL>
+        <LI> Bits 7..3 specify address bits A15..A11 for the interrupt vector address when
+	     operating in MCS-80/85 mode.
+        <LI> Bits 2..0 specify address bits A10..A8 for the interrupt vector address
+	     when operating in MCS-80/85 mode and can be set to 0 when working on
+	     an 80x86 system. T7..T3 is used to specify the interrupt vector address when
+	     the controller operates in 80x86 mode.
+      </UL>  
+    
+
+    <H5>ICW-3 (Master Device)</H5>
+      <TABLE BORDER=0 CELLSPACING=2 WIDTH=50%>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">7</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">6</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">5</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">4</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">3</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">2</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">1</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">0</TD>
+	</TR>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">S7</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">S6</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">S5</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">S4</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">S3</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">S2</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">S1</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">S0</TD>	  
+	</TR>
+      </TABLE>
+      <P>
+      <UL>
+        <LI> S7..S0 indicates that the specified <I>interrupt request</I> (IR) is connected
+	     to a slave.
+      </UL>
+      
+    <H5>ICW-3 (Slave Device)</H5>
+      <TABLE BORDER=0 CELLSPACING=2 WIDTH=50%>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">7</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">6</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">5</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">4</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">3</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">2</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">1</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">0</TD>
+	</TR>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">ID2</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">ID1</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">ID0</TD>	  
+	</TR>
+      </TABLE>
+      <P>
+      <UL>
+        <LI> Bits 7..3 must be set to 0.
+	<LI> ID2..ID0 selects the IRQ line on the master controller to which the slave is 
+	     connected and specifies the IRQ number in binary. For example, a value of
+	     <CODE>001b</CODE> selects IRQ-1 while a value of <CODE>100b</CODE> selects
+	     IRQ-4.
+      </UL>
+
+    <H5>ICW-4</H5>
+      <TABLE BORDER=0 CELLSPACING=2 WIDTH=50%>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">7</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">6</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">5</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">4</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">3</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">2</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">1</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">0</TD>
+	</TR>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">SFNM</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">BUF</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">M/S</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">AEOI</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">&#181;PM</TD>	  
+	</TR>
+      </TABLE>
+      <P>
+      <UL>
+        <LI> Bits 7..5 must be set to 0.
+	<LI> Setting SFNM selects the <I>special fully nested mode</I> which is often used
+	     in large systems containing multiple cascaded controllers to recognize mutliple
+	     levels of prioritized interrupts on a slave controller.
+	<LI> When BUF is set, the controller operates in buffered mode.
+	<LI> When BUF is set, M/S can be used to select Buffered Master (M/S = 1) or
+	     Buffered Slave (M/S = 0).
+	<LI> Setting AEOI selects automatic end of interrupt mode whereby the controller
+	     automatically performs an <I>end of interrupt</I> (EOI) operation on the
+	     trailing edge of the last interrupt acknowledge pulse.
+	<LI> Setting &#181;PM indicates that the controller is operating in 8086/8088 mode.
+	     Clearing &#181;PM selects MCS-80/85 mode. 
+      </UL>
+  
+  <H2>Controlling the 8259A</H2>
+    The 8259A PIC can be controlled by sending specific <I>operation command words</I> (OCWs)
+    to either port B (OCW-1) or port A (OCW-2 and OCW-3). 
+    
+    <H5>OCW-1 (Interrupt Mask Register)</H5>
+      <TABLE BORDER=0 CELLSPACING=2 WIDTH=50%>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">7</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">6</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">5</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">4</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">3</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">2</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">1</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">0</TD>
+	</TR>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">M7</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">M6</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">M5</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">M4</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">M3</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">M2</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">M1</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">M0</TD>	  
+	</TR>    
+      </TABLE>
+      <P>
+      <UL>
+        <LI> M7..M0 control the mask bits for the associated interrupt line. Setting
+	     a bit enables the mask and inhibits the specified interrupt.
+      </UL>
+      The current value of the <I>interrupt mask register</I> (IMR) can be obtained by reading 
+      OCW-1 from port B and set by writing OCW-1 to port B. IRQ0..IRQ7 are controlled by the 
+      primary controller's IMR, IRQ8..15 are controlled by the secondary controller's
+      IMR. The IMR controls the various interrupt signals that will be sent to the CPU.
+      Setting a specific bit in the IMR inhibits (disable) the associated interrupt while
+      clearing a specific bit will enable recognition of the associated interrupt.
+	
+    <H5>OCW-2</H5>
+      <TABLE BORDER=0 CELLSPACING=2 WIDTH=50%>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">7</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">6</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">5</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">4</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">3</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">2</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#C0C0C0">1</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">0</TD>
+	</TR>
+        <TR>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">R</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">SL</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">EOI</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">L2</TD>
+	  <TD ALIGN=CENTER BGCOLOR="#DED5D3">L1</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">L0</TD>	  
+	</TR>    
+      </TABLE>
+      <P>
+      <UL>
+        <LI> Bits 3 and 4 are always set to 0.
+	<LI> L2..L0 can be used to set the interrupt level upon which the controller must
+	     react.
+	<LI> <TABLE BORDER=0 CELLSPACING=2 WIDTH=40%>
+               <TR>
+	         <TD ALIGN=CENTER BGCOLOR="#C0C0C0">R</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">SL</TD>
+	         <TD ALIGN=CENTER BGCOLOR="#C0C0C0">EOI</TD> <TD ALIGN=CENTER BGCOLOR="#C0C0C0">Selection</TD>
+               </TR>
+               <TR>
+  	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD>
+	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=LEFT BGCOLOR="#DED5D3">Rotate in Automatic EOI mode (CLEAR)</TD>
+	       </TR>
+               <TR>
+  	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD>
+	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">1</TD> <TD ALIGN=LEFT BGCOLOR="#DED5D3">Non-specific EOI command</TD>
+	       </TR>
+               <TR>
+  	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">1</TD>
+	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=LEFT BGCOLOR="#DED5D3">No Operation</TD>
+	       </TR>
+               <TR>
+  	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">1</TD>
+	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">1</TD> <TD ALIGN=LEFT BGCOLOR="#DED5D3">Specific EOI command</TD>
+	       </TR>
+               <TR>
+  	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">1</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD>
+	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=LEFT BGCOLOR="#DED5D3">Rotate in Automatic EOI mode (SET)</TD>
+	       </TR>
+               <TR>
+  	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">1</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD>
+	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">1</TD> <TD ALIGN=LEFT BGCOLOR="#DED5D3">Rotate on non-specific EOI</TD>
+	       </TR>
+               <TR>
+  	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">1</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">1</TD>
+	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">0</TD> <TD ALIGN=LEFT BGCOLOR="#DED5D3">Set priority command</TD>
+	       </TR>
+               <TR>
+  	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">1</TD> <TD ALIGN=CENTER BGCOLOR="#DED5D3">1</TD>
+	         <TD ALIGN=CENTER BGCOLOR="#DED5D3">1</TD> <TD ALIGN=LEFT BGCOLOR="#DED5D3">Rotate on specific EOI</TD>
+	       </TR>
+	     </TABLE>
+	     <P>
+	     The rotation options can be used to alter the priorities of the various interrupts.
+	     IRQs are usually prioritized in ascending order (IRQ0 has the highest priority), but
+	     by enabling priority rotation, the device currently being serviced receives the lowest
+	     priority. The aim of this mode is to enforce an equal priority scheme and should
+	     be used in systems where multiple devices with the same priority level 
+	     must be serviced.
+      </UL>      
+      
+  <H2>Example</H2>
+    In this example, we consider an adapter card using interrupt line 3 to generate
+    an interrupt signal. We will assume that the processor is operating in protected and
+    examine how the various hardware and software components interact to service the
+    device. Please note that the example does not address situations involving task
+    switches or privilege level changes.
+    <OL>
+      <LI> The adapter sends a signal to the PIC by driving interrupt line 3 from low to high.
+      <LI> The PIC records the request in the <I>interrupt request register</I> (IRR) by setting
+           the bit position corresponding to the interrupt line in the IRR. In this example,
+	   bit 3 of the IRR will be set to 1.
+      <LI> The PIC proceeds by examining the contents of the IMR to determine if the requested
+           interrupt may be serviced. If the interrupt is not inhibited, the PIC determines
+	   if there are any higher priority interrupts waiting to be serviced or in the 
+	   process of being serviced. The PIC takes no further action if there are any
+	   outstanding interrupts.
+      <LI> If there are no outstanding interrupts, the PIC sends a signal to the CPU
+           over a dedicated interrupt line to inform the processor that a hardware
+	   interrupt has occurred.
+      <LI> Upon receiving a signal from the PIC, the CPU completes execution of the current
+           instruction and delays the execution of the next instruction in the prefetch
+	   queue or instruction pipeline. The CPU now examines the interrupt flag in the
+	   <CODE>EFLAGS</CODE> register. If the interrupt flag is set, the processor
+	   will recognize external interrupts and sends an acknowledgement signal back to
+	   the PIC.
+      <LI> When the PIC receives the acknowledgement signal, it sends the interrupt vector
+           number to the processor. The vector is obtained from the contents loaded into
+	   ICW-2 during initialization and combined with the interrupt request number.
+           The PIC also sets bit 3 of the <I>in-service register</I> (ISR) indicating
+	   that interrupt servicing is in progress.
+      <LI> The processor now interrupts the currently executing program by pushing
+           the contents of the <CODE>EFLAGS</CODE>, <CODE>CS</CODE> and <CODE>EIP</CODE>
+	   register on the stack.
+      <LI> The processor uses the interrupt vector number to locate a gate descriptor
+           in the IDT. The selector field of the gate descriptor is now loaded into the
+	   <CODE>CS</CODE> segment selector to obtain a segment descriptor from the GDT. 
+	   The offset field of the gate descriptor in the IDT is loaded into <CODE>EIP</CODE>
+	   and, together with the base address of the segment descriptor in the GDT
+	   will form the linear address for the entry point into the service routine. If
+           paging is enabled, the CPU will first translate the linear address to a
+           physical address, otherwise the linear address will map directly to a
+           physical memory location. Depending on the structure of the system, a number of 
+           checks are performed by the processor to verify the access rights of the segment 
+           containing the service routine. The processor will also clear the interrupt flag in 
+           the <CODE>EFLAGS</CODE> register if the IDT entry for the service routine selected
+	   an interrupt-gate descriptor. The IF bit is left unchanged if either
+           a task-gate or trap-gate descriptor was selected.
+      <LI> The <I>interrupt service routine</I> (ISR) can now perform all necessary tasks required
+           to service the specific device. Typical operations may include reading/writing data
+	   from/to the device, examining status registers, etc. Once the device has been
+	   serviced, the ISR sends an <I>end of interrupt</I> (EOI) signal to the PIC. 
+	   Upon receiving the EOI signal,  the PIC clears the bit in the in-service register 
+	   associated with interrupt 3 and is ready to accept new interrupts.
+      <LI> The service routine is now complete and will execute an <CODE>IRETD</CODE>
+           instruction, popping the <CODE>EFLAGS</CODE>, <CODE>CS</CODE> and <CODE>EIP</CODE>
+	   registers (previously stored by the processor) from the stack, transferring
+	   control back to the interrupted task. 
+    </OL>
+      
+  <H2>Further Reading</H2>
+    <UL>
+      <LI><I>8259A Programmable Interrupt Controller (8259A/8259A-2) Datasheet</I></A>, 1988,
+          Intel Corporation, Order Number: 231468-003.
+      <LI><I>The Undocumented PC</I>, Frank van Gilluwe, Addison Wesley, 1997.
+      <LI><I>Protected Mode Software Architecture</I>, Tom Shanley, Mindshare Inc.,
+          Addison Wesley, 1996.
+      <LI><I>Programming the 80386</I>, Crawford and Gelsinger, Sybex, 1986.
+    </UL>
+<HR>
+<ADDRESS>
+Page developed by <A HREF="mailto:eloff@cs.sun.ac.za">Jacques Eloff</A><BR>
+Last updated: 12.01.2005
+</ADDRESS>  
+</BODY>
+</HTML>
+------------nRXINw2Zhxwzt7zxsPbsvu
+Content-Disposition: inline; filename=style.css
+Content-Type: text/css; charset=iso-8859-1; name=style.css
+Content-Location: http://www.cs.sun.ac.za/~lraitt/style.css
+Content-Transfer-Encoding: 8bit
+
+body {
+        font-family: Verdana, Arial, Geneva, Helvetica, sans-serif;
+	font-size: 9pt;
+	background-color: #ffffff;
+}
+
+table {
+	font-size: 9pt;
+}
+
+td.banner {
+	text-align: center;
+	margin: 0px 0px 9pt 0px;
+	padding: 9px 9px 9px 9px;
+	border-width: 0px 0px 6px 0px;
+	border-style: solid;
+	border-color: #c0c0c0;
+	background-color: #ded5d3;
+	font-size: 24pt;
+	font-weight: bold;
+	color: maroon;
+}
+
+td.navbar {
+	width: 170px;
+	font-size: 9pt;
+}
+
+td.main {
+	font-size: 9pt;
+	border-style: solid;
+	border-width: 2px 2px 2px 2px;
+	border-color: #000000;
+	background-color: #ffffff;
+	padding: 9pt 9pt 9pt 9pt;
+}
+
+td.plain {
+	text-align: center;
+	font-size: 9pt;
+	border-style: solid;
+	border-width: 2px 2px 2px 2px;
+	border-color: #000000;
+	background-color: #ffffff;
+	padding: 9pt 9pt 9pt 9pt;
+}
+
+td.newsbar {
+	width: 170px;
+	font-size: 9pt;
+}
+
+div.navhead {
+	background-color: maroon;
+	padding: 1px 3px 1px 3px;
+	font-weight: bold;
+	color: white;
+	border: solid:
+	border-width: 1px 1px 0px 1px;
+	border-color: #000000;
+}
+
+div.navtext {
+	border-width: 2px 2px 2px 2px;
+	border-style: solid;
+	border-color: maroon;
+	background-color: #ded5d3;
+	margin: 0px 0px 9pt 0px;
+}
+
+a.navref {
+	display: block;
+	margin: 2px 2px 2px 2px;
+	padding: 1px 3px 1px 3px;
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #ded5d3;
+	font-weight: bold;
+	color: maroon;
+}
+
+a.navref:hover {
+	background-color: maroon;
+	border-color: white;
+        color: white
+}
+
+div.newshead {
+	background-color: maroon;
+	padding: 1px 3px 1px 3px;
+	font-weight: bold;
+	color: white;
+	border: solid:
+	border-width: 1px 1px 0px 1px;
+	border-color: #000000;
+}
+
+div.newstext {
+	border-width: 2px 2px 2px 2px;
+	border-style: solid;
+	border-color: maroon;
+	background-color: #ded5d3;
+	margin: 0px 0px 9pt 0px;
+	padding: 4px 4px 4px 4px;
+	font-size: 8pt;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: maroon;
+}
+
+a {
+    text-decoration: none;
+	font-weight: bold;
+    color: #blue;
+}
+                                                                                
+a:hover {
+    color: white;
+    background-color: maroon;
+}
+
+#webpeagreen {
+    background-color: #cccc99;
+}
+                                                                                
+#darkorange {
+    background-color: #cc9900;
+}
+                                                                                
+#lightorange {
+    background-color: #eda159;
+}
+                                                                                
+#darkpeagreen {
+    background-color: #80b37f;
+}
+                                                                                
+#menuorange {
+    background-color: #ffeeaa;
+}
+                                                                                
+#brownorange {
+    background-color: #ccb37f;
+}
+
+#bgorange {
+	background-color: #ffeeaa;
+}
+
+#font9 {
+	font-size: 9pt;
+}
+
+#textorangered {
+	color: #ff4500;
+}
+
+a.newsref {
+    text-decoration: none;
+    font-weight: bold;
+    color: #59669e;
+}
+                                                                                
+a.newsref:hover {
+    color: #ffeeaa;
+    background-color: #59669e;
+}
+
+thead.bookstyle {
+	font-weight: bold;
+	background-color: #ffeeaa;
+}
+
+tbody.bookstyle {
+	border-width: 0px 0px 2px 0px;
+}
+
+pre.term {
+	background-color: #000000;
+	color: #ffffff;
+	padding: 6px 6px 6px 6px;
+}
+
+code {
+	font-weight: bold;
+	font-size: 9pt;
+	color: black;
+}
+
+------------nRXINw2Zhxwzt7zxsPbsvu--

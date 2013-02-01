@@ -1,0 +1,2707 @@
+   ATI Technologies Super VGA Chip Sets.
+
+    18800              V3. ROM BIOS label: V3M
+    18800-1    100pin  V4. ROM BIOS label: V4M
+    18800-1    100pin  V5. Uses 18810 Dot Clock Chip. ROM BIOS label: V5M
+    28800-2            V6. VGA Wonder+
+    28800-4            V7. VGA Wonder XL
+    28800-5            VGA Wonder (1MB)/XL, Graphics/Ultra (VGA chip)
+    28800-6    160pin  VGA Wonder XL24
+    38800-1            Mach 8.  8514/Ultra and Graphics/Ultra (8514/A chip)
+    68800-3    208pin  Mach 32. Graphics Ultra Pro/+ Combined 8514/A and
+                          VGA chip.
+    68800-6    208pin  As -3, but with memory mapped registers
+    68800-LX   208pin  As -6, but only supports DRAM (no VRAM)
+    68800-AX   208pin  As -6, but supports PCI bus
+    88800GX    208pin  Mach64 (there is also an 88800CX ??)
+
+Support chips:
+ATI18810  Clock chip for 18800-1, 28800
+ATI18811  Clock chip for 68800
+ATI18820  Bus Mouse Controller
+
+    ATI Prism Elite uses Trident 8800CS chips.
+
+    ATI VGA Wonder XL can use the Sierra HiColor RAMDAC.
+
+Note that the base register for the ATI extended registers should be read from
+the word at 0C000h:10h (NOT on Mach64), as ATI reserves the right to change
+the base address. However all current implementations use 1CEh.
+
+Note:  The ATI chips handles the indexed registers slightly differently
+       from other VGA chips, as the index register must be written before
+       each read or write of the associated data register.
+
+
+1CEh index 80h (R/W):  ATI Register 0 (ATI00)                     (68800 only)
+bit  0-7  Scratch Pad
+
+1CEh index 81h (R/W):  ATI Register 1 (ATI01)                     (68800 only)
+bit  0-7  Scratch Pad
+
+1CEh index 82h (R/W):  ATI Register 2 (ATI02)                     (68800 only)
+bit  0-7  Scratch Pad
+
+1CEh index 83h (R/W):  ATI Register 3 (ATI03)                     (68800 only)
+bit  0-7  Scratch Pad
+
+1CEh index 84h (R/W):  ATI Register 4 (ATI04)                     (68800 only)
+bit  0-7  Scratch Pad
+
+1CEh index 85h (R/W):  ATI Register 5 (ATI05)                     (68800 only)
+bit  0-3  CPUCLK Select. Selects the number of CPU clocks for the basic
+          command cycle in the local bus.
+     4-5  Delay Memory Read Ready Control.
+           0: Read Ready signal is 1 MCLK before memory data is available
+           1: Read Ready signal is simultaneously with the memory data.
+           2: Read Ready signal is 1 MCLK after memory data is available
+           3: Read Ready signal is 2 MCLKs after memory data is available
+       6  Delay latch memory read data by one half memory clock cycle in VGA
+          planar mode.
+       7  Cursor Blink Rate Select. Half normal rate if set.
+
+1CEh index 86h (R/W):  ATI Register 6 (ATI06)                     (68800 only)
+bit  0-2  Text mode character FIFI depth
+     4-6  Number of CPUCLK cycles in the local bus BIOS ROM read cycle.
+
+1CEh index A0h (R/W):  ATI Register 20 (ATI20)                       (28800 +)
+bit  0-3  (68800 only) Display FIFO. Selects the video FIFO depth where the
+           Display Request changes from low to high priority in the memory
+           controller. Default is 8
+       4  Enable 16bit ROM if set
+     5-6  (68800 only) RAMDAC Extended Address Select. Connected to RS2 and
+           RS3 on the RAMDAC, giving access to all 8 or 16 registers on
+           advanced RAMDACs.
+
+1CEh index A1h (R/W):  ATI Register 01h                              (28800 +)
+bit  0-2  Reserved
+     3-4  Digital Monitor Detection
+     5-7  Reserved
+
+1CEh index A2h (R/W):  ATI Register 02h                              (28800 +)
+bit  0-7  Reserved
+
+1CEh index A3h (R/W):  ATI Register 23 (ATI23)                       (28800 +)
+bit  0-2  16bit ROM Access. ROM access time (Single 16bit ROM).
+       3  Cursor Start Address bit 17. Bit 17 of the Cursor Start Address
+           (3d4h index 0Eh,0Fh) Bit 16 is in
+       4  Display start address bit 17. Bit 17 of the Display Start Address
+           (3d4h index 0Ch,0Dh). Bit 16 is in 1CEh index B0h bit 6.
+     5-7  Reserved
+
+1CEh index A4h (R/W):  ATI Register 24 (ATI24)                       (28800 +)
+bit  0-3  ROM page 0
+     4-7  ROM page 1
+
+1CEh index A5h (R/W):  ATI Register 25 (ATI25)                       (28800 +)
+bit  0-3  ROM page 2
+     4-7  ROM page 3
+
+1CEh index A6h (R/W):  ATI Register 26 (ATI26)                       (28800 +)
+bit    0  (68800) Display Enable Skew-by-2. If set skews the "Display Enable"
+            signal by 2 character clocks.
+       3  (68800) General Purpose R/W Bit.
+       6  (68800) Solid Underline. Set for solid underline in monochrome text,
+            clear for dashed underline.
+       7  Forced read 3CCh. If set forces GENMO[1-7] to 0 while reading 3CCh
+
+1CEh index A7h (R/W):  ATI Register 07h                              (28800 +)
+bit    0  Enable True color mode
+     1,3  True Color DAC installed
+       2  Reserved
+     4-5  Forced pixel data to high
+       6  Skew display enable
+       7  Enable divide by 3 clock
+
+1CEh index A8h (R):  ATI Register 28 (ATI28)                     (28800-5 +)
+bit  0-1  Vertical Line Counter bit 8-9
+     2-7  Reserved
+
+1CEh index A9h (R):  ATI Register 29 (ATI29)                     (28800-5 +)
+bit  0-7  Vertical Line Counter bit 0-7
+Note: The VGA Wonder documents A8h as the low byte and A9h as the high byte,
+      but at least for the 28800-6 and Mach32 A8h IS the low byte.
+
+1CEh index AAh (R/W):  ATI Register 0Ah                            (28800-5 +)
+bit  0-3  (R) Chip Revision ID. 6 for the 28800-6, (5 for the 28800-5 ??)
+       4  Address/Data bus configuration
+     5-7  Reserved
+
+1CEh index ABh (R/W):  ATI Register 2B (ATI2B)                       (28800 +)
+bit    0  Video Zero Wait-State Enable. Enables zero wait state support for
+          video memory write if set
+       1  BIOS Zero Wait-State Enable. Enables zero wait state for BIOS read
+          if set
+       2  (68800) I/O Zero Wait State Enable if set
+       3  Select secondary display
+          (68800) Double Scan Lock Enable. Locks 3d4h index 9 bit 7 if set
+       4  (28800-6 +) Lock DAC write. If set locks the RAMDAC write signal
+       5  (28800-6) Zero wait state enable
+       6  Restrict CPU access
+          (68800) Memory Data Delay Latch in Text Mode. If set latching of
+           memory data from the DRAM port is delayed by 1/2 MCLK in text modes
+       7  Video Data Delay Latch in Text Mode. If set internal latching of
+          video data from the serial port is delayed by 1/2 MCLK in text modes
+
+1CEh index ACh (R/W):  ATI Register 0Ch                            (28800-6 +)
+bit    0  Enable Linear Addressing
+     1-5  Reserved
+       6  Enable 1024x768x16 color planar pass through internal palette
+       7  Reserved
+
+1CEh index ADh (R/W):  ATI Register 2D (ATI2D)                     (28800-6 +)
+bit    0  (28800-6) Extended Horizontal Total bit 8. Bits 0-7 are in 3d4h
+             index 0. Only used if bit 3 is set
+       1  (28800-6) Extended CRTC Start Blanking bit 8. Bits 0-7 are in 3d4h
+             index 2. Only used if bit 3 is set
+     0-1  (68800) Extended Cursor Address. Bits 18-19 of the Cursor Address
+           register (3d4h index 0Eh,0Fh). Bit 16 is in 1CEh index B0h bit 2
+           and bit 17 in 1CEh index A3h bit 3.
+       2  (28800-6) Extended CRTC Horizontal Retrace Start bit 8. Bits 0-7 are
+           in 3d4h index 4. Only used if bit 3 is set
+       3  (28800-6) Extended CRTC Registers Enable
+     2-3  (68800) Extended Start Address. Bits 18-19 of the Display Start
+           Address register (3d4h index 0Ch,0Dh). Bits 16 is in 1CEh index B0h
+           bit 6 and bit 17 in 1CEh index A3h bit 4
+     4-7  Extended Character Map Address. Bits 16-19 of the address where the
+          font maps are stored. See 3C4h index 3.
+
+1CEh index AEh (R/W):  ATI Register 2E (ATI2E)                  (68800 only?)
+bit  0-1  (68800) Write/Single bank bit 4-5
+     2-3  (68800) Read bank bit 4-5
+       4  If sets locks the CPUCLK select bits (1CEh index 85h bits 0-3).
+     5-7  Horizontal Sync Skew relative to pixel clock.
+
+1CEh index AFh (R/W):  ATI Register 0Fh
+bit  0-7  Reserved
+
+1CEh index B0h (R/W):  ATI Register 30 (ATI30)
+bit    0  Skews Display Enable by one character clock if set
+       1  (188xx) Enable 256 color modes
+          (288xx) Enable alt Video memory organization in text modes
+       2  (188xx) Enable 256 color modes
+          (28800 +) Extended Cursor Start Address. Bit 16 of the Cursor Start
+           Address register (3d4h index 0Eh,0Fh). Bit 17 is in 1CEh index A3
+           bit 3.
+       3  (188xx) Enable 8 CRT accesses for each CPU access
+     3-4  (28800-4 +) Video memory: 0=256k, 1=1M, 2=512K
+       4  (28800-2) Video memory: 0=256k, 1=512k
+       5  (28800 +) ATI-Ext 256 Color Mode Select. Enables extended 256 color
+            modes if set
+     6-7  (188xx) Display Start Address bit 16-17
+       6  (28800 +) Extended Display Start Address. Bit 16 of the Display
+           Start Address register (3d4h index 0Ch,0Dh). Bit 17 is in 1CEh
+           index A3h bit 4
+       7  (28800 +) Enable Higher bandwidth in VRAM
+
+1CEh index B1h (R/W):  EGA Compatibility and Double Scanning Enable
+bit    0  EGA I/O Address Compatibility. Forces all VGA I/O addresses to be
+          EGA compatible if set
+       1  EGA Register Compatibility. Forces all VGA registers to be EGA
+          compatible if set
+       2  General purpose read/write bit
+     3-5  Scan Function. Double scanning/3 of 4 scanning enable
+            0: Normal
+            1: Enable double scanning in graphics mode
+            2: Enable 3 of 4 scanning in graphics mode
+            5: Enable double scanning in text mode
+            6: Enable 3 of 4 scanning in text mode
+       6  Vertical Timings Divide by 2. If set divides the Vertical timing
+          parameters by 2
+       7  Reserved
+
+1CEh index B2h (R/W):  Memory Page Select
+bit    0  (18800) Enable interlace if set
+          (18800-1) reserved
+          (28800 +) Read bank no bit 3
+     1-3  (18800-1) Write/Single bank no.
+     1-4  (28800 +) Write/Single bank no
+          (18800) Bank no. in 64 chunks
+       5  (18800) Enable internal DIP switch settings (EGA mode)
+       6  (18800) External clock select. Bit 2 of the clock select. Bits 0-1
+            are in 3C2h/3CCh bits 2-3. Clocks in MHz:
+             0: 50.175, 1: 56.644, 3: 44.900, 4: 44.900, 5: 50.175, 7: 36.000
+       7  (18800) Reserved
+     5-7  (18800-1 +) Read bank no
+
+1CEh index B3h (R/W):  ATI Register 33 (ATI33)
+bit    0  EEPROM data input
+       1  EEPROM clock source
+       2  Enable EEPROM interface
+       3  EEPROM chip select. Enables EEPROM if set
+       4  (18800?)  Enable PS/2 decoding
+          (18800-1) Disable memory beyond 256K if set
+       5  (28800 +) XOR with input status bit HSYNC to select 8 or 16 bit
+                    video memory operation
+          (68800) ISA bus 8/16bit Video Memory Operation. Selects 8 or 16 bit
+           Video memory operation depending on whether input pin RMCE1B is
+           grounded through a 2K Ohm resistor.
+           If grounded:      1:  8bit, 1: 16bit
+           If NOT grounded:  0: 16bit, 1:  8bit
+       6  (18800) Enable 1 CRT access to 1 CPU access
+          (18800-1 +)  4bit PEL, 1bit/map. Enables 1024x768 16 color planar
+            pixel mode if set. If set 16 pixels are loaded and displayed per
+            character clock rather than the normal 8, also the CRTC offset
+            register (3d4h index 13h) is in units of 4 bytes rather than 2.
+       7  Double Scan Enable. Enable double scanning for 200 line modes if set
+Note: This register should not be modified on revision 1 chips.
+
+1CEh index B4h (R/W):  Emulation Control
+bit    0  Enable CGA emulation if set
+       1  Enable Hercules emulation if set
+       2  Write Protect CRT09[0-4,7]. If set write protects 3d4h index 9 bits
+           0-4 and 7
+       3  Write Protect Vertical Timing registers. If set write protects 3d4h
+          index 6, 7 bits 0-3 and 5-7, 9 bit 5, 10h, 11h bits 0-3, 12h, 15h
+          and 16h
+       4  Write Protect CRT0A-CRT0B. If set write protects the Cursor Start
+          and End registers (3d4h index 0Ah and 0Bh).
+       5  Write Protect CRT08[0-6], CRT14[0-4]. If set write protects
+          registers 3d4h index 8 bits 0-6 and index 14h bits 0-4
+       6  Write Protect CRT00-CRT07. If set write protects 3d4h index 0-7
+          except index 7 bit 4
+       7  CRT11[7] Override. If set 3d4h index 11h bit 7 is ignored and does
+          not lock other CRTC registers.
+
+1CEh index B5h (R/W):  ATI Register 35 (ATI35)
+bit    0  Blanking Signal Select. Select display enable as the blanking signal
+          if set
+       1  Blanking Polarity Invert. Inverts the polarity of the  blanking
+          signal BLANKB if set
+       2  Display Enable Signal Skewed. Skews the Display Enable signal by one
+          PEL clock period if set
+       3  Select Map 3 as programmable character generator
+          (68800) General Purpose Read/Write bit.
+       4  (18800-1 +) Enable 8 simultaneous fonts if set. Background is then
+            always 0, and bit 4-7 of the attribute selects the font.
+            The font location in plane 2 (sorted by attribute bit 4-7) is:
+              0: 0K, 1: 32K, 2: 8K, 3: 40K, 4: 16K, 5: 48K, 6: 24K, 7: 56K
+          (68800) Anti-alias Fonts Enable.
+       5  Disable Cursor Blinking if set
+       6  CGA Cursor Start/End Address. If set adds 5 to the cursor start and
+          end registers for CGA emulation.
+       7  Select undivided input clock as pixel clock
+          (68800-6) VGA Overscan Output Enable. If set generates an overscan
+            signal that can be used by the RAMDAC to select a color outside
+            the normal 256color palette (overlay registers in the RAMDAC).
+
+1CEh index B6h (R/W):  High Resolution Enable
+bit    0  (28800-4 +) CRTC Display Address Counter Enable. Set to enable
+            >16bit CRTC address counter. If clear the display wraps at 256K
+            (planar modes - 4x64K) or 512K (packed modes - 8x64K).
+       1  Enable 640x400 Hercules emulation if set
+       2  Enable linear addressing in 256color modes if set
+       3  Select 4 color high res modes
+          (68800) General Read/Write bit.
+       4  16 Color Enable, APA Mode. Set to enable 16 color high resolution
+          modes. If set the horizontal timings (3d4h index 0-5) are doubled.
+       5  Enable vertical interrupts if set
+       6  (18800 - 28800-3) Enable linear addressing
+          (?) Select composite sync for output
+          (68800) Linear Addressing, Text Mode. Enables linear addressing in
+            text modes if set.
+       7  Screen Blanking Disable. Disable blanking screen blank in CGA and
+          Hercules emulation if set
+
+1CEh index B7h (R/W):  ATI Register 37 (ATI37)
+bit    0  Status of ISA bus 16bit Operation Select.
+          16bit if set, 8bit if clear
+       1  (not 68800) PS/2 configuration
+       2  (not 68800) Video memory is DRAM if set, VRAM if clear
+       3  Output Data for the EEPROM input
+       4  Status of ROM Address Decode. Decode enabled if set
+       5  (not 68800) Select I/O address at 3xxh or 2xxh
+     6-7  Reserved
+
+1CEh index B8h (R/W):  Write Protect and Clock Select
+bit    0  Write Protect ATTR00-0F. If set write protects the Palette registers
+          (3C0h index 0-0Fh).
+       1  Write Protect ATTR11. If set write protects the Overscan register
+          (3C0h index 11h).
+       2  Write Protect VGA Registers. If set write protects all VGA registers
+          except the Display Start Address (3d4h index 0Ch,0Dh) and the Cursor
+          Start and End registers (3d4h index 0Ah and 0Bh)
+       3  Write Protect Register at I/O Port 3C2h if set
+       4  (not 68800) Lock horizontal sync polarity if set
+       5  (not 68800) Lock vertical sync polarity if set
+          (68800) 640x300 Hercules Graphics Emulation. Enabled if set
+     6-7  (Not 68800) Divide Video Clock by: 0: 1, 1: 2, 2: 3, 3: 4
+       6  (68800) Clock Divider. If set divides the input Video Clock by 2.
+       7  (68800) General Purpose Read/Write bit
+
+1CEh index B9h (R/W):  ATI Register 39 (ATI39)
+bit    0  (?) Clock select
+       1  (18800-1 +) Select input to clock chip. See index BEh bit 4
+          (68800) Documented as "General Purpose Read/Write bit", but is
+            actually a Clock Select bit as for the earlier chips!
+     2-3  ROM address space.
+            0: 32k at C000h, 1: 28k at C000h, 2,3: 24k at C000h
+     4-5  Wait cycles for 16 bit ROM access:
+            0: 8 cycles, 1: 4 cycles, 2: 2 cycles, 3: none
+          (68800) General Purpose Read/Write bits.
+       6  16bit I/O Operation. If set I/O operations are 16bits, 8bits if
+           clear
+       7  Write Protect CRT18. If set write protects the Line Compare register
+          (3d4h index 18h)
+
+1CEh index BAh (R/W):  ATI Register 3A (ATI3A)
+bit  0-2  (not 68800) Delay chain timing compensation for TTL monitors and
+            16color RGB simulation
+          (68800) General Purpose Read/Write bits
+       3  (not 68800) Disable secondary Red output (for RGB monitors)
+       4  (not 68800) Enable EGA color simulation for RGB monitors
+       5  (not 68800) Enable monochrome grey scale circuit
+       6  reserved
+       7  (not 68800) Delay chain resolution compensation
+
+1CEh index BBh (R/W):  Input Status Register
+bit  0-3  Monitor Type:
+            0: EGA
+            1: PS/2 Analog Monochrome
+            2: TTL Monochrome
+            3: PS/2 Color
+            4: RGB Color
+            5: MultiSync
+            7: PS/2 8514
+            8: Seiko 1430
+            9: NEC Multisync 2A
+            A: Crystalscan 860/Tatung 1439
+            B: NEC Multisync 3D
+            C: TVM 3M
+            D: NEC MultiSync XL
+            E: TVM 2A
+            F: TVM 3A
+       4  (188xx) General read/write bit
+          (28800 +) Bit 4 of the Monitor Type above
+       5  (188xx) Video memory is 512Kbytes if set, 256K else
+     6-7  Reserved
+     0-7  (68800) General Purpose Read/Write bits
+Note: this register is set by the BIOS
+
+1CEh index BCh (R/W):  ATI Register 3C (ATI3C)
+bit  0-7  reserved, must be 0
+
+1CEh index BDh (R/W):  EGA Switch Settings
+bit    0  Composite Sync Polarity Select.
+       2  (28800-5 +) 128K CPU Address. Enables A0000h-BFFFFh as one 128K page
+            if set
+       3  Composite Sync Select. If set selects Composite Sync output, if
+          clear Horizontal Sync.
+     4-7  EGA switch settings
+
+1CEh index BEh (R/W):  ATI Register E                              (not 18800)
+bit    0  R/W Vertical Display End Register. If set unlock Vertical Display
+          End register (3d4h index 12h) even in Double Scan modes.
+       1  Interlace Operation. Set to enable interlace.
+       2  Select Internal EGA DIP Switches. If set use 1CEh index BBh bits
+          4-7, if clear use
+       3  Read/Write Paging Select. Selects Read/Write bank mode if set,
+          single bank mode if clear
+       4  (18800-1 without 18810 Clock Chip (V4)) External clock select.
+            Bit 2 of the clock select. Bits 0-1 are in 3C2h/3CCh bits 2-3.
+            Clocks in MHz:
+             0: 50.175, 1: 56.644, 3: 44.900, 4: 44.900, 5: 50.175, 7: 36.000
+          (18800-1 with 18810 Clock Chip, 28800 +) Clock Select
+              BEh bit 4: B9h bit 1: 3C2h bit 3: 3C2h bit 2:   Frequency:
+                  0          0          0           0           42.954 MHz
+                  0          0          0           1           48.771
+                  0          0          1           0           Ext 0 (16.657)
+                  0          0          1           1           36.000
+                  0          1          0           0           50.350
+                  0          1          0           1           56.640
+                  0          1          1           0           Ext 1 (28.322)
+                  0          1          1           1           44.900
+                  1          0          0           0           30.240
+                  1          0          0           1           32.000
+                  1          0          1           0           37.500
+                  1          0          1           1           39.000
+                  1          1          0           0           40.000
+                  1          1          0           1           56.644
+                  1          1          1           0           75.000
+                  1          1          1           1           65.000
+          (68800) Documented as "General Purpose Read/Write bit", but is
+            actually a Clock Select bit as for the earlier chips!
+       6  (not 68800) Enable 1024x768 16 color mode
+       7  (not 68800) Enable 1024x768 4 color mode
+
+1CEh index BFh (R/W):  Miscellaneous Register                      (not 188xx)
+bit    0  (68800) Disable Zero Wait State in planar modes if set
+     1-3  (68800) Delay in number of MCLK cycles before latching first CPU
+            data in 16bit planar modes.
+       6  (288xx) ROM page address bit
+       7  (288xx) Alternate memory organisation for graphics enable
+
+23Ch (R):  Port A                                                 (18820 only)
+bit  0-3  The data selected by 23Eh bits 5-6.
+       5  Clear if the right mouse button is down.
+       6  Clear if the middle mouse button is down.
+       7  Clear if the left mouse button is down.
+Note: The registers 23Ch-23Fh are relocated to 238h-23Bh if the secondary
+      mouse port address is selected. This can be done in software or jumper.
+
+23Ch (R/W):  Port A                                                    (288xx)
+bit  0-2  Internal Register Index. Selects the register to access at 23Dh
+       7  Set to reset the chip, clear for normal operation.
+Note: The 28800 series has built in Inport Mouse support.
+Note: The registers 23Ch-23Fh are relocated to 238h-23Bh if the secondary
+      mouse port address is selected. This is done in software.
+
+23Ch index 0 (R/W):  Mouse State                                       (288xx)
+bit    0  Set if right mouse button is down
+       1  Set if middle mouse button is down
+       2  Set if left mouse button is down
+       3  Set if the right mouse button state has changed since Hold was set
+       4  Set if the middle mouse button state has changed since Hold was set
+       5  Set if the left mouse button state has changed since Hold was set
+       6  Set if the mouse has moved
+       7  Set if packet complete
+Note: this register is valid when 23Ch index 7 bit 5 is set
+
+23Ch index 1 (R/W):  X Movement Count                                  (288xx)
+bit  0-7  X-Count. Two's complement movement X count
+Note: this register is valid when 23Ch index 7 bit 5 is set
+
+23Ch index 2 (R/W):  Y Movement Count                                  (288xx)
+bit  0-7  Y-Count. Two's complement movement Y count
+Note: this register is valid when 23Ch index 7 bit 5 is set
+
+23Ch index 7 (R/W):  Mode                                              (288xx)
+bit  0-2  Timer Select. Sets the maximum interrupt rate. Interrupts only occur
+          if the button state has changed or the mouse has moved.
+           0: 0Hz (Never), 1: 30Hz, 2: 50Hz, 3: 100Hz, 4: 200Hz, 6: Always
+       3  Data Interrupt Enable. If set an interrupt will be generated when
+          the button state has changed or the mouse has moved.
+       4  Timer Interrupt Enable. If set interrupts will be generated at the
+          frequency specified in bits 0-2.
+       5  Hold. Should be set before reading index 0-2 and reset after.
+     6-7  Mode. 0: Quadrature Mouse.
+
+
+23Dh (R/W):  Port B                                               (18820 only)
+Note: only used to detect I/O address
+
+23Eh (R/W):  Port C                                               (18820 only)
+bit    0  (R) Set if IRQ5 selected
+       1  (R) Set if IRQ4 selected
+       2  (R) Set if IRQ3 selected
+       3  (R) Set if IRQ2 selected
+       4  Interrupts disabled if set, enabled if clear
+     5-6  Counter Read Select. Selects the data to return in 23Ch bits 0-3
+           0: Low nibble of X Counter
+           1: High nibble of X Counter
+           2: Low nibble of Y Counter
+           3: High nibble of Y Counter
+       7  Hold. Set this bit at the beginning of the Interrupt Service Rutine,
+          clear after reading counter.
+
+23Eh (R):  Port C                                                      (288xx)
+Bit  0-7  Alternates between DEh and 11h on each read.
+
+23Fh (R/W):  Port D                                               (18820 only)
+bit  0-7  Used to control timer, must be 91h
+
+2EEh (W):  Overscan Color Register                                    (Mach32)
+bit  0-7  OVERSCAN_COLOR_8. Overscan color for 4 and 8bit modes
+
+2EFh (W):  24Bit Blue Overscan Component                              (Mach32)
+bit  0-7  OVERSCAN_BLUE_24. Blue Overscan color for 16 and 24bit modes
+
+3C0h index 00h-0Fh (R/W):  Palette index register
+bit 4-5  Mode 67h Palette set selection. These bits should be the same in all
+         16 attribute registers.
+         Value   Pixel=0    1      2         3
+          0       Black  White  Grey      Bright White
+          1       Black  Green  Red       Yellow
+          2       Black  Cyan   Red       White
+          3       Black  Cyan   Magenta   White
+Note: this is special to mode 67h only!!
+
+3CEh index 50h (R/W):                                        (Mach32/64 only?)
+bit  0-7  Lower 8 bits of the ATI extended register base I/O address
+
+3CEh index 51h (R/W):                                        (Mach32/64 only?)
+bit  0-3  Bits 8-11 of the ATI extended register base I/O address. Bits 0-7
+          are in 3CEh index 50h.
+     6-7  Selects the index range for the extended registers within the ATI
+          extended registers. 0: 00h-3Fh, 1: 40h-7Fh, 2: 80h-BFh, 3: C0h-FFh
+Note: Usually these registers are programmed to place the extended registers
+      at 1CEh with index 80h-BFh. (50h = CEh and 51h = 81h).
+
+6EEh (W):  24Bit Green Overscan Component                             (Mach32)
+bit  0-7  OVERSCAN_GREEN_24. Green Overscan color for 16 and 24bit modes
+
+6EFh (W):  24Bit Red Overscan Component                               (Mach32)
+bit  0-7  OVERSCAN_RED_24. Red Overscan color for 16 and 24bit modes
+
+0AEEh W(W):  Cursor Offset Low                                        (Mach32)
+bit 0-15  CURSOR_OFFSET_LO. Lower bits of the address (in DWORDs) of the
+          cursor map in video memory. The upper bits are in 0EEEh. The cursor
+          map is a 64x64 pixel map with two bits per pixel.
+          Pixel:    Pixel Color:
+            0       Cursor Color 0
+            1       Cursor Color 1
+            2       Transparent (Screen data)
+            3       Complement (XOR cursor)
+
+0EEEh W(W):  Cursor Offset High                                       (Mach32)
+bit  0-3  CURSOR_OFFSET_HI. Upper bits of the address of the cursor map. Low
+          bits are in 0AEEh.
+      15  CURSOR_ENA. Set to enable the Hardware Cursor
+
+12EEh W(R):  Configuration Status 1 Register                           (Mach8)
+bit    0  CLK_MODE. Set to use clock chip, clear to use crystals.
+       1  BUS_16. Set for 16bit bus, clear for 8bit bus
+       2  MC_BUS. Set for MicroChannel bus, clear for ISA/EISA bus
+       3  EEPROM_ENA. EEPROM enabled if set
+       4  DRAM_ENA. Set for DRAM, clear for VRAM.
+     5-6  MEM_INSTALLED. Video memory. 0: 512K, 1: 1024K
+       7  ROM_ENA. Set is ROM is enabled
+       8  ROM_PAGE_ENA. Set if ROM paging enabled
+    9-15  ROM_LOCATION. If bit 2 and 3 are 0 the ROM will be at this location:
+           0: C000h, 1: C080h, 2: C100h, .. 127: FF80h (unlikely)
+
+12EEh W(R):  Configuration Status 1 Register                          (Mach32)
+bit    0  8514_ONLY. If set the VGA is disabled, if clear VGA and 8514 enabled
+     1-3  BUS_TYPE. 0: ISA, 1:EISA, 2:16bit MCA, 3: 32bit MCA, 4: Local Bus
+           (386SX), 5: Local Bus (386DX), 6: Local Bus (486), 7: PCI
+     4-6  MEM_TYPE. Memory type:
+            0: 256Kx4 DRAM
+            1: 256Kx4 VRAM with 512bit serial transfer
+            2: (68800-3) 256Kx4 VRAM with 256bit serial transfer
+               (68800-6 +) 256Kx16 VRAM with 256bit serial transfer
+            3: 256Kx16 DRAM
+          Remaining only for 68800-6 and up:
+            4: 256Kx4 Graphics DRAM
+            5: 256Kx4 VRAM with 512bit split transfer
+            6: 256Kx16 VRAM with 256bit spilt transfer
+       7  CHIP_DIS. Chip disabled if set
+       8  TST_VCTR_ENA. If set delay memory write data by 0.5 MCLK for test
+          vector generation.
+    9-11  DACTYPE: Indicates the type of RAMDAC installed:
+            0: ATI 68830 (8bit i/f, 8 and 15/16bit modes)
+            1: SC1148x, IMS-G173,MU9c4870 (8bit i/f, 8 and 15/16bit modes)
+            2: ATI68875, Bt885, TLC34075 (24/32bit i/f, 8,15/16 and 24bit
+                modes)
+            3: Bt47x, INMOS17x (8bit i/f, 8bit modes - standard DAC)
+            4: AT&T20c49x, Bt48x, IMS-G174, MU9c1880, MU9c4910, SC1502x
+                 (8bit i/f, 8,15/16 and 24bit modes)
+            5: ATI68860 (24/32/64bit i/f, 8,15/16 and 24bit modes)
+               Only for 68800-AX
+      12  MC_ADR_DECODE. Enable internal microchannel address decode if set,
+          external if clear
+   13-15  CARD_ID. Used for multiple controllers
+
+12EE W(W):  Horizontal Cursor Position Register                       (Mach32)
+bit 0-10  H_CUR_POSN. Cursor X-position in units of 8 pixels relative to the
+          address in 2AEEh & 2EEEh
+
+16EEh (R):  Configuration Status 2 Register                            (Mach8)
+bit    0  SHARE_CLOCK. If set the Mach8 shares clock with the VGA
+       1  HIRES_BOOT. Boot in hi-res mode if set
+       2  EPROM_16_ENA. Adapter configured for 16bit ROM if set
+       3  WRITE_PER_BIT. Write masked VRAM operations supported if set
+       4  FLASH_ENA. Flash page writes supported if set
+
+16EEh W(R):  Configuration Status 2 Register                          (Mach32)
+bit    0  (68800-3 only) SLOW_SEQ_EN. Use 2 clock sequencer timing if set,
+            1 clock sequencer timing if clear
+       1  MEM_ADDR_DIS. Disable FE0000h-FFFFFFh if set
+       2  ISA_16_ENA. (ISA bus only) 16bit ISA bus if set, 8bit if clear
+       3  KOR_TXT_MODE_ENA. Korean character font support enabled if set
+     4-5  LOCAL_BUS_SUPPORT.
+            1: LOCAL2# local bus signal selected
+            2: LOCAL3# local bus signal selected
+            3: LOCAL1# local bus signal selected
+       6  LOCAL_BUS_CONFIG_2. LBus_2 configuration (non-multiplexed) if set,
+          LBus_1 configuration (multiplexed) if clear
+       7  LOCAL_BUS_RD_DLY_ENA. If set read data is held for 1 bus clock after
+          RDY
+       8  LOCAL_DAC_EN. Disable local decode of RAMDAC write in local bus
+          systems if set
+       9  LOCAL_RDY_EN. Enable 1 bus clock RDY delay for write if clear
+      10  EEPROM_ADR_SEL. Decode BIOS EEPROM at C0000h-C7FFFh if set, at
+          E0000h-E7FFFh if clear
+      11  GE_STRAP_SEL. (EISA bus) Enable POS register function if set, always
+          enable chip if clear. (Local Bus) Enable local decode of 102h
+          register if clear
+      12  VESA_RDY. Enable VESA compliant RDY format if clear
+      13  (68800-6 +) Z4GBYTE. Enable 4GN memory aperture if set, 128MB if
+            clear
+      14  (68800-6 +) LOC2_MDRAM. Supports 2MB DRAM in LBus_2 configuration if
+            set, 1MB if clear
+
+16EE W(W):  Vertical Cursor Position Register                         (Mach32)
+bit 0-11  V_CUR_POSN. Cursor Y-position relative to the address in 2AEEh &
+          2EEEh
+
+1AEEh W(R):  FIFO Test Data Register                                  (Mach32)
+bit 0-15  FIFO test data
+
+1AEEh (W):  Cursor Color 0 Register                                   (Mach32)
+bit  0-7  CUR_COLOR_0. Cursor Color 0. In 16 and 24 bit modes this is the Blue
+          component of Cursor Color 0
+
+1AEFh (W):  Cursor Color 1 Register                                   (Mach32)
+bit  0-7  CUR_COLOR_1. Cursor Color 1. In 16 and 24 bit modes this is the Blue
+          component of Cursor Color 1
+
+1EEEh (W):  Horizontal Cursor Offset Register                         (Mach32)
+bit  0-5  CUR_H_OFFSET. First horizontal pixel actually used within the 64x64
+          cursor map.
+
+1EEFh (W):  Vertical Cursor Offset Register                           (Mach32)
+bit  0-5  CUR_V_OFFSET. Number of lines shown in the cursor
+
+22EEh (R/W):  PCI Control Register                                  (68800-AX)
+bit  0-2  DAC_RW_WS. RAMDAC read/write wait states
+       3  TARGET_ABORT_EN. Enable Target Abort Cycle if set
+       4  PCI_DAC_DLY. If set increases the hold time of the register select
+          signals relative to the falling edge of the DAC write signal
+       5  DAC_SNOOP_EN. Enables snooping on DAC read if set
+       6  FAST_BURST. Enables 0 wait states on aperture Burst Write if set
+       7  FAST_MEM_IO. Fast memory mapped I/O read/write enabled if set
+
+26EEh (W):  CRT Pitch Register                                      (Mach8/32)
+bit  0-7  Width of logical scanlines in units of 8 pixels.
+          (Mach8) When 4AE8h or BEE8h index 5 is written this register is
+            reset to 128 (=1024 pixels)
+
+2AEEh W(W):  CRT Offset Low Register                                (Mach8/32)
+bit 0-15  Lower 16 bits of the CRT Offset. The upper bits are in 2EEEh.
+          The start of the displayed image in units of 4 bytes.
+
+2EEEh W(W):  CRT Offset High Register                               (Mach8/32)
+bit  0-3  Upper bits of the CRT Offset. Lower bits are in 2AEEh.
+
+32EEh W(R/W):  Local Control Register                                 (Mach32)
+bit    0  MED_NON-PAGE-CYC. Enables 6 clock non-page cycle
+       1  LONG_NON-PAGE-CYC. Enables 7 clock non-page cycle
+       2  SHORT_CAS_PULSE_EN. Enables 1/2 memory clock CAS precharge time
+       3  DAC_BLANK_ADJ. Enables DAC to be clocked on positive clock edge
+       4  FIFO_TEST. Enables testing of FIFO
+     5-6  (68800-3) FIFO_TIMING_ADJ. Enables filtering of 1 clock IOW low or
+            high pulse
+       5  (68800-6 +) MEM_MAP_ENA. Enables Memory Mapped registers
+             The memory mapped registers are located in the last 512 bytes of
+             the aperture (1MB or 4MB). 4 bytes are allocated to each register
+             Memory Address:  I/O register:
+                 xFFE00         02E8h
+                 xFFE04         06E8h
+                   <Other xxE8h registers>
+                 xFFEFC         FEE8h
+                 xFFF00         02EEh
+                 xFFF04         06EEh
+                   <Other xxEEh registers>
+                 xFFFFC         FEEEh
+       6  (68800-6 +) LOC_BIOS_ENA. Enables Local Bus BIOS ROM Decode
+     7-9  ROM_WAIT. Number of ROM wait states. Default is 7.
+   10-11  MEM_R_DELAY. Additional wait states for memory reads. Default is 3
+   12-15  (not 68800-AX on PCI bus) LOCAL_BUS_WAIT. Minimum wait states for
+            local bus. Default is 15
+          (68800-AX on PCI bus) 8514IO_WAIT. Number of wait states for I/O
+            read/write operations.
+
+36EEh (W):  FIFO Options Register                                      (Mach8)
+bit    0  W_STATE_ENA. If clear wait states disabled unless FIFO is full, if
+          set wait states are generated if the FIFO is at least half full.
+          This bit does not affect wait states for 8514/A compatible registers
+       1  HOST_8_ENA. Clear for 16bit I/O operations, set for 8bit I/O
+
+36EEh W(R/W):  Miscellaneous Register                                 (Mach32)
+bit    0  W_STATE_ENA. If clear wait states disabled unless FIFO is full, if
+          set wait states are generated if the FIFO is at least half full.
+          This bit does not affect wait states for 8514/A compatible registers
+       1  HOST_8_ENA. Clear for 16bit I/O operations, set for 8bit I/O
+     2-3  MEM_SIZE_ALIAS. Video Memory: 0: 512K, 1: 1MB, 2: 2MB, 3: 4MB
+       4  DISABLE_VGA. VGA controller enabled if clear.
+       5  16_BIT_IO. 16bit 8514 I/O enabled if set.
+       6  DISABLE_DAC. Disables local DAC if set
+       7  DLY_LATCH_ENA. For VRAM this is the serial data delay latch enable,
+          for DRAM the memory data delay latch enable for bits 0-63.
+       8  TEST_MODE. Extends draw engine page write cycle to 3 clocks for test
+          purposes.
+      10  (68800-6 +) BLK_WR_ENA. Block Write Enabled if set. Utilises the
+            block write mode of most VRAMs which expands all '1' data bits to
+            a specified color in the corresponding nibbles. '0 bits are no-ops
+            Only supported if the memory type is 5 or 6.
+      11  (68800-6 +) 64_DRAW_ENA. 64bit Draw Enable if set.
+      12  MEM_DATA_SEL. If set video memory read data is latched on the rising
+          edge of CASB, if clear it flows through.
+      13  DLY_LATCH_ENA. Memory data delay latch enable for data bits 0-63
+      14  LATCH_FULL_ENA. Memory Data Latch full clock pulse enable
+
+3AEEh (R):  FIFO Test Tag Register                                    (Mach32)
+bit  0-4  FIFO test data
+
+3AEEh W(W):  Extended Cursor Color 0 Register                         (Mach32)
+bit  0-7  EXT_CUR_COL_0_G. Green component of the Cursor Color 0 in 16 and
+          24bit modes
+    8-15  EXT_CUR_COL_0_R. Red component of the Cursor Color 0 in 16 and
+          24bit modes
+
+3EEEh W(W):  Extended Cursor Color 1 Register                         (Mach32)
+bit  0-7  EXT_CUR_COL_1_G. Green component of the Cursor Color 1 in 16 and
+          24bit modes
+    8-15  EXT_CUR_COL_1_R. Red component of the Cursor Color 1 in 16 and
+          24bit modes
+
+42EEh (R/W):  Memory Boundary Register                                (Mach32)
+bit  0-3  MEM_PAGE_BNDRY. Division between VGA and 8514 memory in 256K units.
+           1: VGA can write in the first 256K, 8514 in all but the first 256K
+           2: VGA can write in the first 512K, 8514 in all but the first 512K
+           etc.
+       4  MEM_BNDRY_ENA. If set the VGA and 8514 can only write in each their
+          own memory area, if clear each can write in all of memory.
+
+46EEh W(W):  Shadow Set Control Register                            (Mach8/32)
+bit    0  LOCK_CRT_PARAMS. Locks the display mode CRT parameters - Double Scan
+          and Interlace.
+       1  LOCK_Y_CONTROL. Locks 22E8h bits 1-2
+       2  LOCK_H_PARAMS. Locks the Horizontal Sync parameters: Position, Width
+          and Total.
+       3  LOCK_H_DISP. Locks Horizontal Displayed
+       4  LOCK_V_PARAMS. Locks Vertical Sync parameters: Width, Start and
+          Total.
+       5  LOCK_V_DISP. Locks Vertical Displayed
+       6  (Mach32) LOCK_OVERSCAN. Locks the selection of shadow overscan
+            register set in 1024x768 resolution.
+
+4AEEh W(R/W):  Clock Select Register                                (Mach8/32)
+bit    0  PASS_THROUGH. If set video output id's from the 8514, if clear from
+          either the internal VGA or from the Feature Connector.
+     2-5  CLK_SEL. Clock Select lines to the 1881x clock chip.
+       6  CLK_DIV. If set divide clock by 2.
+       7  Refresh. Enables video memory refresh counter if clear.
+    8-11  VFIFO_DEPTH. When the Video FIFO has less than this number of
+          entries refill will start. Only used for DRAM systems, however
+          performance at high resolutions can be optimized regardlessly.
+      12  COMPOSITE_SYNC.
+          (Mach8) If set Composite Sync used with the primary CRT register
+            set, if clear Composite Sync used when programming CRT Shadow Set
+            1 or 2.
+          (Mach32) Set for Composite Sync, clear for separate Sync.
+Note: in Mach8 mode this register is Read Only.
+      Writing to this register switches the CRT controller to ATI mode,
+      writing to 4AE8h switches to 8514 mode.
+
+52EEh W(R/W):  Scratch Pad 0 Register                                 (Mach32)
+bit  0-6  ROM address: 0: C000h, 1: C080h, 2: C100h ...
+    8-15  Scratch Pad
+
+56EEh W(R/W):  Scratch Pad 1 Register                                 (Mach32)
+bit 0-15  Scratch Pad
+
+5AEEh W(W):  Shadow Set Register                                    (Mach8/32)
+bit  0-1  SHADOW_SET. Selects the current CRT register set:
+            0: Primary CRT register set
+            1: Shadow set 1 (usually 640x480)
+            2: Shadow set 2 (usually 1024x768)
+     8-9  (68800-6 +) LOAD_SRC/DST. Determines whether the source and
+            destination offset/pitch registers are loaded together:
+             0: Load Destination and Source Offset/Pitch registers together
+             1: Load Destination Offset/Pitch register only
+             2: Load Source Offset/Pitch register only
+
+5EEEh W(R/W):  Memory Aperture Configuration Register                 (Mach32)
+bit  0-1  MEM_APERT_SEL. Aperture: 0: Disabled, 1: 1MB, 2: 4MB
+          PCI configuration does not support 1MB aperture
+     2-3  MEM_APERT_PAGE. Memory aperture page selection in 1MB aperture mode.
+    4-15  MEM_APERT_LOC. Address of aperture in 1MB steps between 0 and 4GB
+    8-15  MEM_APERT_LOC. Address of aperture in 1MB steps between 0 and 128MB
+Note: bit 8-15 is used as the Aperture Address except for PCI systems and
+      multiplexed local bus systems (16EEh bit 13 set) where bit 4-15 are used
+
+62EEh W(R):  Extended Graphics Engine Status Register                 (Mach32)
+bit  0-3  CLIP_OVERRUN. Clip Overrun
+       8  CLIP_INSIDE. Clip Inside
+    9-12  CLIP_FLAGS. For each bit: 0: outside scissor, 1: inside ?
+      13  GE_ACTIVE. The Graphics Engine is busy if set.
+      14  EE_DATA_IN. EEProm data in
+      15  POINTS_OUTSIDE. Points Outside.
+
+62EEh W(W):  Horizontal Overscan Register                             (Mach32)
+bit  0-3  Overscan Width - left side in character units
+     4-7  Overscan Width - right side in character units
+    8-10  (68800-6 +) H_SYNC_DELAY. Horizontal Sync Delay in pixels (for
+            1280x1024 multiplexed pixel modes in units of 2 pixels)
+      12  (68800-6 +) OSCAN_INV. Inverts Overscan Polarity if set
+      13  (68800-6 +) SYN_CONT_SEL. If set bits 14-15 controls HSYNC and VSYNC
+      14  (68800-6 +) HSYN_CONT. If bit 13 is set this bit controls the HSYNC
+            signal
+      15  (68800-6 +) VSYN_CONT. If bit 13 is set this bit controls the VSYNC
+            signal
+
+66EEh W(W):  Vertical Overscan Register                               (Mach32)
+bit  0-7  Overscan height - top in lines
+    8-15  Overscan height - bottom in lines
+
+6AEEh W(R/W):  Maximum Wait-States Register              (Mach8, 68800-3/6/LX)
+bit  0-3  Q_WSTATES. Max number of wait-states (in units of 0.25 clocks) that
+          the engine can generate during I/O writes. 0 = No Wait states
+          Set to 0Ch on hardware reset
+     4-7  ROM_SPEED. Number of wait states inserted by the engine when the ROM
+          BIOS is read. Set to 0Fh on hardware reset. 0 = No Wait states.
+       8  LINE_OPT_ENA. Horizontal Line draw optimisations enabled if clear.
+          Must be disabled during degree-mode linedraws to keep the ERR_TERM
+          register 8514 compatible.
+       9  (Mach8) IOR16_ENA. 16bit I/O reads enabled if clear.
+      10  (Mach8) PASSTHROUGH_OVERRIDE. Clear if passthrough connection made,
+            set if not (no VGA sync detected). Must be set correctly for the
+            DAC to function.
+
+6AEEh W(R/W):  Memory Aperture Configuration Register               (68800-AX)
+bit   10  F_APERT_ENA. Enables zero waitstate aperture write if set
+      11  FIFO_RD_AHEAD. Enables Read Ahead for aperture read operation if set
+          Speeds up sequential reads
+      12  SCLK_DLY. Pixel Stream 1 SCLK Delay if set
+      13  DEC_BURST_ENA. Enables Decrement Burst if set
+      14  INC_BURST. Increments Burst if set, decrements if clear
+      15  PCI_TIMEOUT_DIS. Enables bus timeout on burst read/writes if clear
+Note: This register available in PCI configurations only
+
+6EEEh W(W):  Graphics Engine Offset Low Register                    (Mach8/32)
+bit 0-15  Lower bits of the Graphics Engine Offset. Upper bits are in 72EEh.
+          Video buffer address in units of 4 bytes
+
+72EEh W(R):  Bounds Accumulator Left Register                       (Mach8/32)
+bit 0-15  BOUNDS_LEFT. The lowest X coordinate written through the linedraw
+          register. Reset to 2047 when A2EEh bit 8 is set
+
+72EEh (W):  Graphics Engine Offset High Register                    (Mach8/32)
+bit  0-3  Upper 4 bits of the Graphics Engine Offset. Lower bits are in 6EEEh
+
+76EEh W(R):  Bounds Accumulator Top Register                        (Mach8/32)
+bit 0-15  BOUNDS_TOP. The lowest X coordinate written through the linedraw
+          register. Reset to 2047 when A2EEh bit 8 is set
+
+76EEh (W):  Graphics Engine Pitch Register                          (Mach8/32)
+bit  0-7  GE_PITCH. Width of the display buffer in units of 8 pixels.
+
+7AEEh (W):  Extended Graphics Engine Configuration Register            (Mach8)
+bit    0  EE_DATA_OUT
+       1  EE_CLK
+       2  EE_CS
+       3  ALIAS_ENA
+       4  Z1280
+       7  EE_SELECT
+Note: This register is used in 8bit mode (card in an 8bit slot or the 8/16bit
+      jumper set for 8bit)
+
+7AEEh W(R):  Bounds Accumulator Right Register                      (Mach8/32)
+bit 0-15  BOUNDS_RIGHT. The highest X coordinate written through the linedraw
+          register. Reset to -2048 when A2EEh bit 8 is set
+
+7AEEh W(W):  Extended Graphics Engine Configuration Register        (Mach8/32)
+bit  0-2  MONITOR_ALIAS. Alternate monitor ID for 8514/A application use
+       3  ALIAS_ENA. If set read of the Subsystem Status register (42E8h)
+          returns the monitor ID in bit 0-2 rather than the actual ID.
+     4-5  (Mach32) PIXEL_WIDTH. Number of bits per pixel
+              0: 4bits/pixel(bpp), 1: 8bpp, 2: 16bpp, 3: 24bpp
+            16 and 24 bits per pixel only supported if we have at least 1MB
+            and the DAC can handle it.
+     6-7  (Mach32) 16_BIT_COLOR_MODE. 16bit pixel format:
+            0: (5,5,5) Red = bit 10-14, Green = bit  5-9, Blue = bit 0-4
+            0: (5,6,5) Red = bit 11-15, Green = bit 5-10, Blue = bit 0-4
+            0: (6,5,5) Red = bit 10-15, Green = bit  5-9, Blue = bit 0-4
+            0: (6,6,4) Red = bit 10-15, Green = bit  4-9, Blue = bit 0-3
+       8  (Mach32) MULTIPLEX_PIXELS. If set 4 pixels are sent to the DAC in
+            parallel
+       9  (Mach32) 24_BIT_COLOR_CONFIG. If set 24bit pixel occupy 4 bytes and
+            bit 10 selects the unused byte within the pixel, if clear 24bit
+            pixel occupy 3 bytes.
+      10  (Mach32) 24_BIT_COLOR_ORDER. Selects the order the colors are stored
+            in 24bit pixels. If set Red is stored first, if clear blue first.
+             Bit10  Bit9    Red     Green    Blue
+               0      0   Byte 2   Byte 1   Byte 0
+               0      1   Byte 3   Byte 2   Byte 1
+               1      0   Byte 0   Byte 1   Byte 2
+               1      1   Byte 0   Byte 1   Byte 2
+      11  (68800-6 +) DISPLAY_PIXEL_SIZE. Set to load display pixel size.
+            If both bit 11 and 15 are 0 both pixel sizes are loaded
+   12-13  (Mach32) DAC_EXT_ADDR. Connected to RS2 and RS3 on the DAC.
+      12  (Mach8) EE_DATA_OUT. Data output for the EEPROM
+      13  (Mach8) EE_CLK. Clock signal for the EEPROM
+      14  (Mach32) DAC_8_BIT_EN. Set for 8bit DAC operation, clear for 6bit
+          (Mach8) EE_CS. Chip select line for the EEPROM
+      15  (68800-6 +) DRAW_PIXEL_SIZE. Set to load drawing pixel size.
+            If both bit 11 and 15 are 0 both pixel sizes are loaded
+          (Mach8) EE_SELECT. Must be set to enable read/writing the EEPROM
+Note: On the Mach32 this register can be read at 8EEEh
+
+7EEEh W(R):  Bounds Accumulator Bottom Register                     (Mach8/32)
+bit 0-15  BOUNDS_BOTTOM. The highest Y coordinate written through the linedraw
+          register. Reset to -2048 when A2EEh bit 8 is set
+
+7EEEh W(W):  ROM/EEPROM/DAC Control Register                          (Mach32)
+bit    0  EE_DATA_OUT. Data output to the EEPROM
+       1  EE_CLK. Clock signal for the EEPROM
+       2  EE_CS. Chip select for EEPROM
+       3  EE_SELECT. Enables the external EEPROM for reading and writing if
+          set
+     4-7  ROM_PAGE_SEL. Selects a 2K page within the 32K ROM
+     8-9  BLANK_ADJUST. For type 2 DACs (ATI68875) only. Delays BLANK by 1 or
+           2 PCLKs
+   10-11  PIXEL_DELAY. Adjusts pixel data skew from PCLK
+      12  PASSTHRU_OVERIDE. Allows the pixel clock to remain active even when
+          PASSTHROUGH is 0
+   13-15  CARD_SELECT. Allows selection of cards in multicard systems. The
+          card is active if the card is strapped to this value or zero.
+
+82EEh (R/W):  Pattern Data Index Register                           (Mach8/32)
+bit  0-7  (68800-3) Selects 1 of 18 pattern data registers
+     0-4  (68800-6 +) Selects one of 24 pattern data registers
+Note: the data is written to 8EEEh. Each write increments this index
+      Index 0-0Fh are the color pattern data registers, 10h-11h (10h-17h for
+      the 68800-6 and later) are the mono pattern data registers.
+
+8EEEh W(R):  Read Extended Graphics Engine Configuration Register     (Mach32)
+bit  0-2  MONITOR_ALIAS. Alternate monitor ID for 8514/A application use
+       3  ALIAS_ENA. If set read of the Subsystem Status register (42E8h)
+          returns the monitor ID in bit 0-2 rather than the actual ID.
+     4-5  PIXEL_WIDTH. Number of bits per pixel
+              0: 4bits/pixel(bpp), 1: 8bpp, 2: 16bpp, 3: 24bpp
+            16 and 24 bits per pixel only supported if we have at least 1MB
+            and the DAC can handle it.
+     6-7  16_BIT_COLOR_MODE. 16bit pixel format:
+            0: (5,5,5) Red = bit 10-14, Green = bit  5-9, Blue = bit 0-4
+            0: (5,6,5) Red = bit 11-15, Green = bit 5-10, Blue = bit 0-4
+            0: (6,5,5) Red = bit 10-15, Green = bit  5-9, Blue = bit 0-4
+            0: (6,6,4) Red = bit 10-15, Green = bit  4-9, Blue = bit 0-3
+       8  MULTIPLEX_PIXELS. If set 4 pixels are sent to the DAC in parallel
+       9  24_BIT_COLOR_CONFIG. If set 24bit pixel occupy 4 bytes and bit 10
+          selects the unused byte within the pixel, if clear 24bit pixel occupy
+           3 bytes.
+      10  24_BIT_COLOR_ORDER. Selects the order the colors are stored in 24bit
+          pixels. If set Red is stored first, if clear blue first.
+             Bit10  Bit9    Red     Green    Blue
+               0      0   Byte 2   Byte 1   Byte 0
+               0      1   Byte 3   Byte 2   Byte 1
+               1      0   Byte 0   Byte 1   Byte 2
+               1      1   Byte 0   Byte 1   Byte 2
+      11  (68800-6 +) DISPLAY_PIXEL_SIZE. Set to load display pixel size.
+            If both bit 11 and 15 are 0 both pixel sizes are loaded
+   12-13  DAC_EXT_ADDR. Connected to RS2 and RS3 on the DAC.
+      14  DAC_8_BIT_EN. Set for 8bit DAC operation, clear for 6bit
+      15  (68800-6 +) DRAW_PIXEL_SIZE. Set to load drawing pixel size.
+            If both bit 11 and 15 are 0 both pixel sizes are loaded
+Note: This register is written at 7AEEh
+
+8EEEh W(W):  Color/Monochrome Pattern Data Registers                (Mach8/32)
+bit 0-15  Pattern data. 82EEh selects the pattern data registers to write to.
+
+92EEh W(R):  ROM Page Select & EEPROM Control Register                (Mach32)
+bit  4-7  ROM_PAGE_SEL. Selects a 2K page within the 32K ROM
+     8-9  BLANK_ADJUST. For type 2 DACs (ATI68875) only. Delays BLANK by 1 or
+           2 PCLKs
+   10-11  PIXEL_DELAY. Adjusts pixel data skew from PCLK
+
+96EEh W(R/W):  Bresenham Count Register                             (Mach8/32)
+bit 0-10  COUNT. The largest of the absolute values of delta X and delta Y
+
+9AEEh W(R):  Extended FIFO Status Register                          (Mach8/32)
+bit 0-15  Each bit is set if the corresponding FIFO location is occupied and
+          clear if it is free. Bit 15 will clear first.
+
+9AEEh (W):  Linedraw Index Register                                 (Mach8/32)
+bit  0-2  Determines the type of line data written to FEEEh.
+            0: Set current X, 1: Set current Y, 2: Line end X, 3: Line end Y,
+            4: set current X, 5: Set current Y.
+          Writing to FEEEh increments this index, except that 3 wraps to 2 and
+          5 to 4 so that a polyline can be output by setting this index to 0
+          and then writing the coordinates to FEEEh.
+
+A2EEh W(R/W):  Linedraw Options Register                            (Mach8/32)
+bit    1  POLY_MODE. Clear for normal linedraw, set for polygon linedraw mode.
+       2  LAST_PEL_OFF. Set if the last pixel of a line should not be drawn.
+       3  DIR_TYPE. If set lines are drawn in the direction set by bits 5-7
+          and of the length in the Bresenham Count Register (96EEh), if clear
+          according to the Bresenham parameters
+     5-7  (bit 3=1) DEGREE. Direction of the line in degrees
+            0: 0, 1: 45, 2: 90, 3: 135, 4: 180, 5: 225, 6: 270, 7: 315
+       5  (bit 3=0) XDIR.  Set to draw to the right (increase X)
+       6  (bit 3=0) YMAJOR. Set if delta Y > delta X (numerically)
+       7  (bit 3=0) YDIR. Set to draw downwards (increase Y)
+       8  BOUNDS_RESET. If set the accumulator registers are reset to
+            Left=2047, Top=2047, Right=-2048, Bottom=-2048
+    9-10  CLIP_MODE.
+            0: Clip exception disabled
+            1: Stroked line segments
+            2: Polygon boundary lines
+            3: Patterned lines
+
+A6EEh W(W):  Destination Start X Register                           (Mach8/32)
+bit 0-10  DEST_X_START. Starting X coordinate for the destination blit
+
+AAEEh W(W):  Destination X End Register                             (Mach8/32)
+bit 0-10  DEST_X_END. Ending X coordinate of each row of the destination blit
+
+AEEEh W(W):  Destination Y End Register                             (Mach8/32)
+bit 0-10  DEST_Y_END. Ending line of the destination blit for VRAM to VRAM
+
+B2EEh W(R):  R Horizontal Displayed & Total Register                  (Mach32)
+bit  0-7  H_DISP. Pixels displayed horizontally, in units of 8 pixels.
+          This field is written at 6E8h
+    8-15  H_TOTAL. Total horizontal screen width in units of 8 pixels.
+          This field is written at 2E8h
+
+B2EEh W(W):  Source X Start Register                                (Mach8/32)
+bit 0-10  SRC_X_START. First pixel of the blit area (except first row)
+
+B6EEh (R):  Horizontal Sync Start Register                            (Mach32)
+bit  0-7  H_SYNC_STRT. HSync start in units of 8 pixels.
+Note: This register is written at 0AE8h
+
+B6EEh (W):  Background Function Register                            (Mach8/32)
+bit  0-4  ALU_BG_FN. Background ALU function code
+
+BAEEh (R):  Horizontal Sync Width Register                            (Mach32)
+bit  0-4  H_WIDTH. Width of the sync in units of 8 pixels
+       5  H_POLARITY. Set for negative Horizontal sync polarity, clear for
+          positive Horizontal sync
+Note: This register is written at 0EE8h
+
+BAEEh (W):  Foreground Function Register                            (Mach8/32)
+bit  0-4  ALU_FG_FN. Foreground ALU function code.
+
+BEEEh W(W):  Source X End Register                                  (Mach8/32)
+bit 0-10  SRC_X_END. Last pixel of the blit source area
+
+C2EEh W(R):  Vertical Total Register                                  (Mach32)
+bit 0-11  V_TOTAL. Total number of scanlines in a frame.
+Note: This register is written at 12E8h
+
+C2EEh (W):  Source Y Direction Register                             (Mach8/32)
+bit    0  SRC_Y_DIR. Direction of drawing. Set for top-to-bottom, clear for
+          bottom-to-top.
+
+C6EEh W(R):  Vertical Displayed Register                              (Mach32)
+bit 0-11  V_DISP. Number of scanlines displayed (-1).
+Note: This register is written at 16E8h
+
+C6EEh W(W):  Extended Short Stroke Vector Transfer Register         (Mach8/32)
+bit  0-3  Length of the major axis
+       4  Set for drawing, clear for moves
+     5-7  Direction in degrees:
+            0: 0, 1: 45, 2: 90, 3: 135, 4: 180, 5: 225, 6: 270, 7: 315
+    8-15  Same as bits 0-7, but another vector.
+Note: this is similar to 9EE8h
+
+CAEEh W(R):  Vertical Sync Start Register                             (Mach32)
+bit 0-11  V_SYNC_STRT. Vertical sync start in scanlines
+Note: This register is written at 1AE8h
+
+CAEEh W(W):  Scan To X Register                                      (Mach8/32
+bit 0-10  SCAN_TO_X. Can be used for fast polygon scan conversion and
+          horizontal lines. Drawn from current X position to this position.
+          Left edge drawn, right edge not drawn.
+
+CEEEh W(R):  Vertical Line Counter Register                           (Mach32)
+bit 0-10  VERT_LINE_CNTR. Vertical Line Counter
+
+CEEEh W(W):  Data Path Configuration Register                       (Mach8/32)
+bit    0  READ_WRITE. If set data is written to the drawing trajectory, if
+          clear read from it.
+       1  POLY_FILL_MODE. If set Polygon-fill blit mode is enabled, blit
+          source mechanism is triggered and VRAM source blit data is used as
+          the polygon fill mask, if clear polygon-fill blit mode is disabled
+          Cleared at the start of each row of the blit.
+       2  READ_MODE. If set read host data is monochrome, if clear color.
+       4  DRAW. Enable Draw if set.
+     5-6  MONO_SRC. Monochrome source is:
+            0: Always "1"
+            1: Mono Pattern register
+            2: Pixel Transfer register
+            3: VRAM blit source
+     7-8  BG_COLOR_SRC. Background Color Source select.
+            0: Background color register
+            1: Foreground color register
+            2: Pixel transfer register
+            3: VRAM blit source
+       9  DATA_WIDTH. Width of the data transferred through the CPU Data
+          Transfer register. 0: 8bit, 1: 16bit
+          Should be set in 16bit/pixel modes.
+      12  LSB_FIRST. If set the CPU Data Transfer register is "Intel little
+          endian style" (least significant byte first), if clear in "Motorola
+          big endian style" (most significant byte first).
+          In Mach8 mode this bit is ignored if bit 9 is 0.
+   13-15  FG_COLOR_Src. Foreground color source select.
+            0: Background color register
+            1: Foreground color register
+            2: Pixel transfer register
+            3: VRAM blit source
+            5: Color pattern shift register
+
+D2EEh W(R):  Vertical Sync Width Register                             (Mach32)
+bit  0-4  V_WIDTH. Width of Vsync pulse in scanlines
+       5  V_POLARITY. Set for negative Vsync, clear for positive Vsync
+Note: This register is written at 1EE8h
+
+D2EEh W(W):  Pattern Length Register                                (Mach8/32)
+bit  0-4  PATT_LENGTH. Number of pixels (-1) in the pattern
+       7  8x8 Mono Pattern Enable. If set bits 0-4 are ignored and Pattern
+          Data index 10h-17h are used as an 8x8 rectangular pattern
+      15  8x8 Block Write Mono Pattern Enable. If set the 8x8 pattern
+          described in bit 7 is used as a transparency mask for the write
+
+D6EEh (W):  Pattern Index Register                                  (Mach8/32)
+bit  0-4  PATT_INDEX. Selects the first pixel in the color or mono pattern for
+          the destination
+
+DAEEh W(R):  Read Source X Register                                 (Mach8/32)
+bit 0-10  R_SRC_X. Source current X. This register is written at 8EE8h
+
+DAEEh W(W):  Extended Left Scissor Register                         (Mach8/32)
+bit 0-11  EXT_SCISSOR_L. Left scissor (-2048..2047)
+
+DEEEh W(R):  Read Source Y Register                                 (Mach8/32)
+bit 0-10  R_SRC_Y. Source current Y. This register is written at 8AE8h
+
+DEEEh W(W):  Extended Top Scissor Register                          (Mach8/32)
+bit 0-11  EXT_SCISSOR_T. Top scossor (-2048..2047)
+
+E2EEh W(W):  Extended Right Scissor Register                        (Mach8/32)
+bit 0-11  EXT_SCISSOR_R. Right scissor (-2048..2047)
+
+E6EEh W(W):  Extended Bottom Scissor Register                       (Mach8/32)
+bit 0-11  EXT_SCISSOR_B. Bottom Scissor (-2048..2047)
+
+EEEEh W(W):  Destination Color Compare Function Register            (Mach8/32)
+bit  3-5  DEST_CMP_FN_4/8. 4/8bit mode destination compare function code
+            0:  False
+            1:  True
+            2:  Destination pixel >= DEST_CMP_CLR
+            3:  Destination pixel <  DEST_CMP_CLR
+            4:  Destination pixel != DEST_CMP_CLR
+            5:  Destination pixel =  DEST_CMP_CLR
+            6:  Destination pixel <= DEST_CMP_CLR
+            7:  Destination pixel >  DEST_CMP_CLR
+          The pixels where the comparison is true are NOT updated.
+     6-8  DEST_CMP_FN_B. 16bit blue destination compare function code
+    9-11  DEST_CMP_FN_G. 16bit green destination compare function code
+   12-14  DEST_CMP_FN_R. 16bit red destination compare function code
+
+F2EEh W(R/W):  Destination Color Compare Function Register         (68800-6 +)
+bit 0-15  Destination Color Compare Mask
+
+FAEEh W(R):  Chip ID Register                                      (68800-6 +)
+bit 0-9  CHIP_CODE. Identifies the chip version:
+           017h  68800-AX
+           177h  68800-LX
+           2F7h  68800-6
+         The 68800-3 appears to return 0 for this field (undocumented)
+  10-11  CHIP_CLASS.
+  12-15  CHIP_REV.
+
+FEEEh W(W):  Linedraw Register                                      (Mach8/32)
+bit 0-15  Line data. 9AEEh determines which type of line data is written
+
+
+
+Bank Switching
+
+  Bank switching can use either one single bank register or two
+  separate read and write bank registers (18800-2 and 28800 Only).
+  Banks map to 64k boundaries.
+
+Reserved locations in the ROM (typically starting at C000h:0):
+
+  $10   2 bytes   ATI Register (usually $1CE).
+  $31   9 bytes   '761295520' ID's ATI product
+  $40   2 bytes   '31' = ATI VGA Wonder/Mach series
+                  '32' = ATI EGA Wonder 800+
+                  '34' = ATI VGA Basic-16
+                  '22' = ATI EGA Wonder
+                 ?+'3' = ATI Basic-16
+  $42   1 byte    Bit 0  Set for 16-bit boards
+                      1  Mouseport present if set
+                      2  Use hardware detection to detect mouse port if set
+                      3  Microchannel if set, PC/AT else
+                      4  Use clock chip if set
+                      7  Use C000:0000 to D000:FFFF with 16 bit ROM if set
+  $43   1 byte    Gate revision.
+                   ' ' (20h) = Mach64 (see Mach64 section below)
+                   '1' (31h) = 18800   (V3),
+                   '2' (32h) = 18800-1 (V4/V5),
+                   '3' (33h) = 28800-2  VGA Wonder+ (V6).
+                   '4' (34h) = 28800-4  VGA Wonder (1MB)
+                   '5' (35h) = 28800-5  VGA Wonder 1MB/XL
+                   '6' (36h) = 28800-6  VGA Wonder XL
+                   'a' (61h) = 68800    Mach-32
+                   'c' (63h) = 68800    Mach-32 - Which version ?
+  $44   1 byte    Bit 0  If clear the board can support 70Hz
+                         non-interlaced refresh
+                      1  If set the board supports Korean characters in VGA
+                         mode
+                      2  If set the board uses 45MHz memory clock, if clear
+                         40MHz
+                      3  If clear the board supports zero wait states.
+                      4  If set the board uses paged ROMs.
+                      6  If clear there is 8514/A hardware on board (Graphics
+                         Ultra)
+                      7  If set there is a 32K color DAC on board.
+  $4C   1 byte    Major Bios version
+  $4D   1 byte    Minor Bios version
+
+  $64  (Mach32) Far call entry point to Load Shadow Set function
+       AH = 0
+  $68  (Mach32) Far call entry point to Set Mode function
+       AL = 00h  Load VGA passthrough mode
+            01h  Load low resolution mode
+            02h  Load high resolution mode
+
+  $6C  (Mach32) Far call entry point to Query function
+       AL = 00h  Query information structure in bytes
+                 Returns size in AX
+            01h  Query device long
+                 ES:BX -> Device Status Table to be filled out
+                 OFFSET  TYPE   Description:
+                   00h   WORD   Size of structure in bytes
+                   02h   BYTE   Revision of structure
+                   03h   BYTE   Number of mode tables
+                   04h   WORD   Offset of mode tables
+                   06h   BYTE   Size of mode tables in bytes
+                   07h   BYTE   ASIC Revision
+                   08h   BYTE   Status Flags
+                                Bit 0  Host data transfers forced to 8bit
+                   09h   BYTE   VGA Type. 0: Disabled, 1: Enabled
+                   0Ah   BYTE   VGA Boundary. 0: 0K, 1: 256K, 2: 512K,
+                                  3: 768K, 4: 1M, 0FFh: Full access
+                   0Bh   BYTE   Memory Size.
+                                  0: 256K, 1: 512K, 2: 1M, 3: 2M, 4: 4M
+                   0Ch   BYTE   DAC Type
+                                  0: ATI68830
+                                  1: SC1148x
+                                  2: ATI68875, TLC34075
+                                  3: Bt476,Bt478
+                                  4: Bt481,Bt482
+                                  5: ATI68860 (68800-AX only)
+                   0Dh   BYTE   Memory Type: See 12EEh bits 4-6 for details
+                   0Eh   BYTE   Bus Type:
+                                  0: 16bit ISA
+                                  1: EISA
+                                  2: 16bit Micro Channel
+                                  3: 32bit Micro Channel
+                                  4: Local bus (386SX)
+                                  5: Local bus (386DX)
+                                  6: Local bus (486)
+                   0Fh   BYTE   Monitor Alias
+                   10h   WORD   Shadow 1 Status
+                   12h   WORD   Shadow 2 Status
+                   14h   WORD   Aperture Address (0MB - 4095MB)
+                   16h   BYTE   Aperture Configuration
+                                Bit 0-1  0: Disabled, 1: 1MB, 2: 4MB
+                   17h   BYTE   Mouse Configuration
+                                Bit 0-1  Mouse Address Selection
+                                           0: Disabled
+                                           1: Secondary Address
+                                           2: Primary Address
+                                    2-3  Interrupt handler selection
+                                           0: IRQ5, 1: IRQ4, 2: IRQ3, 3: IRQ2
+                   18h   BYTE   DAC Support
+                                Bit 0  Supports (664) if set
+                                    1  Supports (655) if set
+                                    2  Supports (565) if set
+                                    3  Supports (555) if set
+                                    5  Supports 32bpp if set
+                                    6  Supports BGR if set
+                                    7  Supports RGB if set
+                 A number of mode tables follows:
+                 OFFSET  TYPE   Description:
+                   00h   WORD   Number of pixels horizontally
+                   02h   WORD   Number of lines vertically
+                   04h   BYTE   Maximum pixel depth
+                   05h   BYTE   Status Flags
+                                Bit 0  Nonlinear Y addressing mode if set
+                                    6  MUX mode if set
+                                    7  PCLK divided by 2 if set
+                   06h   DWORD  Reserved
+                   0Ah   WORD   (4AEEh) CLOCK_SELECT
+                   0Ch   BYTE   (02E8h) H_TOTAL
+                   0Dh   BYTE   (06E8h) H_DISP
+                   0Eh   BYTE   (0AE8h) H_SYNC_STRT
+                   0Fh   BYTE   (22E8h) DISP_CNTL
+                   10h   BYTE   (0EE8h) H_SYNC_WID
+                   11h   BYTE   (1EE8h) V_SYNC_WID
+                   12h   WORD   (12E8h) V_TOTAL
+                   14h   WORD   (16E8h) V_DISP
+                   16h   WORD   (1AE8h) V_SYNC_STRT
+                   18h   WORD   (62EEh) HORIZONTAL_OVERSCAN
+                   1Ah   WORD   (66EEh) VERTICAL_OVERSCAN
+                   1Ch   BYTE   (02EEh) OVERSCAN_COLOR_8
+                   1Dh   BYTE   (02EFh) OVERSCAN_COLOR_BLUE
+                   1Eh   BYTE   (06EEh) OVERSCAN_COLOR_GREEN
+                   1Fh   BYTE   (06EFh) OVERSCAN_COLOR_RED
+            02h  Query device short
+                 Returns:
+                 AL = ASIC revision
+                 AH = Aperture Configuration
+                 BX = Aperture Address
+                 CL = Mouse Configuration
+                 CH = DAC type
+
+  $70  (Mach32) Far call entry point to Accelerator service function
+       AH = 00h  Reset accelerator
+            01h  Set DAC to default colors
+            02h  EEPROM services
+                 AL = 00h  Read from EEPROM (returns result in AX)
+                      01h  Write to EEPROM
+                 BX = EEPROM word address
+                 DX = Data to write
+
+EEPROM Map (Mach32):
+Word:  Bits:  Description
+ 00h   0-15   EEPROM Write Counter
+ 01h    0-7   Int Handler Select.
+                20h: IRQ5, 28h: IRQ4, 30h: IRQ3, 38h: IRQ2
+       8-15   Mouse Address Select
+                00h: Disabled, 08h: Secondary Address, 18h: Primary Address
+ 02h      0   ROM 16bit access enabled if set
+          1   Zero Waitstate ROM Enabled if set
+          2   Zero Waitstate RAM Enabled if set
+          3   VGA bus I/O is 16bit if set, 8bit if clear
+          4   Power Up Font. 0: 8x14 or 9x14, 1: 8x16 or 9x16
+          5   Dual Monitor Enable
+        6-7   Mono Color Select
+                0: White, 1: Green, 2: Amber
+       8-15   Power Up Video Mode:
+                03h  VGA Color - secondary
+                05h  VGA mono  - secondary
+                07h  VGA lores Color - primary
+                09h  VGA hires Color - primary
+                0Bh  VGA mono - primary
+                12h  EGA lores Color - secondary
+                13h  EGA hires Color - secondary
+                15h  EGA mono - secondary
+                17h  EGA lores Color - primary
+                19h  EGA hires Color - primary
+                1Bh  EGA mono - primary
+                20h  CGA
+                30h  Hercules 720x348
+                40h  Hercules 640x400
+ 03h    0-3   EEPROM table revision number
+         14   Korean BIOS support
+         15   Scrolling Fix enable
+ 04h   0-15   Custom Monitor Indices
+ 05h    0-2   Monitor Alias
+          3   Alias Enable
+        4-6   VGA Boundary. 0: Shared, 1: 256K, 2: 512K, 4: 1MB
+       8-13   Monitor Code
+      14-15   Host Data Transfer Width. 0: Auto Select, 1: 16bit, 2: 8bit
+                3: 8bit host data/16bit other
+ 06h    0-3   Aperture Size. 0: Disabled, 1: 1MB, 2: 4MB
+       4-15   Aperture Location in Mbytes
+ 07h      0   640x480 72Hz enable
+          1   Use Stored Parameters for 640x480
+       8-15   Offset to 640x480 table in WORDs
+ 08h      0   800x600 95Hz (interlaced) enable
+          1   800x600 89Hz (interlaced) enable
+          2   800x600 56Hz enable
+          3   800x600 60Hz enable
+          4   800x600 70Hz enable
+          5   800x600 72Hz enable
+          7   Use Stored Parameters for 800x600
+       8-15   Offset to 800x600 table in WORDs
+ 09h      0   1024x768 87Hz (interlaced) enable
+          1   1024x768 60Hz enable
+          2   1024x768 70Hz enable
+          3   1024x768 72Hz enable
+          4   1024x768 66Hz enable (not active)
+          7   Use Stored Parameters for 1024x768
+       8-15   Offset to 1024x768 table in WORDs
+ 0Ah      0   1280x1024 87Hz (interlaced) enable
+          1   1280x1024 95Hz (interlaced) enable
+          7   Use Stored Parameters for 1280x1024
+       8-15   Offset to 1280x1024 table in WORDs
+ 0Bh      0   1120x750 enable
+          1   1152x900 enable
+          7   Use Stored Parameters for alternate modes
+       8-15   Offset to alternate table in WORDs
+ 0Dh-1Bh         CRT Parameter Table 1
+ 1Ch-2Ah         CRT Parameter Table 2
+ 2Bh-39h         CRT Parameter Table 3
+ 3Ah-48h         CRT Parameter Table 4
+ 49h-57h         CRT Parameter Table 5
+ 58h-66h         CRT Parameter Table 6
+ 67h-75h         CRT Parameter Table 7
+ 7Eh   8-10   DAC Type. See 12EEh bit 9-11 for details
+      11-13   Memory Size. See 12EEh bit 4-6 for details
+         14   VGA enable
+ 7Fh   0-15   EEPROM Checksum
+
+CRT Table structure:
+Word:  Bits:  Description
+ 00h    0-3   Clock Chip Sel
+        4-5   Clock Div
+          6   CRTC Usage. Set to use all CRTC parameters in EEPROM, clear to
+              only use sync polarities
+          7   Dot Clock Selects.
+                0: Use default dot clock
+                1: Use user supplied dot clock
+          8   Parm Type. Set if WORDs 1-9 are 8514 data, clear if VGA data
+       9-11   Maximum Pixel Depth. 0: 8bits/pixel, 1: 16b/p, 2: 24b/p
+         12   MUX Mode
+         13   Interlace
+         14   Horizontal Sync Polarity
+         15   Vertical Sync Polarity
+If WORD 00h bit 8 is clear (VGA data):
+ 01h    0-7   Video Mode Sel 2
+       8-15   Video Mode Sel 1
+ 02h    0-7   Video Mode Sel 4
+       8-15   Video Mode Sel 3
+ 03h    0-7   Vertical Total (3d4h index 6)
+       8-15   Horizontal Total (3d4h index 0)
+ 04h    0-7   Horizontal Retrace End (3d4h index 5)
+       8-15   Horizontal Retrace Start (3d4h index 4)
+ 05h    0-7   Vertical Retrace End (3d4h index 11h)
+       8-15   Vertical Retrace Start (3d4h index 10h)
+ 06h    0-7   Horizontal Blank End (3d4h index 3)
+       8-15   Horizontal Blank Start (3d4h index 2)
+ 07h    0-7   Vertical Blank End (3d4h index 16h)
+       8-15   Vertical Blank Start (3d4h index 15h)
+ 08h    0-7   Maximum Scanline (3d4h index 9)
+       8-15   CRT Overflow (3d4h index 18h)
+ 09h    0-7   CRT Mode (3d4h index 17h)
+       8-15   Vertical Displayed (3d4h index 12h)
+If WORD 00h bit 8 is set (8514 data):
+ 02h    0-7   VFIFO_16
+       8-15   VFIFO_24
+ 03h    0-7   (06E8h) H_DISP
+       8-15   (02E8h) H_TOTAL
+ 04h    0-7   (0EE8h) H_SYNC_WID
+       8-15   (0AE8h) H_SYNC_STRT
+ 05h   0-15   (12E8h) V_TOTAL
+ 06h   0-15   (16E8h) V_DISP
+ 07h   0-15   (1AE8h) V_SYNC_STRT
+ 08h    0-7   (22E8h) DISP_CNTL
+       8-15   (1EE8h) V_SYNC_WID
+ 09h   0-15   (4AEEh) CLOCK_SEL
+Common data again:
+ 0Ah    0-7   Offset to alternate table
+       8-13   Size of mode tables in WORDs
+         14   MUX flag
+         15   PCLK/2 flag
+ 0Bh   0-15   (62EEh) HORIZONTAL_OVERSCAN
+ 0Ch   0-15   (66EEh) VERTICAL_OVERSCAN
+ 0Dh    0-7   (02EEh) OVERSCAN_COLOR_8
+       8-15   (02EFh) OVERSCAN_COLOR_BLUE
+ 0Eh    0-7   (06EEh) OVERSCAN_COLOR_GREEN
+       8-15   (06EFh) OVERSCAN_COLOR_RED
+
+
+
+  ** Mach64 Registers **
+
+The Mach64 engine is different from the Mach8/Mach32. The Mach64 has a number
+of 32bit registers. Most are I/O mapped at x2ECh (A2-A9 = 10111011), and all
+except the Config_Ctrl Register (6AECh) is memory mapped as a 1KB block,
+either at 0BFC00h or the last 1KB of the Linear Aperture.
+
+6AECh D(R/W):  Config_Ctrl
+bit   0-1  Cfg_Mem_Ap_Size. Linear Memory Aperture Size.
+            0: Disabled, 1: 4MB Aperture, 2: 8MB Aperture
+        2  Cfg_Mem_VGA_Ap_En. VGA Aperture enabled if set
+     4-13  Cfg_Mem_Ap_Loc. Linear Memory Aperture Location in units of 4MB.
+           Bit 4 (lowest bit) is ignored for 8MB Apertures.
+    16-18  Cfg_Card_ID.
+       19  Cfg_VGA_Dis. VGA enabled if clear, disabled if set
+
+M+000h/02ECh D(R/W):  Crtc_H_Total_Disp
+bit   0-7  Crtc_H_Total. Horizontal Total in character clocks (8 pixel units)
+    16-23  Crtc_H_Disp. Horizontal Display End in character clocks.
+
+M+004h/06ECh D(R/W):  Crtc_H_Sync_Strt_Wid
+bit   0-7  Crtc_H_Sync_Strt. Horizontal Sync Start in character clocks (8
+           pixel units)
+     8-10  Crtc_H_Sync_Dly. Horizontal Sync Start delay in pixels
+    16-20  Crtc_H_Sync_Wid. Horizontal Sync Width in character clocks
+       21  Crtc_H_Sync_Pol. Horizontal Sync Polarity
+
+M+008h/0AECh D(R/W):  Crtc_V_Total_Disp
+bit  0-10  Crtc_V_Total. Vertical Total
+    16-26  Crtc_V_Disp. Vertical Displayed End
+
+M+00Ch/0EECh D(R/W):  Crtc_V_Sync_Strt_Wid
+bit  0-10  Crtc_V_Sync_Strt. Vertical Sync Start
+    16-20  Crtc_V_Sync_Wid. Vertical Sync Width
+       21  Crtc_V_Sync_Pol. Vertical Sync Polarity
+
+M+010h/12ECh D(R/W):  Crtc_Vline_Crnt_Vline
+bit  0-10  The line at which Vertical Line interrupt is triggered
+    16-26  (R) Crtc_Crnt_Vline. The line currently being displayed
+
+M+014h/16ECh D(R/W):  Crtc_Off_Pitch
+bit  0-19  Crtc_Offset. Display Start Address in units of 8 bytes.
+    22-31  Crtc_Pitch. Display pitch in units of 8 pixels
+
+M+018h/1AECh D(R/W):  Crtc_Int_Cntl
+bit     0  (R) Crtc_Vblank. Vertical Blank
+        1  Crtc_Vblank_Int_En. Vertical Blank interrupt enable
+        2  Crtc_Vblank_Int. When read returns the status of the Vertical Blank
+           interrupt, when written (with a 1 ??) acknowledges the interrupt.
+        3  Crtc_Vline_Int_En. Vertical Line Interrupt enable.
+        4  Crtc_Vline_Int.  When read returns the status of the Vertical Line
+           interrupt, when written (with a 1 ??) acknowledges the interrupt.
+        5  (R) Crtc_Vline_Sync. 0: Even scan line, 1: Odd scan line
+        6  (R) Crtc_Frame. Interlaced frame. 0: Even frame, 1: Odd frame
+
+M+01Ch/1EECh D(R/W):  Crtc_Gen_Cntl
+bit     0  Crtc_Dbl_Scan_En. Enables double scan
+        1  Crtc_Interlace_En. Enables interlace.
+        2  Crtc_Hsync_Dis. Disables Horizontal Sync output
+        3  Crtc_Vsync_Dis. Disables Vertical Sync output
+        4  Crtc_Csync_En. Enable composite sync on Horizontal Sync output
+        5  Crtc_Pic_By_2_En. CRTC advances 2 pixels per pixel clock
+     8-10  Crtc_Pix_Width. Displayed bits/pixel: 1: 4bpp, 2: 8bpp, 3: 15bpp
+            (5:5:5), 4: 16bpp (5:6:5), 5: 24bpp(undoc), 6: 32bpp
+       11  Crtc_Byte_Pix_Order. Pixel order within each byte (4bpp).
+            0: High nibble displayed first, 1: low nibble displayed first
+    16-19  Crtc_Fifo_Lwm. Low Water Mark of the 16entry deep display FIFO.
+           Only used in DRAM configurations. The minimum number of entries
+           remaining in the FIFO before the CRTC starts refilling. Ideally
+           should be set to the lowest number that gives a stable display.
+       24  Crtc_Ext_Disp_En. 1:Extended display mode , 0:VGA display mode
+       25  Crtc_En. Enables CRTC if set, resets if clear
+
+M+040h/22ECh D(R/W):  Ovr_Clr
+bit   0-7  Ovr_Clr_8. Overscan color for 4bpp  and 8bpp
+     8-15  Ovr_Clr_B. Blue component of the Overscan Color
+    16-23  Ovr_Clr_G. Green component of the Overscan Color
+    24-31  Ovr_Clr_R. Red component of the Overscan Color
+
+M+044h/26ECh D(R/W):  Ovr_Wid_Left_Right
+bit   0-3  Ovr_Wid_Left. Left overscan width in character clocks
+    16-19  Ovr_Wid_Right. Right overscan width in character clocks
+
+M+048h/2AECh D(R/W):  Ovr_Wid_Top_Bottom
+bit   0-7  Ovr_Wid_Top. Top overscan width in lines
+    16-23  Ovr_Wid_Bottom. Bottom overscan width in lines
+
+M+060h/2EECh D(R/W):  Cur_Clr0
+bit   0-7  Cur_Clr0_8. Cursor color 0 for 4bpp and 8bpp modes
+     8-15  Cur_Clr0_B. Blue component of the Cursor Color 0
+    16-23  Cur_Clr0_G. Green component of the Cursor Color 0
+    24-31  Cur_Clr0_R. Red component of the Cursor Color 0
+
+M+064h/32ECh D(R/W):  Cur_Clr1
+bit   0-7  Cur_Clr1_8. Cursor color 1 for 4bpp and 8bpp modes
+     8-15  Cur_Clr1_B. Blue component of the Cursor Color 1
+    16-23  Cur_Clr1_G. Green component of the Cursor Color 1
+    24-31  Cur_Clr1_R. Red component of the Cursor Color 1
+
+M+068h/36ECh D(R/W):  Cur_Offset
+bit  0-19  Cur_Offset. Address of the cursor definition in units of 8 bytes
+
+M+06Ch/3AECh D(R/W):  Cur_Horz_Vert_Posn
+bit  0-10  Cur_Horz_Posn. Cursor Horizontal Position
+    16-26  Cur_Vert_Posn. Cursor Vertical Position
+
+M+070h/3EECh D(R/W):  Cur_Horz_Vert_Off
+bit   0-5  Cur_Horz_Off. Cursor Horizontal Offset within the 64x64 cursor
+    16-21  Cur_Vert_Offset. Cursor Vertical Offset within the 64x64 cursor.
+
+M+080h/42ECh D(R/W):  Scratch_Reg0
+bit  0-31  Scratch_Reg0. Available as scratch-pad.
+Note: In test modes this address accesses one of the test registers.
+
+M+080h/42ECh D(R/W):  Test_Reg0
+bit  0-20  Test_Mem_Addr. Memory address for test mode 1, in units of 4 bytes
+Note: This register is only accessible if Gen_Test_Cntl (M+0D0h/66ECh) bit 20-
+      22 = 1. This register is only intended for testing.
+
+M+080h/42ECh D(R):  Test_Reg2
+bit  0-14  Dst_X_Lnth_Cntr. Horizontal destination length counter
+    16-30  Dst_Y_Lnth_Cntr. Vertical destination length counter
+Note: This register is only accessible if Gen_Test_Cntl (M+0D0h/66ECh) bit 20-
+      22 = 2. This register is only intended for testing.
+
+M+080h/42ECh D(R):  Test_Reg4
+bit  0-12  Src_Read_Lnth_Cntr. Source FIFO read length counter
+Note: This register is only accessible if Gen_Test_Cntl (M+0D0h/66ECh) bit 20-
+      22 = 3. This register is only intended for testing.
+
+M+080h/42ECh D(R):  Test_Reg5
+bit   0-7  Crtc_H_Char_Cntr. Horizontal CRTC character counter
+     8-18  Crtc_V_Line_Cntr. Vertical CRTC line counter
+    19-23  Crtc_H_Sync_Wid_Cntr. Horizontal CRTC Sync width counter
+    24-28  Crtc_V_Sync_Wid_Cntr. Vertical CRTC Sync width counter
+Note: This register is only accessible if Gen_Test_Cntl (M+0D0h/66ECh) bit 20-
+      22 = 4. This register is only intended for testing.
+
+M+080h/42ECh D(R):  Test_Reg7
+bit  0-23  Pixel_Data_Crc. CRC of the displayed pixel data, including overscan
+           and cursor data.
+Note: This register is only accessible if Gen_Test_Cntl (M+0D0h/66ECh) bit 20-
+      22 = 5. This register is only intended for testing.
+
+M+084h/46ECh D(R/W):  Scratch_Reg1
+bit  0-31  Scratch_Reg1. Available as scratch-pad.
+Note: In test modes this address accesses one of the test registers.
+
+M+084h/46ECh D(R/W):  Test_Reg1
+bit  0-31  Test_Mem_Data. Data read or written to memory
+Note: This register is only accessible if Gen_Test_Cntl (M+0D0h/66ECh) bit 20-
+      22 = 1. This register is only intended for testing.
+
+M+084h/46ECh D(R):  Test_Reg3
+bit  0-12  Src_X_Lnth_Cntr. Horizontal source length counter
+    16-30  Src_Y_Lnth_Cntr. Vertical source length counter
+Note: This register is only accessible if Gen_Test_Cntl (M+0D0h/66ECh) bit 20-
+      22 = 2. This register is only intended for testing.
+
+M+084h/46ECh D(R):  Test_Reg6
+bit     0  Crtc_H_Total_Eq. Set if Horizontal Counter = Crtc_H_Total
+        1  Crtc_H_Total_Half_Eq. Set if Horizontal Counter = Crtc_H_Total/2
+        2  Crtc_H_Disp_Eq. Set if Horizontal Counter = Crtc_H_Disp
+        3  Crtc_H_Sync_Strt_Eq. Set if Horizontal Counter = Crtc_H_Sync_Strt
+        4  Crtc_H_Sync_Wid_Eq. Set if Horizontal Sync Counter =
+            Crtc_H_Sync_Wid
+        5  Crtc_V_Total_Eq. Set if Vertical Counter = Crtc_V_Total.
+        6  Crtc_V_Disp_Eq. Set if Vertical Counter = Crtc_V_Disp.
+        7  Crtc_V_Sync_Strt_Eq. Set if Vertical Counter = Crtc_V_Sync_Strt.
+        8  Crtc_V_Sync_Wid_Eq. Set if Vertical Sync Counter = Crtc_V_Sync_Wid.
+        9  Crtc_V_Line_Eq. Set if Vertical Counter = Crtc_V_Line.
+       10  Crtc_H_Disp_En. Horizontal Display Enable.
+       11  Crtc_V_Disp_En. Vertical Display Enable.
+       12  Crtc_Disp_En. Display Enable.
+       13  Crtc_Blank. Display Blank.
+       14  Crtc_H_Sync. Horizontal Sync.
+       15  Crtc_V_Sync. Vertical Sync.
+       16  Crtc_Frame. Odd/Even Frame. Changes when the line counter reaches
+            the bottom (bit 5 of this register set)
+       17  Crtc_Frame_X. Odd/Even Frame. Changes when the line counter reaches
+            the end of display (bit 6 of this register set)
+       18  Ovr_Left_Eq. Set if Horizontal Counter = Crtc_H_Total-Ovr_Wid_Left
+       19  Ovr_Right_Eq. Set if Horizontal Counter = Crtc_H_Disp+Ovr_Wid_Right
+       20  Ovr_Top_Eq. Set if Vertical Counter = Crtc_V_Total - Ovr_Wid_Top
+       21  Ovr_Bottom_Eq. Set if Vertical Counter = Crtc_V_Total +
+             Ovr_Wid_Bottom
+       22  Ovr_Left_En. Left overscan enable
+       23  Ovr_Right_En. Right overscan enable
+       24  Ovr_Top_En. Top overscan enable
+       25  Ovr_Bottom_En. Bottom overscan enable
+       26  Ovr_En. Overscan Enable
+Note: This register is only accessible if Gen_Test_Cntl (M+0D0h/66ECh) bit 20-
+       22 = 4. This register is only intended for testing.
+
+M+090h/4AECh D(R/W):  Clock_Cntl
+bit   0-3  Clock_Sel. Clock select bit 0-3. Output to the clock chip
+      4-5  Clock_Div. Internal clock divider. 0: no div, 1: /2, 2: /4
+        6  (W) Clock_Strobe. Connected to the strobe or clk input on
+            programmable clock chips
+        7  Clock_Serial_Data. Data I/O for programmable clock chips
+
+M+0A0h/4EECh D(R/W):  Bus_Cntl
+bit   0-3  Bus_Ws. Bus wait states. Default = 15.
+      4-7  Bus_Rom_Ws. ROM wait states. Default = 15
+     8-11  Bus_Rom_Page. ROM page select.
+       12  Bus_Rom_Dis. ROM Disabled if set
+       13  Bus_IO_16_En. 16bit I/O enabled if set, 8bit if clear
+       14  Bus_DAC_Snoop_En. DAC snooping enable
+    16-19  Bus_Fifo_Ws. Max number of wait states the FIFO can generate when
+           full before setting Buys_Fifo_Err_Int
+       20  Bus_Fifo_Err_Int_En. Command FIFO error interrupt enable
+       21  Bus_Fifo_Err_Int. When reading indicates whether a Command FIFO
+           data error interrupt occoured (if set ?), when writing acknowledges
+           (and clears?) the interrupt (if set ?).
+       22  Bus_Host_Err_Int_En. Enable Command FIFO host data error interrupt
+       23  Bus_Host_Err_Int. When reading indicates whether a Command FIFO
+           host data error interrupt occoured (if set ?), when writing
+           acknowledges (and clears?) the interrupt (if set ?).
+    24-26  Bus_PCI_DAC_Ws. DAC wait states. Only valid for PCI bus systems.
+       27  Bus_PCI_DAC_Dly. DAC access delayed. Only valid for PCI bus
+           systems.
+       28  Bus_PCI_Memw_Ws. If set use one wait state for memory writes, none
+           if clear. Only valid for PCI bus systems.
+       29  Bus_PCI_Burst_Dec. Inc/Decrement address for burst memory writes
+           (only valid for PCI bus). 0: Increment, 1: Decrement
+    30-31  Bus_Rdy_Read_Dly. Bus RDY delay for memory reads.
+            0: RDY early by one memory clock cycle
+            1: No RDY delay
+            2: RDY delayed by one memory clock cycle
+            3: RDY delayed by two memory clock cycles
+
+M+0B0h/52ECh D(R/W):  Mem_Cntl
+bit   0-2  Mem_Size. Video Memory Size. 0: 512K, 1: 1MB, 2: 2MB, 3: 4MB,
+            4: 6MB, 5: 8MB
+        4  Mem_Rd_Latch_En. Enables latching on RAM port data
+        5  Mem_Rd_Latch_Dly. Delays latching of RAM port data by 1/2 memory
+           clock period
+        6  Mem_Sd_Latch_En. Enables latching of data on serial port data
+        7  Mem_Sd_Latch_Dly. Delays latching of serial port data by 1/2 memory
+           clock period
+        8  Mem_Fill_Pls. One memory clock period set for width of data latch
+           pulse
+     9-10  Mem_Cyc_Lnth. memory cycle length for non-paged access:
+             0: 5 mem clock periods, 1: 6 mem clks, 2: 7 mem clks
+    16-17  Mem_Bndry. VGA/Mach Memory boundary. If the memory boundary is
+           enabled (bit 18 is set) defines the amount of memory reserved for
+           the VGA.  0: 0K, 1: 256K, 2: 512K, 3: 1M
+       18  Mem_Bndry_En. If set the video memory is divided between the VGA
+           engine and the Mach engine, with the low part reserved for the VGA
+           engine, if clear they share the video memory
+
+M+0B4h/56ECh D(R/W):  Mem_VGA_Wp_Sel
+bit   0-7  Mem_VGA_Wps0. Selects the 32K block mapped for writing in the 1st
+           half of the small aperture at A000h in units of 32K.
+    16-23  Mem_VGA_Wps1. Selects the 32K block mapped for writing in the 2nd
+           half of the small aperture at A800h in units of 32K.
+Note: The small aperture is only available in accelerated modes and only if
+      bit 2 of the Config_Cntl (6AECh) register is set.
+
+M+0B8h/5AECh D(R/W):  Mem_VGA_Rp_Sel
+bit   0-7  Mem_VGA_Rps0. Selects the 32K block mapped for reading in the 1st
+           half of the small aperture at A000h in units of 32K.
+    16-23  Mem_VGA_Rps1. Selects the 32K block mapped for reading in the 2nd
+           half of the small aperture at A800h in units of 32K.
+Note: The small aperture is only available in accelerated modes and only if
+      bit 2 of the Config_Cntl (6AECh) register is set.
+
+M+0C0h/5EECh D(R/W):  Dac_Regs
+bit   0-7  Dac_W_Index. Accesses the same register as VGA I/O address 3C8h
+     8-15  Dac_Data. Accesses the same register as VGA I/O address 3C9h
+    16-23  Dac_Mask. Accesses the same register as VGA I/O address 3C6h
+    24-31  Dac_R_Index. Accesses the same register as VGA I/O address 3C7h
+Note: This is really 4 8bit registers corresponding to the VGA registers 3C6h-
+      3C9h. Each byte accesses one of the 4 DAC registers. See VGA description
+      of the registers 3C6h-3C9h, or the data on the specific DAC type, for
+      details. Note that Dac_Cntl (M+0C4h/62ECh) bits 0-1 can be used in
+      combination with this register to access up to 16 DAC registers.
+
+M+0C4h/62ECh D(R/W):  Dac_Cntl
+bit   0-1  Dac_Ext_Sel. Connected to the RS2 and RS3 inputs on the DAC.
+        8  Dac_8bit_En. Enables 8bit DAC mode (256colors of 16M) if set
+     9-10  Dac_Pix_Dly. Setup and hold time on pixel data. 0: None,
+            1: 2ns - 4ns delay, 2: 4ns - 8ns delay
+    11-12  Dac_Blank_Adj. Blank Delay in number of pixel clock periods.
+            0: None, 1: 1 pixel clock, 2: 2 pixel clocks
+       13  Dac_VGA_Adr_En. When bit 24 of Crtc_Gen_Cntl (M+01Ch/1EECh) is set,
+           this bit enables access to the VGA DAC I/O addresses (3C6h-3C9h).
+    16-18  Dac_Type. The DAC type - initialised from configuration straps on
+           power-up. See Config_Stat0 (M+0E4h/72ECh) bits 9-11 for details
+
+M+0D0h/66ECh D(R/W):  Gen_Test_Cntl
+bit     0  Gen_EE_Data_Out. EEPROM data output
+        1  Gen_EE_Clock. EEPROM clock output
+        2  Gen_EE_Chip_Sel. EEPROM Chip Select.
+        3  (R) Gen_EE_Data_In. Data input from the EEPROM
+        4  Gen_EE_En. Enables EEPROM access
+        5  Gen_Ovr_Output_En. Enables output of Overscan signal for external
+           DAC
+        6  Gen_Ovr_Polarity. Polarity of the external Overscan signal.
+            0: Active high, 1: Active low
+        7  Gen_Cur_En. Enables the Hardware Cursor if set
+        8  Gen_Gui_En. Enables the drawing engine if set, resets it if clear
+        9  Gen_Block_Wr_En. Enables Block Write Memory cycle
+       16  Gen_Test_Fifo_En. Enables Draw engine testing of the Command FIFO
+       17  Gen_Test_Gui_Regs_En. Enables loading of the drawing engine
+           registers without triggering drawing operations or context switches
+       18  Gen_Test_Vect_En. Enables the Bi-directional buses for 1 clock
+           turn-around when switching from input to output.
+       19  Gen_Test_Crc_Str. Pixel data CRC initialization strobe. Write 1 to
+           reset the CRC accumulator, which will then calculate the CRC for
+           the next frame displayed. The CRC value calculated includes
+           Overscan and Hardware Cursor data.
+    20-22  Gen_Test_Mode. Test Mode. 0: Disabled, 1: Memory Read/Write test,
+            2: Draw engine dest/source length counter test, 3: Draw engine
+           source read length counter test, 4: CRTC test, 5: Pixel data CRC
+           test
+       24  Gen_Test_Mem_Wr. Test Mode 1 (bits 20-22) cycle type:
+             0: Read cycle, 1: Write cycle
+       25  Gen_Test_Mem_Strobe. Writing a 1 will initiate a memory cycle if
+           bits 20-22 = 1
+       26  Gen_Test_Dst_Ss_En. Enables Destination trajectory controller
+           single stepping if set. The engine processes multiple pixels in
+           single steps for rectangular draw operations, while Bresenham line
+           draw operations works on single pixels at a time.
+       27  (W) Gen_Test_Dst_Ss_Strobe. Writing a 1 to this bit while bit 26 is
+            set advances the drawing engine one step.
+       28  Gen_Test_Src_Ss_En. Enables Source trajectory controller single
+           stepping if set
+       29  (W) Gen_Test_Src_Ss_Strobe. Writing a 1 to this bit while bit 28 is
+            set advances the drawing engine one step.
+       30  Gen_Test_Cc_En. Enables CRTC single stepping
+       31  (W) Gen_Test_Cc_Strobe. Writing a 1 to this bit while bit 30 is set
+             advances the CRTC one character clock.
+
+M+0E0h/6EECh D(R):  Config_Chip_ID.
+bit  0-15  Cfg_Chip_Type. Product Type Code. 0D7h for the 88800GX,
+             57h for the 88800CX (guess)
+    16-23  Cfg_Chip_Class. Class code
+    24-31  Cfg_Chip_Rev. Revision code
+
+M+0E4h/72ECh D(R):  Config_Stat0
+bit   0-2  Cfg_Bus_Type. Host Bus type. 0: ISA, 1: EISA, 6: VLB, 7: PCI
+      3-5  Cfg_Mem_Type. Memory Type. 0: DRAM (256Kx4), 1: VRAM (256Kx4, x8,
+            x16), 2: VRAM (256Kx16 short shift reg), 3: DRAM (256Kx16),
+            4: Graphics DRAM (256Kx16), 5: Enh VRAM (256Kx4, x8, x16), 6: Enh
+            VRAM (256Kx16 short shift reg)
+        6  Cfg_Dual_CAS_En. Dual CAS support enabled if set
+      7-8  Cfg_Local_Bus_Option. Local Bus Option.
+             1: Local option 1, 2: Local option 2, 3: Local option 3
+     9-11  Cfg_Init_DAC_Type. DAC type. 2: ATI68875/TI 34075, 3: Bt476/Bt478,
+             4: Bt481, 5: ATI68860/ATI68880, 6: STG1700, 7: SC15021
+    12-14  Cfg_Init_Card_ID. Card ID. 0-6: Card ID 0-6, 7: Disable Card ID
+       15  Cfg_Tri_Buf_Dis. Tri-stating of output buffers during reset
+           disabled if set
+    16-21  Cfg_Ext_ROM_Addr. Extended Mode ROM Base Address. Bits 12-17 of the
+           ROM base address, 0: C0000h, 1: C1000h ... 3Fh: FE000h
+       22  Cfg_ROM_Dis. Disables ROM if set
+       23  Cfg_VGA_Enm. Enables VGA Controller
+       24  Cfg_Local_Bus_Cfg. 0: Local Bus configuration 2, 1: configuration 1
+       25  Cfg_Chip_En. Enables chip if set
+       26  Cfg_Local_Read_Dly_Dis. If clear delays read cycle termination by 1
+           bus clock, no delay if set
+       27  Cfg_ROM_Option. ROM Address. 0: E0000h, 1: C0000h
+       28  Cfg_Bus_option. EISA bus: Enables POS registers if set, disables
+           POS registers and enables chip if clear.
+           VESA Local Bus: Enables decode of I/O address 102h if clear,
+           disables if set
+       29  Cfg_Local_DAC_Wr_En. Enables local bus DAC writes if set
+       30  Cfg_VLB_Rdy_Dis. Disables VESA local bus compliant RDY if set
+       31  Cfg_Ap_4Gbyte_Dis. Disables 4GB Aperture Addressing if set
+
+M+0E8h/76ECh D(R):  Config_Stat1
+bit     0  Cfg_PCI_DAC_Cfg. If clear the DAC data bus is connected directly to
+           the DAC, if set it is connected through a latch. Only valid for
+           PCI bus systems.
+
+M+100h D(R/W):  Dst_Off_Pitch
+bit  0-19  Dst_Offset. Address of the Destination area in units of 8 bytes.
+    22-31  Dst_Pitch. Destination Pitch in units of 8 pixels. In mono modes
+           must be a multiplum of 64 pixels, in 4bpp modes a multiplum of 16
+           pixels.
+
+M+104h D(R/W):  Dst_X
+bit  0-12  Dst_X. Destination X coordinate
+
+M+108h D(R/W):  Dst_Y
+bit  0-14  Dst_Y. Destination Y coordinate
+
+M+10Ch D(W):  Dst_Y_X
+bit  0-14  Dst_Y. Destination Y coordinate
+    16-28  Dst_X. Destination X coordinate
+
+M+110h D(R/W):  Dst_Width
+bit  0-12  Dst_Width. Width of the destination area in pixels.
+       31  Dst_Wid_Fill_Dis.  If clear the bitblt operation is started by
+           writing to this register, if set draw is not started.
+
+M+114h D(R/W):  Dst_Height
+bit  0-14  Dst_Height. Height of the destination area in lines.
+
+M+118h D(W):  Dst_Height_Width
+bit  0-14  Dst_Height. Height of the destination area in lines.
+    16-28  Dst_Width. Width of the destination area in pixels.
+Note: Writing to this register initiates a rectangle fill
+
+M+11Ch D(W):  Dst_X_Width
+bit  0-12  Dst_X. Destination X coordinate
+    16-28  Dst_Width. Destination width
+
+M+120h D(R/W):  Dst_Bres_Lnth
+bit  0-14  Dst_Bres_Lnth. Line length in pixels.
+       31  Dst_Bres_Lnth_Line_Dis. If clear the line draw operation is started
+           by writing to this register, if set draw is not started.
+Note: Writing to this register starts the line draw, unless bit 31 is set.
+
+M+124h D(R/W):  Dst_Bres_Err
+bit  0-17  Dst_Bres_Err. Bresenham Error Term. Should be set to:
+            2*min(abs(dX),abs(dY))-max(abs(dX),abs(dY)), where dX is the
+           horizontal difference (in pixels) between the start and end point
+           and dY the vertical difference.
+
+M+128h D(R/W):  Dst_Bres_Inc
+bit  0-17  Dst_Bres_Inc. Bresenham increment registers. Should be set to:
+             2*min(abs(dX),abs(dY)), where dX is the horizontal difference (in
+           pixels) between the start and end point and dY the vertical diff.
+
+M+12Ch D(R/W):  Dst_Bres_Dec
+bit  0-17  Dst_Bres_Dec. Bresenham decrement registers. Calculated as:
+             2*(min(abs(dX),abs(dY))-max(abs(dX),abs(dY))), where dX is the
+           horizontal difference (in pixels) between the start and end point
+           and dY the vertical difference. Should be negative.
+
+M+130h D(R/W):  Dst_Cntl
+bit     0  Dst_X_Dir. Destination X dir. 0: Right to left, 1: Left to right
+        1  Dst_Y_Dir. Destination Y dir. 0: Bottom to top, 1: Top to bottom.
+        2  Dst_Y_Major. Destination Y Major axis (Bresenham linedraw).
+            0: X is major axis, 1: Y is major axis
+        3  Dst_X_Tile. Enable Rectangular tiling in the X direction if set.
+           For rectangular destinations setting this bit causes the Dst_X
+           register to have the value (Dst_X + Dst_Width) after the blit.
+        4  Dst_Y_Tile. Enable Rectangular tiling in the Y direction if set.
+           For rectangular destinations setting this bit causes the Dst_Y
+           register to have the value (Dst_Y + Dst_Height) after the blit.
+        5  Dst_Last_Pel. Enable Destination last Pel. If set the last pixel in
+           the line is drawn, if clear it is not drawn
+        6  Dst_Polygon_En. Enables Polygon Outline & Fill.
+        7  Dst_24_Rot_En. Enables 24bpp Rotation.
+     8-10  Dst_24_Rot. Initial foreground color, background color, write mask
+           and pattern rotation when drawing in 24bit packed mode.
+       11  Dst_Bres_Sign. When the Dst_Bres_Err (M+124h) register is 0, it
+           should be considered as:    0: Positive, 1: Negative
+
+M+180h D(R/W):  Src_Off_Pitch
+bit  0-19  Src_Offset. Start address of the source area in units of 8 bytes
+    22-31  Src_Pitch. Width of the source area in units of 8 pixels. In mono
+           modes the source width must be a multipla of 64 pixels and in 4bpp
+           modes a multipla of 16 pixels.
+
+M+184h D(R/W):  Src_X
+bit  0-12  Src_X. Starting X-coordinate of the blit source
+Note: this register can also be written at M+18Ch
+
+M+188h D(R/W):  Src_Y
+bit  0-14  Src_Y. Starting Y-coordinate of the blit source
+Note: this register can also be written at M+18Ch
+
+M+18Ch D(W):  Src_Y_X
+bit  0-14  Src_Y. Starting Y-coordinate of the blit source
+    16-28  Src_X. Starting X-coordinate of the blit source
+
+M+190h D(R/W):  Src_Width1
+bit  0-12  Src_Width1. Width of the pattern in scan lines. For rotated
+           patterns this is the width from the startpoint (inside the
+           pattern) to the end of the pattern. Src_Width2 (M+1A8h) defines
+           the total pattern width. Only used if patterns are enabled (M+1B4h
+           bit 0 is set)
+Note: this register can also be written at M+198h
+
+M+194h D(R/W):  Src_Height1
+bit  0-14  Src_Height1. Height of the pattern in scan lines. For rotated
+           patterns this is the height from the startpoint (inside the
+           pattern) to the end of the pattern. Src_Height2 (M+1ACh) defines
+           the total pattern height. Only used if patterns are enabled (M+1B4h
+           bit 0 is set)
+Note: this register can also be written at M+198h
+
+M+198h D(W):  Src_Height1_Width1
+bit  0-14  Src_Height1. Source Pattern Height. See Src_Height1 (M+194h)
+    16-28  Src_Width1. Source Pattern Width. See Src_Width1 (M+190h)
+
+M+19Ch D(R/W):  Src_X_Start
+bit  0-12  Src_X_Start. For pattern with rotation selects the left edge of the
+           pattern.
+Note: this register can also be written at M+1A4h
+
+M+1A0h D(R/W):  Src_Y_Start
+bit  0-14  Src_Y_Start. For pattern with rotation selects the top edge of the
+           pattern.
+Note: this register can also be written at M+1A4h
+
+M+1A4h D(W):  Src_Y_X_Start
+bit  0-14  Src_Y_Start. For pattern with rotation selects the top edge of the
+           pattern.
+    16-28  Src_X_Start. For pattern with rotation selects the left edge of the
+           pattern.
+
+M+1A8h D(R/W):  Src_Width2
+bit  0-12  Src_Width2. For Pattern with rotation blits defines the total width
+           of the pattern in pixels. Src_Width1 (M+190h) defines the distance
+           from the starting point to the end of the pattern. Only used if
+           patterns with rotation are enabled (M+1B4h bit 0 and 1 both set).
+Note: this register can also be written at M+1B0h
+
+M+1ACh D(R/W):  Src_Height2
+bit  0-14  Src_Height2. For Pattern with rotation blits defines the total
+           height of the pattern in scanlines. Src_Height1 (M+194h) defines
+           the distance from the starting point to the end of the pattern.
+           Only used if patterns with rotation are enabled (M+1B4h bit 0 and 1
+           both set).
+Note: this register can also be written at M+1B0h
+
+M+1B0h D(W):  Src_Height2_Width2
+bit  0-14  Src_Height2. Source Pattern Height. See Src_Height1 (M+1ACh)
+    16-28  Src_Width2. Source Pattern Width. See Src_Width2 (M+1A8h).
+
+M+1B4h D(R/W):  Src_Cntl
+bit     0  Src_Patt_En. Enables the use of patterns if set. Src_Y_End is only
+           used if this bit is set.
+        1  Src_Patt_Rot_En. Enables rotated patterns if set (and bit 0 set).
+           Src_X_Start (M+19Ch) and Src_Y_Start (M+188h) are only used if this
+           bit is set.
+        2  Src_Linear_En. Enables Linear Source, where the source data starts
+           at Src_Offset (M+180h) and advances left-to-right. Dst_X_Dir
+           (M+130h bit 0) should be set. All other source registers are
+           ignored, except Src_Byte_Align (bit 3)
+        3  Src_Byte_Align. If set the source pointer advances to the nearest
+           byte boundary when the destination moves to the next line. Only
+           valid in 1bpp and 4bbp modes with rectangular destination and
+           Linear Source (bit 2) is set.
+        4  Src_Line_X_Dir. Source X direction for Bresenham linedraw
+
+M+200h - M+23Ch D(W):  Host_Data[]
+bit  0-31  Host_Data. This register is used for transfering Host Source data.
+           There are 16 DWORD addresses mapped to the same register to allow
+           transfer via REP MOVSD. If too little host data is transfered
+           (another drawing engine register is written while the engine still
+           expects host data) the engine panics and completes the operation
+           with garbage data. Any excess data transfered is discarded.
+
+M+240h D(R/W):  Host_Cntl
+bit     0  Host_Byte_Align. Enables Host Data Byte alignment if set
+
+M+280h D(R/W):  Pat_Reg0
+bit  0-31  Pat_Reg0. 1st half of the pattern. The other half is in M+284h
+
+M+284h D(R/W):  Pat_Reg1
+bit  0-31  Pat_Reg1. 2nd half of the pattern. The other half is in M+280h
+
+M+288h D(R/W):  Pat_Cntl
+bit     0  Pat_Mono_En. Enables mono pattern
+        1  Pat_Clr_4x2_En. Enables 4x2 color pattern
+        2  Pat_Clr_8x1_En. Enables 8x1 color pattern
+
+M+2A0h D(R/W):  Sc_Left
+bit  0-12  Sc_Left. Left edge of the scissor rectangle. No pixels are drawn
+           to the left of this line.
+
+M+2A4h D(R/W):  Sc_Right
+bit  0-12  Sc_Right. Right edge of the scissor rectangle. No pixels are drawn
+           to the right of this line.
+
+M+2A8h D(W):  Sc_Left_Right
+bit  0-12  Sc_Left. Left edge of the scissor rectangle. No pixels are drawn
+           to the left of this line.
+    16-27  Sc_Right. Right edge of the scissor rectangle. No pixels are drawn
+           to the right of this line.
+Note: These registers are also present at M+2A0h and M+2A4h
+
+M+2ACh D(R/W):  Sc_Top
+bit  0-14  Sc_Top. Top edge of the scissor rectangle. No pixels are drawn
+           above this line.
+
+M+2B0h D(R/W):  Sc_Bottom
+bit  0-14  Sc_Bottom. Bottom edge of the scissor rectangle. No pixels are
+           drawn below this line.
+
+M+2B4h D(W):  Sc_Top_Bottom
+bit  0-14  Sc_Top. Top edge of the scissor rectangle. No pixels are drawn
+           above this line.
+    16-30  Sc_Bottom. Bottom edge of the scissor rectangle. No pixels are
+           drawn below this line.
+Note: These registers are also present at M+2ACh and M+2B0h
+
+M+2C0h D(R/W):  Dp_Bkgd_Clr
+bit  0-31  Dp_Bkgd_Clr. Background color. Only the 1/4/8/16/24/32 lowest bits
+           used depending on the current pixel depth.
+
+M+2C4h D(R/W):  Dp_Frgd_Clr
+bit  0-31  Dp_Frgd_Clr. Foreground color. The bits needed for the current
+           pixel depth are taken from the low end. I.e. in 4bpp mode only the
+           low 4 birts are used.
+
+M+2C8h D(R/W):  Dp_Write_Msk
+bit  0-31  Dp_Write_Msk. Write mask. Each 0 bit prevents writing to the
+           corresponding bit in each pixel.
+
+M+2CCh D(R/W):  Dp_Chain_Mask
+bit  0-14  Dp_Chain_Msk. Defines the breaks between pixels and color blocks.
+           Each set bit prevents the propagation of the corresponding carry
+           bit in the ALU. Only used if the fore- or background mix is set to
+           17h. Should be programmed to the folowing values, depending of the
+           pixel depth:  1bpp: N/A, 4bpp: 8888h, 7bpp (RGB 2:3:2): D2D2h,
+            8bpp: 8080h, 8bpp (RGB 3:3:2): 9292h, 15bpp: 4210h, 16bpp: 8410h,
+            24bpp: 8080h, 32bpp: 8080h
+
+M+2D0h D(R/W):  Dp_Pix_Width
+bit   0-2  Dp_Dst_Pix_Width. Destination pixel width.
+            0: Mono, 1: 4bpp, 2: 8bpp, 3: 15bpp, 4: 16bpp, 6: 32bpp
+     8-10  Dp_Src_Pix_Width. Source Pixel Width. See above
+    16-18  Dp_Host_Pix_Width. Host Data Pixel Width. See above
+       24  Dp_Byte_Pix_Order. Pixel order within each byte in 1bpp and 4bpp
+           modes. 0: 1st pixel at MSB, 1: 1st pixel at LSB
+Note: The pixel widths should either be the same for all three fields, or for
+      monochrome to color expansion (Src or Host set to mono).
+
+M+2D4h D(R/W):  Dp_Mix
+bit   0-4  Dp_Bkgd_Mix. Background Mix (see below)
+    16-20  Dp_Fore_Mix. Foreground Mix:
+              00h:  not DST
+              01h:  0 (always false)
+              02h:  1 (always true)
+              03h:  DST
+              04h:  not SRC
+              05h:  DST xor SRC
+              06h:  (not DST) xor SRC
+              07h:  SRC
+              08h:  (not DST) or (not SRC)
+              09h:  DST or (not SRC)
+              0Ah:  (not DST) or SRC
+              0Bh:  DST or SRC
+              0Ch:  DST and SRC
+              0Dh:  (not DST) and SRC
+              0Eh:  DST and (not SRC)
+              0Fh:  (not DST) and (not SRC)
+              17h:  (DST+SRC)/2
+
+M+2D8h D(R/W):  Dp_Src
+bit   0-2  Dp_Bkgd_Src. Background Source. 0: Background color, 1: Foreground
+           color, 2: Host data, 3: Blit source, 4: Pattern registers
+     8-10  Dp_Frgd_Src. Foreground Source. See above
+    16-17  Dp_Mono_Src. Monochrome Source. 0: Always 1, 1: Pattern registers,
+            2: Host Data, 3: Blit Source
+
+M+300h D(R/W):  Clr_Cmp_Clr
+bit  0-31  Clr_Cmp_Clr. Color used for color comparison.
+
+M+304h D(R/W):  Clr_Cmp_Msk.
+bit  0-31  Clr_Cmp_Msk. Color comparison mask
+
+M+308h D(R/W):  Clr_Cmp_Cntl
+bit   0-2  Clr_Cmp_Fn. Color Comparison function:
+            0: False, 1: True, 4: Diff from Clr_Cmp_Clr, 5: Equal to
+           Clr_Cmp_Clr. If the comparison is false the source data is written
+           to the destination, if true the destination is left untouched.
+       24  Clr_Cmp_Src. Set to compare against the source data, clear to
+           compare against destination data.
+
+M+310h D(R):  Fifo_Stat
+bit  0-15  Fifo_Stat. FIFO State. Each bit set indicates a filled slot in the
+           command FIFO. Note that only registers from M+100h - M+3FFh use the
+           Command FIFO
+       31  Fifo_Err. FIFO Overrun Error occoured if set. If set the drawing
+           engine is locked until reset through the Gen_Test_Cntl register
+
+M+320h D(R/W):  Context_Mask
+bit  0-31  Context_Mask. Each bit mask the loading of one DWORD in the context
+           structure. Offset 00h and 70h are loaded regardless of the state of
+           bits 0 and 28 of this register.
+           Context Structure:
+           Bit:   Offset:   Reg Offset:    Register Name:
+             -      00h        320h        Context_Mask
+             2      08h        100h        Dst_Off_Pitch
+             3      0Ch        10Ch        Dst_Y_X
+             4      10h        118h        Dst_Height_Width
+             5      14h        124h        Dst_Bres_Err
+             6      18h        128h        Dst_Bres_Inc
+             7      1Ch        12Ch        Dst_Bres_Dec
+             8      20h        180h        Src_Off_Pitch
+             9      24h        18Ch        Src_Y_X
+            10      28h        198h        Src_Height1_Width1
+            11      2Ch        1A4h        Src_Y_X_Start
+            12      30h        1B0h        Src_Height2_Width2
+            13      34h        280h        Pat_Reg0
+            14      38h        284h        Pat_Reg1
+            15      3Ch        2A8h        Sc_Left_Right
+            16      40h        2B4h        Sc_Top_Bottom
+            17      44h        2C0h        Dp_Bkgd_Clr
+            18      48h        2C4h        Dp_Frgd_Clr
+            19      4Ch        2C8h        Dp_Write_Mask
+            20      50h        2CCh        Dp_Chain_Mask
+            21      54h        2D0h        Dp_Pix_Width
+            22      58h        2D4h        Dp_Mix
+            23      5Ch        2D8h        Dp_Src
+            24      60h        300h        Clr_Cmp_Clr
+            25      64h        304h        Clr_Cmp_Mask
+            26      68h        308h        Clr_Cmp_Cntl
+            27      6Ch        330h        Gui_Traj_Cntl
+             -      70h        32Ch        Context_Load_Cntl
+                Offset 04h-07h and 74h-FFh Reserved
+
+M+32Ch D(R/W):  Context_Load_Cntl
+bit  0-14  Context_Load_Ptr. Context Load Pointer in units of 256 bytes from
+           the top of video memory
+    16-17  Context_Load_Cmd. 0. No context load, 1: load from Context_Load_Ptr
+            2: Load from Context_Load_Ptr and start rectangular fill,
+            3: Load from Context_Load_Ptr and start Bresenham line
+       31  Context_Load_Dis. Execute context if set, do not execute if clear
+
+M+330h D(R/W):  Gui_Traj_Cntl
+bit     0  Dst_X_Dir. Destination X dir. 0: Right to left, 1: Left to right
+        1  Dst_Y_Dir. Destination Y dir. 0: Bottom to top, 1: Top to bottom.
+        2  Dst_Y_Major. Destination Y Major axis (Bresenham linedraw).
+            0: X is major axis, 1: Y is major axis
+        3  Dst_X_Tile. Enable Rectangular tiling in the X direction if set.
+           For rectangular destinations setting this bit causes the Dst_X
+           register to have the value (Dst_X + Dst_Width) after the blit.
+        4  Dst_Y_Tile. Enable Rectangular tiling in the Y direction if set.
+           For rectangular destinations setting this bit causes the Dst_Y
+           register to have the value (Dst_Y + Dst_Height) after the blit.
+        5  Dst_Last_Pel. Enable Destination last Pel. If set the last pixel in
+           the line is drawn, if clear it is not drawn
+        6  Dst_Polygon_En. Enables Polygon Outline & Fill.
+        7  Dst_24_Rot_En. Enables 24bpp Rotation.
+     8-10  Dst_24_Rot. Initial fg color, Bk color, write mask and pattern
+           rotation when drawing in 24bit packed mode.
+       11  Dst_Bres_Sign. When the Dst_Bres_Err (M+124h) register is 0, it
+           should be considered as:    0: Positive, 1: Negative
+       16  Src_Patt_En. Enables Pattern source - Src_Y_End is only used if
+           this bit is ?set?
+       17  Src_Patt_Rot_En. Enables Pattern Source rotation - Src_X_Start and
+           Src_Y_Start are only used if this bit ?set?
+       18  Src_Linear_En. Enables Linear Source Addressing where the source
+           data starts at Src_Offset and continues left to right as a pixel
+           stream. All other source registers and bits are ignored, except bit
+           19. Dst_X_Dir (bit 0 should be set for proper operation.
+       19  Src_Byte_Align. If bit 18 is set, controls whether the source
+           advances to the byte when the destination advances in the Y
+           direction
+       20  Src_Line_X_Dir. Source X direction when for Bresenham Linedraw
+       24  Pat_Mono_En. Enables Monochrome 8x8 Pattern
+       25  Pat_Clr_4x2_En. Enables Color 4x2 Pattern
+       26  Pat_Clr_8x1_En. Enables Color 8x1 Pattern
+       28  Host_Byte_Align. Enables Host Data byte alignment if set
+Note: This register is a combination of the Dst_Cntl (M+130h), Src_Cntl
+      (M+1B4h), Pat_Cntl (M+288h) and Host_Cntl (M+240h) registers.
+
+M+338h D(R):  Gui_Stat
+bit     0  Gui_Active. Set if the Draing engine is busy
+        8  Dstx_Lt_Scissor_Left. Set if DstX is left of the left scissor
+        9  Dstx_Gt_Scissor_Right. Set if DstX is right of the right scissor
+       10  Dsty_Lt_Scissor_Top. Set if DstX is above the top scissor
+       11  Dsty_Gt_Scissor_Bottom. Set if DstX is below the bottom scissor
+
+
+Reserved locations in the ROM (typically starting at C000h:0):
+
+  $31   9 bytes   '761295520' ID's ATI product
+  $40   2 bytes   '31' = ATI VGA Wonder/Mach series
+  $43   1 byte    Gate revision.
+                   ' ' (20h) = Mach64  (Not documented ??)
+  $64   4 bytes   Far jump to Mach64 BIOS function. AL is the function code,
+                  and the error code is returned in AH (0: Ok, 1: Error,
+                    2: Function not supported).
+                  AL = 00h  Load coprocessor CRTC parameters
+                            CL bit 0-3  Color depth. 1: 4bpp, 2: 8bpp,
+                                         3: 15bpp, 4: 16bpp, 5: 24bp, 6: 32bpp
+                                     4  If set enables gamma correction in
+                                        direct color modes (15bpp and above),
+                                        enables 8bit DAC width in 8bpp modes
+                                        (256 of 16M colors).
+                                   6-7  Pitch. 0: 1024, 1: Don't change,
+                                          2: Same as displayed
+                            CH  Resolution.
+                                 12h:  640x480
+                                 6Ah:  800x600
+                                 55h:  1024x768
+                                 80h:  Load from table at offset BX in EEPROM
+                                 81h:  Load from table at DS:BX
+                                 82h:  OEM mode
+                                 83h:  1280x1024
+                                 84h:  1600x1200
+                  AL = 01h  Set display mode.
+                            CL bit 0  Clear for VGA mode with 6bit DAC, set
+                                      for coprocessort mode
+                                   7  Set for 8bit DAC (8bpp modes) or Gamma
+                                      correction (direct color modes). OR'd
+                                      with bit 4 from the AL=00h function.
+                  AL = 02h  Load coprocessor CRTC parameters and set mode
+                            Same parameters as AL = 00h
+                  AL = 03h  Read EEPROM data
+                            BX  Index into the EEPROM
+                                Returns data in DX
+                  AL = 04h  Write EEPROM data
+                            BX  Index into the EEPROM
+                            DX  Data
+                  AL = 05h  Memory aperture services
+                            CL bit 0  Set to enable Memory Aperture, clear to
+                                      disable
+                  AL = 06h  Short query function
+                            Returns configuration data:
+                              AL bit 0-5  Aperture configuration
+                                            0: disable, 1: 4M, 2: 8M
+                                       6  Aperture address is predefined or
+                                          hardcoded in BIOS if set, user
+                                          defined if clear
+                                       7  Aperture address is in 4GB range if
+                                          set, in 128MB range if clear
+                              BX  Aperture address
+                              CL  Memory Size
+                              CH  Color Depth support
+                                  bit 0  Set if 15bpp (5-5-5) supported
+                                      1  Set if 16bpp (5-6-5) supported
+                                      2  Set if 24bpp RGB supported
+                                      3  Set if 24bpp BGR supported
+                                      4  Set if 32bpp BGR supported
+                                      5  Set if 32bpp RGBx supported
+                              DX  ASIC identification.
+                                  bit  0-7  Revision
+                                      8-15  Type
+                  AL = 07h  Return hardware capability list
+                            Returns ??
+                  AL = 08h  Return query device data structure in bytes
+                            CL bit 0  Set to return size of header and mode
+                                      tables, clear to return size of header
+                            Returns size (number of bytes) in CX
+                  AL = 09h  Query device
+                            DX:BX  Pointer to buffer to receive data. The
+                                   buffer is filled with first a Query
+                                   structure and then a number of Mode Table
+                                   structures.
+                               CL bit 0  Set to return header and mode tables,
+                                         clear to return header only
+                  AL = 0Ah  Return clock chip frequency table
+                            Returns:
+                                 AL  Clock chip type
+                              DX:BX  Pointer to 16 WORD table of the
+                                     preprogrammed frequencies. Each WORD
+                                     holds one clock in units of 10KHz
+                              DX:CX  Pointer clock chip,info structure:
+                                     Offset Type:
+                                       00h  BYTE  Clock chip type
+                                       01h  BYTE  Frequency table id.
+                                       02h  WORD  Min freq in units of 10KHz
+                                            WORD  Max freq in units of 10KHz
+                                       06h  BYTE  User programmable entry
+                                                  number (if <> FFh)
+                                       07h  BYTE  Reserved
+                                       08h  WORD  Hardware dependant
+                  AL = 0Bh  Program a specified clock entry
+                            CH  Entry in clock table (0-15)
+                            BX  New clock value in units of 10KHz
+                            Returns:
+                              AL = Clock chip type
+                              BX = Programming word (chip dependant)
+                  AL = 0Ch  DPMS service, set DPMS mode
+                            CL  New mode. 0: Active, 1: Standby, 2: Suspend,
+                                 3. Off, 4: Blanking display
+                  AL = 0Dh  Return current DPMS state in CL.
+                            Returns CL = state. 0: Active, 1: Standby,
+                                 2: Suspend, 3. Off, 4: Blanking display
+                  AL = 0Eh  Set graphics controller's power management state
+                            CL  New state. 0: Active, 1: Standby,
+                                 2: Suspend, 3. Off
+                  AL = 0Fh  Return graphics controller's current power
+                            management state in CL.
+                            Returns CL = state.  0: Active, 1: Standby,
+                                 2: Suspend, 3. Off
+                  AL = 10h  Set RAMDAC to different states
+                            CL bit 0  Set to switch RAMDAC to sleep mode,
+                                      clear to switch it to normal mode
+                            Note: CL = 80h is reserved.
+                  AL = 11h  Return external storage device information
+                            CL bit 0-3  Device type
+                                   4-6  External data access mode.
+                                          0: Read- and writable
+                                          1: Readable, not writable
+                                          3: Neither readable or writable
+                                          4: Read- and writable. Access must
+                                             by handled according to the  ??
+                                     7  If set all of external storage is
+                                        used, if clear there is space
+                            Returns:
+                              CL  Last readable and writable entries in the
+                                  storage device
+                              CH  Number of (read only) 16bit entries in the
+                                  storage device
+                              BL  Offset into the CRTC parameter table
+                              BH  Size of the CRTC parameter table
+                  AL = 12h  Short Query. Returns:
+                              DX  I/O base address
+                              AX,BX,CX reserved
+
+
+Query structure (returnde by AL = 09h):
+Offset  Size  Description
+  00h   WORD  Size of structure in bytes
+  02h   BYTE  Revision
+  03h   BYTE  Number of mode tables
+  04h   WORD  Offset of mode tables in bytes
+  06h   BYTE  Size of each mode table
+  07h   BYTE  VGA type. 0: Disabled, 1: enabled
+  08h   WORD  ASIC revision
+  0Ah   BYTE  VGA Boundary. 0: full access, 1: 256K, 2: 512K, 3: 768, 4: 1MB
+  0Bh   BYTE  Memory Size. 0: 512K, 1: 1MB, 2: 2MB, 3: 4MB, 4: 6MB, 5: 8MB,
+               6: 12MB, 7: 8MB
+  0Ch   BYTE  Bits 0-3  DAC Type. 2: TI 34075/ATI68875, 3: Bt476/478, 4:
+                Bt481, AT&T20c490/491, 5: ATI68860, 6: STG1700, 7: STG1702,
+                SC15021, AT&T20c498
+  0Dh   BYTE  Memory Type. 0: DRAM 256Kx16, 1: VRAM 256Kx4, 2: VRAM 256Kx16,
+               3: DRAM 256Kx4, 5: VRAM 256Kx4 special, 6: VRAM 256Kx16 special
+  0Eh   BYTE  Bus Type. 0: ISA, 1: EISA, 6: VLB, 7: PCI
+  0Fh   BYTE  Bit 6  Enable sync on green
+                  7  Enable composite sync
+  10h   WORD  Aperture address in megabytes (0-4095)
+  12h   BYTE  Aperture configuration.
+              bit 0-5   0: Disable, 1: 4MB, 2: 8MB
+                    6  Aperture address is predefined or hardcoded in BIOS if
+                       set, user defined if clear
+                    7  Aperture address is in 4GB range if set, in 128MB range
+                       if clear
+  13h   BYTE  Color Depth Support.
+              Bit 0  16bpp (5-6-5) modes supported if set
+                  1  15bpp (5-5-5) modes supported if set
+                  2  24bpp (RGB) modes supported if set
+                  3  24bpp (BGR) modes supported if set
+                  4  32bpp (BGR) modes supported if set
+                  5  32bpp (RGBx) modes supported if set
+  14h   BYTE  RAMDAC support feature
+              Bit 4  Supports sleep mode if set
+                  5  Supports 256 grey scale if set
+                  6  Supports gamma correction if set
+                  7  Supports sync on green if set
+  16h   WORD  Offset into current mode table if non-zero
+  18h   WORD  I/O base address
+  1Ah  6BYTEs Reserved
+
+Mode Table Structure (returned by AL = 09h after the Query structure).
+Offset  Size  Description
+  00h   WORD  Horizontal Display Resolution in pixels
+  02h   WORD  Vertical Display Resolution in scanlines
+  04h   BYTE  Maximum pixel depth. 1: 4bpp, 2: 8bpp, 3: 15bpp, 4: 16bpp,
+                5: 24bp, 6: 32bpp
+  05h   BYTE  Mode number. 12h:  640x480, 6Ah:  800x600, 55h:  1024x768,
+               82h:  OEM mode, 83h:  1280x1024, 84h:  1600x1200
+  06h   WORD  Offset into EEPROM. Table generated from CRTC parameters if = 0,
+              else this is an index into the EEPROM.
+  0Ch   WORD  Bit 8  Enable doubel scan
+                  9  Enable interlace
+                 10  Enable MUX mode
+  0Eh   BYTE  Crtc_H_Total
+  0Fh   BYTE  Crtc_H_Disp
+  10h   BYTE  Crtc_H_Sync_Strt
+  11h   BYTE  Crtc_H_Sync_Wid
+  12h   WORD  Crtc_V_Total
+  14h   WORD  Crtc_V_Disp
+  16h   WORD  Crtc_V_Sync_Strt
+  18h   BYTE  Crtc_V_Sync_Wid
+  19h   BYTE  Clock_Cntl
+  1Ah   WORD  Dot Clock for coprocessor mode (programmable clock chip)
+  1Ch   WORD  Bits 0-3  Ovr_Wid_Left
+                   4-7  Ovr_Wid_Right
+                  8-11  Crtc_H_Sync_Dly
+                 12-15  Crtc_H_Total_Dly
+  1Eh   WORD  Ovr_Wid_Top, Ovr_Wid_Bottom
+  20h   WORD  Ovr_Clr_B, Ovr_Clr_8
+  22h   WORD  Ovr_Clr_G, Ovr_Clr_R
+
+EEPROM Data structure. All offsets are in WORDs (16bits).
+Offset  Bits  Description
+  00h   0-15  EEPROM write counter
+  01h    0-7  EEPROM checksum. The (byte) sum of the EEPROM must be 0.
+  02h   0-15  Reserved(0)
+  03h    0-3  EEPROM table revision
+  04h   0-15  Custom monitor indices
+  05h      0  Enable composite sync
+           1  Enable sync on green
+           6  Enable 640x480 at 72Hz if set
+           7  Use stored 640x480 parameters for coprocessor mode if set
+        8-15  1280x1024 refresh rate information
+  06h      0  Select 800x600 at 85Hz interlaced if set
+           1  Select 800x600 at 89Hz interlaced if set
+           2  Select 800x600 at 56Hz if set
+           3  Select 800x600 at 60Hz if set
+           4  Select 800x600 at 70Hz if set
+           5  Select 800x600 at 72Hz if set
+           7  Use stored 800x600 parameters for coprocessor mode if set
+  07h      0  Select 1024x768 at 87Hz interlaced if set
+           1  Select 1024x768 at 60Hz if set
+           2  Select 1024x768 at 70Hz if set
+           3  Select 1024x768 at 72Hz if set
+           7  Use stored 1024x768 parameters for coprocessor mode if set
+  08h      0  16bit ROM enabled if set
+           1  Zero Wait State ROM enabled if set
+           2  Zero Wait State RAM enabled if set
+           3  VGA bus I/O is 16bit if set, 8 bit if clear
+           4  Font selected at power-up. 0: 8x14 or 9x14, 1: 8x16 or 9x16
+           5  Dual monitor enable
+         6-7  Monochrome Mode Color Select. 0: White, 1: Green, 2: Amber
+        8-15  Power-Up Video Mode. 3: VGA color (secondary), 5: VGA mono
+               (secondary), 9: VGA color (primary), 0Bh: VGA mono (primary).
+  09h    0-2  Monitor Alias
+           3  Monitor alias enable
+         4-5  VGA boundary. 0: Full access, 1: 512K, 2: 1MB
+        8-13  Monitor code
+       14-15  Host data transfer width. 0: Auto select, 1: 16 bit, 2: 8bit,
+               3: 8bit (host), 16bit (others)
+  0Ah    0-3  Aperture Size (only used Aperture Location is 0)
+        4-15  Aperture Location in Mbytes
+  0Bh    0-7  Interrupt level. 20h: IRQ 5, 28h: IRQ 4, 30h: IRQ 3, 38h: IRQ 2
+        8-15  Mouse address. 0: Mouse disabled, 8: Secondary mouse address,
+               18h: Primary mouse address
+  0Ch - 16h   Reserved. The (upto) 7 CRTC parameter tables start at offset
+               17h, 26h, 35h, 44h, 53h, 62h and 71h respectively
+
+CRTC Parameter Table (in EEPROM). All offsets are in WORDs (16bits).
+The tables are different for VGA modes and accelerator modes. Each table is 30
+(1Eh) bytes long
+Offset  Bits  Description (VGA version)
+  00h    0-7  Video mode select 1
+        8-15  Video mode select 2
+  01h    0-7  CRT refresh rate bit mask
+        8-15  Video mode select 3
+  02h      4  CRT usage. 0: Use sync polarities, 1: use all CRT parameters
+           6  Horizontal sync polarity
+           7  Vertical sync polarity
+           8  Double scan enable
+           9  Interlace enable
+          13  MUX mode enable
+  03h    0-7  H_Total (3d4h index 0)
+        8-15  Max_Scan_Line (3d4h index 9)
+  04h    0-7  Retrace_Strt (3d4h index 4)
+        8-15  H_Retrace_End (3d4h index 5)
+  05h    0-7  V_Retrace_Strt (3d4h index 10h)
+        8-15  V_Retrace_End (3d4h index 11h)
+  06h    0-7  H_Blank_Strt (3d4h index 2)
+        8-15  H_Blank_End (3d4h index 3)
+  07h    0-7  V_Blank_Strt (3d4h index 15h)
+        8-15  V_Blank_End (3d4h index 16h)
+  08h    0-7  V_Total (3d4h index 6)
+        8-15  Crtc_Overflow (3d4h index 7)
+  09h    0-7  CRT_Mode (3d4h index 17h)
+        8-15  V_Disp_End (3d4h index 12h)
+  0Ah    0-3  Ovr_Wid_Left
+         4-7  Ovr_Wid_Right
+        8-11  Crtc_H_Sync_Dly
+  0Bh   0-15  Ovr_Wid_Top, Ovr_Wid_Bottom
+  0Ch   0-15  Ovr_Clr_8, Ovr_Clr_B
+  0Dh   0-15  Ovr_Clr_G, Ovr_Clr_R
+  0Eh   0-15  Reserved
+
+
+Offset  Bits  Description (Accelerator version)
+  01h    0-7  80h for coprocessor mode
+        8-15  Video mode select
+  02h      8  Double scan enable
+           9  Interlace enable
+          13  MUX mode enable
+  03h    0-7  Crtc_H_Total (M+000h/02ECh bit 0-7)
+        8-15  Crtc_H_Disp (M+000h/02ECh bit 16-23)
+  04h    0-7  Crtc_H_Sync_Strt (M+004h/06ECh bit 0-7)
+        8-15  Crtc_H_Sync_Wid (M+004h/06ECh bit 16-21)
+  05h   0-15  Crtc_V_Total (M+008h/0AECh bit 0-10)
+  06h   0-15  Crtc_V_Disp (M+008h/0AECh bit 16-26)
+  07h   0-15  Crtc_V_Sync_Strt (M+00Ch/0EECh bit 0-10)
+  08h    0-7  Crtc_V_Sync_Width (M+00Ch/0EECh bit 16-21)
+        8-15  Clock_Cntl (M+090h/4AECh bit 0-7)
+  09h   0-15  Dot clock
+  0Ah    0-3  Ovr_Wid_Left (M+044h/26ECh bit 0-3)
+         4-7  Ovr_Wid_Right (M+044h/26ECh bit 16-19)
+        8-11  Crtc_H_Sync_Dly (M+004h/06ECh bit 8-10)
+  0Bh   0-15  Ovr_Wid_Top (M+048h/2AECh bit 0-7), Ovr_Wid_Bottom (M+048h/2AECh
+               bit 16-23)
+  0Ch   0-15  Ovr_Clr_8 (M+040h/22ECh bit 0-7), Ovr_Clr_B (M+040h/22ECh bit
+               8-15)
+  0Dh   0-15  Ovr_Clr_G (M+040h/22ECh bit 16-23), Ovr_Clr_R (M+040h/22ECh bit
+               24-31)
+  0Eh   0-15  Reserved
+
+
+
+  ID ATI Super VGA Chip Set
+
+  if (getbios($31,9)='761295520') and (getbios($40,2)='31') then
+  begin
+    {ATI_Super_VGA}
+    case mem[$C000:$43] of
+      $31: ATI 18800;
+      $32: ATI 18800-1;
+      $33: ATI 28800-2;
+      $34: ATI 28800-4;
+      $35: ATI 28800-5;
+      $36: ATI 28800-6;
+  $61,$63: ATI Graphics Ultra Pro/+;
+    else unknown_ATI
+    end
+  end;
+
+
+  Video Modes:
+    23h  T   132   25  16  (8x14)
+    27h  T   132   25   2  (8x14)
+    33h  T   132   44  16  (8x8)
+    37h  T   132   44   2  (8x8)
+    51h  G   640  480  16  PL4      ATI EGA Wonder only
+    52h  G   752  410  16  PL4      ATI EGA Wonder only
+    53h  G   800  560  16  PL4
+    54h  G   800  600  16  PL4
+    55h  G  1024  768  16  PL4      (V4 or later)
+    58h  T    80   33  16  (8x8)
+    5Bh  T    80   30      (8x16)
+    61h  G   640  400 256  P8
+    62h  G   640  480 256  P8
+    63h  G   800  600 256  P8
+    64h  G  1024  768 256  P8       V6 (VGA Wonder +) or later
+    65h  G  1024  768  16  P4       ****  See note
+    67h  G  1024  768   4  PL2E     ****  See note
+    6Ah  G   800  600  16  PL4      Undocumented ??
+    72h  G   640  480 32k  P15      V7 (XL) only
+    73h  G   800  600 32k  P15      V7 (XL) only
+    75h  G   640  480 16m  P24      XL24 only
+
+Note: ATI Prism Elite uses a Trident chip and Trident mode numbers.
+
+    ATI enhanced Graphics modes do NOT support INT 10h with AH=
+      01h..0Eh or 11h or 13h.
+
+
+    Mode 65h  1024x768 16 color
+      4 bits per pixel packed mode
+      Even pixel is in bits 0-3 of the byte, odd in bits 4-7.
+      The desired 16 colors are in palette registers 00h-0Fh and palette
+      register 10h must match register 01h, 20h must match 02h etc.
+
+    Mode 67h  1024x768  4 color
+      2 bits per pixel planar mode
+      Even pixels are in plane 2&3, odd pixels in plane 0&1.
+
+
+  BIOS extensions:
+
+----------1012--BH55-------------------------
+INT 10 - VIDEO - ALTERNATE FUNC SELECT (ATI,Tatung,Taxan) - ENHANCED FEATURES
+        AH = 12h
+        BH = 55h
+        BL = subfunction
+              00h disabled enhanced features
+              01h enable enhanced features
+              02h get status
+Return:           AL = status flags
+                       bit    3  set if enhanced features enabled
+                       bits 7-5  monitor type
+                                 000 PS/2 mono
+                                 001 PS/2 color
+                                 010 multi-sync
+                                 011 Taxan 650 25kHz
+                                 100 RGB
+                                 101 mono
+                                 110 EGA
+                                 111 Compaq internal
+              03h disable register trapping (CGA emulation)
+              04h enable register trapping
+              05h program mode described by table at ES:BP
+              06h get mode table
+                  AL = video mode
+                  BP = FFFFh  (Known illegal value).
+                  SI = 0000h  (Known illegal value).
+Return:           ES:BP -> table suitable for mode AL (and subfnc BL=05h)
+                  BP = FFFFh on error
+Note: The support for this function on the Mach64 appears to be very limited.
+      Subfunction 06h only supports a few modes, subfunction 02h is not
+      implemented.
+
+
+Format of ATI VGA Wonder video mode table:
+Offset  Size     Description
+ 00h    BYTE     number of columns
+ 01h    BYTE     maximum row (number of rows - 1)
+ 02h    BYTE     scan lines per row
+ 03h    WORD     video buffer size in bytes
+ 05h   4 BYTEs   values for Sequencer registers 1-4
+ 09h    BYTE     value for Miscellaneous Output register
+ 0Ah   25 BYTEs  values for CRTC registers 00h-18h
+                  00h horizontal total size (chars)
+                  01h horizontal displayed (chars)
+                  02h horizontal sync position (chars)
+                  03h horizontal sync width (chars)
+                  04h vertical total size (char rows)
+                  05h vertical total adjust (scan lines)
+                  06h vertical displayed (char rows)
+                  07h vertical sync position (char rows)
+                  08h interlace mode
+                  09h max scan line in row
+                  0Ah cursor start scan line
+                  0Bh cursor end scan line
+                  0Ch screen memory start (high)
+                  0Dh screen memory start (low)
+                  0Eh cursor address (high)
+                  0Fh cursor address (low)
+                  10h light pen (high)
+                  11h light pen (low)
+ 23h   20 BYTEs  default palette (values for Attribute Controller regs
+                 00h-13h)
+ 37h   9 BYTEs   values for Graphics Controller registers 00h-08h
+----------10A0-----------------------------------
+INT 10 - VIDEO - Mach64
+        AH = A0h

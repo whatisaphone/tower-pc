@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>
+17.3.E  'E' Instructions 
+</title>
+<body>
+<a name="17-03-E"></a>
+Prev: <a href="chp17-d3.htm">17.3.D  'D' Instructions </a><br>
+Next: <a href="chp17-h3.htm">17.3.H  'H' Instructions </a>
+<hr>
+<h2>
+17.3.E  'E' Instructions 
+</h2>
+<p>
+<a name="17-03-ENTER"></a>
+<h3>ENTER -- Make Stack Frame for Procedure Parameters</h3>
+<p>
+<pre>
+Opcode      Instruction        Clocks     Description
+
+C8 iw 00    ENTER imm16,0      10         Make procedure stack frame
+C8 iw 01    ENTER imm16,1      12         Make stack frame for procedure
+                                          parameters
+C8 iw ib    ENTER imm16,imm8   15+4(n-1)  Make stack frame for
+                                          procedure parameters
+</pre>
+<p>
+Operation
+<p>
+level <- level MOD 32
+IF OperandSize = 16 THEN Push(BP) ELSE Push (EBP) FI;
+<pre>
+   (* Save stack pointer *)
+frame-ptr <- eSP</pre>
+IF level > 0
+THEN (* level is rightmost parameter *)
+   FOR i <- 1 TO level - 1
+<pre>
+   DO
+      IF OperandSize = 16
+      THEN
+         BP <- BP - 2;
+         Push[BP]
+      ELSE (* OperandSize = 32 *)
+         EBP <- EBP - 4;
+         Push[EBP];
+      FI;
+   OD;
+   Push(frame-ptr)
+FI;
+IF OperandSize = 16 THEN BP <- frame-ptr ELSE EBP <- frame-ptr; FI;</pre>
+IF StackAddrSize = 16
+THEN SP <- SP - First operand;
+ELSE ESP <- ESP - ZeroExtend(First operand);
+FI;
+<p>
+<b>Description</b>
+<p>
+ENTER creates the stack frame required by most block-structured
+high-level languages. The first operand specifies the number of bytes of
+dynamic storage allocated on the stack for the routine being entered.
+The second operand gives the lexical nesting level (0 to 31) of the routine
+within the high-level language source code. It determines the number of
+stack frame pointers copied into the new stack frame from the preceding
+frame. BP (or EBP, if the operand-size attribute is 32 bits) is the current
+stack frame pointer.
+<p>
+If the operand-size attribute is 16 bits, the processor uses BP as the
+frame pointer and SP as the stack pointer. If the operand-size attribute is
+32 bits, the processor uses EBP for the frame pointer and ESP for the stack
+pointer.
+<p>
+If the second operand is 0, ENTER pushes the frame pointer (BP or
+EBP) onto the stack; ENTER then subtracts the first operand from the
+stack pointer and sets the frame pointer to the current stack-pointer
+value.
+<p>
+For example, a procedure with 12 bytes of local variables would have an
+ENTER 12,0 instruction at its entry point and a LEAVE instruction
+before every RET. The 12 local bytes would be addressed as negative
+offsets from the frame pointer.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+#SS(0) if SP or ESP would exceed the stack limit at any point during
+instruction execution; #PF(fault-code) for a page fault
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+None
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-d3.htm">17.3.D  'D' Instructions </a><br>
+Next: <a href="chp17-h3.htm">17.3.H  'H' Instructions </a>
+</body>
+</html>

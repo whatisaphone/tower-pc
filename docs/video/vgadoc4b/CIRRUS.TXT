@@ -1,0 +1,2602 @@
+  Cirrus Logic
+
+    CL-GD 410/420     (Also known as Video7 OEM)
+    CL-GD 510/520     Flat Panel/LCD
+    CL-GD 610/620     Flat Panel/LCD
+
+    CL-GD 5320
+
+The 64xx Flat Panel family:
+
+    CL-GD 5410
+    CL-GD 6410    160pin  Flat Panel/LCD controller. 256k no banks.
+                          Supports 512 color TFT and 64 shades on mono STN
+    CL-GD 6412    160pin  As 6410 but mixed 3.3V and 5V
+    CL-GD 6420    160pin  As 6410 but 1MB. Supports 185000 colors on TFT
+                          and 64 shades on mono STN, color TFT
+    CL-GD 6416
+    CL-GD 6440    208pin  As 6420 but mixed 3.3V and 5V. Supports 8 and 16bit
+                          single- and dual-scan color STN, 9,12,15 and 18bit
+                          color TFT panels.
+    CL-GD 6450
+
+The 54xx Super VGA family:
+
+    CL-GD 5401        AVGA 1. No banks
+    CL-GD 5402        AVGA 2.
+Note: the 5401 and 5402 are sometimes sold as the Acumos AVGA1 and 2.
+    CL-GD 6205    160pin  Flat Panel/LCD. Mixed 3.3 and 5V. always 512KB
+                          64 shades on mono STN. Color TFT support
+    CL-GD 6215    160pin  As 6205 with Local bus and PI support
+    CL-GD 6225    160pin  As 6215 with single-scan color STN support
+    CL-GD 6235    160pin  As 6235 with dual-scan color STN support
+    CL-GD 6245
+
+    CL-GD 5420    160pin  1MB 15/16 bit DAC.
+    CL-GD 5422    160pin  1MB 15/16/24bit DAC
+    CL-GD 5424    160pin  As 5422 with Local bus support
+    CL-GD 5426    160pin  As 5424 with 2MB and BitBLT
+    CL-GD 5428    160pin  As 5426 with faster BitBLT
+    CL-GD 5429    160pin  As 5428 with Memory Mapped I/O
+    CL-GD 5430    208pin  2MB  "Alpine" 64bit memory and 32bit BitBLT engine
+                               accelerates 8/16 it pixels
+    CL-GD 5432        "Alpine" 32bit version
+    CL-GD 5434    208pin  4MB  "Alpine" 64bit memory and BitBLT engine.
+                               accelerates 8/16/24/32 bit pixels
+    CL-GD 5452/3  208pin  4MB  64bit Highres truecolor controller
+                               Linedraw. 2 chip set (5453 is the DAC).
+    CL-GD 547x    future 3d accelerator chip
+
+    CL-GD 7541    Nordic Lite. 2Mb LCD controller
+    CL-GD 7542    Nordic       2Mb LCD controller
+    CL-GD 7543    Viking       2Mb LCD controller?
+
+Not too sure that the CL-GD5432, CL-GD6416 really exist
+
+The 54xx and 64xx series have a built in RAMDAC. 8 bit for the 5401/5402 and
+ 6410/12/20, 15/16bit for the 5420 and 6440 and 15/16/24 bit for the 5422-3x.
+The 54xx, 62xx and 6440 have built-in clock generator
+
+
+Support Chips:
+    CL-GD 6340    100pin  (Peacock) Color LCD Panel Driver. Supports 8, 512
+                             and 4K color panels. Onboard RAMDAC
+    CL-GD 5453    208pin  Palette DAC for the CL-GD5452
+
+
+
+The 5xx/6xx Flat Panel family:
+This family strongly resembles the early Video 7 chips. Apparently Cirrus
+supplied at least one of the early Video 7 chips (Video7 OEM).
+
+3C4h index  6  (W):
+bit 0-7  Writing ("Eagle ID" rol 4) will disable extensions.
+         Writing "Eagle ID" will enable.
+         Reading will return 0 if extensions are disabled, 1 if enabled
+The "Eagle ID" is read from 3d4h index 1Fh
+
+3C4h index 80h (R/W):  Miscellaneous Control 1
+
+3C4h index 81h (R/W):  Graphics Position 1
+
+3C4h index 82h (R/W):  Graphics Position 2
+
+3C4h index 83h (R/W):  Attribute Controller Index
+
+3C4h index 84h (R/W):  Write Control
+
+3C4h index 85h (R/W):  Timing Control
+
+3C4h index 86h (R/W):  Bandwidth Control
+
+3C4h index 87h (R/W):  Miscellaneous Control 2
+
+3C4h index 88h (R/W):  Horizontal Sync skew
+
+3C4h index 89h (R/W):  CGA, HGC Font Control
+
+3C4h index 8Ah (R/W):  Reserved
+
+3C4h index 8Bh (R/W):  Screen B preset row scan
+
+3C4h index 8Ch (R/W):  Screen B start address high
+
+3C4h index 8Dh (R/W):  Screen B start address low
+
+3C4h index 8Eh (R):  Version Code
+
+3C4h index 8Fh (R):  Version Code
+
+3C4h index 90h (R/W):  Vertical Retrace Start
+
+3C4h index 91h (R/W):  Vertical Retrace End
+
+3C4h index 92h (R/W):  Lightpen High
+
+3C4h index 93h (R/W):  Lightpen Low
+
+3C4h index 94h (R/W):  Pointer Pattern Address High
+bit  0-7  Start address of the hardware cursor map in units of 256 bytes
+          within the last 64K of video memory
+
+3C4h index 95h (R/W):  Cursor Height Adjust
+
+3C4h index 96h (R/W):  Caret Width
+
+3C4h index 97h (R/W):  Caret Height
+
+3C4h index 98h (R/W):  Caret Horizontal Position High
+
+3C4h index 99h (R/W):  Caret Horizontal Position Low
+
+3C4h index 9Ah (R/W):  Caret Vertical Position High
+
+3C4h index 9Bh (R/W):  Caret Vertical Position Low
+
+3C4h index 9Ch M(R/W):  Pointer Horizontal Position
+bit 0-10  Cursor X position from left
+
+3C4h index 9Eh M(R/W):  Pointer Vertical Position High
+bit  0-9  Cursor Y position from top
+
+3C4h index A0h (R/W):  Graphics Controller Memory Latch 0
+
+3C4h index A1h (R/W):  Graphics Controller Memory Latch 1
+
+3C4h index A2h (R/W):  Graphics Controller Memory Latch 2
+
+3C4h index A3h (R/W):  Graphics Controller Memory Latch 3
+
+3C4h index A4h (R/W):  Clock Select
+
+3C4h index A5h (R/W):  Cursor (Caret and pointer) Attribute
+bit    7  Set to enable hardware cursor
+
+3C4h index A6h (R/W):  Internal Switch Source
+
+3C4h index A7h (R/W):  Status Switch Control
+
+3C4h index A8h (R/W):  NMI Mask 1
+
+3C4h index A9h (R/W):  NMI Mask 2
+
+3C4h index AAh (R/W):  Reserved
+
+3C4h index ABh (R):  NMI Status 1
+
+3C4h index ACh (R):  NMI Status 2
+
+3C4h index ADh (R/W):  256 Color mode Page Control
+
+3C4h index AEh (R):  NMI data cache (Four 24 bit words)
+
+3C4h index AFh (R/W):  Active Adapter State
+
+3C4h index B0h..BFh (R/W):  Scratch Registers
+
+3C4h index C0h..FFh (R/W):  Reserved
+
+3d4h index 0Ch (R/W):  Screen A start address Hi
+Must be cleared before the Eagle ID Register (3d4h index 1Fh) can be read.
+
+3d4h index 1Fh (R):  Eagle ID register
+bit 0-7  Eagle ID.  Used for test of 3C4h index 6.
+         Reading this register will return the content of 3d4h index 0Ch XORed
+         with the Eagle ID value.
+         ECh for CL-GD 510/520, CAh for 610/620. EAh for Video7 boards.
+
+Memory locations:
+
+$C000:$6  2 bytes  'CL'  if Cirrus Bios
+
+  Modes for the CL-GD510/520:
+
+  40h T  100   30
+  41h T  100   50
+  42h T  100   60
+  50h T  132   30
+  51h T  132   50
+  52h T  132   60
+  53h T   80   60
+  62h G  640  450  16
+  63h G  720  540  16
+  64h G  800  600  16
+
+
+  Other sources claim:
+
+  15h T  132   25   2 (8x14)
+  16h T  132   44   2 (8x8)
+  18h T  132   30   2 (8x)
+  1Eh T  132   25  16 (8x8)
+  1Fh T  132   25  16 (8x14)
+  20h T  132   44  16 (8x8)
+  22h T  132   30  16 (8x)
+  31h T  100   37   2
+  40h G  720  540  16 PL4
+  50h G  640  400 256 packed
+  51h G  512  480 256 packed    Note: not supported in all BIOS'es
+  63h G  720  540  16 PL4
+  64h G  800  600  16 PL4
+  6Ah G  800  600  16 PL4
+
+  Mode 50h and 51h use a special system where four pixels are stored at the
+  same byte address in plane 0,1,2 and 3 respectively.
+
+
+
+
+GD6349  (Peacock) Color LCD controller:
+
+3C4h index E0h (R/W):  Enable Readback Register
+bit  0-7  0: Turn Readback off, F0h: Enable Readback (ALLSET)
+
+3C4h index E9h (R):  Identification Register
+bit 4-7  Reads alternatingly as 7 and 8.
+
+
+
+GD5410, 64xx series:
+
+100h (R/W):  CL-GD6440 Power Up Configuration                    (6440 only ?)
+bit    0  Local Bus width. Set for 32bit, clear for 16 bit (386SX)
+     1-2  CPU Bus Type.
+       3  Sleep address. Set for 46E8h, clear for 3C3h
+       7  Local Bus Clock. Set for x2 clock, clear for x1 clock.
+Note: This register can be accessed even when the CL-GD6440 is in sleep mode.
+
+3CEh index 0Ah (R/W):  Extension Control
+bit  0-7  Write ECh to enable extensions, CEh to disable.
+          Reads as 1 if enabled, 0 if not.
+
+3CEh index 0Bh (R/W):  Attribute Controller Index (ARX) r/w with toggle
+bit  0-4  Attribute Register Index
+       5  (not 6440 ?) Enable Video
+       7  Toggle ARX to Data. If set the Attribute register is in Data mode,
+          if clear in Index mode
+
+3CEh index 0Ch (R/W):  CR11 bit 7 at Extension
+bit    7  Write Protect 3d4h index 0-7 if set
+          Can be used to break the deadlock between 3d4h index 3 bit 7 and
+          3d4h index 11h bit 7 as this it can always be changed.
+
+3CEh index 0Dh (R/W):  CPU Base Address Control                     (not 6410)
+bit    0  Enable Page Remapping if set
+       1  Enable 64K Remapping page size if set, 32K if clear
+       2  If set use both 3CEh index 0Eh and 0Fh, if set use only index 0Eh:
+          Bit 2  Bit 1     Index 0Eh       Index 0Fh
+            0      0     A0000h-A7FFFh     Not used
+            0      1     A0000h-AFFFFh     Not used
+            1      0     A0000h-A7FFFh   A8000h-AFFFFh
+            1      1     A0000h-AFFFFh   B0000h-BFFFFh
+          Note: for bit 1&2 both set (dual 64k maps) 3CEh index 6 bits 2-3
+                should be set to 0 to allow 128k video buffer.
+       4  (6440) Enable Linear Addressing if set. See index B1h for details
+       7  (not 6440) Enable I/O Ext Addr Remapping
+Note: this register can be locked by 3CEh index A7h bit 4.
+
+3CEh index 0Eh (R/W):  CPU Base Address Mapping Register A          (not 6410)
+bit  0-7  Bank number in 4K units for accesses to the A0000h-A7FFFh (index Dh
+          bit 1 clear) or A0000h-AFFFFh (index Dh bit 1 set) range.
+
+3CEh index 0Fh (R/W):  CPU Base Address Mapping Register B          (not 6410)
+bit  0-7  Bank number in 4K units. If 3CEh index 0Dh bit 2 is set this
+          register is used for accesses to the A8000h-AFFFFh (index Dh
+          bit 1 clear) or B0000h-BFFFFh (index Dh bit 1 set) range.
+
+3CEh index 30h (R/W):  Cell High Extension                       (6410 only ?)
+bit  0-4  Cell High Status
+       5  Vertical Blank Start bit 9 Status
+       6  Line Compare bit 9 Status
+       7  Scan Double Status
+Note: This register resembles 3d4h index 9 ??
+
+3CEh index 31h (R/W):  Cursor Start Extension                    (6410 only ?)
+bit  0-4  Cursor Start Status
+       5  Disable Cursor Status
+Note: This register resembles 3d4h index 0Ah
+
+3CEh index 32h (R/W):  Cursor End Extension                      (6410 only ?)
+bit  0-4  Cursor End Status
+     5-6  Cursor Skew Status
+Note: This register resembles 3d4h index 0Ah
+
+3CEh index 33h (R/W):  Underline Location Extension              (6410 only ?)
+bit  0-4  Underline Status
+       5  Count by 4 Status
+       6  Double Word Status
+
+3CEh index 34h (R/W):  Cursor Location Extension                   (5410 only)
+bit  0-3  Cursor Location Address bit 16-19
+
+3CEh index 60h (R/W):  Horizontal Total Extension
+bit  0-7  Horizontal Total in character clocks (-5).
+          Bit 8 is in 3CEh index 64h bit 5.
+Note: The indexes 60h-64h are the actual horizontal CRTC timing controls.
+      Index 83h bit 1 determines whether writes to the corresponding fields
+      in the 3d4h indexes should be reflected here.
+
+3CEh index 61h (R/W):  Horizontal Blank Start Extension
+bit  0-7  Horizontal Blank Start in character clocks.
+          Bit 8 is in 3CEh index 62h bit 7.
+
+3CEh index 62h (R/W):  Horizontal Blank End Extension
+bit  0-4  Horizontal Blank End Extension in character clocks
+       7  Horizontal Blank Start Extension bit 8. Bits 0-7 are in index 61h.
+
+3CEh index 63h (R/W):  Horizontal Retrace Start Extension
+bit  0-7  Horizontal Retrace Start in character clocks.
+          Bit 8 is in 3CEh index 64h bit 6.
+
+3CEh index 64h (R/W):  Horizontal Retrace End Extension
+bit  0-4  Horizontal Retrace End Extension in character clocks.
+       5  Horizontal Total Extension bit 8. Bits 0-7 are in index 60h.
+       6  Horizontal Retrace Start Extension bit 8. Bits 0-7 are in index 63h.
+       7  Horizontal Blank End bit 8. Bits 0-7 are in index 62h.
+
+3CEh index 70h (R/W):  Vertical Total Extension
+bit  0-7  Vertical Total in scanlines for a frame. This is the equivalent of
+          3d4h index 6. Bits 8-10 are in index 78h and 79h
+Note: The indexes 70h-75h, 78h and 79h are the actual vertical CRTC timing
+      controls. Index 83h bit 0 determines whether writes to the corresponding
+      fields in the 3d4h indexes should be reflected here.
+
+3CEh index 71h (R/W):  Vertical Display Enable Extension
+bit  0-7  Vertical Display Enable End. This is the equivalent of 3d4h index
+          12h. Bits 8-10 are in index 78h and 79h
+
+3CEh index 72h (R/W):  Vertical Blank Start Extension
+bit  0-7  Vertical Blank Start. This is the equivalent of 3d4h index 15h
+          Bits 8-10 are in index 78h and 79h.
+
+3CEh index 73h (R/W):  Vertical Blank End Extensions
+bit  0-7  Vertical Blank End. This is the equivalent of 3d4h index 16h
+          Bit 8 is in index 78h
+
+3CEh index 74h (R/W):  Vertical Retrace Start Extension
+bit  0-7  Vertical Retrace Start. This is the equivalent of 3d4h index 10h
+          Bits 8-10 are in index 78h and 79h.
+
+3CEh index 75h (R/W):  Vertical Retrace End Extension
+bit  0-3  Vertical Retrace End. This is the equivalent of 3d4h index 11h
+
+3CEh index 78h (R/W):  CR07 Extension
+bit    0  Vertical Total bit 8. Bits 0-7 are in index 70h
+       1  Vertical Display Enable bit 8. Bits 0-7 are in index 71h
+       2  Vertical Retrace Start bit 8. Bits 0-7 are in index 74h
+       3  Vertical Blank Start bit 8. Bits 0-7 are in index 72h
+       4  Line Compare bit 8.
+       5  Vertical Total bit 9
+       6  Vertical Display Enable bit 9.
+       7  Vertical Retrace Start bit 9
+
+3CEh index 79h (R/W):  Vertical Overflow beyond CR07
+bit    0  Vertical Total bit 10
+       1  Vertical Display Enable bit 10
+     2-3  Vertical Blank Start bit 9-10.
+       4  Vertical Retrace Start bit 10
+
+3CEh index 7Ah (R/W):  Coarse Vertical Retrace Skew for Interlaced
+bit  0-7  Coarse Vertical Retrace Skew for Interlaced Odd Fields in
+          Character Clock Periods.
+
+3CEh index 7Bh (R/W):  Fine Vertical Retrace Skew                 (not 6440 ?)
+bit  0-1  Fine Vertical Retrace Skew for Interlaced Odd Fields in Dot Clock
+          Periods
+
+3CEh index 7Ch (R/W):  Screen A Start Address Extension
+bit  0-3  Screen A Start Address Extension bits 16-19.
+          Bits 0-15 are in 3d4h index Ch and Dh
+
+3CEh index 80h (R/W):  H/V Retrace Polarity Control                 (not 5410)
+bit    1  (6440) Interlaced Mode Enable if set
+       2  (6440) Double Character Clock for Horizontal Parameters.
+          If set the Horizontal parameters will work as if they were twice
+          their actual value. This bit is used in extended 256 color modes.
+       4  Enable Expanded Graphics. If set a predetermined ratio (16 to 19) of
+          scanlines will be replicated in graphics modes.
+       5  H/V Polarity Source Control. If set bits 6-7 controls the Polarity
+          signals, if clear they are controlled by 3C2h bits 6-7.
+       6  Horizontal Retrace Polarity. Negative if set
+       7  Vertical Retrace Polarity. Negative if set.
+
+3CEh index 81h (R/W):  Display Mode                                 (not 6440)
+bit    0  (not 5410) Select LCD Display if set, CRT if clear
+       2  (6420,5410) Interlaced Mode Enable
+       3  (not 5410) Enable CL-GD6340 Mode
+       4  (not 5410) Select Single Scan Panel
+       5  (not 5410) Enable AutoMAP
+       7  (not 5410) Enable Simulscan
+
+3CEh index 82h (R/W):  Character Clock Selection
+bit  0-2  Character Clock Width. 1: 8pixels, 2:4pixels
+       3  Disable SR1[0] functionality. If set the Character Clock Width will
+          be determined by bits 0-2, if clear by 3C4h index 1 bit 0.
+     5-6  (5410) 0: 2 CRT-clkin, 1: 1, 2: 4
+       7  (6440) Enable Internal Divided by 2  if set (for Pixel Doubling)
+          This divides the CRT Master clock by 2. The Flat Panel clock is not
+          affected.
+
+3CEh index 83h (R/W):  Write Control
+bit    0  CRTC Vertical Parameters Write Protect. If set updates to the
+          standard CRTC vertical registers (3d4h index 6,7 (bit 0,2,3,5,7),
+           9 bit 5, 10h, 11h bit 0-3, 15h, 16h) will not be reflected in the
+          Vertical Working Set registers (index 70h-75h,78h,79h)
+       1  (6440) Horizontal Parameters Write Protect. If set updates to the
+          standard CRTC horizontal registers (3d4h index 0-5) will not be
+          reflected in the Horizontal Working Set registers (index 60h-64h)
+          (not 6440) CRTC Display Timing Effect Write Protect
+                     3d4h index 7 (bit 1,6), 9, 0Ah, 0Bh, 12h, 14h
+       2  (not 6440) CRTC Vertical Display End Effect Protect
+                     3d4h index 12h, 7 (bits 1,6)
+       3  (not 6440) CRTC Blank Effect Protect
+                     3d4h index 2, 3 bits 0-3, 5 bit 7, 7 bit 3, 9 bit 5,
+                      15h, 16h
+       4  (not 6440) CRTC Total/Retrace Effect Protect
+       6  (not 6440) Attribute Registers Write Protect (3C0h index 0-0Fh).
+
+3CEh index 84h (R/W):  Clock Select                                 (not 6440)
+bit    1  (not 5410) Clock In Divide by 2 if set.
+     2-5  Clock Select bits 0-3. If bit 7 is clear 3C3h bits 2-3 are used
+          for the two low clock bits.
+       7  Select bit 2-3 as clock bit 0-1 rather than 3C2h bit 2-3 if set.
+
+3CEh index 85h (R/W):  Virtual Switch Source                       (5410 only)
+     0-3  VGA Internal Switches for Analog Monitor
+       4  Enable Virtual Switches
+
+3CEh index 86h (R/W):  CRTC Test
+bit  1-3  (5410) CRTC Test Bits
+       4  CRTC Outputs Three-State Control. If set the HSYNMC and VSYNC
+          outputs will be three-stated.
+       5  (6412,40) HSYNC, VSYNC Disable. If set the HSYNC and VSYNC outputs
+          are disabled and driven to 0. Used in Flat Panel mode.
+Note: This register is intended for factory testing only.
+
+3CEh index 87h (R/W):  CRTC Spare Extension      (Rev B only)
+bit    1  (6412) PVSYNC Configuration
+                  Pin 82:    bit 4:    bit 1:    index 8Fh bit 4:
+                  LFS          0         0              0
+                  FPVDE        0         0              1
+                  VDE*         1         0              x
+                  PVSYNC       0         1              x
+       3  (6412) Enable Short VSYNC Total
+       4  (NOT 5410) VDE*/LFS Configuration on pin 99.
+               If set pin 99 is VDE*, if clear pin 99 is LFS
+       6  (6412) Enable short HTOT (HDE+7)
+       7  (6412) Enable short VTOT (VDE+4)
+          (6410,20) Invert VDE* Polarity on pin 99
+     6-7  (5410) Interlace Test 0-1
+
+3CEh index 89h (R/W):  CRTC Spare 1
+
+3CEh index 8Ah (R/W):  CRTC Spare 2
+
+3CEh index 8Fh (R/W):  CRTC BIOS Configuration                      (not 6440)
+bit  0-1  Clock Select Pin-out Configuration
+       2  (6412) If set SUSPEND* input, if clear FRA8 input
+       3  (6412) If set VDCLK I/O output, if clear FPVDCLK
+       4  (6412) If set FPVDE output, if clear LFS output
+       5  (6412) SUSPEND* pin Configuration. SUSPEND* if set, FRA8 if clear
+       6  (6412) Frame Accelerator Control bit. Set if the system power down
+                 the Frame Accelerator DRAM
+       7  (6412,20) Enable Retrace Line Clocks
+
+3CEh index 90h (R/W):  Display Memory Control
+bit    0  Scan Line Double Control. If set each scanline will be displayed
+          twice (typically 200 line modes).
+       1  RAS* Precharge. Extended (4 SQCLK cycles) if clear, normal (3 SQCLK
+          cycles) if set
+       2  (5410) DMC2
+       3  Display Memory Refresh Control Extension
+     5-6  (5410) DMC5-6
+       6  (6410 rev B,6420) Power Sequencing Status Bit.
+Note: The undefined bits should be set to 0 when writing this register.
+
+3CEh index 91h (R/W):  CRT Circular Buffer Policy Selection
+bit    5  Reset FIFO ?
+     6-7  (R)  Reserved
+Note: The undefined bits should be set to 0 when writing this register.
+
+3CEh index 92h (R/W):  Font Control
+bit  0-1  Font Control Address Extension bits 16-17. Also used for Bold font
+          selection ?
+       3  (6410,20) Enable Software Expanded Text
+       5  (not 5410) Enable Full Height Cursor. If set a full height cursor is
+          displayed regardless of the Cursor Start and Cursor End (3d4h index
+          Ah,Bh).
+       6  (not 5410) Text Expansion Method Select. If set scanlines 0,8 and 15
+          are duplicated, if clear scanline 0 is repeated twice and scanline
+          15 once. This is only active if bit 7 is set.
+       7  (not 5410) Enable Hardware Expanded Text. If set 16line text is
+          expanded to 19 line text by the method selected by bit 6.
+          This is only active in text modes.
+
+3CEh index 93h (R/W):  Full Frame-Accelerator Bottom-half Start         (6440)
+bit  0-7  Bottom Half Start Address
+Note: this register should not be modified by applications.
+
+3CEh index 93h (R/W):  CPU Interface Test Register                      (5410)
+bit  6-7  CTR6-7
+
+3CEh index 94h (R/W):  Full Frame-Accelerator Misc. Control 1           (6440)
+bit    0  Frame Accelerator Selection. Full if set, Half if clear
+     1-7  Should be set to 0
+Note: The undefined bits should be set to 0 when writing this register.
+
+3CEh index 95h (R/W):  CRTC Circular Buffer Delta and Burst
+bit  0-3  Delta number. Should be set to 0
+     4-7  Burst number. Should be set to 0
+
+3CEh index 96h (R/W):  Display Memory Control Test Register
+bit    0  Latch Monitor ID. If the screen is forced blank, and this bit is
+          set and then reset the monitor ID will be latched as it is on reset.
+          After one frame time without screen refresh the ID can be read from
+          index 9Ch
+       1  (6420) Frame Accelerator Three-State control
+          (6440,5410) Video Memory Data M1D, M3D Three-State Control.
+            If set the M0D and M2D busses will be three-stated
+       2  Video Memory Data M0D, M2D Three-State control. If set the M0D and
+          M2D busses will be three-stated
+       3  Video Memory & Address Three-State control. If set the Address and
+          Control pins of the Memory Sequencer (AA[0:8], AB[0:8], OE*, WE*,
+          RAS* and CAS*) will be three-stated.
+       4  (5410) Disable Fast-Page Mode
+Note: The undefined bits should be set to 0 when writing this register.
+
+3CEh index 97h (R):  Monitor Switches Read Back
+bit    0  (6440) 14MHz Clock Source. If set a 14MHz crystal is connected
+          across the XTAL1 and XTAL2 pins, if clear a 14MHz crystal is
+          connected to XTAL1.
+     3-7  (6440) Reserved for BIOS
+     4-7  (not 6440,5410) Panel Type Switches
+       7  (5410) Interlace
+
+3CEh index 98h (R/W):  Scratch
+bit  0-7  Reserved for BIOS use
+
+3CEh index 99h (R):  Configuration Register 0
+bit    0  BIOS address. If bits 1-2 are 0 (Local Bus) this is the data bus
+          width (set for 32bit, clear for 16) if bits 1-2 are 2 (ISA bus) this
+          is the BIOS support (C000h on adapter with BIOS support if clear,
+          C0000h or E0000h on motherboard with no BIOS support if set).
+       1  (5410) CPU Bus Type. 0: ISA, 1: MCA
+     1-2  (6440) CPU Bus Type. 0: Local Bus, 1: PI bus, 2: ISA bus
+       2  (not 6440) Disable VGA address space
+       3  Sleep at 46E8h if set, 3C3h if clear
+       4  BIOS is 16bit if set, 8bit if clear
+       5  (6440) VGA Address space. If set the VGA I/O addresses are decoded
+          at xxx instead of 3xx and yxxx instead of Axxx or Bxxx for video
+          memory
+       6  (6440) Disable ST100 Effect if set
+       7  (6440) CPU clock select/ISA I/O select. If bits 1-2 are 0 (Local
+          Bus) this is the CPU Clock Select (set x2 clock and CPURESET pin
+          activated, clear for x1 clock and CPURESET pin deactivated) if bits
+          1-2 are 1 (PI bus) this is the I/O select (I/O through the PI bus if
+          clear, I/O through ISA bus if set).
+
+3CEh index 9Ah (R/W):  Video Memory Configuration
+bit  0-7  (not 6440,5410) Reserved. should be programmed to 0.
+     0-2  (6440) Memory Width.
+            0: 32bit Memory bus with 4 CAS (8 256kx4 or 2 256kx16)
+     6-7  (5410) RAMDAC Select 0-1
+
+3CEh index 9Bh (R/W):  Miscellaneous Pin Configuration
+bit    0  Enable Sequencer Clock (SQCLK) inversion if set
+       1  On Chip Monitor Sense Enable if clear, disable if set ?
+     3-4  (not 6440,5410) INTERNAL/MOD Pin Configuration.
+                           0: INTERNAL, 1: MODULATION
+     5-6  (not 6440,5410) LLCLK/DE Configuration.
+                      0: LLCLK, 1: DE (for GD6340),
+                      3: Pins 98/99=PHSYNC/PVSYNC
+       7  (6412) Paged BIOS Disable.
+                 If set pins 62-64 are TIMER*, PO1 and SSCLK
+                 if clear pins 62-64 are BIOS address bit 13-15
+Note: The undefined bits should be set to 0 when writing this register.
+
+3CEh index 9Ch (R):  PS/2 Monitor ID Read-back
+bit  5-7  Monitor ID. 2: 8514, 5: 8503, 6: 8512/8513, 7: no monitor
+
+3CEh index 9Dh (R/W):  Miscellaneous Configuration 2               (6412 only)
+bit    0  FPVDCLK Delay. If set delay FPVDCLK by 1/2 Video Clock (VDCLK)
+       1  Select OE* Delay. If set OE* is delayed by one Memory Clock (SQCLK)
+       6  5v/3v Monitor Sense Select. 5V if set, 3.3V if clear
+       7  Select OSC as SQCLK.
+          If set SQCLK is derived from OSC, if clear from an input
+
+3CEh index 9Dh (R/W):  Configuration 1 Register                    (5410 only)
+bit  0-1  Bus Type
+       6  Use External SQCLK Synthesizer
+       7  Use External VDCLK Synthesizer
+
+3CEh index 9Eh (R/W):  Frame-Accelerator Even Frame Start Addr          (6440)
+bit  0-7  Frame-Accelerator Even Frame Start Address bits 12-19
+Note: should not be modified by applications.
+
+3CEh index 9Eh (R/W):  Display Memory Configuration High                (5410)
+bit  0-2  SQCLK Frequency
+     3-4  DRAM Width
+     5-7  DRAM Depth
+
+3CEh index 9Fh (R/W):  Frame-Accelerator Odd Frame Start Addr           (6440)
+bit  0-7  Frame-Accelerator Odd Frame Start Address bits 12-19
+Note: should not be modified by applications.
+
+3CEh index 9Fh (R/W):  Display Memory Configuration Low                 (5410)
+bit    0  DMCR0
+     1-3  Display Memory Bus Width
+     4-6  Display Memory Bus Depth
+
+3CEh index A0h (R/W):  Bus Interface Unit Control
+bit    0  Disable BIOS ROM (ignore accesses to C0000h-C7FFFh) if set
+       1  Disable Sleep Mechanism if set
+       2  (not 5410) Enable Write Protect RAMDAC if set
+       3  MEMCS16* Mode Select. If set A0000h-C7FFFh is decoded as 16bit, if
+          clear only the range used for the current mode is decoded as 16bit.
+       4  Enable 16bit Memory if set
+       5  (6440) Enable 16bit I/O if set
+       6  (5410) Enable 16bit I/O
+          (not 5410) Disable CPU Address Scramble (3C4h index 3 bits 1,3)
+            if set
+       7  (5410) Enable 16bit Interface in Planar Modes
+
+3CEh index A1h (R/W):  Three-State & Test Control
+bit    3  All other Output & I/O pins Three-State Control. If set all output
+          and I/O pins are three-stated
+       5  If set the CRTC Offset (3d4h index 13h) and Display Start Address
+          (3d4h index 0Ch,0Dh).are multiplied with 4.
+          Set in extended 256color modes.
+       7  (not 5410) Disable I/O Read if set. Must be set to access the
+            CL-GD6340.
+Note: The undefined bits should be set to 0 when writing this register.
+
+3CEh index A2h (R/W):  BIOS Page Selection                          (not 5410)
+bit  0-2  Select ROM BIOS Page
+
+3CEh index A6h (R/W):  Wait State Controls
+bit    0  Disable Memory Write Wait State Control. If set the READY* is forced
+          to synchronize with the CPU clock which adds one clock period.
+       1  Disable I/O Read Wait State if set, if clear one SQCLK period is
+          added.
+       2  Enable 0 Wait State for Memory Write if set
+       3  (not 6440) Disable RAMDAC I/O Wait State
+       4  Disable I/O Write Wait State if set,  if clear one SQCLK period is
+          added for I/O writes.
+       6  (not 5410) BIOS Wait-State Control. 0 Wait States if set
+       7  (R) Bus width Status Bit. 16bit if set, 8bit if clear
+
+3CEh index A7h (R/W):  General Programmable I/O Port Control        (not 5410)
+bit    0  (6440) Output pin PO0 (pin 103) Control
+       1  Output pin PO1 (pin 104) control
+       2  (6410,20,40) Output pin PO2 (pin 105) Control
+       3  (6440) Output pin PO3 (pin 106) Control
+       4  (6440) Write Protect 3CEh index 0Dh if set
+       6  (6440) Enable PO[3:0]. If set pins 103-106 is configured as outputs
+
+3CEh index A9h (R/W):  Bus Interface Unit Cache Control
+bit    0  (5410) Enable Read from Write FIFO
+       1  Enable Cache Read if set
+       2  (6440,5410) Enable Write Plane-Select Compaction in Write Mode 0 if
+          set
+       3  (6410,12,5410) Enable Write-Overwrite Compaction in modes 2,3
+       4  (5410) Enable 16bit Peripheral in Planar Modes
+     5-6  Internal BIU Timing to control delays
+
+3CEh index AAh (R):  Design Revision
+bit  0-3  Design Revision
+     4-7  Design ID (Major version):
+            4:  CL-GD6440
+            5:  CL-GD6412
+            6:  CL-GD5410
+            7:  CL-GD6420
+            8:  CL-GD6410
+
+3CEh index ABh (R/W):  Mask Revision                                (not 5410)
+bit  0-7
+
+3CEh index AEh (R/W):  Alternate Extension Decode High        (5410,6412 only)
+bit  0-7  Bits 8-15 of the value. Bits 0-7 are in index AFh
+
+3CEh index AEh (R/W):  Color Expansion Pixel Mask                  (6440 only)
+bit  0-7
+
+3CEh index AFh (R/W):  Alternate Extension Decode Low         (5410,6412 only)
+bit  0-7  Bits 0-7 of the value. Bits 8-15 are in index AEh
+
+3CEh index B0h (R/W):  Color Expansion Control                     (6440 only)
+bit    0  Enable Color Expansion if set (enables bit 2 ??)
+       1  Enable by 8 Address Mode if set. The CPU addresses are shifted left
+          by 8
+       2  Write Mode 4/5 Control. If set write mode 4 is selected where the
+          foreground color is written to each pixel where the corresponding
+          bit of the CPU data is set, if clear write mode 5 is selected where
+          each pixel is written with the foreground or background color
+          depending on the corresponding bit in the CPU data byte.
+       4  Enable Enhanced Writes for 16bit pixels if set. The CPU addresses
+          are shifted left 4 bits so that each bit corresponds to one pixel.
+          16 bytes can be copied by one CPU byte.
+
+3CEh index B1h (R/W):  Linear Address Map                          (6440 only)
+bit  0-3  Linear Address Map. Selects the address of the 1MB linear video
+          buffer. 0=no linear map, 1-15 map on corresponding MB boundary.
+
+3CEh index B2h W(R/W):  Foreground Color for Color Expansion       (6440 only)
+bit 0-15  Foreground color for color expansion in Write mode 4 and 5
+
+3CEh index B4h W(R/W):  Background Color for Color Expansion       (6440 only)
+bit 0-15  Foreground color for color expansion in Write mode 5
+
+3CEh index BAh (R/W):  Scratch Pad 0
+bit  0-7
+
+3CEh index BBh (R/W):  Scratch Pad 1
+bit  6-7  Video Memory:  0: 256K, 1: 512K, 2: 768K, 3: 1024K
+
+3CEh index BCh (R/W):  Scratch Pad 2
+bit  0-7
+
+3CEh index BDh (R/W):  Scratch Pad 3
+bit  0-7
+
+3CEh index BEh (R/W):  Scratch Pad 4
+bit  0-7
+
+3CEh index BFh (R/W):  Scratch Pad 5
+bit  0-7
+
+3CEh index C0h (R/W):  Attribute and Graphics Control
+bit    0  (not 5410) Enable Foreground Enhancement if set. The intensity bit
+          of the foreground color is XOR, except if the color is 0 or 8.
+       1  Bypass Internal Palette if set.
+       2  (6412) Enable 4bit Single-Scan Monochrome Panel Support
+          (6440) Attribute Emulation. If set the text mode attributes will be
+           changes as follows:
+             ForeGround shade > BackGround shade
+                      ForeGround = White and BackGround = Black
+             ForeGround shade < BackGround shade
+                      ForeGround = Black and BackGround = White
+          (5410) Disable 3C0h index 14h
+       3  Enable Background Color Enhancement if set.
+
+3CEh index C1h (R/W):  Cursor Attributes
+bit    0  Enable Cursor Blinking if clear
+     1-2  Cursor Blinking Rate
+       3  Cursor Mode. Invert if set, replace if clear
+       4  Invert Border Color if set
+       5  (not 5410) Cursor Color Control. If set the cursor is forced to
+          black and white
+
+3CEh index C2h (R/W):  Graphics Controller Memory Latch 0
+bit  0-7
+
+3CEh index C3h (R/W):  Graphics Controller Memory Latch 1
+bit  0-7
+
+3CEh index C4h (R/W):  Graphics Controller Memory Latch 2
+bit  0-7
+
+3CEh index C5h (R/W):  Graphics Controller Memory Latch 3
+bit  0-7
+
+3CEh index C8h (R/W):  RAMDAC Control
+bit    1  (6410,12,40) Select 16color Extended mode (Packed-pixel) if set
+       2  (6440) Enable 256 Color Modes if set (not 320x200 ?)
+       5  Enable Force Blank to RAMDAC if set
+       6  (6440) Grey Scale Data from Attribute registers if set
+Note: The undefined bits should be set to 0 when writing this register.
+
+3CEh index C9h (R/W):  Graphics and Attribute Test
+bit  0-2  (5410) GAT bits 0-2
+       3  (6410,12,40,5410) Enable 9dot Font if set. The ninth bit is taken
+          from plane 3 bit 7.
+       4  (not 6440) Three-State Pixel data & VDCLK
+       5  (6440) LSB value of Red and Blue and Green for HiColor modes.
+          In HiColor modes (bit 7 set) this bit is used as the LSB of the red,
+          blue and green (if bit 6 is clear) .
+          (5410) Red/Blue LSB
+       6  (6440) Select 15/16bit color. If set 16bit, if clear 15bit.
+          This bit is cleared when bit 7 is set
+          (5410) Green LSB
+       7  (6440,5410) Enable Direct (15/16bit) Color if set
+
+3CEh index D0h (R/W):  Flat Panel Column Offset                     (not 6440)
+bit  0-7  Bit 8 is in index D4 bit 0.
+
+3CEh index D1h (R/W):  Flat Panel Horizontal Displayed              (not 6440)
+bit  0-7  Bit 8 is in 3CEh index D4h bit 1
+
+3CEh index D2h (R/W):  Flat Panel Row Offset                        (not 6440)
+bit  0-7  Bits 8-9 are in 3CEh index D4 bits 2-3
+
+3CEh index D3h (R/W):  Flat Panel Vertical Size                     (not 6440)
+bit  0-7  Bits 8-10 are in 3CEh index D4h bit 4-6
+
+3CEh index D4h (R/W):  Flat Panel Overflow                          (not 6440)
+bit    0  Column Offset bit 8. Bits 0-7 are in index 60h
+       1  Panel Horizontal Displayed bit 8. Bits 0-7 are in index D1h
+     2-3  Row Offset Overflow bits 8-9. Bits 0-7 are in index D2h
+     4-6  Panel Vertical Size Overflow bits 8-10. Bits 0-7 are in index D3h.
+
+3CEh index D5h (R/W):  Flat Panel Attribute LCD Control             (not 6440)
+bit  0-1  9 Dots Text Reduction
+       2  (R) Stand-by Mode Status bit
+       3  Enable Attribute Emulation
+       4  Enable Extra Line Clk
+       5  Enable Reverse Video in Graphics Mode
+       6  Enable Reverse Video in Text Mode
+       7  Enable AutoMAP
+
+3CEh index D6h (R/W):  Flat Panel Grey Scale Offset                 (not 6440)
+bit    0  Select Grey Scale offset 4 (default=13)
+       1  Power Sequencing Control
+       2  Power Sequencing Time Control
+       4  (6420 & 6410 rev B) Enable 8bit Plasma Interface
+       5  (6420 & 6410 rev B) Enable Intermodulation
+       6  Enable Horizontal Stipling
+       7  Enable Vertical Stipling
+
+3CEh index D7h (R/W):  Flat Panel Retrace LLCLK Control             (not 6440)
+bit  0-4  Retrace LLCLK counter
+
+3CEh index D8h (R/W):  Flat Panel Frame Color                       (not 6440)
+bit  0-3  Frame Color
+       4  Enable Frame Color
+       6  (6410 rev B,12,20) Enable EPSON FPLCLK
+
+3CEh index D9h (R/W):  Flat Panel AC Modulation                     (not 6440)
+bit  0-7
+
+3CEh index DAh (R/W):  Flat Panel Display Control                   (not 6440)
+bit    0  (6420, 6410 rev B) Force 32 Grey Shades
+     1-2  Panel Vertical Alignment Control
+     3-4  Panel Size Selection
+     5-7  RGB Weight Control
+
+3CEh index DBh (R/W):  Standby Timer Control                        (not 6440)
+bit  0-5  Standby Mode Time Interval in minutes
+     6-7  Standby Mode. 0: disable, 1: screen save, 2: video memory
+
+3CEh index DCh (R/W):  Flat Panel Color Configuration               (not 6440)
+bit    0  9bit Color Panel Select
+       1  MOD/FPHDE/P8 pin function control. If set P8 is output,
+          if clear MOD is output if bit 0 is clear, FPHDE if set
+
+3CEh index E0h (R/W):  Flat Panel Column Offset                    (6440 only)
+bit  0-7  Bit 8 is in 3CEh index E4h bit 0.
+          0Ah will display the first pixel at the left edge of the display
+
+3CEh index E1h (R/W):  Flat Panel Horizontal Displayed Size        (6440 only)
+bit  0-7  The panel width in nibbles (4 pixels) (-1). 159 for 640 pixel.
+          Bit 8 is in index E4h bit 1.
+
+3CEh index E2h (R/W):  Flat Panel Row Offset                       (6440 only)
+bit  0-7  Starting row from the top. Bits 8-9 are in index E4h bit 2-3
+
+3CEh index E3h (R/W):  Flat Panel Vertical Size                    (6440 only)
+bit  0-7  Number of lines (-1) in the panel.
+          Bits 8-10 are in index E4h bit 4-6
+
+3CEh index E4h (R/W):  Flat Panel Overflow                         (6440 only)
+bit    0  Column Offset bit 8. Bits 0-7 are in index E0h
+       1  Panel Horizontal Displayed bit 8. Bits 0-7 are in index E1h
+     2-3  Row Offset Overflow bits 8-9. Bits 0-7 are in index E2h
+     4-6  Panel Vertical Size Overflow bits 8-10. Bits 0-7 are in index E3h
+
+3CEh index E5h (R/W):  Flat Panel Horizontal Centering Offset      (6440 only)
+bit  0-7  Number of nibbles (4pixels) between the end of line and the start of
+          the panel in 8dot video modes. Bit 8 is in index E7h bit 0
+
+3CEh index E6h (R/W):  Flat Panel Horizontal Centering Offset-9Dot (6440 only)
+bit  0-7  Number of nibbles (4pixels) between the end of line and the start of
+          the panel in 9dot video modes. Bit 8 is in index E7h bit 1
+
+3CEh index E7h (R/W):  Flat Panel Horizontal Centering Overflow    (6440 only)
+bit    0  Flat Panel Horizontal Centering bit 8. Bits 0-7 are in index E5h
+       1  Flat Panel Horizontal Centering (9Dot) bit 8. Bits 0-7 are in
+          index E6h
+       2  Flat Panel Horizontal Size Adjust. Set if the panel width is less
+          than that of the CRT, clear if panel width greater or equal to the
+          CRT width.
+
+3CEh index E8h (R/W):  Flat Panel Pin Configuration                (6440 only)
+bit    0  Standby/Suspend Pin Status. If set Standby Timer Status is output on
+          pin 152, if clear Suspend Mode Status is output on pin 152.
+       1  Enable FPHDE Control. If set the FPHDE signal will be active during
+          horizontal display and vertical retrace time, if clear it is active
+          during horizontal and vertical display time.
+       2  Flat Panel Drive. If set 100%, if clear 60%
+       3  GD6440 Core at 3 Volts. If set 5V, if clear 3.3V
+
+3CEh index E9h (R/W):  Flat Panel Type Control                     (6440 only)
+bit  0-2  Flat Panel Size Selection. 0: 640x480, 1: 640x400,
+            2: 1280x1024/1280x960
+       3  Flat Panel Scan Type. Set for single scan, clear for dual-scan.
+     5-6  Extra Line Clock Enable. 0,1: None, 2: 1 extra, 3: 2 extra line
+          clocks
+
+3CEh index EAh (R/W):  Flat Panel Power Control                    (6440 only)
+bit    0  (R) Power Sequence Status. Indicates if we are in the middle of a
+          flat panel power on/off sequence.
+       1  (R) Standby on Status
+       2  Sequencer Flat Panel Power. Set to sequence the flat panel on, clear
+          to sequence the panel off. The sequence takes app. 0.5 seconds.
+     3-5  Standby Mode Selection
+       6  Enable External Suspend Pin if set
+
+3CEh index EBh (R/W):  Flat Panel Standby Timer                    (6440 only)
+bit  0-7  Standby Timer interval in 15 second units.
+
+3CEh index ECh (R/W):  Flat Panel Misc 1 Control                   (6440 only)
+bit  0-1  Vertical Alignment Control. 0: Top, 1: Bottom, 2,3:Center
+       2  Enable Horizontal Centering if set
+       3  Grayscale Offset Value. set for 4, clear for 13
+          Set if a CL-GD6340 is present ??
+     4-5  Display Type Select. 0: CRT, 1: Flat Panel, 2,3: SimulSCAN
+       6  Grayscale Offset Pattern Select. Set for monochrome grayscale offset
+          values are used, if clear green grayscale offset values are used.
+       7  Invert FPVDE (Flat Panel Vertical Display Enable) if set
+
+3CEh index EDh (R/W):  Flat Panel Retrace FPCLK                    (6440 only)
+bit  0-4  Programmed Burst of Line Clocks. The number of line clocks during
+          retrace. The frequency is selected by bits 5-6
+     5-6  Retrace Line Clock Control
+       7  Fast Line Clock. If bit 5-6 are 3 this selects a fast line clock:
+          If set use a period of 64 MCLKs with a 16 MCLK pulse, if clear use a
+          period of 32 MCLKs with a pulse of 8 MCLKs.
+
+3CEh index EEh (R/W):  Flat Panel Test Control                     (6440 only)
+bit  0-7  Reserved
+Note: this register is used for testing and should not be used.
+
+3CEh index F0h (R/W):  Flat Panel Clock Control                    (6440 only)
+bit  0-3  FPVDCLK Control selects the clock for the display from MCLK
+     4-5  FPVDCLK Enable Control
+       6  Invert FPVDCLK (Flat Panel Video Clock Signal) if set
+       7  Invert FPHDE (Flat Panel Horizontal Display Enable) if set
+
+3CEh index F1h (R/W):  Flat Panel Data Control                     (6440 only)
+bit  0-4  Flat Panel Video Data Output Format Control
+       5  FPHSYNC/FPVSYNC Polarity Source Control. If set the sync polarity is
+          controlled by bits 6-7, if clear by 3C2h bits 6-7.
+       6  FPHSYNC Polarity Control. If set inverts the FPHSYNC (Flat Panel
+          Horizontal Sync)
+       7  FPVSYNC Polarity Control. If set inverts the FPVSYNC (Flat Panel
+          Vertical Sync)
+
+3CEh index F2h (R/W):  Flat Panel AC Modulation                    (6440 only)
+bit  0-7  The half period of the square wave output to the MOD pin in line
+          clocks. Usually does not divide evenly into the panel size.
+
+3CEh index F3h (R/W):  Flat Panel FPHSYNC Skew                     (6440 only)
+bit  0-6  FPHSYNC Skew in internal master clocks. Allows adjustment for
+          specific panels.
+
+3CEh index F4h (R/W):  Flat Panel FPVSYNC Skew                     (6440 only)
+bit  0-4  FPVSYNC Skew. Allows the end of FPVSYNC to be delayed 0..31
+       5  FPVSYNC Width. If set FPVSYNC is two line clocks, if clear one.
+     6-7  FPHSYNC Width. Adjust the width of FPHSYNC.
+
+3CEh index F5h (R/W):  Memory Clock Select Factor                  (6440 only)
+bit  0-4  Memory Clock Numerator "N"
+     5-7  Memory Clock Denominator "D"
+          The Memory Clock = 14.31818MHz * (N+)/(D+)
+
+3CEh index F6h (R/W):  CRT Clock Select "N" Factor                 (6440 only)
+bit  0-6  CRT Clock Numerator "N"
+       7  Clock Source Control. If set the CRT clock is determined by the
+          "N/D" formula, if clear by 3C2h bits 2-3.
+Note: The Video Clock = 14.31818MHz * (N+1)/((D+1) * (divide factor))
+
+3CEh index F7h (R/W):  CRT Clock Select "D" Factor                 (6440 only)
+bit  0-3  CRT Clock Denominator "D"
+     4-5  CRT Clock Divide
+       6  Memory Clock Inverted if set
+       7  CRT Clock Inverted if set
+
+3CEh index F8h (R/W):  Flat Panel Mapping RAM Pointer              (6440 only)
+bit  0-5  Pointer to the Mapping RAM for I/O Read/Write. Index into Mapping
+          RAM. Read and write via index F9h.
+       7  Enable I/O Access of Mapping RAM if set
+
+3CEh index F9h (R/W):  Flat Panel Mapping RAM Data                 (6440 only)
+bit  0-7  Mapping RAM Data. Reads and writes to this register go to the byte
+          in Mapping RAM selected by index F8h.
+
+3CEh index FAh (R/W):  Flat Panel Stippling Control                (6440 only)
+bit    0  Enable 32 Shades in All Stippling Cases if set
+     1-2  Stippling Select
+     3-5  Stippling Bit Select
+       6  Enable Inter-modulation if set. Should only be set on TFT color
+          panels and if the stippling output is less than 4 bits.
+
+3CEh index FBh (R/W):  Flat Panel Color Control                    (6440 only)
+bit    0  Blue Color Weighting. If set the weighting is (BLUE *2)/16.
+          Used for sum2gray on monochrome panels.
+       1  Green Color Weighting. If set the weighting is (GREEN*9)/16
+     2-3  Red Color Weighting
+       4  Green Data from LUT. If set only green data is output from the LUTs
+          (Look Up Tables). Monochrome STN panels only
+       5  Enable Reverse Video in Graphics Modes if set. Panels only
+       6  Enable Reverse Video in Text Mode if set. Panels only.
+
+3CEh index FCh (R/W):  Flat Panel Frame Color 1                    (6440 only)
+bit  0-3  Frame Color Bits for Red The Red component of the color for the
+          non-displayed part of the panel (Border).
+       4  Enable Frame Color if set
+
+3CEh index FDh (R/W):  Flat Panel Frame Color 2                    (6440 only)
+bit  0-3  Frame Color Bits for Blue. The blue component of the color for the
+          non-displayed part of the panel (Border).
+     4-7  Frame Color Bits for Green. The Green component of the color for the
+          non-displayed part of the panel (Border).
+
+
+3CEh index FEh (R/W):  Flat Panel Miscellaneous Spare 2          (6440 only ?)
+bit  0-7  Reserved
+
+Video Modes:
+
+002Dh  G   640   400   256  P8
+002Eh  G   640   480   256  P8
+002Fh  G   648   480   256  P8      ;Weird resolution
+0030h  G   800   600   256  P8
+0037h  G  1024   768    16  PL4
+0041h  T   100    50    16  TXT
+0042h  T   100    60    16  TXT
+0044h  T   100    25    16  TXT
+0051h  T   132    50    16  TXT
+0052h  T   132    60    16  TXT
+0053h  T    80    60    16  TXT
+0054h  T   132    25    16  TXT
+0064h  G   800   600    16  PL4
+006Ah  G   800   600    16  PL4
+
+
+
+
+GD62xx series:
+The 62xx series is very similar to the early 54xx.
+The 62xx series can display simultaneously on CRT and LCD (SimulSCAN).
+The 62xx series always has 512KB. Mixed 3.3V and 5V. Pixel clock up to 65MHz
+ (5V) or 40MHz (3.3V).
+There are two extra register banks (CX and RX) at 3d4h. How to select ?
+
+3C4h index  2  (R/W):  Map Mask
+bit  0-7  Enable writing pixel bits 0-7  ?????
+Note: See the VGA section for the normal use of this register
+
+3C4h index  6  (R/W):  Unlock ALL Extensions
+bit  0-2,4  Writing 12h to this register enables extensions.
+            Read back 0Fh if locked.
+            Bits 3,5-7 are ignored on write.
+
+3C4h index  7  (R/W):  Extended Sequencer Mode
+bit    0  Enable High-Resolution 256 Color modes if set
+     4-6  (R) Configuration switch 0-2 (MD[14:12])
+
+3C4h index  8  (R/W):  Miscellaneous Control
+bit  0-2  Switch 1-3 Readback (Panel type, Monitor type, Local bus config).
+       3  Select active polarity of input SUSPEND for suspend mode.
+         .If set low is true, if clear high is true (default at reset).
+       4  Enable IO(60h) read detect to reset backlight timer
+       5  Enable IO(60h) read detect to reset standby timer
+       6  Disable MSC16* for Display Memory
+       7  Select symmetrical DRAM addressing for paged-mode on CRT
+          Set when using DRAM 9-bit addressing at 132 col CRT
+
+3C4h index  9  (R/W):  Scratch Register 0
+bit    0  Set to center
+     2-4  Monitor type.
+           0:  31,5kHz           Std VGA. IBM 8512,8503
+           1:  31.5, 35.5 kHz    IBM 8514
+           2:  31.5, 35.1 kHz    NEC 2A
+           3:  31.5 - 35.5 kHz   NEC II
+           4:  31.5 - 38 kHz     Multi Freq. NEC 3D
+           5:  31.5 - 48 kHz     Sony CPD-1304, NEC 3FG, Nanao 9065S, 9070U
+           6:  31.5 - 56.5 kHz   NEC 4D,4FG, Nanao T240i
+           7:  31.5 - 64 kHz     NEC 5D,5FG/6FG, Nanao T560i,T660i
+       7  Panel frequency
+
+3C4h index 0Ah (R/W):  Scratch Register 1
+bit    0  Display mode
+       1  Disable expand
+       2  Enable 16bit mode.
+       4  Attribute emulation
+       5  Disable bold font
+       6  High refresh
+       7  Voltage
+
+3C4h index 0Bh (R/W):  VCLK 0 Numerator Register
+bit  0-6  VCLK 0 Numerator bits 0-6
+
+3C4h index 0Ch (R/W):  VCLK 1 Numerator Register
+bit  0-6  VCLK 1 Numerator bits 0-6
+
+3C4h index 0Dh (R/W):  VCLK 2 Numerator Register
+bit  0-6  VCLK 2 Numerator bits 0-6
+
+3C4h index 0Eh (R/W):  VCLK 3 Numerator Register
+bit  0-6  VCLK 3 Numerator bits 0-6
+
+3C4h index 0Fh (R/W):  DRAM Control
+bit  0-1  MCLK Select: 0: 50.1 MHz, 1: 44.7 MHz, 2: 25.0 MHz, 3: 37.5 MHz
+          Select 25MHz if VCLK is <= 18MHz
+       2  RAS* Timing.
+              0: Extended (PD on MD[27], RAS* high for 3MCLK, low for 4)
+              1: Standard (RAS* high for 2.5MCLK, low for 3.5)
+       5  CRT Write Buffer Depth Control
+          If set there are 4 16bit levels, if clear one 16bit level.
+       7  CRT Refresh disabled if set (LCD mode)
+          (5434)
+
+3C4h index 10h (R/W):  HW Cursor X-position
+bit  0-7  When this value is written to the register, the upper 3 bits of the
+          index register are taken as the low order bits of an 11 bit
+          register. This is the horizontal position of the hardware cursor in
+          pixels.
+
+3C4h index 11h (R/W):  HW Cursor Y-position7
+bit  0-7  When this value is written to the register, the upper 3 bits of the
+          index register are taken as the low order bits of an 11 bit
+          register. This is the vertical position of the hardware cursor in
+          pixels.
+
+3C4h index 12h (R/W):  HW Cursor control
+bit    0  Enable the hardware cursor if set
+       1  Enable Access to RAMDAC Extended Colors.
+          Set to load special color values via 3C8h and 3C9h.
+          When this bit is set palette entry 0 accesses the cursor background
+          color and entry FFh accesses the cursor foreground color.
+
+3C4h index 13h (R/W):  HW Cursor bitmap address
+bit  0-1  Select 1 of 4 32x32 cursors
+          The offset in 256 byte units within the last 16KB of video memory
+          where the cursor mask and shape bitmaps are stored.
+          There are two 128 byte (32x32 bits) bitmaps stored in video memory.
+          The appearance of the cursor at each pixel is determined by a
+          combination of the corresponding pixels from the first and second
+          bitmap:
+            1st: 2nd:
+             0    0     The original screen pixel is shown (invisible cursor)
+             0    1     The pixel is shown in the cursor background color.
+             1    0     The pixel is shown as the inverse of the original
+                        screen pixel (XOR cursor)
+             1    1     The pixel is shown in the cursor foreground color.
+
+3C4h index 14h (R/W):  Scratch-Pad 2
+bit  0-7  Reserved
+
+3C4h index 15h (R/W):  Scratch-Pad 3
+bit  0-7  Reserved
+
+3C4h index 16h (R/W):  Miscellaneous
+bit  0-7  Reserved
+
+3C4h index 19h (R/W):  Scratch-Pad 4
+bit  0-7  Reserved
+
+3C4h index 1Ah (R/W):  Miscellaneous
+bit    4  Enable 64x64 H/W cursor
+       5  Enable Improved cycle latency
+       6  Select dual-scan color panel
+       7  Select one DRAM refresh per line
+
+3C4h index 1Bh (R/W):  VCLK 0 Denominator & Post
+bit    0  VCLK 0 Post Scalar bit. Divide clock by 2 if set
+     1-5  VCLK 0 Denominator Data
+Note: The clock is (14.31818MHz * numerator (index 0Bh))/Denominator.
+      Divide by 2 if the Post Scalar bit is set.
+      3C2h bits 2-3 selects between VCLK0, 1, 2 and 3
+      The 5420 can not handle frequencies above 75.2 MHz
+
+3C4h index 1Ch (R/W):  VCLK 1 Denominator & Post
+bit    0  VCLK 1 Post Scalar bit. Divide clock by 2 if set
+     1-5  VCLK 1 Denominator Data
+Note: See index 1Bh for the frequency calculation
+
+3C4h index 1Dh (R/W):  VCLK 2 Denominator & Post
+bit    0  VCLK 2 Post Scalar bit. Divide clock by 2 if set
+     1-5  VCLK 2 Denominator Data
+Note: See index 1Bh for the frequency calculation
+
+3C4h index 1Eh (R/W):  VCLK 3 Denominator & Post
+bit    0  VCLK 3 Post Scalar bit. Divide clock by 2 if set
+     1-5  VCLK 3 Denominator Data
+Note: See index 1Bh for the frequency calculation
+
+3C4h index 1Fh (R/W):  BIOS Write Enable and MCLK select
+bit  0-5  MCLK frequency bit 0-5
+
+3CEh index  0  (R/W):  Set/Reset
+bit  0-3  Write Mode 5 background color bits 0-3
+     4-7  Write Mode 5 background color bits 4-7
+Note: See the VGA section for the use of this register in write mode 0-3
+
+3CEh index  1  (R/W):  Enable Set/Reset
+bit  0-3  Write Mode 4/5 foreground color bits 0-3
+     4-7  Enable SR plane 0-3 or Write Mode 4/5 foreground color bits 0-3
+Note: See the VGA section for the use of this register in write mode 0-3
+
+3CEh index  5  (R/W):  Mode
+bit  0-1  Write mode:  See the VGA section for modes 0-3.
+       2  Write mode bit 2 if 3CEh index 0Bh bit 2 is set
+           mode 4:  Foreground write ?
+           mode 5:  Fore and background write
+       3  Enable Read Color Compare
+       4  Enable odd/even (3C4h index 4 bit 2).
+       5  Shift 2 bits per byte
+       6  256 Color Mode
+
+3CEh index 09h (R/W):  Offset Register 0
+bit  0-6  4k Primary/Low bank number
+          If 3CEh index 0Bh bit 0 is set references to A000h-A7FFh use this
+          bank register. If clear references to A000h-AFFFh use this bank
+          register.
+
+3CEh index 0Ah (R/W):  Offset Register 1
+bit  0-6  4k High bank number
+          If 3CEh index 0Bh bit 0 is set references to A800h-AFFFh use this
+          bank register.
+
+3CEh index 0Bh (R/W):  Extension Control
+bit    0  If set references to A000h-A7FFh use 3CEh index 9 as bank register,
+          and references to A800h-AFFFh use 3CEh index 0Ah as bank register.
+          If clear all references to A000h-AFFFh use 3CEh index 9 as bank
+          register.
+       1  Enable BY8 Addressing for 256 color modes
+       2  Enable Extended Write Modes if set (mode 4 and 5)
+
+3d4h index 00h (R/W):  Horizontal Total (CX00)
+bit  0-7  Horizontal Total (-5)
+Note: This register is used in 80 column and mode 13h (3C4h index 1 bit 3
+      clear or 3CEh index 5 bit 6 set)
+
+3d4h index 01h (R/W):  Horizontal Total (CX01)
+bit  0-7  Horizontal Total (-5)
+Note: This register is used in 50 column modes (3D4h index 1 bit 3 set or 3CEh
+      index 5 bit 6 clear)
+
+3d4h index 02h (R/W):  LFS Signal Vertical Counter Value Compare (CX02)
+bit  0-7  Used if autocentering is not selected.
+Note: This register selected for 3C2h bits 2-3 = 3 ??
+
+3d4h index 03h (R/W):  LFS Signal Vertical Counter Value Compare (CX03)
+bit  0-7  Used if autocentering is not selected.
+Note: This register selected for 3C2h bits 2-3 = 2 ??
+
+3d4h index 04h (R/W):  LFS Signal Vertical Counter Value Compare (CX04)
+bit  0-7  Used if autocentering is not selected.
+Note: This register selected for 3C2h bits 2-3 = 1 ??
+
+3d4h index 05h (R/W):  LFS Signal Vertical Counter Value Compare (CX05)
+bit  0-7  Used if autocentering is not selected.
+Note: This register selected for 3C2h bits 2-3 = 0 ??
+
+3d4h index 06h (R/W):  LFS Overflow (CX06)
+bit  0-1  Bits 8-9 of the LFS compare for 3C2h bits 2-3 = 3
+     2-3  Bits 8-9 of the LFS compare for 3C2h bits 2-3 = 2
+     4-5  Bits 8-9 of the LFS compare for 3C2h bits 2-3 = 1
+     6-7  Bits 8-9 of the LFS compare for 3C2h bits 2-3 = 0
+
+3d4h index 06h (R/W):  Vertical Total (RX06)
+bit  0-7  Vertical Total (-2)
+
+3d4h index 07h (R/W):  Color TFT Panel Control Signal (CX07)
+bit    0  If set FPVDCLK is always active, if clear FPVDCLK is gated by
+          display enable
+       1  FPVDCLK is inverted if set
+       2  If set use LLCLK as HSYNC
+       3  If set use LFS as VSYNC
+
+3d4h index 07h (R/W):  Vertical Overflow (RX07)
+bit    0  Vertical Total bit 8
+       1  Vertical Displayed bit 8
+       2  Vertical Sync Start bit 8
+       3  Vertical Blank Start bit 8
+       4  Line Compare bit 8
+       5  Vertical Total bit 9
+       6  Vertical Displayed bit 9
+       7  Vertical Sync Start bit 9
+
+3d4h index 08h (R/W):  STN Color Panel Data Format (CX08)
+bit    0  If set 8bit data, if clear 16bit
+       1  Set for Dual shift clk STN, clear for single
+       2  Set for testing purposes only
+       3  Set to Shorten LP width, clear to Lengthen LP width
+       4  Set to enable foreground text enhancement
+       5  Set for Single Scan Mono Panels, clear for Dual Scan
+       6  Set for testing purposes only
+       7  Set to boost contrast for Mono Panels
+
+3d4h index 09h (R/W):  TFT Panel Data Format (CX09)
+bit  0-1  Data format. 0: 9bit(333), 2: 12bit(444), 1,3: 18bit direct
+     2-4  Shiftclock delay from internal character clock to TFT hsync(LLCLK)
+          signal
+
+3d4h index 0Ah (R/W):  TFT Panel HSYNC Position Control (CX0A)
+bit  0-7  Horizontal counter to generate TFT panel VSYNC signal.
+          Set in multiples of 8 VCLKs (80 column character clocks)
+
+3d4h index 0Bh (R/W):  Panel Adjustment Control (CX0B)             (6235 only)
+bit  0-4  Number of LLCLKs between upper and lower panel halfs
+     5-6  Offset adjustment for gray-scale shading
+
+3d4h index 10h (R/W):  Vertical Sync Start (RX10)
+bit  0-7  VSYNC Start
+
+3d4h index 11h (R/W):  Vertical Sync End (RX11)
+bit  0-3  VSYNC End.
+       4  Clear Vertical Sync Interrupt
+       5  Enable Vertical Sync Interrupt
+       6  Select 5 refresh cycles
+       7  Write protect index 0-7.
+
+3d4h index 15h (R/W):  Vertical Blank Start (RX15)
+bit  0-7  Vertical Blank Start
+
+3d4h index 16h (R/W):  Vertical Blank End
+bit  0-7  Vertical Blank End
+
+3d4h index 19h (R/W):  Interlace End
+bit  0-7  Ending Horizontal Character Count for Odd field VSYNC.
+          Typically half the horizontal total
+
+3d4h index 1Ah (R/W):  Miscellaneous Control
+bit    0  Enable Interlace sync/video data in Graphics mode or interlace only
+          in Text mode. Set if an interlaced mode.
+       1  Enable Double-Buffered Display Start Address
+
+3d4h index 1Bh (R/W):  Extended Display Control
+bit    0  Display Start Address bit 16. Bit 0-15 are in 3d4h index Ch-Dh.
+       1  Enable Extended Address Wrap. Set to enable access to video memory
+          beyond 128K (16bit memory) or 256K (32bit memory)
+       5  Set RAMDAC blanking=display enable signal (no border)
+       6  Select Text mode Fast-Page (132 color text)
+       7  Disable Cursor blink in Text Mode
+
+3d4h index 1Ch (R/W):  Flat-Panel Interface
+bit    0  Invert LFS signal
+       1  Invert LLCLK signal
+       2  Enable MCLK power-down during suspend mode
+       3  Protect CRTC for LCD timing:
+            3d4h index 0,1,6,7(bits 0,2,5,7), 10h and 11h
+       5  Enable extra LLCLK. Used for adjusting 242 line dual panel
+     6-7  Flat-Panel type. 0: Dual Mono, 1: Plasma/EL, 2: STN color,
+           3: TFT color
+
+3d4h index 1Dh (R/W):  Flat Panel Display Control
+bit    0  Enable Auto Center
+       1  Enable Auto Expand:  3C2h bit 6-7: 1: 400/200 lines, 2: 350, 3: 480.
+       2  Enable VGA access to reset Backlight Timer
+       3  Enable input ACTi to reset Backlight Timer
+       4  Suspend mode Clock source. If set use OSC, if clear use pin 32KHz.
+       5  Enable VGA access to reset Standby Timer
+       6  Enable input ACTi to reset Standby Timer
+       7  Enable access to LCD timing register at CRTC alternate index if set
+
+3d4h index 1Eh (R/W):  Flat Panel Shading
+bit    0  Enable Planar Graphics Mode Dithering
+       1  Enable Text mode Contrast Enhancement
+     2-3  # of shades for Flat Pane:
+          Mono:   0: 16, 1: 64, 2: 128, 3:256
+          Color:  0: 4K, 1-3: 256K
+       4  Reverse Video Graphics Modes
+       5  Reverse Video Text Modes
+     6-7  Shade Mapping.
+           0: 18bit LUT output to 64 shades with NTSC weighting
+           1: green LUT output (6 bit to 64 shades).
+           2: Display data before Attribute Controller to 64 shades
+           3: Attribute Controller output, 6bitrs to 64 shades
+
+3d4h index 1Fh (R/W):  Flat Panel MOD control
+bit  0-6  If bit 7 is set LLCLK = (this value) + 180h
+          if clear this is the number of scan lines after which the MOD pin
+          will change polarity.
+       7  Modulation select. Set for internal Modulation, clear for external
+
+3d4h index 20h (R/W):  Power Management
+bit    0  Text Mode Shading Control. If set the text shades are derived the
+          same way as the graphics, if clear the text shades are derived
+          directly from the FG/BG data.
+     1-2  Select Refresh Rate. 0: 8ms, 2: 64ms, 2: self refresh, 3: no refresh
+       3  Activate Suspend Mode (timer override)
+       4  Activate Standby Mode (timer override)
+       5  Enable LCD mode if set
+       6  Enable CRT mode if set
+       7  set pin STANDBY to 'activate' output
+
+3d4h index 21h (R/W):  Power Down Timer Control
+bit  0-3  Standby Mode Timer Control. 0: disable timer, 1-15: minutes
+     4-7  Backlight Timer Control (FPBack)
+
+3d4h index 23h (R/W):  Suspend Mode Input Switch Debounce Timer
+bit    0  FPVcc output state (if bit1 set)
+       1  FPVcc control override
+       2  FPBack output state (if bit3 set)
+       3  FPBack control override
+     4-7  Time for input SUSPEND to remain active before entering suspend
+          mode. 0: disable timer checking, 1-15: seconds
+
+3d4h index 25h (R/W):  Part Status Register
+bit  0-7  Part Status. Used for factory testing only.
+
+3d4h index 27h (R):  Part ID register
+bit  0-1  Revision Level
+       3  Set to 1 ???
+     6-7  Device Identifier.
+            0: CL-GD6205    (C9h  rev -BL)
+            1: CL-GD6235    (89h  rev -BK)
+            2: CL-GD6215    (48h)
+            3: CL-GD6225    (09h  rev -BK)
+
+3d4h index 29h (R/W):  Configuration Read Back
+bit    0  Bus Type Select. 0: Local Bus, 1: ISA bus
+     1-2  Local Bus Type
+       3  DRAM Type Select. 0: Dual CAS DRAM, 1: Dual write enable DRAM
+       4  Active NPD (no power down) input
+       5  Power up/down cycling activity
+
+
+
+GD5402, 542x and 543x series:
+Also CL-GD754x Nordic/Viking LCD controllers
+
+94h (W):  102 Access Control Register
+bit    5  POS 102 Access. If clear register 102h is accessible, if set 102h is
+          not accessible.
+Note: This register only accessible if the chip is configured for 3C3h sleep
+      (CF[3]=0) and for ISA or local bus.
+
+102h (R/W):  POS102 Register
+bit    7  Video Subsystem Enable. If set (and bit 4 of 3C3h or 46E8h is also
+          set) the chip is enabled, if clear the chip is disabled and only
+          responds to accesses to this register (5420 and 5422), the 5424-29
+          also responds to accesses to 3C3h.
+Note: For MicroChannel systems this register is only accessible when the
+      -CD_SETUP pin is low, for other systems it is accessible if bit 4 of
+      3C3h/46E8h is set.
+
+3C3h (R/W):  MicroChannel Sleep Address Register                     (5424-29)
+bit    7  Video Subsystem Enable. If set the chip is enable, if clear the chip
+          is disabled and only responds to accesses to this register
+Note: This register only available in MicroChannel systems.
+
+3C3h (R/W):  Motherboard Sleep Address Register                      (5424-29)
+bit    3  Video Subsystem Enable. If set the chip is enabled, if clear the
+          chip is disabled and only responds to this register, 102h and the
+          BIOS, all other registers and the video memory will not respond.
+       4  Setup. If set the chip is in setup mode and only this register and
+          102h can be accessed, other registers and display memory does not
+          respond, if this bit clear the chip is in normal mode.
+Note: This is the same registers as 46E8h. The register is mapped at 3C3h,
+      46E8h or disabled depending on bus and chiptype. The 5420 and 5422
+      always maps it at 46E8h. The 5424-29 maps it at 3C3h (Motherboard
+      systems CF[3]=0) or 46E8h (CF[3]=1) depending on bit 3 of the
+      Configuration Register, which is sampled at power-on from MD[16-31].
+      MicroChannel systems disables this register
+
+3C4h index  2  (R/W):  Map Mask
+bit  0-7  Enable writing pixel bits 0-7 in Extended Write mode 4 and 5, and in
+          write mode 1 if BY8 addressing is enabled (3CEh index 0Bh bit 1
+          set), otherwise use only bits 0-3 as normal VGA.
+Note: See the VGA section for the normal use of this register
+
+3C4h index  4  (R/W):  Memory Mode Register
+bit    0  Reserved, indicates text/graphics mode in standard VGA
+Note: See the VGA section for the normal use of this register
+
+3C4h index  6  (R/W):  Unlock ALL Extensions                        (not 5429)
+bit  0-2,4  Writing 12h to this register enables extensions.
+            Read back 0Fh if locked.
+            Bits 3,5-7 are ignored on write.
+Note: on the 5429 the extensions are always enabled.
+
+3C4h index  7  (R/W):  Extended Sequencer Mode
+bit    0  Enable High-Resolution 256 Color modes if set.
+          For the 5429 this disables the Set/Reset logic (3CEh index 0 and 1)
+     1-2  (542x,02)  or
+     1-3  (543x) Select CRTC Character Clock Divider.
+             0: Normal operation
+             1: Clock/2 for 16bit pixels. In this mode the video clock is
+                programmed for twice the number of pixels (= the number of
+                bytes) and the horizontal timing in units of 8 pixels as in
+                standard VGA modes.
+             2: Clock/3 for 24bit pixels. In this mode the video clock is
+                programmed for 3 times the number of pixels (= the number of
+                bytes) and the horizontal timing in units of 8 pixels as in
+                standard VGA modes.
+             3: (5426-3x only) 16bit pixel data at Pixel Rate. In this mode
+                the video clock is programmed for the number of pixels (= the
+                number of bytes) and the horizontal timing in units of 8
+                pixels as in standard VGA modes.
+             4: (543x only) 32bit pixel data at Pixel Rate. In this mode the
+                video clock is programmed for the number of pixels (= the
+                number of bytes) and the horizontal timing in units of 8
+                pixels as in standard VGA modes. This works as a 4bytes per
+                pixel mode, with the 4th byte being ignored.
+     4-7  (5422-3x) Select 1M Video Memory Mapping.
+            The address in 1MB units the Video Memory is mapped at (0=no
+            mapping). On the 5426-3x if 3CEh index 0Bh is set bit 4 is ignored
+            and the 2MB buffer is mapped at an even MB block.
+            When in planar modes or using x8 or x16 addressing (3CEh index 0Bh
+            bit 1 set) or if less than the max amount of memory is installed
+            the memory block will wrap so that there are 2,4,8... instances
+
+3C4h index  8  (R/W):  EEPROM Control
+bit    0  "CS" out to EEPROM. Sets the EECS pin to this value
+       1  Enable EEPROM data input (bit 7) if set
+       2  "SK" to EEPROM thru ESYNC. If bit 4 is set, the ESYNC pin is set to
+          this value.
+       3  "DI" to EEPROM thru EVIDEO. If bit 4 is set, the EVIDEO pin is set
+          to this value.
+       4  Enable EEPROM Data and Sk. If set ESYNC and EVIDEO* are outputs,
+          if clear inputs
+       5  Latch ESYNC/EVIDEO*. If clear ESYNC and EVIDEO* control the HSYNC,
+          VSYNC, BLANK* and P[0-7] drivers, if set ESYNC and EVIDEO* are
+          latched internally, and the latched values control the HSYNC, VSYNC,
+          BLANK* and P[0-7] drivers, which frees the ESYNC and EVIDEO* pins
+          for EEPROM operations. This bit should be set prior to setting bit 4
+          and cleared after clearing bit 4
+       6  Disable MEMCS16* for display memory. If set video memory accesses
+          will not assert the MCS16* signal. This only works for ISA bus
+          systems, for all other configurations (and when using BITBLTs to or
+          from system memory) this bit must be set to 0.
+       7  (R) EEPROM Input Data. If bit 1 is set this reflects the EEDI pin.
+
+3C4h index  9  (R/W):  Scratch Register 0
+bit  0-3  (754x) Video memory. 0: 256K, 1: 512K, 2: 1MB, 3: 2MB, 4: 4MB
+     2-4  (54xx) Monitor type.
+           0:  31,5kHz           Std VGA. IBM 8512,8503
+           1:  31.5, 35.5 kHz    IBM 8514
+           2:  31.5, 35.1 kHz    NEC 2A
+           3:  31.5 - 35.5 kHz   NEC II
+           4:  31.5 - 38 kHz     Multi Freq. NEC 3D
+           5:  31.5 - 48 kHz     Sony CPD-1304, NEC 3FG, Nanao 9065S, 9070U
+           6:  31.5 - 56.5 kHz   NEC 4D,4FG, Nanao T240i
+           7:  31.5 - 64 kHz     NEC 5D,5FG/6FG, Nanao T560i,T660i
+Note: This register is set by the BIOS and may differ in some versions.
+
+3C4h index 0Ah (R/W):  Scratch Register 1
+bit  0-1  (5402) Display Memory. 0: 256K, 1: 512K, 2: 1M
+       0  (542x)
+     3-4  (542x) Video memory. 0=256K, 1=512K, 2=1024K, 3=2048K
+Note: Video memory should be determined from this register rather than
+      index 0Fh
+Note: This register is set by the BIOS and may differ in some versions.
+
+3C4h index 0Bh (R/W):  VCLK 0 Numerator Register
+bit  0-6  VCLK 0 Numerator bits 0-6
+Note: See index 1Bh for the frequency calculation
+
+3C4h index 0Ch (R/W):  VCLK 1 Numerator Register
+bit  0-6  VCLK 1 Numerator bits 0-6
+Note: See index 1Bh for the frequency calculation
+
+3C4h index 0Dh (R/W):  VCLK 2 Numerator Register
+bit  0-6  VCLK 2 Numerator bits 0-6
+Note: See index 1Bh for the frequency calculation
+
+3C4h index 0Eh (R/W):  VCLK 3 Numerator Register
+bit  0-6  VCLK 3 Numerator bits 0-6
+Note: See index 1Bh for the frequency calculation
+
+3C4h index 0Fh (R/W):  DRAM Control Register
+bit  0-1  (542x) (R) MCLK Select: 0: 50.11363 MHz, 1: 44.74431 MHz,
+              2: 41.16477 MHz, 3: 37.58523 MHz
+       0  (543x) (R) Disable DAC
+       1  (543x) MCLK Timing. 0: 50.11363MHz, 1: 41.16477MHz
+       2  RAS* Timing.
+              0: Extended (RAS* high for 3MCLK, low for 4)
+              1: Standard (RAS* high for 2.5MCLK, low for 3.5)
+     3-4  (54xx) DRAM Data Bus Width.
+             (542x) 0: 8bit (256K), 1: 16bit (512K), 2: 32bit (1M/2M)
+             (543x) 2: 32bit, 3:64 bit
+       5  (5422-3x) CRT FIFO Depth Control. If clear the CRT FIFO is 8 pixels
+            deep, if set it is 16 (20 for 5429) levels deep.
+            Typically clear for standard VGA and 16color modes and set for
+            extended 256color modes and Hi/Truecolor modes
+       6  (542x) Disable CRTC FIFO Fast-Page Mode. If set writes to display
+           memory will happen as random writes, if clear as Fast-page writes
+           if possible. Should be set when loading font data and for multiple
+           color-expansion writes in 16bit pixel modes (5422 & 5424 only).
+          (543x) CPU Write Buffer Control
+       7  (5426-28) DRAM Bank Select. 0: 4 512Kx8, 1: 4 256Kx16 or 16 256Kx4
+                    Set to enable access to memory beyond 1MB ??
+          (543x)  DRAM Bank Switch Control. If set there are two RAM banks
+
+3C4h index 10h (R/W):  Graphics Cursor X Position Register
+bit  0-7  When this value is written to the register, the upper 3 bits of the
+          index register are taken as the low order bits of an 11 bit
+          register. This is the horizontal position of the hardware cursor in
+          pixels.
+
+3C4h index 11h (R/W):  Graphics Cursor Y Position Register
+bit  0-7  When this value is written to the register, the upper 3 bits of the
+          index register are taken as the low order bits of an 11 bit
+          register. This is the vertical position of the hardware cursor in
+          pixels.
+
+3C4h index 12h (R/W):  Graphics Cursor Attribute Register
+bit    0  Enable the hardware cursor if set
+       1  Enable Access to RAMDAC Extended Colors registers.
+          When set the DAC registers 3C7h/3C8h and 3C9h accesses a
+          separate palette with 16 entries, if clear the normal 256 entry
+          palette is accessed. Special palette entry 0 is the cursor
+          background color and entry Fh is the cursor foreground color.
+          Entry 2 is the overscan color (See bit 7).
+       2  (5422-3x) If set select 64x64 cursor, if clear 32x32.
+       7  (5424-3x) Overscan Color Protect. If set the screen border is
+            displayed using the special palette entry 2 (accessed with bit 1
+            set), if clear using the normal border color (3C0h index 11h).
+
+3C4h index 13h (R/W):  Graphics Cursor Pattern Address Offset Register
+bit  0-5  Select 1 of 64 32x32 cursors
+     2-5  (5422-3x) Select 1 of 16 64x64 cursors (if index 12h bit 2 is set)
+          The offset in 256 byte units within the last 16KB of video memory
+          where the cursor mask and shape bitmaps are stored.
+          There are two 128 byte (32x32 bits) bitmaps stored in video memory.
+          The appearance of the cursor at each pixel is determined by a
+          combination of the corresponding pixels from the first and second
+          bitmap:
+            1st: 2nd:
+             0    0     The original screen pixel is shown (invisible cursor)
+             0    1     The pixel is shown in the cursor background color.
+             1    0     The pixel is shown as the inverse of the original
+                        screen pixel (XOR cursor)
+             1    1     The pixel is shown in the cursor foreground color.
+
+3C4h index 14h (R/W):  Scratch-Pad Register 2                    (5426 + only)
+bit  0-7
+
+3C4h index 15h (R/W):  Scratch-Pad Register 3                    (5426 + only)
+bit  0-7  ??
+     0-3  (543x) Video memory. 0: 256K, 1: 512K, 2: 1MB, 3: 2MB, 4: 4MB
+
+3C4h index 16h (R/W):  Performance Tuning Register               (5424 + only)
+bit  0-3  FIFO Demand Threshold. Selects the level where the Sequencer begins
+          to refill the CRT FIFO (and thus hold off CPU cycles or pre-empt
+          fast page mode bitblt cycles).
+     4-5  (5424-28) RDY# delay for memory write. Defines the number of CPU
+            clock cycles from ADS# to RDY# for memory write cycles.
+            (5424-28) 0: 1, 1: 2 ,2: 3, 3: 4   (5429) 0: 2, 1: 3, 2: 4, 3: 5
+            Only used for local bus systems. Also the following must be true:
+             Number * (CPU clock period) > 3*MCLK period +2ns.
+       4  (543x)  LRDY# Delay for Memory Cycles
+       5  (543x)  Readback of CF6
+     6-7  (5424-28) RDY# delay for I/O. Defines the number of CPU clock cycles
+            from ADS# to RDY# for I/O cycles: 0,1: 1  2,3: 2.
+            Only used for local bus systems.
+          (543x)  LRDY# Delay for I/O Cycles
+
+3C4h index 17h (R/W):  Configuration Readback and Extended Control    (5422 +)
+bit    0  Shadow DAC Writes on Local Bus. If set writes to registers 3C6h-3C9h
+          will be passed to external circuitry, if clear they will be handled
+          internally.
+       1  (5429) Power Down Palette Memory. If set the palette RAM for the
+           palette lookup table is not clocked, reducing power consumption.
+           If clear the palette RAM functions normally.
+       2  (5429 +) Enable Memory-Mapped I/O. If set the BitBLT registers can
+           be accessed via either memory operations or I/O operations, if
+           clear only via I/O operations. 3CEh index 6 bits 2-3 must be set
+           to 1. Bit 6 selects where the 256bytes of Memory Mapped registers
+           are located in system address space.
+          Offset:  3CEh index:    Description:
+            00h       00h         Background Color low byte
+            01h       10h         Background Color high byte
+            02h       12h         (543x +) Background Color byte 2
+            03h       14h         (543x +) Background Color byte 3
+            04h       01h         Foreground Color low byte
+            05h       11h         Foreground Color high byte
+            06h       13h         (543x +) Foreground Color byte 2
+            07h       15h         (543x +) Foreground Color byte 3
+          08h-09h   20h-21h       BLT Width
+          0Ah-0Bh   22h-23h       BLT Height
+          0Ch-0Dh   24h-25h       BLT Destination Pitch
+          0Eh-0Fh   26h-27h       BLT Source Pitch
+          10h-12h   28h-2Ah       BLT Destination Address
+          14h-16h   2Ch-2Eh       BLT Source Address
+            17h       2Fh         BLT Destination Write Mask
+            18h       30h         BLT Mode
+            1Ah       32h         BLT Raster Op
+          24h-25h   40h-41h       (545x) Linedraw Start X
+          26h-27h   42h-43h       (545x) Linedraw Start Y
+          28h-29h   44h-45h       (545x) Linedraw End X
+          2Ah-2Bh   46h-47h       (545x) Linedraw End Y
+            2Ch       50h         (545x) Linedraw Line Style Increment
+            2Dh       51h         (545x) Linedraw Line Style Rollover
+            2Eh       52h         (545x) Linedraw Line Style Mask
+            2Fh       53h         (545x) Linedraw Line Style Accumulator
+          30h-31h   54h-55h       (545x) Bresenham K1
+          32h-33h   56h-57h       (545x) Bresenham K3
+          34h-35h   58h-59h       (545x) Bresenham Error
+          36h-37h   5Ah-5Bh       (545x) Bresenham Delta Major
+            38h       5Ch         (545x) Bresenham Direction
+            39h       5Dh         (545x) Linedraw Mode
+            40h       31h         BLT Start/Status
+          The BLT Start/Status register (Offset 40h/3CEh index 31h) is the
+          only read/write memory mapped register, all others are write only.
+     3-5  (R) System Bus Select. Configuration bits CF14,7 and 5. Latched from
+           MD[50:48] on power-up. Identifies the system bus type:
+              1:  386DX local bus
+              2:  386SX local bus
+              4:  VESA VL-bus (> 33MHz)
+              5:  VESA VL-bus (<= 33MHz)
+              6:  MicroChannel bus
+              7:  ISA bus
+       6  (5429) If set (and linear memory is enabled) the memory mapped
+           registers enabled by bit 2 are in the last 256 bytes of the 2MB
+           linear memory block, if clear at B800h:0.
+       7  (?) Disable DRAM Refresh ?
+
+3C4h index 18h (R/W):  Signature Generator Control Register           (5422 +)
+bit    0  Enable/Status Signal Generator. If set the Signature Generator will
+          start on the next VSYNC, and will generate a signature from the
+          pixel bit selected by bits 2-4 for one frame and then stop forcing
+          this bit to 0.
+       1  Reset Signature Generator. Set to reset to an initial, defined
+          condition. Clear to allow the Signal Generator to run.
+     2-4  Select Pixel Bus. The bit to input to the Signal Generator.
+           0: bit 0 (P0)  ... 7: bit 7 (P7)
+       5  (5428 +) Enable Data Generator. If set pseudo-random data will be
+           placed on the memory data bus.  ** For testing only **
+       6  (5424 +) Disable DCLK/Pixel Bus Drivers. If set the dotclock and
+           pixel bus drivers are disabled.  ** For testing only **
+       7  (5424 +) Disable MCLK Driver. If set the memory clock is stopped.
+                     ** For Testing only **
+
+3C4h index 19h W(R/W):  Signature Generator Result Register           (5422 +)
+bit 0-15  Signal Generator Result
+
+3C4h index 1Bh (R/W):  VCLK 0 Denominator & Post
+bit    0  VCLK 0 Post Scalar bit. Divide clock by 2 if set
+     1-5  VCLK 0 Denominator Data
+Note: The clock is (14.31818MHz * numerator (index 0Bh))/Denominator.
+      Divide by 2 if the Post Scalar bit is set.
+      3C2h bits 2-3 selects between VCLK0, 1, 2 and 3
+      Max frequency supported:
+         42MHz:    5401
+         65MHz:    5402 and 5420 (original versions)
+         75MHz     5402 rev 1 and 5420 rev 1 (and probably later revs)
+         80MHz     5422-5428
+         86MHz:    5429
+      Programming a higher clock frequency may work, give an unstable image
+      or fail totally.
+
+3C4h index 1Ch (R/W):  VCLK 1 Denominator & Post
+bit    0  VCLK 1 Post Scalar bit. Divide clock by 2 if set
+     1-5  VCLK 1 Denominator Data
+Note: See index 1Bh for the frequency calculation
+
+3C4h index 1Dh (R/W):  VCLK 2 Denominator & Post
+bit    0  VCLK 2 Post Scalar bit. Divide clock by 2 if set
+     1-5  VCLK 2 Denominator Data
+Note: See index 1Bh for the frequency calculation
+
+3C4h index 1Eh (R/W):  VCLK 3 Denominator & Post
+bit    0  VCLK 3 Post Scalar bit. Divide clock by 2 if set
+     1-5  VCLK 3 Denominator Data
+Note: See index 1Bh for the frequency calculation
+
+3C4h index 1Fh (R/W):  BIOS Write Enable and MCLK select        (5424-5x only)
+bit  0-5  MCLK frequency bit 0-5. The MCLK frequency is: (RefClk/8)*value,
+          where the reference clock (RefClk) is the same as used for VCLK
+          generation, typically 14.318MHz
+          The 5424-5428 handles MCLKs up to 50MHz, the 5429 up to 60MHz
+       6  (5428-3x) Use MCLK as VCLK. If clear the video clock (VCLK) is
+           derived as described under index 1Bh, if set it is derived from
+           MCLK as follows: If index 1Eh bit 0 is set VCLK = MCLK/2, if it is
+           clear VCLK = MCLK
+       7  Enable BIOS write. If set writes to C000h:0-C7FFh:Fh will activate
+          the EROM* signal enabling FLASH ROM writing
+
+3C6h (R/W):  Hidden DAC Register
+bit  0-3  Extended Mode Select. If bit 6 and 7 are both set this field
+          selects the DAC mode:
+              0:  5-5-5 15bit Sierra HiColor
+              1:  5-6-5 16bit "XGA" HiColor
+              5:  (5422+) 8-8-8 24bit TrueColor. This mode also exists on the
+                    5420 rev1, but is not documented.
+            6/7:  (5428+) DAC Power-down
+              8:  (5428+) 8bit Greyscale.
+              9:  (5428+) 3-3-2 8bit RGB
+       4  32K Color Control. If set bit 15 (MSB) of a 15bit pixel selects
+          whether the pixel is HiColor(bit 15 = 0) or palette data(bit 15 = 1,
+          bit 0-7 is the palette index). This bit only has effect in 5-5-5
+          15bit modes.
+       5  Clocking Mode. If set Clocking Mode 2 will be selected and data will
+          only be latched on the rising edge of DCLK, if clear Clocking Mode 1
+          will be selected and data will be latched on both the rising edge
+          (low byte) and falling edge (high byte) of DCLK. This bit only has
+          effect in 15/16 bit modes as all other modes will use Clocking Mode
+          2. Clocking Mode 1 should only be used for externally supplied DCLK
+          and pixel data.
+       6  Enable ALL Extended Modes. If bit 7 is set and this bit is clear the
+          DAC is in 5-5-5 15bit Sierra HiColor mode, if both bit 7 and this
+          bit are set bits 0-3 determines the DAC mode.
+       7  Enable 5-5-5 Mode. If set the DAC is in an advanced mode, depending
+          on the other bits in this register, if clear the DAC is in VGA
+          compatible palette mode.
+Note: This register is accessed by reading 3C6h four times to unlock this
+      register, then the next read or write of 3C6h will access this register.
+      After reading or writing this register the register is locked and this
+      register can only be accessed be redoing the 4 reads of 3C6h etc. Any
+      access to 3C7h-3C9h will also lock this register. The 5428 is the
+      exception where reads of this register will NOT lock it.
+Note: This register does not exist on the 5401/5402 and the 5420 rev A.
+
+3CEh index  0  (R/W):  Set/Reset Register
+bit  0-3  Set/Reset plane bits 0-3, except in Extended Write mode 5:
+     0-7  Background color bits in Extended Write mode 5.
+Note: See the VGA section for the use of this register in write mode 0-3
+
+3CEh index  1  (R/W):  Enable Set/Reset Register
+bit  0-3  Enable SR plane 0-3, except in Extended Write mode 4/5:
+     0-7  Foreground color bits in Extended Write mode 4 and 5.
+Note: See the VGA section for the use of this register in write mode 0-3
+
+3CEh index  5  (R/W):  Mode
+bit  0-1  (index 0Bh bit 2 clear) Write mode bits 0-1
+     0-2  (index 0Bh bit 2 set) Write mode bit 0-2
+           See the VGA section for modes 0-3.
+           mode 4:  Foreground write. Writes to 8 256color pixels. Each
+                    bit of the CPU data controls writing to one pixel.
+                    Each 1 bit in the CPU data causes the color in 3CEh index
+                    to be written to the corresponding pixel. 0 bits cause the
+                    pixel to be left unchanged. Used to blit patterns with
+                    transparent background.
+                    For the 5422-3x this can be used in 16bit modes if 3CEh
+                    index 0Bh bit 4 is set. 3CEh index 10h has the upper 8bits
+                    of the foreground color
+           mode 5:  Fore and background write. As mode 4, but 0 bits of the
+                    CPU data cause the color in 3CEh index 0 to be written to
+                    the corresponding pixels.
+       3  Enable Read Color Compare
+       4  Enable odd/even (3C4h index 4 bit 2).
+       5  Shift 2 bits per byte (CGA compatibility)
+       6  256 Color Mode if set. Overrides bit 5.
+Note: This is a change from the original VGA
+
+3CEh index 09h (R/W):  Offset Register 0
+bit  0-7  4K Primary/Low bank number.
+          If 3CEh index 0Bh bit 0 is set references to A000h-A7FFh use this
+          bank register. If clear references to A000h-AFFFh use this bank
+          register. (5426-3x) If index 0Bh bit 5 is set this register is in
+          units of 16KB, rather than 4KB
+
+3CEh index 0Ah (R/W):  Offset Register 1
+bit  0-7  4K High bank number.
+          If 3CEh index 0Bh bit 0 is set references to A800h-AFFFh use this
+          bank register. (5426-3x) If index 0Bh bit 5 is set this register is
+          in units of 16KB, rather than 4KB
+
+3CEh index 0Bh (R/W):  Graphics Controller Mode Extensions Register
+bit    0  Enable Offset Register 1. If set references to A000h-A7FFh use 3CEh
+          index 9 as bank register, and references to A800h-AFFFh use 3CEh
+          index 0Ah as bank register. If clear all references to A000h-AFFFh
+          use 3CEh index 9 as bank register.
+          (5422 +) Should be set to 0 if linear addressing (3C4h index 7 bits
+            4-7 not 0) is used.
+       1  Enable BY8 Addressing. If set video memory addresses are shifted 3
+          bits right, so that each CPU byte corresponds to an 8 byte block (in
+          256 color mode). Intended for use with bit 2. If bit 4 is set, it
+          will override this bit.
+       2  Enable Extended Write Modes. If set enables Write Modes 4 and 5 and
+          extends 3C4h index 2 and 3CEh index 0 & 1 from 4 to 8 bits and
+          enables 3CEh index 0Bh bit 4. The extended write modes are intended
+          for 256color modes and allows each CPU byte written to update 8
+          pixels in one operation.
+       3  Enable Eight Byte memory read Data Latch. If set the display memory
+          data latches are 8bits wide, rather than 4bits.
+       4  Enable Enhanced Writes for 16bit pixels. If set (and bit 2 is set)
+          enables the 16bit version of the extended write modes: in 3C4h index
+          2 each bit controls two bytes (= 1 pixel), 3CEh index 10h & 11h are
+          enabled as the upper half of the fore- and background colors (3CEh
+          index 0 and 1) and addresses are shifted 4 bits right.
+       5  (5426-3x) Offset Granularity.
+          If set the bank registers are in 16K rather than 4K units.
+
+3CEh index 0Ch (R/W):  Color Key Compare                              (5424 +)
+bit  0-7  Color Key Compare bits 0-7. If Color Key Comparison is enabled (3d4h
+          index 1Ah bit 3 set) the pixel data from video ram is compared to
+          this value, and if they are equal (considering the mask in index
+          0Dh) the pixel from video ram is replaced by the pixel from the
+          Feature Connector.
+
+3CEh index 0Dh (R/W):  Color Key Compare Mask                         (5424 +)
+bit  0-7  Color Key Compare Key Mask 0-7. When Color Key Comparison is used
+          this byte selects the bits in the pixel data to compare. A 1 enables
+          the corresponding bit for comparison.
+
+3CEh index 0Eh (R/W):  Miscellaneous Control                          (5428 +)
+bit    0  DCLK Output Divide by 2. If set the DAC takes one byte (low) on the
+          rising edge of DCLK and another (high) on the falling edge, this is
+          similar to the Sierra "Mark1" (SC11481/6/8) HiColor mode.
+       1  (5429 +) Static HSYNC. If set DAC is powered down and the HSYNC
+            output will static at the level programmed in 3C2h bit 6.
+       2  (5429 +) Static VSYNC. If set DAC is powered down and the VSYNC
+            output will static at the level programmed in 3C2h bit 7.
+       3  (5429 +) Static Clock. If set the VCLK and MCLK are disabled and the
+            DAC is powered down. DRAM refresh continues.
+
+3CEh index 0Fh (R/W:  Display Compression Control                       (543x)
+bit    0  Enable Compression
+       1  Horizontal Compression
+     2-4  Vertical Compression
+
+3CEh index 10h (R/W):  16bit Pixel Background Color High Byte         (5422 +)
+bit  0-7  Extended BackGround color bits 8-15 in write mode 5.
+          This data sent to planes 1/3, data from 3CEh index 0 sent to 2/4
+
+3CEh index 11h (R/W):  16bit Pixel Foreground Color High Byte         (5422 +)
+bit  0-7  Extended ForeGround color bits 8-15 in write mode 4/5.
+          This data sent to planes 1/3, data from 3CEh index 1 sent to 2/4
+
+3CEh index 12h (R/W):  Background Color Byte 2                        (543x +)
+bit  0-7  Extended BackGround color bits 16-23 in write mode 5.
+
+3CEh index 13h (R/W):  Foreground Color Byte 2                        (543x +)
+bit  0-7  Extended ForeGround color bits 16-23 in write mode 4/5.
+
+3CEh index 14h (R/W):  Background Color Byte 3                        (543x +)
+bit  0-7  Extended BackGround color bits 24-31 in write mode 5.
+
+3CEh index 15h (R/W):  Foreground Color Byte 3                        (543x +)
+bit  0-7  Extended ForeGround color bits 24-31 in write mode 4/5.
+
+3CEh index 19h (R/W):  CL-GD5453 Mode                              (545x only)
+
+3CEh index 20h W(R/W):  BLT Width                                     (5426 +)
+bit 0-10  (5426-28) Number of pixels across in the BLIT area.
+    0-12  (543x)    do
+
+3CEh index 22h W(R/W):  BLT Height                                    (5426 +)
+bit  0-9  (5426-28) Number of lines in the BLIT area.
+    0-10  (543x)    do
+
+3CEh index 24h W(R/W):  BLT Destination Pitch                         (5426 +)
+bit 0-11  (5426-28) Number of bytes in a scanline at the destination.
+    0-12  (5429 +)  do
+
+3CEh index 26h W(R/W):  BLT Source Pitch                              (5426 +)
+bit 0-11  (5426-28) Number of bytes in a scanline at the source.
+    0-12  (5429 +)  do
+
+3CEh index 28h 3(R/W):  BLT Destination Start                         (5426 +)
+bit 0-20  (5426-29) Destination address of the BLIT.
+    0-21  (543x)    do
+
+3CEh index 2Ch 3(R/W):  BLT Source Start                              (5426 +)
+bit 0-20  (5426-29) Source address of the BLIT.
+    0-21  (543x)    do
+
+3CEh index 2Fh (R/W):  Write Mask Destination                         (5429 +)
+bit  0-2  Write Mask. The number of pixels to skip on the left edge of a color
+          expanded BLT operation.
+       7  (543x) Disable X-Y Offset Indexing
+
+3CEh index 30h (R/W):  BLT Mode                                       (5426 +)
+bit    0  BLT Direction. Set to decrement addresses during BitBLT operations,
+          clear to increment.
+       1  BLT Destination Display/System Memory. Set if the destination of the
+          BLT is system memory, clear if it is in display memory.
+       2  BLT Source Display/System Memory. Set if the source of the BLT is in
+          system memory, clear if it is in display memory.
+       3  (5426-28) Enable Transparency Compare. If set the result of the ROP
+           is compared with the Transparency Color Register (index 34h/35h).
+           Bit 4 determines if the compare is 8 or 16 bit. If the ROP result
+           matches the register(s) the data is NOT written.
+          (5429) Enable Color Expand with Transparency. If set 0's in the
+           monochrome image being expanded will prevent the pixel from being
+           written. If clear 0's are expanded to the background color.
+           1's are always expanded to the foreground color.
+       4  (5426-29) Color Expand/Transparency Width. If set (and bit 7 set)
+           Color expansion writes 16bit pixels, if clear only 8 bit pixels.
+           Not 5429: If bit 3 set this bit determines the width of the
+           comparison for the Transparency test: Set for 16bit compares, clear
+           for 8bit compares.
+     4-5  (543x) Color Expand/Transparency Width. 0: 8bit, 1: 16bit, 3: 32bit
+       6  Enable 8x8 Pattern Copy. If set the source is an 8x8 pattern which
+          is copied repeatably to the destination. If Color Expansion is
+          enabled (bit 7 set) the source is an 8 byte monochrome 8x8 bitmap
+          aligned on an 8byte boundary, if not it is an 8x8 color bitmap
+          aligned on a 4 byte boundary, using either 64 or 128 bytes
+          depending on the current number of bits per pixel (8 or 16).
+       7  Enable Color Expand. If set the input to the ROP (Raster OPeration)
+          will be the source bitmap after it is color expanded.
+          The destination must be screen memory (bit 1 clear) and the
+          direction increment (bit 0 clear). The Color Registers 3CEh index
+          0,1,10h and 11h are used to expand the source bitmap.
+          The source bitmap starts with the MSB of the first byte. A line in
+          always starts with the MSB of a byte. This may cause extra bits at
+          the end of each line if the pattern width is not a multipla of 8
+          pixels. When the BLT is screen-to-screen the source map must start
+          at a 4byte boundary and will be addressed linearly (source pitch is
+          ignored).
+Note: Either the destination or the source (but not both) of a BLT operation
+      can be in system memory. If so the source data is written to (or the
+      destination data read from) a random address in video memory. The VGA
+      chip will catch these accesses and direct them to the BLT engine.
+      The data read/written must be as DWORDs, i.e. 4 bytes at a time aligned
+      on a 4byte boundary, even if the BLT has less than 4 bytes remaining.
+
+3CEh index 31h (R/W):  BLT Start/Status                               (5426 +)
+bit    0  (R) BLT Status.  Set if the BLT engine is busy, clear if it is free
+       1  BLT Start/Suspend. Set to start BLT operation. This bit will clear
+          when the BLT terminates. Clear this bit to suspend the BLT.
+       2  BLT Reset. If set the BLT engine will reset and terminate any
+          operation in progress.
+       3  (R) BLT Progress Status. Set when the BLT starts. Clears when it
+          ends. Remains set if the BLT is suspended (bit 1), but clears if the
+          BLT is reset (bit 2).
+
+3CEh index 32h (R/W):  BLT Raster Operation (ROP)                     (5426 +)
+bit  0-7  BLT 2-operand Raster Operation.
+          Code:  Description:                        MS-Windows ROP:
+            00h  0                                   00000042h  BLACKNESS
+            05h  And                                 008800C6h  SRCAND
+            06h  Destination                         00AA0029h
+            09h  Source And Not Destination          00440328h  SRCERASE
+            0Bh  Not Destination                     00550009h  DSTINVERT
+            0Dh  Copy from source                    00CC0020h  SRCCOPY
+            0Eh  1                                   00FF0062h  WHITENESS
+            50h  Not Source And Destination          00220326h
+            59h  Xor                                 00660046h  SRCINVERT
+            6Dh  Or                                  00EE0086h  SRCPAINT
+            90h  Nor                                 001100A6h  NOTSRCERASE
+            95h  XNor                                00990066h
+            ADh  Source Or Not Destination           00DD0228h
+            D0h  Not Source                          00330008h  NOTSRCCOPY
+            D6h  Not Source Or Destination           00BB0226h  MERGEPAINT
+            DAh  NAnd                                007700E6h
+
+3CEh index 33h (R/W):  BLT Reserved                              (543x + only)
+
+3CEh index 34h W(R/W): BLT Transparent Color                         (5426-28)
+bit 0-15  BLT Transparency Color
+
+3CEh index 38h W(R/W): BLT Transparent Mask                          (5426-28)
+bit 0-15  BLT Transparency Color Mask
+
+3CEh index 40h W(R/W):  Linedraw Start X                           (545x only)
+
+3CEh index 42h W(R/W):  Linedraw Start Y                           (545x only)
+
+3CEh index 44h W(R/W):  Linedraw End X                             (545x only)
+
+3CEh index 46h W(R/W):  Linedraw End Y                             (545x only)
+
+3CEh index 50h (R/W):  Linedraw Line Style Numerator               (545x only)
+
+3CEh index 51h (R/W):  Linedraw Line Style Denominator             (545x only)
+
+3CEh index 52h (R/W):  Linedraw Line Style Mask                    (545x only)
+
+3CEh index 53h (R/W):  Linedraw Line Style Accumulator             (545x only)
+
+3CEh index 54h W(R/W):  Linedraw Bresenham K1                      (545x only)
+
+3CEh index 56h W(R/W):  Linedraw Bresenham K2                      (545x only)
+
+3CEh index 58h W(R/W):  Linedraw Bresenham Error                   (545x only)
+
+3CEh index 5Ah W(R/W):  Linedraw Bresenham Delta Major             (545x only)
+
+3CEh index 5Ch (R/W):  Linedraw Direction                          (545x only)
+
+3CEh index 5Dh (R/W):  Linedraw Modes                              (545x only)
+bit  0-2  Line Style. Index to the bit in the Line Style Mask to use for first
+          pixel drawn.
+       3  Direct Specification Mode. 0: Bresenham, 1: End-point
+       4  Draw End Point if set
+       5  Draw Start Point if set
+
+3d4h index 09h (R/W):  R9X                                              (754x)
+bit  2-3  Panel type. 1: 800x600
+
+3d4h index 19h (R/W):  Interlace End
+bit  0-7  Ending Horizontal Character Count for Odd field VSYNC.
+          Typically half the horizontal total
+
+3d4h index 1Ah (R/W):  Miscellaneous Control
+bit    0  Enable Interlace sync/video data in Graphics mode or interlace only
+          in Text mode. Set if an interlaced mode.
+       1  Enable Double-Buffered Display Start Address. If set changes to the
+          Display Start Address (index 0Ch,0Dh plus extensions) will not take
+          effect until VSYNC occours, thus preventing the need to check VSYNC
+          before updating the DSA.
+     2-3  Overlay/DAC Mode Switching Control
+            0:  Normal Operation
+            1:  with EVIDEO* (or OVWR* for the 5429 only)
+            2:  with EVIDEO* and Color Key (5424-3x only)
+            3:  with Color Key
+     4-5  Horizontal Blank End Overflow bits 6-7. Only enabled if index 1Bh
+          bit 5 (and/or bit 7 for the 5424 +) is set
+     6-7  Vertical Blank End Overflow bits 8-9. Only enabled if index 1Bh bit
+          5 (and/or bit 7 for the 5424 +) is set
+
+3d4h index 1Bh (R/W):  Extended Display Control
+bit    0  Display Start Address bit 16. Bits 0-15 are in 3d4h index Ch-Dh.
+          Bits 17, 18 and 19 are in this register and index 1Dh.
+       1  Enable Extended Address Wrap. If clear the CRTC Character Address
+          Counter is 16bit wide, providing VGA compatibility but limiting
+          display memory to 256K. If set the counter is 18 bits wide (19 for
+          the 5426 +) allowing for 1 (or 2) Mbytes of display memory.
+       2  (5420 +) Display Start Address bit 17. Bits 0-15 are in 3d4h index
+           Ch-Dh. Bits 16, 18 and 19 are in this register and index 1Dh.
+       3  (5426 +) Display Start Address bit 18. Bits 0-15 are in 3d4h index
+           Ch-Dh. Bits 16, 17 and 19 are in this register and index 1Dh.
+       4  Bit 8 of the CRTC Offset register (3d4h index 13h).
+       5  Blanking Control. If clear the DAC blanking is controlled by the
+          CRTC blanking signal and the border can be used. If set the DAC
+          blanking is controlled by the Display Enable, thus blanking the
+          border area, the CRTC blanking signal will be output on the OVRW
+          pin. Also the Horizontal and Vertical Blank End bits (bit 4-7) in
+          3d4h index 1A are enabled.
+       6  Select Text mode Fast-Page. If set font data will be fetched using
+          fast Page Mode read cycles allowing text modes with a VCLK greater
+          than 30 MHz. This will not work with VGA double fonts, I.e. the two
+          Character Maps in 3C4h index 3 must be equal. If this bit is clear
+          all font fetches use random reads.
+       7  (5424-3x) Enable Blank End Extensions. If set (or if bit 5 is set)
+          the Horizontal and Vertical Blank End bits (bit 4-7) in 3d4h index
+          1A are enabled.
+
+3d4h index 1Ch (R/W):  Sync Adjust and Genlock                        (543x +)
+bit  0-2  Horizontal Sync Start Adjust
+     3-5  Horizontal Total Adjust
+       6  Enable HSYNC GENLOCK
+       7  Enable VSYNC GENLOCK
+
+3d4h index 1Dh (R/W):  Overlay Extended Control                       (5429 +)
+bit    0  (543x +) Enable Alpha Overlay
+     1-2  DAC Mode Switching Control. This controls the DAC mode switching,
+          the pixel data is still selected from 3d4h index 1Ah bit 2-3.
+              0: Switch True selects Extended DAC mode
+              1: Switch False selects Extended DAC mode
+            2,3: Extended DAC mode disabled.
+       3  (543x +) Overlay Video Clocking Mode
+     4-5  (543x +) Color Key Compare type
+       6  Overlay Timing Signal Source. If clear the timing signal for Overlay
+          modes 1 and 2 (See 3d4h index 1Ah bits 2-3) comes from the EVIDEO*
+          input. If set from the internal OVRW* signal.
+       7  (543x +) Extended Display Start Address bit 19. Lower bits are in
+            3d4h index 1Bh and 3d4h index 0Ch/0Dh
+
+3d4h index 1Eh (R/W):  Timing Overflow                             (545x only)
+
+3d4h index 1Fh (R/W):  Overflow                                    (545x only)
+
+3d4h index 20h (R/W):                                                   (754x)
+bit    5  Set for LCD panel
+
+3d4h index 22h (R):  Graphics Data Latches Readback Register
+bit  0-7  Reading this register returns the current content of the Graphics
+          Controller Data Latch selected by 3CEh index 4 bits 0-1.
+
+3d4h index 24h (R):  Attribute Controller Toggle Readback Register
+bit    7  If set the Attribute Controller will next access a data register, if
+          clear it'll access the index register
+
+3d4h index 25h (R/W):  Part Status Register                         (not 5402)
+bit  0-7  Part Status. Used for factory testing and internal tracking only.
+          (5429) >=67h for 5429 rev B, which fixes a BLT problem ?
+          (5434) 28h: 5434 rev AH (.6u), B0h: 5434 rev EP (.6u)
+
+3d4h index 26h (R):  Attribute Controller Index Readback Register
+bit  0-4  The last value written to bits 0-4 of the index register at 3C0h.
+       5  The last value written to bit 5 of the index register at 3C0h.
+
+3d4h index 27h (R):  Part ID register
+bit  0-1  Revision Level
+     2-7  (54xx) Device Identifier:
+                  06h: Acumos AVGA2 & 5402 ??
+                  0Bh: CL-GD7542 (Nordic)
+                  0Ch: CL-GD7543 (Viking) - guess
+                  0Dh: CL-GD7541 (Nordic Lite)
+                  22h: Depends on revision Level:
+                       CL-GD5402        Rev=0  (88h)
+                       CL-GD5402 rev 1  Rev=1  (89h)
+                       CL-GD5420        Rev=2  (8Ah)
+                       CL-GD5420 rev 1  Rev=3  (8Bh)
+                  23h: CL-GD5422           (8Ch-8Fh)
+                  24h: CL-GD5426           (90h-93h)
+                  25h: CL-GD5424           (94h-97h)
+                  26h: CL-GD5428           (98h-9Bh)
+                  27h: CL-GD5429           (9Ch-9Fh)
+                  28h: CL-GD5430           (A0h-A3h)
+                  29h: CL-GD5434 - Originally assigned to 5434, never used ?
+                  2Ah: CL-GD5434           (A8h-ABh)
+                  2Bh: CL-GD5436 ??
+Note: I've seen two chips marked as 5422-80, returning 94h i.e. a 5424.
+
+3d4h index 2Ch (R/W):  LCD Interface Register                           (754x)
+bit    3  Clear to access the shadowed Vertical registers at 3d4h index
+           6,7,10h,11h,15h and 16h
+     4-5  Set to 0 (and set 3d4h index 2Dh bit 7) to enable the X shadow
+          registers (R2X-REX: 3d4h index 2-9,Bh-Eh), 2 to enable the Y shadow
+          registers (3d4h index 0,2-5), 3 to enable the Z shadow registers
+           (3d4h index 0,2-5)
+
+3d4h index 2Dh (R/W):  LCD Display Control                              (754x)
+bit    7  Set to access the LCD timing registers (R2X-REX) at 3d4h index
+           19h - 30h and 40h - 4Fh  ?
+
+46E8h (R/W):  Adapter Sleep Address Register                         (5424-29)
+bit    3  Video Subsystem Enable. If set the chip is enabled, if clear the
+          chip is disabled and only responds to this register, 102h and the
+          BIOS, all other registers and the video memory will not respond.
+       4  Setup. If set the chip is in setup mode and only this register and
+          102h can be accessed, other registers and display memory does not
+          respond, if this bit clear the chip is in normal mode.
+Note: This is the same registers as 3C3h. The register is mapped at 3C3h,
+      46E8h or disabled depending on bus and chiptype. The 5420 and 5422
+      always maps it at 46E8h. The 5424-29 maps it at 3C3h (Motherboard
+      systems CF[3]=0) or 46E8h (CF[3]=1) depending on bit 3 of the
+      Configuration Register, which is sampled at power-on from MD[16-31].
+      MicroChannel systems disables this register
+
+
+  Memory locations:
+
+  $C000:$8  1 byte   Offset of Model string in BIOS.
+
+
+
+
+
+  ID Cirrus VGA:
+
+
+  (* First test for Cirrus 54xx *)
+
+  old:=rdinx($3C4,6);
+  wrinx($3C4,6,0);
+  if rdinx($3C4,6)=$F then
+  begin
+    wrinx($3c4,6,$12);
+    if (rdinx($3C4,6)=$12) and testinx2($3C4,$1E,$3F) then
+    begin
+      SubVers:=rdinx($3d4,$27);
+      if testinx($3CE,9) then
+        case SubVers of
+              $88:name:='Cirrus CL-GD5402';
+              $89:name:='Cirrus CL-GD5402 r1';
+              $8A:name:='Cirrus CL-GD5420';
+              $8B:name:='Cirrus CL-GD5420 r1';
+         $8C..$8F:name:='Cirrus CL-GD5422';
+         $90..$93:name:='Cirrus CL-GD5426';
+         $94..$97:name:='Cirrus CL-GD5424';
+         $98..$9B:name:='Cirrus CL-GD5428';
+         $A0..$A3:name:='Cirrus CL-GD5430';
+         $A8..$AB:name:='Cirrus CL-GD5434';
+        else UNK('Cirrus54',x);
+        end
+      else if testinx($3C4,$19) then
+        case SubVers shr 6 of
+          0:name:='Cirrus CL-GD6205';
+          1:name:='Cirrus CL-GD6235';
+          2:name:='Cirrus CL-GD6215';
+          3:name:='Cirrus CL-GD6225';
+        end
+      else name:='Cirrus AVGA2 (5402)';
+    end;
+  end
+  else wrinx($3C4,6,old);
+
+
+  (* Now test for 64xx *)
+
+  old:=rdinx($3CE,$A);
+  wrinx($3CE,$A,$CE);
+  if rdinx($3CE,$A)=0 then
+  begin
+    wrinx($3CE,$A,$EC);
+    if rdinx($3CE,$A)=1 then
+    begin
+      SubVers:=rdinx($3CE,$AA);
+      case SubVers shr 4 of
+        4:name:='Cirrus CL-GD6440';
+        5:name:='Cirrus CL-GD6412';
+        6:name:='Cirrus CL-GD5410';
+        7:name:='Cirrus CL-GD6420';
+        8:name:='Cirrus CL-GD6410';
+      else UNK('Cirrus64')
+      end;
+    end;
+  end;
+  wrinx($3CE,$A,old);
+
+  (* Now test for 5/600 *)
+
+  old6:=rdinx($3C4,6);
+  old:=rdinx(base,$C);
+  outp(base+1,0);
+  SubVers:=rdinx($3d4,$1F);
+  wrinx($3C4,6,(eagle shl 4)+(eagle shr 4));
+  if inp($3C5)=0 then
+  begin
+    outp($3C5,SubVers);
+    if inp($3C5)=1 then
+      case SubVers of
+        $EC:Cirrus 510/520;
+        $CA:Cirrus 610/620;
+        $EA:Cirrus Video7 OEM;
+      else UNK(Cirrus)
+      end;
+  end;
+  wrinx(base,$C,old);
+  wrinx($3C4,6,old6);
+
+
+
+  Modes for the GD 5320:
+
+  18h T  132   25   2
+  19h T  132   34   2
+  1Ah T  132   44   2
+  1Ch T  132   25  16
+  1Dh T  132   43  16
+  1Eh T  132   44  16
+  23h T  132   25  16
+  24h T  132   28  16
+  25h G  640  480  16  PL4
+  29h G  800  600  16  PL4
+  2Dh G  640  350 256  P8
+  60h T  132   25
+  61h G  640  400  16  PL4
+  61h T  132   50              HUH ??
+  62h G  640  450  16  PL4
+  70h G  360  480 256  P8
+  71h G  528  400 256  P8
+  72h G  528  480 256  P8
+  74h G  320  240 256  P8
+  75h G  640  400 256  P8
+
+
+  Modes for the GD 54xx:
+
+  14h T  132   25  16 (8x16)
+  54h T  132   43  16 (8x8)
+  55h T  132   25  16 (8x14)
+  56h T  132   43   2           (5402 only)
+  57h T  132   25   2           (5402 only)
+  58h G  800  600  16  PL4
+  59h G  800  600   2           (5402 only)
+  5Ch G  800  600 256  P8
+  5Dh G 1024  768  16  PL4
+  5Eh G  640  400 256  P8       (5402 only)
+  5Fh G  640  480 256  P8
+  60h G 1024  768 256  P8
+  64h G  640  480 64K  P16
+  65h G  800  600 64K  P16
+  66h G  640  480 32K  P15
+  67h G  800  600 32K  P15
+  68h G 1024  768 32K  P15      5452 only ?
+  69h G 1280 1024 32K  P15      5452 only ?
+  6Ah G  800  600  16  PL4
+  6Ch G 1280 1024  16  PL4
+  6Dh G 1280 1024 256  P8
+  6Fh G  320  200 64K  P16
+  70h G  320  200 16M  P24
+  71h G  640  480 16M  P24
+  72h G  800  600 16M  P32      543x/52 only
+  73h G 1024  768 16M  P32      543x/52 only
+  74h G 1024  768 64K  P16
+  75h G 1280 1024 64K  P16
+  76h G  640  480 16M  P32      543x/52 only
+  77h G 1280 1024 16M  P24      543x/52 only
+  78h G 1600 1200 256  P8       543x/52 only
+  79h G 1152  870 16M  P32      543x/52 only
+
+
+-- BIOS extensions --
+----------1012-80----------------------------------
+INT 10 - VIDEO Cirrus Logic - Inquire VGA Type
+        AH = 12h
+        BL = 80h
+Return: AL = Chip ID:
+               2   CL-GD 510/520
+               3   CL-GD 610/620
+               4   CL-GD 5320
+               5   CL-GD 6410
+               6   CL-GD 5410
+               7   CL-GD 6420
+               8   CL-GD 6412
+               9   CL-GD 6416
+              10h  CL-GD 5401
+              11h  CL-GD 5402
+              12h  CL-GD 5420
+              13h  CL-GD 5422
+              14h  CL-GD 5424
+              15h  CL-GD 5426
+              16h  CL-GD 5420 rev 1
+              17h  CL-GD 5402 rev 1
+              18h  CL-GD 5428
+              19h  CL-GD 5429
+              20h  CL-GD 6205
+              21h  CL-GD 6215
+              22h  CL-GD 6225
+              23h  CL-GD 6235
+              24h  CL-GD 6245
+              30h  CL-GD 5432
+              31h  CL-GD 5434
+              32h  CL-GD 5430
+              33h  CL-GD 5434 (.6 micron)
+              40h  CL-GD 6440
+              41h  CL-GD 7542 (Nordic)
+              42h  CL-GD 7543 (Viking)
+              43h  CL-GD 7541 (Nordic Lite)
+              52h  CL-GD 5452 (Northstar)
+        BL = Silicon Revision number (bit 7 set if not available)
+        BH = bit 2 set if using CL-GD 6340 LCD interface
+----------1012-81---------------------------------------
+INT 10 - VIDEO - Cirrus Logic - Inquire BIOS Version Number
+        AH = 12h
+        BL = 81h
+Return: AH = Major Version
+        AL = Minor Version
+----------1012-82---------------------------------------
+INT 10 - VIDEO - Cirrus Logic - Inquire Cirrus Logic Design Revision Code
+        AH = 12h
+        BL = 82h
+Return: AL = Chip Revision
+        AH = ??
+----------1012--BL84-------------------------
+INT 10 - Cirrus Logic BIOS v3.02 - Inquire Options
+        AH = 12h
+        BL = 84h
+Return: AX = user options word (see #0029)
+             bit 0-1  centering. 00 vertical centered, 01 from bottom,
+                                 10 from top, 11 reserved
+                 2-3  720-dot fix-up options
+                       00 OR every 8th and 9th pixel
+                       01 display MGA mode from left
+                       10 display MGA mode from right
+                       11 skip every 9th pixel
+                 5-7  video mode (001 CGA, 010 MGA, 011 EGA, 100 VGA)
+                   8  external monitor enabled instead of LCD panel
+                   9  vertical expand mode enabled
+                  10  8-bit mode instead of 16-bit mode
+                  11  normal video rather than reverse video (for LCD)
+                  12  attribute automap rather than attribute emulation
+                  13  bold mode disabled (default)
+                  14  fast bandwidth
+----------1012-85---------------------------------------
+INT 10 - VIDEO - Cirrus Logic - Return Installed Memory
+        AH = 12h
+        BL = 85h
+Return: AL = Video Memory in 64K units
+----------1012--BL89-------------------------
+INT 10 - Cirrus Logic BIOS v3.02 - LCD panel - En/Disable Reverse Video Mode
+        AH = 12h
+        BL = 89h
+        AL = new state (00h enabled, 01h disabled)
+----------1012--BL8A-------------------------
+INT 10 - Cirrus Logic BIOS v3.02 - LCD panel - Set Frame Color
+        AH = 12h
+        BL = 8Ah
+        AL = new grey-scale color (00h = black to 0Fh = white)
+----------1012--BL8B-------------------------
+INT 10 - Cirrus Logic BIOS v3.02 - LCD panel - Enable/Disable Bold Mode
+        AH = 12h
+        BL = 8Bh
+        AL = new state (00h enabled, 01h disabled)
+----------1012--BL8C-------------------------
+INT 10 - Cirrus Logic BIOS v3.02 - LCD panel - Set Automap/Emulate Attributes
+        AH = 12h
+        BL = 8Ch
+        AL = new state
+             00h enable automap
+             01h disable automap and emulate attributes
+----------1012--BL8F-------------------------
+INT 10 - Cirrus Logic BIOS v3.02 - LCD panel - Enable/Disable Expand Mode
+        AH = 12h
+        BL = 8Fh
+        AL = new state (00h enabled, 01h disabled)
+Note: when expand mode is enabled, the vertical dimension is enlarged to
+      full screen
+----------1012--BL90-------------------------
+INT 10 - Cirrus Logic BIOS v3.02 - LCD panel - Set Centering Mode
+        AH = 12h
+        BL = 90h
+        AL = new position
+              00h centered
+              01h from top
+              02h from bottom
+              03h from top
+----------1012--BL91-------------------------
+INT 10 - Cirrus Logic BIOS v3.02 - LCD panel - Set 720-Dot Fixup Mode
+        AH = 12h
+        BL = 91h
+        AL = new mode
+              00h display MGA mode from left of screen (default)
+              01h display MGA from right
+              02h skip every ninth pixel
+              03h OR every 8th and 9th pixel
+----------1012--BL92-------------------------
+INT 10 - Cirrus Logic BIOS v3.02 - LCD panel - Switch Display
+        AH = 12h
+        BL = 92h
+        AL = new display (00h LCD, 01h external monitor)
+Note: the deselected display is disabled
+----------1012-93---------------------------------------
+INT 10 - VIDEO - Cirrus Logic - Force 8bit OR 16bit Operation
+        AH = 12h
+        BL = 93h
+        AL = New I/O width (00h = 16bits, 01h = 8bits).
+----------1012--BL94-------------------------
+INT 10 - Cirrus Logic BIOS v3.02 - Power Conservation
+        AH = 12h
+        BL = 94h
+        AL = new state (00h wake up monitor, 01h shut down display)
+Note: AL=01h is reported not to work properly on the LCD panel
+----------1012-9A---------------------------------------
+INT 10 - VIDEO - Cirrus Logic - GET USER OPTIONS
+        AH = 12h
+        BL = 9Ah
+Return: AX = Options Word 1:
+             Bit 2-4  Monitor type
+                 5-6  Maximum Vertical Resolution
+                  10  Force 8bit operation (0=16bit, 1=8bit))
+                  14  Vertical Refresh Frequency at 640x480
+        CX = Options Word 2:
+             Bit 4-5  Vertical Refresh Frequency at 1280x1024
+               11-12  Vertical Refresh Frequency at 800x600
+               13-15  Vertical Refresh Frequency at 1024x768
+----------1012-A0---------------------------------------
+INT 10 - VIDEO - Cirrus Logic - Get Video Mode Availability
+        AH = 12h
+        AL = Video mode number
+        BL = A0h
+Return: AH = Bit 0: Video mode supported if set
+        BX = Offset of BIOS subrutine to fixup standard video parameters.
+             (Call subrutine with DS:SI and ES:DI as returned by this call)
+        DS:SI -> Standard Video Parameters or FFFFh:FFFFh
+        ES:DI -> Supplemental Video Parameters or FFFFh:FFFFh
+----------1012-A1---------------------------------------
+INT 10 - VIDEO - Cirrus Logic - Read Monitor Type Ana ID From 15Pin Connector
+        AH = 12h
+        BL = A1h
+Return: BH = Monitor ID:
+               00h-08h  Reserved
+                   09h  IBM 8604/8507
+                   0Ah  IBM 8514
+                   0Bh  IBM 8515
+                   0Dh  IBM 8503
+                   0Eh  IBM 8512/8513
+                   0Fh  no monitor
+        BL = Monitor Type. 00h: Color, 01h: Grayscale, 02h: No Display
+----------1012-A2---------------------------------------
+INT 10 - VIDEO - Cirrus Logic - Set Monitor Horizontal Retrace Frequency
+        AH = 12h
+        BL = A2h
+        AL = Monitor Type
+               00h  Standard VGA
+               01h  8514-compatible                (31.5 + 35.5 kHz)
+               02h  SuperVGA                       (31.5 - 35.1 kHz)
+               03h  Extended SuperVGA              (31.5 - 35.5 kHz)
+               04h  multi-frequency                (31.5 - 37.8 kHz)
+               05h  extended multi-frequency       (31.5 - 48.0 kHz)
+               06h  super multi-frequency          (31.5 - 56.0 kHz)
+               07h  extended super multi-frequency (31.5 - 64.0 kHz)
+----------1012-A3---------------------------------------
+INT 10 - VIDEO - Cirrus Logic - Set VGA Refresh
+        AH = 12h
+        BL = A3h
+        AL = refresh rate for 640x480 (00h normal, 01h high)
+----------1012-A4---------------------------------------
+INT 10 - VIDEO - Cirrus Logic - Set Monitor Type
+        AH = 12h
+        BL = A4h
+        AL = Bits 0-3  Maximum Vertical Resolution
+                         0: 480, 1: 600, 2: 768, 3: 1024
+                  4-7  Vertical Refresh at 640x480:
+                         0: 60Hz, 1: 72Hz
+        BH = Bits 0-3  Vertical Refresh at 800x600:
+                         0: 56Hz, 1: 60Hz, 2: 72Hz
+                  4-7  Vertical Refresh at 1024x768:
+                        0: 87Hz interlaced, 1: 60Hz, 2: 70Hz, 3: 72Hz, 4: 76Hz
+        CH = Bits 4-7  Vertical Refresh at 1280x1024:
+                         0: 87Hz interlaced, 1: 60Hz, 2: 70Hz
+
+Many other functions exist in the range BL = 80h - A3h

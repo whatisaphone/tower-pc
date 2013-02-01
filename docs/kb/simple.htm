@@ -1,0 +1,167 @@
+<HTML>
+<HEAD>
+  <TITLE>Using a Low Level Keyboard Driver</TITLE>
+  <META NAME="author" CONTENT="Gary Neal Wilkerson, Jr.">
+  <META NAME="generator" CONTENT="Microsoft FrontPage 4.0">
+  <META NAME="keywords" CONTENT="programming,game,software,developing,PC,dos,ms-dos,pc-dos,windows">
+  <META NAME="description" CONTENT="A place where you can get info on how to develop PC games and other PC software.">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" BACKGROUND="../images/ruled_paper.gif">
+<!-- following code added by server. PLEASE REMOVE -->
+<!-- preceding code added by server. PLEASE REMOVE -->
+
+<!-- IMG SRC="images/spiral.gif" WIDTH=69 HEIGHT=969 BORDER=0 ALIGN="LEFT" -->
+
+<CENTER>
+  <FONT SIZE=1>
+    <A HREF="lowLevelKeyboardDriver.html" TARGET="_top">
+      Click here if you are stuck in someone else's frames.
+    </A>
+  </FONT>
+  <BR>
+  <FONT FACE="Comic Sans MS,MS Sans Serif,Arial,Courier" SIZE=5>
+    Using a Low Level Keyboard Driver
+  </FONT>
+  <BR>
+
+</CENTER>
+<HR>
+
+<P>The keyboard itself has its own processor chip called the Intel 8042 whose
+task is to track the changes in the states of the keys on the keyboard and alert
+the connect computer of these changes.&nbsp; This is achieved by initiating an
+interrupt request of the main microprocessor of the host computer and providing
+the necessary information in one of the port addresses of the main
+microprocessor.&nbsp; In the CPU's core memory, an interrupt service routine (ISR)
+is written instructing the main microprocessor to read the values off the
+keyboard port and signaling back to the keyboard that the values have been
+read.&nbsp; On an IBM PC, the keyboard ports that we are interested in are located at port addresses 60<sub>16</sub>
+and 61<sub>16</sub>.&nbsp; The ROM routine provided by the PC BIOS chip reads
+the keyboard scan codes and key board states provided by the 8042 chip and
+translates them into their appropriate ASCII codes and stuffs them in a
+buffer.&nbsp; It also provides special actions for combinations of key strokes,
+like CTRL+ALT+DEL to reboot the system.&nbsp; Certain programs and operating
+systems circumvent the BIOS keyboard ISR and provide other actions as well, such
+as pressing ALT to activate menus in the DOS editor or intercepting the
+CTRL+ALT+DEL key combinations in multitasking systems.&nbsp; Our programs can be
+written to intercept the keyboard interrupts and provide our own responses to
+keyboard events, but in order to do so we must write our own keyboard ISR.
+
+<P>The 8042 chip interrupts the microprocessor any time a key is pressed or released
+and provides the scan code of the key of interest and a flag indicating whether
+the key is being pressed or released.&nbsp; This information can be found at
+port address 60<sub>16</sub>.&nbsp; With this knowledge a keyboard ISR can be
+easily written to detect key presses and releases.&nbsp; In addition to this,
+some other house keeping chores must be done by our keyboard ISR if it is to
+circumvent the BIOS ISR.&nbsp; Rather than inundate you with all the details,
+let us examine to code to our replacement ISR.
+
+<P>To read a key from the keyboard port, just simply read port address 60<sub>16</sub> like so.
+
+<P>
+<pre>
+     in    al,60h        ; Read the scan code into AL
+</pre>
+
+<P>The most significant bit (D7) of register AL will contain the state of the
+key.&nbsp; If the key is being released, it will contain a 1, otherwise it will
+contain a 0.&nbsp; In C, the code to read the keyboard port would look something
+like this:
+
+<P>
+<pre>
+int scanCode;
+
+scanCode = inp(0x60);    /* Read the scan code */
+</pre>
+
+<P>After reading the scan code, our program can acknowledge that the scan code
+was read to the keyboard controller like so:
+<pre>
+     in    al,61h        ; Read keyboard control register
+     mov   ah,al         ; Preserve control register state
+     or    al,80h        ; Toggle acknowledge bit high
+     out   61h,al        ; Write control register
+     mov   al,ah         ; Get previous control register state
+     out   61h,al        ; Toggle acknowledge bit low
+</pre>
+
+<P>Of course, we could use C code to achieve the same end.
+<P>
+<PRE>
+register int i;          /* A register is desirable */
+
+i = inp(0x61);           /* Get keyboard control register */
+outp(0x61, i | 0x80);    /* Toggle acknowledge bit high */
+outp(0x61, i);           /* Toggle acknowledge bit low */
+</PRE>
+
+<P>Now that our program has read the scan code, it can first determine if
+   key was pressed or released and act upon it in like fashion.
+<P>
+<PRE>
+if (scanCode &amp; 0x80)
+    /* Key was released, do something */
+else
+    /* Key was pressed, do something */
+</PRE>
+
+<P>The remaining 7 bits of data in the scan code contain the actual scan code
+itself.&nbsp; A single scan code is assigned to each of the keys on the keyboard
+   including two separate scan codes for each of the shift keys on the keyboard.&nbsp;
+Keep in mind that our program is within an interrupt service routine so whatever
+   we do, we must do it quickly and get out as soon as possible.&nbsp; With that
+in mind, our program should mainly set flags indicating the states of the keys
+themselves.&nbsp; A complete and functional keyboard ISR would look something
+like this:
+
+<P>
+<PRE>
+#include &lt;dos.h&gt;        /* For getvect and setvect functions */
+#include &lt;conio.h&gt;      /* For outp and inp macros */
+
+/* Keyboard state tables */
+static char keyIsPressed[128];  /* Flags indicating current keyboard state */
+static char keyWasPressed[128]; /* Flags indicating state since last read */
+
+static void interrupt far KeyboardInterruptHandler()
+{
+    int scanCode;          /* Storage for scan code */
+    register int i;        /* Register is desirable */
+    
+    enable();              /* Enable CPU interrupts immediately */
+    /* Substitute 'asm  sti;' for enable() if this does not compile */
+    
+    scanCode = inp(0x60);  /* Read the key board scan code */
+    
+    /* Acknowledge the reading of the scan code to the keyboard controller */
+    i = inp(0x61);         /* Get keyboard control register */
+    outp(0x61, i | 0x80);  /* Toggle acknowledge bit high */
+    outp(0x61, i);         /* Toggle acknowledge bit low */
+    
+    /* Acknowledge the interrupt to the programmable interrupt controller */
+    outp(0x20, 0x20);      /* Signal non specific end of interrupt */
+    
+    /* Set the appropriate flags in the state tables */
+    if (scanCode &amp; 0x80)
+        keyIsPressed[scanCode &amp; 0x7F] = 0;
+    else
+        keyIsPressed[scanCode] = keyWasPressed[scanCode] = 1;
+}
+</PRE>
+.
+
+<!-- Navigation text -->
+<H5 ALIGN=RIGHT>
+  <A HREF="keyboardBiosFunctions.html">Previous Page</A> | <A HREF="index.html">Main Page</A> | <A HREF="writeKeyboardDriver.html">Next page</A>
+</H5>
+
+<HR>
+
+<P ALIGN="CENTER">Send your questions, comments, or ideas <a href="http://htmlgear.lycos.com/feed/control.feed?a=render&amp;i=1&amp;u=garyneal">here</a>.</P>
+<BR>
+
+</BODY>
+</HTML>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.js2.yimg.com/us.js.yimg.com/lib/smb/js/hosting/cp/js_source/geov2_001.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.yahoo.com/visit.gif?us1214617312" alt="setstats" border="0" width="1" height="1"></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001067&t=1214617312&f=us-w66" ALT=1 WIDTH=1 HEIGHT=1>

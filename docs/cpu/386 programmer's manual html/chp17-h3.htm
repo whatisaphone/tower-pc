@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>
+17.3.H  'H' Instructions 
+</title>
+<body>
+<a name="17-03-H"></a>
+Prev: <a href="chp17-e3.htm">17.3.E  'E' Instructions </a><br>
+Next: <a href="chp17-i3.htm">17.3.I  'I' Instructions </a>
+<hr>
+<h2>
+17.3.H  'H' Instructions 
+</h2>
+<p>
+<a name="17-03-HLT"></a>
+<h3>HLT -- Halt</h3>
+<p>
+<pre>
+Opcode      Instruction        Clocks     Description
+
+F4          HLT                5          Halt
+</pre>
+<p>
+Operation
+<p>
+Enter Halt state;
+<p>
+<b>Description</b>
+<p>
+HALT stops instruction execution and places the 80386 in a HALT state.
+An enabled interrupt, NMI, or a reset will resume execution. If an
+interrupt (including NMI) is used to resume execution after HLT, the saved
+CS:IP (or CS:EIP) value points to the instruction following HLT.
+<p>
+<b>Flags Affected</b>
+<p>
+None
+<p>
+<b>Protected Mode Exceptions</b>
+<p>
+HLT is a privileged instruction; #GP(0) if the current privilege level is
+not 0
+<p>
+<b>Real Address Mode Exceptions</b>
+<p>
+None
+<p>
+<b>Virtual 8086 Mode Exceptions</b>
+<p>
+#GP(0); HLT is a privileged instruction
+<p>
+<p>
+<hr>
+Prev: <a href="chp17-e3.htm">17.3.E  'E' Instructions </a><br>
+Next: <a href="chp17-i3.htm">17.3.I  'I' Instructions </a>
+</body>
+</html>

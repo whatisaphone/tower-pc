@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>
+7.4  Task Gate Descriptor
+</title>
+<body>
+<a name="07-04"></a>
+Prev: <a href="chp07-03.htm">7.3  Task Register</a><br>
+Next: <a href="chp07-05.htm">7.5  Task Switching</a>
+<hr>
+<h2>
+7.4  Task Gate Descriptor
+</h2>
+<p>
+A task gate descriptor provides an indirect, protected reference to a TSS.
+Figure 7-4 illustrates the format of a task gate.
+<p>
+The SELECTOR field of a task gate must refer to a TSS descriptor. The value
+of the RPL in this selector is not used by the processor.
+<p>
+The DPL field of a task gate controls the right to use the descriptor to
+cause a task switch. A procedure may not select a task gate descriptor
+unless the maximum of the selector's RPL and the CPL of the procedure is
+numerically less than or equal to the DPL of the descriptor. This constraint
+prevents untrusted procedures from causing a task switch. (Note that when a
+task gate is used, the DPL of the target TSS descriptor is not used for
+privilege checking.)
+<p>
+A procedure that has access to a task gate has the power to cause a task
+switch, just as a procedure that has access to a TSS descriptor. The 80386
+has task gates in addition to TSS descriptors to satisfy three needs:
+<p>
+<ol>
+<li>  The need for a task to have a single busy bit. Because the busy-bit
+      is stored in the TSS descriptor, each task should have only one such
+      descriptor. There may, however, be several task gates that select the
+      single TSS descriptor.
+
+<li>  The need to provide selective access to tasks. Task gates fulfill
+      this need, because they can reside in LDTs and can have a DPL that is
+      different from the TSS descriptor's DPL. A procedure that does not
+      have sufficient privilege to use the TSS descriptor in the GDT (which
+      usually has a DPL of 0) can still switch to another task if it has
+      access to a task gate for that task in its LDT. With task gates,
+      systems software can limit the right to cause task switches to
+      specific tasks.
+
+<li>  The need for an interrupt or exception to cause a task switch. Task
+      gates may also reside in the IDT, making it possible for interrupts
+      and exceptions to cause task switching. When interrupt or exception
+      vectors to an IDT entry that contains a task gate, the 80386 switches
+      to the indicated task. Thus, all tasks in the system can benefit from
+      the protection afforded by isolation from interrupt tasks.
+</ol>
+Figure 7-5 illustrates how both a task gate in an LDT and a task gate in
+the IDT can identify the same task.
+<p>
+<p>
+<a name="F-07-04"></a>
+<h3>Figure 7-4.  Task Gate Descriptor</h3>
+<p>
+<pre>
+   31                23               15                7             0
+  +-----------------+----------------+-+-----+---------+-----------------+
+  |##################################| |     |         |#################|
+  |############(NOT USED)############|P| DPL |0 0 1 0 1|###(NOT USED)####| 4
+  |##################################| |     |         |#################|
+  |----------------------------------+-+-----+---------+-----------------|
+  |                                  |###################################|
+  |              SELECTOR            |############(NOT USED)#############| 0
+  |                                  |###################################|
+  +-----------------+----------------+-----------------+-----------------+
+</pre>
+<p>
+<a name="F-07-05"></a>
+<h3>Figure 7-5.  Task Gate Indirectly Identifies Task</h3>
+<p>
+<pre>
+         LOCAL DESCRIPTOR TABLE              INTERRUPT DESCRIPTOR TABLE
+       +-------------------------+           +-------------------------+
+       |                         |           |                         |
+       |        TASK GATE        |           |        TASK GATE        |
+       +------+-----+-----+------+           +------+-----+-----+------+
+       |      |     |     |      |           |      |     |     |      |
+       |------+-----+-----+------|           |------+-----+-----+------|
+    +--|            |            |        +--|            |            |
+    |  +------------+------------+        |  +------------+------------+
+    |  |                         |        |  |                         |
+    |  |                         |        |  |                         |
+    |  +-------------------------+        |  +-------------------------+
+    +----------------+  +-----------------+
+                     |  |    GLOBAL DESCRIPTOR TABLE
+                     |  |  +-------------------------+
+                     |  |  |                         |
+                     |  |  |     TASK DESCRIPTOR     |
+                     |  |  +------+-----+-----+------+
+                     |  |  |      |     |     |      |
+                     |  +->|------+-----+-----+------|
+                     +---->|            |            |--+
+                           +------------+------------+  |
+                           |                         |  |
+                           |                         |  |
+                           +-------------------------+  |
+                                                        |
+                           +-------------------------+  |
+                           |                         |  |
+                           |                         |  |
+                           |                         |  |
+                           |       TASK STATE        |  |
+                           |         SEGMENT         |  |
+                           |                         |  |
+                           |                         |  |
+                           |                         |  |
+                           +-------------------------+<-+
+</pre>
+<p>
+<hr>
+Prev: <a href="chp07-03.htm">7.3  Task Register</a><br>
+Next: <a href="chp07-05.htm">7.5  Task Switching</a>
+</body>
+</html>
